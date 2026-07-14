@@ -151,7 +151,7 @@ export default function Hero({ onScrollTo }: HeroProps) {
             </p>
             
             <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-8">
-              Cử nhân Xuất sắc Đại học Ngoại Ngữ (ĐHQGHN) - IELTS Overall 8.0 & Listening 9.0. Giúp hàng ngàn học viên bứt phá điểm số thông qua phương pháp sơ đồ hóa và rèn luyện tư duy phân tích chiều sâu.
+              Cử nhân Đại học Ngoại Thương (FTU), chứng chỉ giảng dạy CELTA (Cambridge) - IELTS Overall 8.5 (Listening & Reading 9.0). Giúp học viên bứt phá điểm số thông qua phương pháp sơ đồ hóa và rèn luyện tư duy phân tích chiều sâu.
             </p>
 
             {/* Quick Credentials List */}
@@ -239,7 +239,7 @@ export default function Hero({ onScrollTo }: HeroProps) {
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl bg-white border border-black/5 p-4 md:p-5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.04)] z-30 flex items-center justify-around gap-6 overflow-x-auto select-none no-scrollbar">
         <span className="font-serif text-xs md:text-sm font-black text-black/35 tracking-tight whitespace-nowrap">IDP IELTS Partner</span>
         <span className="font-serif text-xs md:text-sm font-black text-black/35 tracking-tight whitespace-nowrap">British Council</span>
-        <span className="font-mono text-[10px] md:text-xs font-bold text-black/35 uppercase tracking-widest whitespace-nowrap">ULIS Alumni</span>
+        <span className="font-mono text-[10px] md:text-xs font-bold text-black/35 uppercase tracking-widest whitespace-nowrap">CELTA Certified</span>
         <span className="font-serif text-xs md:text-sm font-black text-black/35 italic tracking-tight whitespace-nowrap">VTV Education</span>
         <span className="font-mono text-[10px] md:text-xs font-bold text-black/35 uppercase tracking-wider whitespace-nowrap">IELTS 9.0 Club</span>
       </div>

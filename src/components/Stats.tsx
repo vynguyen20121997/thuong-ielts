@@ -20,7 +20,7 @@ export default function Stats() {
       // Animating float values
       const overallVal = { val: 0 };
       gsap.to(overallVal, {
-        val: 8.0,
+        val: 8.5,
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top 80%",

@@ -79,7 +79,7 @@ export default function About() {
                 Triết lý hàng đầu
               </span>
               <p className="font-sans italic text-sm text-[#1A1A1A]/90 leading-relaxed">
-                "Thấu hiểu bản chất học thuật giúp bạn làm chủ mọi đề thi IELTS, thay vì cầu may vào các bộ từ vựng tủ."
+                "Đừng áp lực điểm số quá. Chỉ cần đạt đúng target của mình, rồi tiếp tục thực hiện những dự định lớn hơn."
               </p>
             </div>
           </div>
@@ -92,31 +92,57 @@ export default function About() {
             <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
               Giảng Viên & Người Truyền Cảm Hứng
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] mb-8 leading-[1.15]">
+            <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] mb-4 leading-[1.15]">
               Học IELTS Bằng Tư Duy <br />
               Thay Vì Ghi Nhớ Máy Móc
             </h2>
+            <div className="flex flex-wrap gap-2 mb-8">
+              <span className="font-mono text-[10px] uppercase tracking-widest bg-[#14532D]/10 text-[#14532D] px-3 py-1.5 rounded-full font-bold">
+                8.5 IELTS Overall
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-widest bg-[#14532D]/10 text-[#14532D] px-3 py-1.5 rounded-full font-bold">
+                CELTA Certified
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-widest bg-[#14532D]/10 text-[#14532D] px-3 py-1.5 rounded-full font-bold">
+                4+ Năm Kinh Nghiệm
+              </span>
+            </div>
           </div>
 
-          {/* Education Block */}
-          <div className="reveal-element flex gap-4 p-6 bg-white border border-black/5 rounded-2xl mb-8 shadow-sm">
-            <div className="h-12 w-12 rounded-xl bg-[#14532D]/10 flex items-center justify-center shrink-0">
-              <GraduationCap className="text-[#14532D]" size={24} />
+          {/* Education & Certification Block */}
+          <div className="reveal-element grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <div className="flex gap-4 p-6 bg-white border border-black/5 rounded-2xl shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[#14532D]/10 flex items-center justify-center shrink-0">
+                <GraduationCap className="text-[#14532D]" size={24} />
+              </div>
+              <div>
+                <h3 className="font-serif font-bold text-base text-[#1A1A1A] mb-1">
+                  Cử Nhân Kinh Tế Đối Ngoại
+                </h3>
+                <p className="text-sm text-[#1A1A1A]/70 leading-relaxed">
+                  Tốt nghiệp Đại học Ngoại Thương (FTU).
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-serif font-bold text-lg text-[#1A1A1A] mb-1">
-                Học Vấn Xuất Sắc - ĐH Ngoại Ngữ (ULIS)
-              </h3>
-              <p className="text-sm text-[#1A1A1A]/70 leading-relaxed">
-                Tốt nghiệp Cử nhân chuyên ngành Ngôn ngữ Anh xuất sắc tại Đại học Ngoại Ngữ - Đại học Quốc gia Hà Nội. Nền tảng sư phạm chính quy và kỹ năng nghiên cứu ngôn ngữ bài bản.
-              </p>
+            <div className="flex gap-4 p-6 bg-white border border-black/5 rounded-2xl shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[#14532D]/10 flex items-center justify-center shrink-0">
+                <Bookmark className="text-[#14532D]" size={24} />
+              </div>
+              <div>
+                <h3 className="font-serif font-bold text-base text-[#1A1A1A] mb-1">
+                  Chứng Chỉ Giảng Dạy CELTA
+                </h3>
+                <p className="text-sm text-[#1A1A1A]/70 leading-relaxed">
+                  Chứng chỉ sư phạm quốc tế do Đại học Cambridge cấp.
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Narrative description */}
           <div className="reveal-element mb-10 text-[#1A1A1A]/85 space-y-4">
             <p className="text-base md:text-lg leading-relaxed">
-              Xin chào, tôi là <strong>Hồ Ngọc Thương</strong>. Hơn 6 năm trực tiếp đứng lớp và nghiên cứu chuyên sâu về đề thi IELTS, tôi nhận ra sai lầm lớn nhất của đại đa số học viên là học vẹt cấu trúc và từ vựng riêng lẻ.
+              Xin chào, tôi là <strong>Hồ Ngọc Thương</strong>. Sau khi tốt nghiệp, tôi từng đi làm văn phòng nhưng không tìm thấy cảm hứng trong công việc, nên quyết định học IELTS vì đam mê - và sau khi đạt 8.5 Overall, tôi chọn con đường đi dạy. Hơn 4 năm trực tiếp đứng lớp, tôi nhận ra sai lầm lớn nhất của đại đa số học viên là học vẹt cấu trúc và từ vựng riêng lẻ.
             </p>
             <p className="text-base leading-relaxed">
               Tại lớp học của tôi, bạn sẽ học cách <strong>vận hành tư duy phân tích của giám khảo</strong>. Chúng ta sẽ giải quyết bài đọc (Reading) như giải một câu đố Logic, và làm chủ bài nghe (Listening) thông qua cấu trúc ngữ điệu và tư duy định vị từ khóa thông minh.
