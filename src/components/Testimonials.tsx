@@ -247,6 +247,7 @@ export default function Testimonials() {
             </p>
           </div>
 
+          {/* Tạm ẩn nút "Gửi nhận xét của bạn"
           <button
             onClick={() => setIsSubmitModalOpen(true)}
             className="flex items-center gap-2 px-6 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md whitespace-nowrap self-start lg:self-end"
@@ -255,11 +256,11 @@ export default function Testimonials() {
             <Plus size={16} />
             Gửi nhận xét của bạn
           </button>
+          */}
         </div>
 
-        {/* Aggregated Reviews Dashboard Block (Classmate-vuive style) */}
+        {/* Tạm ẩn Aggregated Reviews Dashboard Block (Classmate-vuive style)
         <div className="bg-white border border-black/5 p-8 rounded-3xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center mb-12 shadow-sm text-left">
-          {/* Big rating score */}
           <div className="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left border-b md:border-b-0 md:border-r border-black/5 pb-6 md:pb-0 md:pr-8">
             <span className="font-serif text-6xl font-black text-[#1A1A1A] mb-2">{totalRating}</span>
             <div className="flex gap-1 mb-2">
@@ -276,14 +277,13 @@ export default function Testimonials() {
             </div>
           </div>
 
-          {/* Progress rating bars */}
           <div className="md:col-span-5 space-y-2.5">
             {ratingBars.map((item) => (
               <div key={item.star} className="flex items-center gap-3 text-xs">
                 <span className="font-mono font-bold w-12 text-left shrink-0">{item.star} Sao</span>
                 <div className="flex-1 h-2 bg-black/5 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-[#14532D] rounded-full" 
+                  <div
+                    className="h-full bg-[#14532D] rounded-full"
                     style={{ width: `${item.percentage}%` }}
                   />
                 </div>
@@ -293,7 +293,6 @@ export default function Testimonials() {
             ))}
           </div>
 
-          {/* Quick trust metrics */}
           <div className="md:col-span-3 bg-white border border-black/5 p-5 rounded-2xl flex flex-col justify-center text-center md:text-left">
             <div className="text-[#14532D] font-serif text-2xl font-black mb-1">1,520+</div>
             <p className="text-xs text-[#1A1A1A]/80 font-semibold mb-3 leading-relaxed">
@@ -305,6 +304,7 @@ export default function Testimonials() {
             </div>
           </div>
         </div>
+        */}
 
         {/* Search, Filter, Tabs Control panel */}
         <div className="bg-white border border-black/5 p-6 rounded-3xl mb-10 shadow-sm flex flex-col gap-6 text-left">

@@ -113,7 +113,7 @@ export default function Services() {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         
-        {/* Editorial Heading */}
+        {/* Tạm ẩn Editorial Heading
         <div className="max-w-3xl mb-16 text-left">
           <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
             Lộ Trình Tinh Gọn - Cá Nhân Hóa
@@ -126,6 +126,7 @@ export default function Services() {
             Mỗi chương trình học đều được thiết kế tỉ mỉ, biên soạn tài liệu cập nhật liên tục từ đề thi thật tại IDP & BC. Chọn một khóa học để tìm hiểu chi tiết về giáo trình và chính sách cam kết đầu ra.
           </p>
         </div>
+        */}
 
         {/* Featured flagship course, full width */}
         <div

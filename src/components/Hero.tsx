@@ -183,12 +183,14 @@ export default function Hero({ onScrollTo }: HeroProps) {
                 Nhận Lộ Trình Miễn Phí
                 <ChevronRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
+              {/* Tạm ẩn nút "Xem Khóa Học"
               <button
                 onClick={() => onScrollTo("courses")}
                 className="px-8 py-3.5 border border-black/15 hover:border-[#14532D] text-[#1A1A1A] font-bold text-xs rounded-full hover:bg-black/5 transition-all duration-300 cursor-pointer tracking-wider uppercase"
               >
                 Xem Khóa Học
               </button>
+              */}
             </div>
           </div>
         </div>
