@@ -1,0 +1,1235 @@
+export interface ExtendedTestimonialItem {
+  id: string;
+  studentName: string;
+  score: string;
+  comment: string;
+  schoolOrJob: string;
+  avatarUrl: string;
+  courseId: string;
+  courseName: string;
+  beforeScore?: string;
+  afterScore?: string;
+  date: string;
+  rating: number;
+  helpfulCount: number;
+  proofUrl?: string;
+  subScores?: {
+    listening: string;
+    reading: string;
+    writing: string;
+    speaking: string;
+  };
+}
+
+export const initialTestimonials: ExtendedTestimonialItem[] = [
+  {
+    id: "student-le-hoang-huy-1",
+    studentName: "Lê Hoàng Huy",
+    score: "8.5 IELTS",
+    schoolOrJob: "Bác sĩ nội trú CK Mắt (Lớp MT.HCM13)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "7.0",
+    afterScore: "8.5",
+    date: "28/03/2025",
+    rating: 5,
+    helpfulCount: 10,
+    comment: "Và thế là tôi đã có học viên theo tôi suốt khóa học dài 3 tháng được 8.5 OVERALL. Đây là một hành trình dài, đầy cảm xúc và RẤT RẤT NHIỀU nỗ lực của Huy 😭😭\nBan đầu khi gặp Huy, c đã nghĩ Huy chỉ chắc cú được 8.0 thôi chứ 8.5 thì còn hên xui do điểm yếu lớn nhất của Huy là Speaking hơi đều đều, chậm chậm và hiện tại điểm Speaking đang bị chấm rất gắt. Nhưng Huy đã làm được điều tưởng như là quá khó này. 🤘🔥\nHuy giỏi từ đầu là có thật nhưng không phải giỏi kiểu con nhà nòi tiếng Anh, học chuyên Anh hay gì mà Huy là bác sĩ, rất bận rộn, ko có môi trường sử dụng tiếng Anh nhiều. Huy là minh chứng cho câu HARD WORK PAYS OFF - đi học đều không nghỉ ngày nào, thậm chí join đầy đủ cả lớp bổ trợ TA, lớp khô máo RL cuối tuần của c, nộp đầy đủ toàn bộ bài writing. Khi sắp phải thi thật, Huy cày Reading, Listening trên study4, viết 2 bài 1 tuần gửi cho c, kèm 1-1 với TA ở trung tâm, cày hết bộ speaking forecast. Huy ơi, from the bottom of my heart, I admire you a whole lot - you remind me of my 2019 self when I first fell in love with the IELTS test and wanted an 8.5 so bad. I studied like crazy just like you did and got my very first 8.5, which has led me to the wildest yet most interesting journey later on. My life definitely became better thanks to that milestone and I wish you the same thing on your journey. Way to go, Huy ơi! 🥰🥰",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/de5ec2c5466d7f7503cd15aaf929d7f7/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=mUA0YdB9j7MtlmiKbd0l3wWZcBgQAaPCa5hvu9ktfsHkbyEOT9bYrpDiVINAVTVHnuuegYcFnwMn05be3sjIeIDdg9E2vAMmQMKjTxf1Rl2aWPjjgh3l3q32Nk7ftgxOBQ5eRc3kvy55geTWv1rWfh3MweGzCIgaDSnL1nuLgfcNrILJNzEA6PaWTkkhwdibD8cITsnuTYq6hWH0LWdbDTS50UmqI63SnTfJi65POWXBUp%2FDrqhHTytfGRSPV7WLz5RLvOyxJ72dCghwTjptYuNv%2BhCiFKtzsc9Cv8PWbUdLDa%2B%2BaHWdzc%2BSdA6eTUxq0VVF%2BPHX4jktdyw8G5n%2FxA%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Fde5ec2c5466d7f7503cd15aaf929d7f7%2FSTUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "9.0",
+      reading: "9.0",
+      writing: "7.5",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-nguyen-ai-nghi-2",
+    studentName: "Nguyễn Ái Nghi",
+    score: "8.5 IELTS",
+    schoolOrJob: "Chuyên Lê Hồng Phong (Lớp PS392)",
+    courseId: "focus",
+    courseName: "IELTS Focus (4 Kỹ Năng)",
+    beforeScore: "7.0",
+    afterScore: "8.5",
+    date: "18/12/2025",
+    rating: 5,
+    helpfulCount: 13,
+    comment: "Chắc rớt nước mắt quá sao tụi nhỏ giờ giỏi kinh khủng 🥹🥹🥹\nHồi lúc Nghi gặp cô là còn bé xíu chưa cần đi thi liền em kiểu học cho vui chung với chị em thôi, nay chuẩn bị ra trường thì mới lên đường. Nhưng hồi trong lớp là Nghi đã giỏi nổi bật rồi, và rất là ngoan nghe lời, chăm chỉ làm bài tập. TA luyện nói cho Nghi cũng khen Nghi hết lời vì nói giỏi quá. \nRất là cảm động vì học cô lâu rồi nhưng em vẫn nhớ tới cô và chia sẻ tin vui nàyyyyyy 💖💖",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://padlet.com/padlets/nvzn1ihs8imlxkly/wishes/post_AL83WzG5bp2Xa0Pg/exports/photo-album/zip",
+    subScores: {
+      listening: "9.0",
+      reading: "9.0",
+      writing: "7.5",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-hoang-xuan-nguyen-3",
+    studentName: "Hoàng Xuân Nguyên",
+    score: "8.5 IELTS",
+    schoolOrJob: "Du học sinh Úc (Lớp BTCS Writing)",
+    courseId: "intensive",
+    courseName: "Writing & Speaking Intensive",
+    beforeScore: "7.0",
+    afterScore: "8.5",
+    date: "24/05/2024",
+    rating: 5,
+    helpfulCount: 16,
+    comment: "Harry 17 tủi đã ở Úc được 1 năm. Hành trình đến với 8.5 IELTS của Nguyên có thể là rất ngắn (3 ngày) hoặc rất dài (vì bản thân Nguyên đã tích lũy qua nhiều năm tháng mới có được level này). Nguyên học cấp tốc Writing với cô có 3 buổi (10 tiếng nhồi nhét) nên chỉ kịp ôn 2 dạng task 1 &amp; 2 dạng task 2. Nếu Nguyên có thêm thời gian để bổ sung vocab + refine ideas của em thì 9.0 là hoàn toàn có thể luôn á!",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-442988babdf9?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/1ef950fc339bc9c0673f89f96040ac08/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=Yw%2FWlr1p7v9Ucq3zd0zydP%2F5XSbuQDig75WrOSBVQj7wSZeS5riZS9cXxzOZowDGdOPmnPtRitzw2a6YaPxOPsD9X9e0RUMmyD6d74TGFJOE0gg3vNhY0J0sS9BXSaZPONuWfKDhTGJxWRfmFSIti8wWsRan3K%2FgNvIMDIqKKmSaA8X9twvGs4ys1Q9MBuxbzFGKYH14bCeUqv6aPXl461%2FRjmaVPloRGS2001%2Bvicvk3YN6E4%2F8VC%2F17m9hp1cBoYrFgy7jIliEXz9eJmlCHAXLIuST419fYrVn2FrGp6l7HwpafcSDr2hB%2BGvnx%2BUYYt5fKta0k2Wu83K%2BjiNIXw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F1ef950fc339bc9c0673f89f96040ac08%2FSTUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "9.0",
+      reading: "9.0",
+      writing: "7.5",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-le-nguyen-chuc-an-4",
+    studentName: "Lê Nguyễn Chúc An",
+    score: "8 IELTS",
+    schoolOrJob: "Lớp MT.HCM08",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "30/12/2025",
+    rating: 5,
+    helpfulCount: 19,
+    comment: "Bé An là một trong những học viên nổi bật nhất của lớp Master 08. Cô vẫn còn nhớ rất rõ là ngay từ những buổi đầu, cô đã thấy em học quá tốt nên sau giờ học còn chủ động nhắn tin động viên em thi sớm. Tuy nhiên, lúc đó em mới học lớp 11 nên chưa có kế hoạch thi ngay. Thú thật là khi ấy cô cũng hơi lo em sẽ bị chững lại, nhưng kết quả là em vẫn xuất sắc đạt được mục tiêu 8.0.\nTrong suốt khóa học và cả hơn một năm sau đó, em luôn thể hiện tinh thần học tập rất nghiêm túc: Writing thì viết bài dài, đầu tư kỹ vào ý tưởng; Speaking thì khỏi phải bàn, phát âm rõ ràng, tự nhiên và vốn từ rất tốt. Em cũng từng chia sẻ rằng mình đã áp dụng template Writing của cô khá nhiều để đạt được điểm Writing cao như vậy. Cô rất vui và tự hào về con điểm 8.0 quá đẹp này của Annnnn 🥰🥰🥰",
+    avatarUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://padlet.com/padlets/nvzn1ihs8imlxkly/wishes/post_jpoxaj2y4M07abPE/exports/photo-album/zip",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-yen-chi-mt-on14-5",
+    studentName: "Yến Chi MT.ON14",
+    score: "8 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "13/12/2025",
+    rating: 5,
+    helpfulCount: 22,
+    comment: "Bé Chi là một trong những học sinh Master đầu tiên của cô luôn. Cô vẫn nhớ lớp Master online hồi đó ở Hà Nội, và Chi là một trong những bạn nổi bật nhất lớp. Học online mà em với cả lớp rất chăm, bài tập làm đầy đủ, học cực kỳ nghiêm túc luôn 😆.\nHọc xong là Chi đi thi liền và đạt 7.5, rồi 2 năm sau em renew lại bằng và lên tận 8.0 để có thêm cơ hội đi làm gia sư. Đặc biệt là Chi chỉ mới 2K6 thôi mà đã giỏi vậy rồi, vừa thông minh lại còn xinh gái nữa chứ ✨🥹.\nĐiều làm cô cảm động nhất là dù lâu rồi, Chi vẫn nhớ tới cô và gửi điểm mới cho cô xem. Chúc mừng Chi rất nhiều nha 🎉✨",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/f3c58e55d3f63824a1fecaf8376bee06/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=bgDmdyuzonfTKok6LlesyLbFWyz2UpqwQoWYHQb%2Bgkl0SQmjHH0oLPy3XP%2BHJq1kEehmw461Dl1TLeC7HS0ML0vbv9ZaQqzWReZhZBrdFjB44UfMAHIkRJbI%2Bbgef%2FXvV9wmc%2Fe4sU9%2Fgz3gn%2BQ4AZzWwECbHfIsm%2FShw%2F1BRSs4tVMxUsHLQ4WAdh5fdeH6aLjYPAUNdqvQjlk%2Bs2ZdfWJqyULau3DED9JGYaW7X9WnArhzZ%2B8BO7tC4M%2BaNjsrA1vwO3j0%2BhwyXGHxSAqWcDtTwqEmRzKt63ugCuOuiUOy8jE%2Bc59xpQpQ8MQTYOjpKSRb3PA4HS6fHQvzYeqfMg%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2Ff3c58e55d3f63824a1fecaf8376bee06%2FSTUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-quynh-lam-6",
+    studentName: "Quỳnh Lam",
+    score: "8 IELTS",
+    schoolOrJob: "Chuyên Văn PTNK & SV UEH (Lớp BTCS)",
+    courseId: "intensive",
+    courseName: "Writing & Speaking Intensive",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "14/10/2025",
+    rating: 5,
+    helpfulCount: 25,
+    comment: "Cảm động vì nỗ lực của đệ tử Năng Khiếu này ghê :)))) thi nhiều lần ko đạt aim cứ stuck hoài ở 7.5, Lam quyết tâm phục thù để còn đi dạy IELTS nữa :))) Trong lớp Lam rất là thông minh, chăm chỉ, ham hỏi, và rất là nghe lời. Cô thích nhất những lúc dạy writing cho Lam vì Lam rất là năng nổ tiếp thu những kiến thức hơi advanced mà many khi cô nói cho một số bạn khác thì các bạn ko hiểu được 😁😁. Lam nghe lời cô đi thi thử ở Z, luyện đề trên web A nữa chớ =)) Nói chung là cô vô cùng tự hào về emmmmmm 😍😍😍",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/279e69107adddd0ec553d368e33ee8e8/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=R0lwj3agQ6Ig6eQWUWFep%2BcbXuWH%2BNaq%2BGBPjTUDwbFjsW0nlYV%2B5XyRYAufljwwdtILOU4ieVGGiAZkBgOcg1e2kBE4nLIFTBRD5sczVWMwJgjiPCqE8gHOn3TQNUm1%2B40M555VKjdtzIu8Ka7nWytBfRfwpjCEGbC8EycC5d8agGgy0Acdgl6HwD8jxHfzZTGfZcZKoTO0fGQZ3cGNfq%2BW9giVl%2Fzg6JjdZc7PMfWNUDk%2B4x1xcmUq%2BHUoRCxC7Gf3jgIS3JXVZCJr23umpxzZXLmEAxOiZwGqZr9NAma8cupsAjQkaH6be5XMY1YigG%2FPYxWcx7K%2FRfvHJg64Eg%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2F279e69107adddd0ec553d368e33ee8e8%2FSTUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-hoang-vy-7",
+    studentName: "Hoàng Vy",
+    score: "8 IELTS",
+    schoolOrJob: "Chuyên Lê Hồng Phong (Lớp MT.HCM13)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "24/11/2025",
+    rating: 5,
+    helpfulCount: 28,
+    comment: "Cô thực sự đã ko quên e cô chỉ nhầm em từ Lê Hồng Phong sang Năng Khiếu thôi =))) nhưng trong tim cô các anh em trường chuyên là ng một nhà =))) thực sự cô pé này quá giỏi luôn đi học hay đi trễ hoặc về sớm hoặc ko đi luôn 🥹🥹nhưng mà sao điểm vẫn bốc quá vậy tarrr.",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/92c2b67f3c2f8ff1cd2a757752efea5b/STUDENT_RESULT.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=KAOsHk1O%2BLWoOnkenpPqENqrfcDScGH7kHIdjOsrl0zhx%2FcuoaMLcVGIAI%2F8zG2rylUJy94Ol9m6PcAEEAYIJwLDMkWvATXtRXYlMH2suFD4%2B%2FW1mjIRnFBBKLHSSIjobRvha7Z%2FDr2DU%2B7grWLq5zBx6H9N7o0IUPI7ZnfL84aaSoDKyBLSN4nzaX3aRscXnp11iRLBz9MGcfH%2B%2FGuzV0IUzpl9IhOxrePxlpggnuUZ8A0O8PHQVwI13axX4WLRTjwMM%2ByJ43762oOCY9Cc9bcnr35fNIiegK8zztRrJ3fdiuvC6i0EiXGqkkd%2F7zjLjSCLGV94xEsb%2BoezaDEudA%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2F92c2b67f3c2f8ff1cd2a757752efea5b%2FSTUDENT_RESULT.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-minh-thu-8",
+    studentName: "Minh Thư",
+    score: "8 IELTS",
+    schoolOrJob: "Chuyên Anh PTNK (Lớp MT.HCM08)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "28/02/2025",
+    rating: 5,
+    helpfulCount: 31,
+    comment: "cô pé chuyên Anh năng khiếu hiền queooo &amp; CỰC KỲ CHĂM CHỈ. Viết 2 bài mỗi tuần nộp đầy đủ cho cô\nhành trình đến với 8.0 của e hơi căng thẳng tí tẹo =)) vì bị IDP giữ điểm tới gần 3 tháng quá sốt ruột nên cô đã thúc Thư phải phúc khảo liền đi mà phải phúc khảo cả 2 skill Writing và Speaking luôn mới đã cái nư của cô =)) Và kết quả là W +0.5, S +1.0 luôn nhaaaa. Đặc biệt là Writing Thư viết chưa có xong kết bài của task 2 luôn nhưng vẫn bốc như thế này quá là ngưỡng mộ emmmmmm. Thiếu 0.5 nữa là Thư được 8.5 overall rồi hơi tiếc chút huhu 🥰🥰",
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/f7604531ac55d4ca63430375c11661f0/STUDENT_RESULT.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=VWZg5cY6LUi0ANOqXVZfP5VI5L%2FCPGxXKNMcKUcWB5%2Bp8hOuR2mt2TWlx6QB1QKSeTu%2FOnTDC0IsX2SwdMzUQDfNKb2sJPTqYD%2Ba%2FPFfFFXJz8q8oOLf1%2B0%2B9laaHUHhXk7wUokX0gQvDHg%2FUcCZxlry%2BILJWcNhZ%2BzrDviOZ7nVba0RL8P1XfhIkWVCEi7ZAGLp88D%2Bx7iRA9Hq63LcMC9Sq1WZuLk6aUT5xNjciwz0DhRDXqzMkfwZYAe8Ib4yFsVvCIMjzkwuVKtCHKXqJ6nWKfA5TEqwb1IRBLDG4iQ1fzj%2F0D%2B9CwBq8alDhY1o90aUAX3ggLMt40oywqGF9w%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Ff7604531ac55d4ca63430375c11661f0%2FSTUDENT_RESULT.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-phu-luong-mt-on16-9",
+    studentName: "Phú Lương MT.ON16",
+    score: "8 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "16/08/2024",
+    rating: 5,
+    helpfulCount: 34,
+    comment: "Phú Lương (mà c cứ tưởng e tên Phú...) mới thi lại để húp trọn con 8.0 mà ẻm bỏ lỡ lần trước hehe. Điểm RL quá đẹp (ẻm chia sẻ phải cày hơn 30 đề) chỉ hơi tiếc Speaking và Writing một xíu thuiii. Lần trước điểm S và W của pé này lại cao hơn",
+    avatarUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/503b82f30b35ad3d042e909ffa9d871d/STUDENT_RESULT__3_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=ImGrMdoZhphYOg5CuZwKlXgwGyGyX3HZ3%2FpYbS9lWX1kmxM3BdyXGNyh5e5fYLQhwb2NrRU5kVKqo6NEiNounhYx21iWUvcCuDp4oow0um3zVvAgN2Zy6YosQniIQ5AhQRmmd%2BwwRGPqWyhsXPylJh5iszoFFIDvFQWwnGiSCUkcjHgIUJWXy%2BXIfKF5SyjYPohYzzJFX68eZj21nIEMvP%2FWE5zTj%2BKu1WjDENe%2Fyt3%2BO%2BqCu8%2Fc12%2F0Q%2F3jfbeW0A8yAFo28%2FgCGm%2BJCBUpljNO21mu0ifNFpI6Ovpe3IXsVrgTKgJmj1lzZY0IXq8jdubk7uTrzYWfAtTqtTbO%2Fw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F503b82f30b35ad3d042e909ffa9d871d%2FSTUDENT_RESULT__3_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-quynh-chi-10",
+    studentName: "Quỳnh Chi",
+    score: "8 IELTS",
+    schoolOrJob: "Lớp MT.ON16",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "25/07/2024",
+    rating: 5,
+    helpfulCount: 12,
+    comment: "Em này ẻm cày siêu trâu siêu bò chăm viết writing hùng hục luôn í. Còn Reading Listening chắc đã húp trọn gần trăm đề =)) Nên kết quả này cũng dễ hiểu hihi. Mà cô vẫn nghĩ WS em có thể cao hơn thế nữa nhá :))))",
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/7f2727506e10e922ebcd472739b083c7/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=fbrn84Ee3PqZAecQXkkjR7HClOwbWXryWTvOxg3OTkkK97kfwndHZDo6L1UOJeFGqtKilcJlrCJU5gBetklvllM1NhUyau8IcTI8V2nmhcjrcM6vLtGrbKWQfvoe21iM2IRXjzCzZIbEZ4fgHnejPc1ZEzg3%2ByvKSVbCbLZ0nQ%2BBcPyI07n04L7gPSYNF85HRP1hSpfN9xNxVpOS1xa0R6zZ%2BNm3nHtvvl9T%2FXlaxLpGAFhp8JlLIkK1WJub0Kgjn1ncS62d%2FX%2FSn%2BktFIL9ms8G0ssCzK%2BOAQCJslzjZhDEd1Wb820uWHsjSZAo45f1lto%2B8EVJRn8leVB6%2B9Nt7Q%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F7f2727506e10e922ebcd472739b083c7%2FSTUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-dang-le-an-11",
+    studentName: "Đặng Lê An",
+    score: "8 IELTS",
+    schoolOrJob: "THPT Chuyên Lê Hồng Phong (Lớp MT.HCM05)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "24/07/2024",
+    rating: 5,
+    helpfulCount: 15,
+    comment: "Em pé Xử Nữ hơi hơi awkward nhưng mà học giỏi + tình cảm :))))) phát âm siêu sang xịn mịn nhưng hem hiểu sao đi thi lần 1 bị flop speaking rùi ẻm retake lại lên hẳn 1 chấm nên được lên overall thành 8.0. Quá là xứng đáng An ơiiiii",
+    avatarUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/0f33e67458321fb20ffeef49c065c0de/STUDENT_RESULT.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=4ipoCNmxMP5yuPd7zwFgPy17NO3g9z9l3bN9RU5Du2uwCNnLY%2BBXkBUocNUoK7Y6GtBFRv9AMTnsMR8oxKA7SHA7PugxJl%2BFJbKQPBavVi1QrvK6PTA3ceffZ2Neykuh500Jhr6VxERdZyTYbK%2BsmTwAvikj3dkQDlV9IfJYpQ1v4kkLeUaX0WZz79T8rbYdRJ60Cp7MqePWT8bbKjJ7wh8Kb%2FnzkbNHXh7XT3gTYHwg5RqHRrqTMpkKsW%2Bt2RwlDufA7h%2BOQpJJiJac1lukuhKe5hHWZwg%2BRifsG6DAe4Cbr9oVwIy0pwL%2FDAy0PIHQbRxE4feV2adSzGQwHH4EjA%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F0f33e67458321fb20ffeef49c065c0de%2FSTUDENT_RESULT.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-huynh-hoang-tin-mt-hcm03-12",
+    studentName: "Huỳnh Hoàng Tín MT.HCM03",
+    score: "8 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "10/07/2023",
+    rating: 5,
+    helpfulCount: 18,
+    comment: "Chú boy awkward nạnh nùng nhưng thực chất lại rất vui vẻ hòa đồng và là 1 cao thủ ngầm :)))) chăm cày đề Cambridge như điên để có được ngày hnay. Hồi đầu cô tưởng em ko thích cô do em cứ cười nhếch nhếch mép &amp; mặt kiểu \"thấy phiền ghê\" =))) Dù thi được 8.0 rồi em vẫn vác tập đến lớp để vui chơi nhảy đầm xả stress =))) Thề lúc em quăng điểm vào group lớp cô vỡ òa trong sung sướnggggg",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-442988babdf9?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/acc996be677268d020675e5bb5c1eb74/STUDENT_RESULT__12_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=KK2ch%2Bygj4SCQrsyHH7lxJM0iBcNT%2B7fmfnGHMVvSP2yioPzxl64Rti27BpSBCXOyywKFxp9Ul%2F74dRJy4PxWDRLC%2FhKWWwBtPpozHQHJvE7H%2BRu5gdtuxWkIhMqjzvXNPBNhnMUwP1xNkiO7YJ%2FwQ3zDBSW3JRLPA%2BKhQcbbVNkNetH2%2B6aWHTE9TPo5BbdSn0R39DThl3JhQHfrWhs5Szz6w0tZiPIiWDDigFHV3vh%2FCnfhe2BtwbNS8uAgEzndMc0MVqlfqkpVFRy1DBW9pdX%2FsSHGY%2BjUFgtjReKl7Lof8%2FZa%2BIcc7kCsWaW3OVfh8DRXIfu0pcfbaPPI4Brhg%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Facc996be677268d020675e5bb5c1eb74%2FSTUDENT_RESULT__12_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-nguyen-thi-ngoc-tuyen-sr285-13",
+    studentName: "Nguyễn Thị Ngọc Tuyền SR285",
+    score: "8 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "24/04/2023",
+    rating: 5,
+    helpfulCount: 21,
+    comment: "Cô pé cute xinh xắn và cực kì chăm chỉ. Tuyền thi đầu vào được xếp ngay vào lớp giỏi nhất &amp; đã là một trong những gương mặt nổi bật nhất từ những ngày đầu. Ban đầu Tuyền bị điểm writing thấp nên chỉ có 7.5 overall và cô đã động viên Tuyền phúc khảo lại gấp vì cô tin năng lực của em ko phải là như thế. Rùi xem kết quả nèee có cháyyy quá hôn dọ 💅",
+    avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/6551bd3a418102a1d416ce0e4d73de99/B_n_sao_c_a_IELTS_NG_C_TH__NG_V_N_TU_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=VrHGTGQYPS4v9WvmMYvgOUIer3V9MJKT7CDE8boFANBAi4Fkw0Een4zaLBF3UYn2vPtUxbiVvxssOIwHc3AsbD7leE6BhYrDkmCJkVrtIvswT7Cs1Ry2wkXjDVz9tzbNFC4FF2TsN5QwDY5o4LQ%2FkHzaZv1qb2fLIGe6oR1emGDqsf%2B%2FT8iSXn8ASU%2FaXXYlVWwHGp11iu%2BP2QE%2FF1hxGlxdlzouCfq9jmcauAmCCC7UiWsAKeaDBjjtxQG%2FXaDg1t6EpVHS9bIVQ8j7UoX4C%2BDZH%2BcYHowIuj1vPJNjR3E7BO0LdtU9aSwo69GV3D4VjZZ%2FMCoBVVKssOz395x%2Fhw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F6551bd3a418102a1d416ce0e4d73de99%2FB_n_sao_c_a_IELTS_NG_C_TH__NG_V_N_TU_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-pham-hoang-my-uyen-sr217-14",
+    studentName: "Phạm Hoàng Mỹ Uyên SR217",
+    score: "8 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "31/12/2022",
+    rating: 5,
+    helpfulCount: 24,
+    comment: "Cô giáo viên cấp 2 cực kì cá tính và tâm linh, có accent sang, xịn, mịn, mượt nghe mà sướng hết cả cái lỗ taiiii. Kết quả này phần lớn là do thực lực của Uyên chứ cô chỉ giúp Uyên mua vui về cung hoàng đạo &amp; bói tarot thuiiii",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-442988babdf9?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/853270a14b62de32ede9541daebc66df/STUDENT_RESULT__6_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=Q3H4%2BY5XZhArKvyuwq56bnlXOLX67BN%2BUGl%2B6QyfG9gXGJ5e%2FZhX799mayMrZv0GiCT9KkJ7fON%2BwUX81hUqKnmlHqTn6%2BJ8IEbcPksS3RB60Dwuoy7Ht2NREfIPKD1Ip1g0qDnNtwtYcHfXuqQOBKIWLOtbI5FYkdWsqInYfsp79Xe9BWTQAcfF88rIjVKO5JK%2Bu84gPr2hlEsl7UNIJ8OtmNHH2nOylC8KVzFxuZFKT5nwkgPhHSJ4LwrxSyhB3CXjlxW%2Bjh6f0oCIYTdT0NlH8isVTCW8QpLb54LMMU%2B323gO2gLX6rY6ZP%2FnSCJveqzU%2Fz2Xjaph1rX%2BRDAHhQ%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F853270a14b62de32ede9541daebc66df%2FSTUDENT_RESULT__6_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-nguyen-huu-thanh-sr264-15",
+    studentName: "Nguyễn Hữu Thành SR264",
+    score: "8 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.5",
+    afterScore: "8.0",
+    date: "22/12/2023",
+    rating: 5,
+    helpfulCount: 27,
+    comment: "Chuyên Anh Gia Định ngoan nhưng không khờ nha :)))) học giỏi nhưng mà vẫn chơi dữ lém. Làm Reading 1 bài chắc 10-15p thui á =)",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/c57e50759f65703753bb989757794ffd/STUDENT_RESULT__11_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=cQa9eC9LTbJqwASfg1hP9Lz6iyMIiC1Ce2cq2vsrL2BP8777oLXm4kDUg1pXQJukceqlTJie%2FWwSEzfRoVGooVe5qMboqyEFndM6UOZuYd6mVASAGm4nvul6hSSDZ29YAK4spLlkRvj7wpJB4LHTHNR2a8%2Fc93G8%2FPAYWOQvmk1BVNl1xpTQTOf%2FaubQVvlWp4aImzVJnXZONF8xEe2SAgc70leITgx4TKqpKcvIIeuYI3%2FimdYoyAo9bWzqrASvOVIBQB6bnsSELjpD4iDLJb%2FnToM%2BVvw41AHHl5ZT%2BLKAkz9RqTQB8t0m9cN1HoRCvTvYeSeChjdamepq9AUlIw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Fc57e50759f65703753bb989757794ffd%2FSTUDENT_RESULT__11_.png",
+    subScores: {
+      listening: "8.5",
+      reading: "8.5",
+      writing: "7.0",
+      speaking: "7.5"
+    }
+  },
+  {
+    id: "student-tan-minh-16",
+    studentName: "Tấn Minh",
+    score: "6 IELTS",
+    schoolOrJob: "Lớp BTCS Speaking 142 Q10",
+    courseId: "intensive",
+    courseName: "Writing & Speaking Intensive",
+    beforeScore: "5.0",
+    afterScore: "6.0",
+    date: "25/03/2026",
+    rating: 5,
+    helpfulCount: 30,
+    comment: "TẤN MINH: SPEAKING 4.5 → 5.5 SAU 12 BUỔI CẤP TỐC\nMinh bắt đầu khóa học với mục tiêu nâng điểm speaking đang bị liệt khiến bạn không nộp hồ sơ đi du học được (bạn thi speaking chỉ có 4.5 và overall là 5.5)\nThật ra Minh khá lưu loát và tự tin khi nói, nhưng gặp vấn đề ở phát âm do khẩu hình miệng nên một số âm bị ngọng và chưa rõ. Vì đây là lỗi khó sửa nhanh, cô và Minh tập trung vào chiến lược thực tế hơn: giữ sự tự tin, tăng vốn từ, mở rộng câu trả lời và cày sát bộ forecast.\nTrong 12 buổi, cô bổ sung vocab liên tục theo từng chủ đề, sửa các lỗi phát âm quan trọng và luyện cùng Minh rất nhiều đề. Còn Minh thì luôn nói rất hăng say, chịu khó luyện và không ngại sửa.\nKết quả: Speaking 4.5 → 5.5 và đạt mục tiêu overall 6.0. Chúc mừng Minh vì đã hoàn thành mục tiêu trong thời gian ngắn! 🥳",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/150af165f01453dd4c88cea5873f517e/image.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=vEw1%2BeDKC2O040DsiStRMuWUn3yHgjl56rVdLk94GF2929jgTjsOSBUTC6wrMMXl%2FmzYRi8xYNLcAuMpbHtzM3dGt3zk2UI9ANDpcSlKaChOa6iBq7L%2Bd3I%2FS9Tc0n1h44deeM4kY4A0CeAupJv0tTgdyOm02poSnrMTO7MUJZDt61U7F93fBvNmUER4STHlWEyPOddhak6ux1ko5JKVHQsNIFbw9BNrLNHsFo5rME95WbfrCCi1lGj5wLH5OUrfUY5LFZSWGHgla%2FND0Smqha8wuQCUtYAEl8%2FbZ9hFIebsQBwLOEi3x9YizuVHdkC2DKpbVQDMqkfinIp3YKqQ0Q%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2F150af165f01453dd4c88cea5873f517e%2Fimage.png",
+    subScores: {
+      listening: "6.5",
+      reading: "6.0",
+      writing: "5.5",
+      speaking: "5.5"
+    }
+  },
+  {
+    id: "student-hoang-cao-duc-17",
+    studentName: "Hoàng Cao Đức",
+    score: "6.5 IELTS",
+    schoolOrJob: "Lớp PS752 Q10",
+    courseId: "focus",
+    courseName: "IELTS Focus (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "22/03/2026",
+    rating: 5,
+    helpfulCount: 33,
+    comment: "HOÀNG CAO ĐỨC: HỌC KHÓA 6.0 NHƯNG THI ĐƯỢC TẬN 6.5 OVERALL 🥳\nTrong lớp, Đức lúc nào cũng rất chăm chỉ, siêng đi học, thái độ học tập tốt và đặc biệt là cực kỳ vui vẻ, dễ thương. Bonus thêm là ngoại hình rất giống ca sĩ Erik nên cô hay gọi Đức là Erik 😆\nCô rất vui và tự hào khi thấy Đức đạt được kết quả xứng đáng với sự cố gắng của mình. ❤️",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-442988babdf9?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://padlet.com/padlets/nvzn1ihs8imlxkly/wishes/post_lDK1ZRzN0g9jZJ9z/exports/photo-album/zip",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-nguyen-tran-minh-quan-18",
+    studentName: "Nguyễn Trần Minh Quân",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp MT52 Q10",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "21/06/2026",
+    rating: 5,
+    helpfulCount: 11,
+    comment: "MINH QUÂN: BẢO BÌN TÙI TỆ NHƯNG HỌC TIẾNG ANH THÌ NGON NGHẺ :)))))\nQuân là học sinh chuyên Toán Lê Hồng Phong, nhưng tiếng Anh cũng giỏi không kém. Trong lớp Master, Quân chính là “niềm hi vọng” của cô giữa một tập thể hơi làm biếng nhẹ. 😆\nQuân ít nói, rất menly, lúc nào cũng ngồi một góc im im, nhưng bài nào giao cũng làm rất nhanh, rất gọn và rất ngoạn mục. Bạn giỏi đều các kỹ năng, đặc biệt gần tới ngày thi thì cày Writing cực kỳ chăm chỉ.\nSpeaking của Quân cũng rất tốt: lưu loát, phản xạ nhanh, nói mượt như nã đạn. Chỉ tiếc là hôm thi anh ấy gần như không cày gì, vào phòng thi nói freestyle nên hơi hụt mất cơ hội chạm mốc 8.0 overall huhu\nQuân đang cố gắng thi lại Speaking để kéo overall lên đúng with năng lực thật của mình.\nCô rất tự hào và vẫn đặt niềm tin vào Quân nha ❤️",
+    avatarUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://padlet.com/padlets/nvzn1ihs8imlxkly/wishes/post_PVKBQOrwPg0Yaj5x/exports/photo-album/zip",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-it-on48-hong-hanh-online-ha-noi-19",
+    studentName: "IT.ON48 Hồng Hạnh (Online Hà Nội",
+    score: "7.5 IELTS",
+    schoolOrJob: "Người đi làm cần nhập cư)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "03/02/2026",
+    rating: 5,
+    helpfulCount: 14,
+    comment: "HẠNH: TRÙM WRITING MÃI ĐỈNHHHH 🥹\nHạnh là học viên 9x, đang làm ngân hàng ở Hà Nội và học cô online. Trước đó, Hạnh từng tự học và thi được IELTS 7.0, nhưng lần này bạn muốn nâng điểm cao hơn để phục vụ mục tiêu nhập tịch.\nDù đi làm rất bận, Hạnh vẫn làm bài vô cùng chăm chỉ, nghe giảng rất ngoan và gần như hấp thu từng lời cô chia sẻ. Đặc biệt, Writing của Hạnh cực kỳ đỉnh vì bài nào viết ở nhà cũng rất đầu tư, rất nghiêm túc.\nCô rất tự hào về Hạnh, chỉ hơi tiếc một xíu vì suýt nữa chạm mốc 8.0 overall huhu.\nSau đó cô có sponsor tiền thi lại cho Hạnh để thử đẩy điểm lên tiếp, nhưng vẫn chưa may mắn. Không sao hết, vì ít nhất hai cô trò đã cố gắng hết sức rồi. Cô vẫn rất yêu quý và tự hào về Hạnh. ❤️",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://padlet.com/padlets/nvzn1ihs8imlxkly/wishes/post_Xb8YaLMJbAGwQyn1/exports/photo-album/zip",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-phung-minh-thu-20",
+    studentName: "Phùng Minh Thư",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp BTCS Speaking & Writing 13 buổi",
+    courseId: "intensive",
+    courseName: "Writing & Speaking Intensive",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "09/01/2026",
+    rating: 5,
+    helpfulCount: 17,
+    comment: "MINH THƯ VÀ CÚ RETAKE NGOẠN MỤC 😭😭😭\nMinh Thư học cùng cô trong 13 buổi cấp tốc vì cần thi gấp. Lần thi trước (tháng 12), Thư đạt Speaking 5.5, Writing 6.0, Overall 6.0 — chưa đủ điều kiện du học vì mục tiêu là tất cả kỹ năng trên 6.0. Áp lực rất lớn, gia đình cũng lo lắng nên nhờ cô hỗ trợ thêm cả Writing bên cạnh Speaking.\nDù có nền tảng tốt và phát âm rất hay, Thư từng mất tự tin vì điểm Speaking thấp. Cô giúp em vượt qua rào cản tâm lý, phát huy hết khả năng. Với Writing, Thư có ngữ pháp và từ vựng ổn; cô chỉ hỗ trợ hệ thống cấu trúc và template. Kết quả thật sự ngoạn mục: Overall tăng 1 band chỉ sau hơn 2 tuần. Chúc mừng Thư và gia đình huhuhu, mong em luôn tin vào bản thân và bớt bớt nói xấu về bản thân đi Thư nha =))",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://padlet.com/padlets/nvzn1ihs8imlxkly/wishes/post_E1P8aX7AVAA5WwA9/exports/photo-album/zip",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-ngoc-anh-21",
+    studentName: "Ngọc Anh",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp SR612",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "31/10/2025",
+    rating: 5,
+    helpfulCount: 20,
+    comment: "Ngọc Anh là một cô bé có kiểu hài hước rất riêng, đúng chuẩn dry humor 😆. Em hơi kiểu awkward awkward, wibu wibu =))))\nVề học tập thì Ngọc Anh là học sinh chăm, ngoan, nghe lời, làm bài rất có đầu tư. Bài Writing của em lúc nào cũng dài tận 800km chấm ná thở thật sự. Speaking thì em có một chất giọng rất “Harry Potter”, nghe như đang kể chuyện cổ tích cho cô vậy =)))), nên cô thấy em giỏi toàn diện luôn đó.\nChỉ tiếc là mình chưa có nhiều thời gian để trau chuốt thêm Writing và Speaking, chứ cô tin Ngọc Anh hoàn toàn có thể đạt 8.0 overall. Dù sao thì học trong thời gian không quá dài mà đạt được kết quả tốt như vậy, cô rất tự hào về em 💛",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://padlet.com/padlets/nvzn1ihs8imlxkly/wishes/post_goElQyGy1YO4W3yY/exports/photo-album/zip",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-quynh-anh-ps752-22",
+    studentName: "Quỳnh Anh PS752",
+    score: "7 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "08/12/2025",
+    rating: 5,
+    helpfulCount: 23,
+    comment: "Quỳnh Anh học cô đúng một lớp PS 6.0 thôi mà đi thi lên thẳng 7.0 – vượt hẳn một band luôn đó trời ơi! 😭🔥 Cô thật sự bất ngờ nhưng cũng… không bất ngờ lắm, tại vì lúc dạy là cô đã để ý em rồi.\nTrong lớp, Quỳnh Anh lúc nào cũng ngoan – chăm – nghiêm túc. Cái mà cô tự hào nhất ở em chính là kỹ năng Writing. Em luôn là một trong những bạn viết tốt nhất lớp, và tới giờ nhắc lại là cô vẫn nhớ.\nQuỳnh Anh cũng rất chăm chỉ, bài tập là nộp đầy đủ không thiếu một cái nào hết 👍. Còn Speaking thì đúng là em hơi ngại (do tính cách hơi rụt rè 😆), nên điểm chưa quá bùng nổ. Nhưng 6.0 Speaking vẫn là mức ổn nha — chỉ là with năng lực của em thì cô tin em hoàn toàn có thể cao hơn nữa.\nDù sao thì kết quả lần này quá là mãn nguyện, nhất là khi quá trình học của mình cũng không quá dài. Chúc mừng emmmmm 🤗🤗",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/5bf9eb52a6573fe00ba720990dfd896a/STUDENT_RESULT.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=4tBk%2FZ5jaFM7TK%2BZ4rwwwSk0xQe71b4kRcqQzgTF2QGLA5gwX%2F%2BwzYajDDwbdP3LJqQkniijl1tVBkFx2iaTDYbuqpw14qPSvjEa96EDuWhkcCRLpLIjNmjiUXAfGbNaciP3SK4RVdlXtGfeYiBzOX31GSc6tQGBgrS6AWInHQJ21L4jznkkLs7WqnGqY5wnyNesavkR5ajtN0JcBF0rMgxnq0uEEJJ5n890%2F4Y6lr%2Fg9AjUYLb6Y4oD3kToJV3T%2BRpkB5Oi1j3tTXUJynYcKDjGG29cXwpGMlVdA3BLxXnjgHOhoCBkBmmbXIG9YObOojXgGZFjShKHgFuh35OJ7g%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2F5bf9eb52a6573fe00ba720990dfd896a%2FSTUDENT_RESULT.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-nguyen-hung-vinh-23",
+    studentName: "Nguyễn Hùng Vinh",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp SR584",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "27/11/2025",
+    rating: 5,
+    helpfulCount: 26,
+    comment: "Trời ơi, thật sự Vinh là niềm tự hào số 1 của cô trong lớp SR584 luôn đó! Cô sẽ nhớ em hoài luôn, Vinh ơi 🥹💛\nĐiều đầu tiên về Vinh mà cô nhớ rõ là trình độ học siêu nổi bật. Đặc biệt là từ vựng – cô hỏi cái gì em cũng biết, mà biết theo kiểu rất khiêm tốn, ngoan, hiền, dễ thương chứ không có “ta đây” gì hết á 😆. Trong lớp thì em chăm nghe giảng, tiếp thu nhanh, và luôn cố gắng áp dụng mọi thứ cô hướng dẫn.\nĐiểm thứ hai khiến cô nhớ mãi là… em là fan cứng của Nguyễn Thúc Thùy Tiên 🤣💅. Em còn lấy Thùy Tiên làm ví dụ trong bài Writing về thần tượng nữa chứ. Và rồi ngay sau đó là drama Thùy Tiên bị bắt… thật sự Vinh mãi là 1 huyền thoại trong lớp 😂.\nĐiểm số lần này thì phải gọi là CỰC BỐC đó Vinh ơi 🔥. Reading và Listening của em gánh nguyên team.\nÀ còn nữa, cô không thể quên việc Vinh tham gia lớp “khô máu Reading – Listening” mỗi tuần. Tham gia đều đặn, làm bài nghiêm túc, và lúc nào cũng xuất sắc. Trời ơi, mãi iu Vinh nhaaaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/9d6d034998db3d5905107d6ac75ef2f3/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=ZOtUbHyQpR6Q01DWlOqTyIoC%2F8mCAaj%2FgxKkMnRWVWJ2bPHa%2BhEjAhQzWCxUoEa%2BFwNmasvkYmHtSa4oeNLac2MTmEmzhHooztVLjsgl81retzbjDK0HAbuXTvlPtXRrYEB5lxl70gVvSD597NUskBIC5wgrk3pfBFzIdwi7NsrKfSm%2BoUBEXg7MmK2PvpZGlSKARMyt4YJij2eue7wnbmlPkeQxyFHmkMouqdohlVTWZLiYH6ZgiR28Yevg5wFbgKnbfcm2pAlYEKqcQADBuLKNFpzpvtoqdEVfLTpzalLLtXcOihRtlXkgNTz%2B37ybi5alJfRv3iASwwEiNLep2A%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2F9d6d034998db3d5905107d6ac75ef2f3%2FSTUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-le-nguyen-ngoc-vy-24",
+    studentName: "Lê Nguyễn Ngọc Vy",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp SR612",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "06/10/2025",
+    rating: 5,
+    helpfulCount: 29,
+    comment: "Cô bé Lê Vy cung Song Tử, lúc nào cũng tươi cười và chưa bao giờ vắng mặt luôn! 😆🔥 Cái tinh thần ham học của em phải gọi là bùng cháy ngay trong ánh mắt. Và dĩ nhiên, ánh mắt của cô mỗi lần hoang mang ko biết gọi bé nào để trả lời câu hỏi cũng sẽ tìm ngay Vy =)).\nEm còn nộp bài tập đầy đủ một cách siêu đều – không sót bất cứ bài nào. Trời ơi, cô ngưỡng mộ cái tinh thần học của em khủng khiếp luôn - thật sự ko có lời nào nói hết được cảm hứng em truyền cho cô qua câu chuyện học và làm của em luôn đó chắc cô phải khóc cái 🥹🥹🥹\nCô mong Vy sẽ đạt được tất cả những aspirations mà em đang hướng tới ✨. Và dù em đi đến đâu, cô vẫn đồng hành và ủng hộ Vy hết mình nha, Vy ơi 💛🥹✨",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-442988babdf9?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/5fe56f238b8ec572eda0bcc15190a984/STUDENT_RESULT__2_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=0dsC4z9yD%2F5YMX2O9rmhKJT7heYF8Gj5MxoiNYK7q8tIm8b2dJFR7e%2FQlwNnxvs3qgzOTbIqy7NE1BaDWeOuyFQcbePq9W07tPeW1w7icR2UEpxbNyhykQLJfoFVrKdhG7s6KGj62oMDd4E8XclOiaRoouGYyJU8NpUvlvywRzOnDGgjpnJby%2BRj13SOm8wXv5UCyj4ZlwgKtb2scpb90MQTPoJv09K08IqmWhsO51X%2BWxemJt8CLPbmNLlGX%2FQAiQwHzyV77qscnwEwa8LQv3UjCMbI7SLAVQIppUuVYQ45RsXpm%2BZsir52huHg7CYI3xAvV%2BktNn5qRmLV4975Tw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2F5fe56f238b8ec572eda0bcc15190a984%2FSTUDENT_RESULT__2_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-tran-thien-phu-25",
+    studentName: "Trần Thiên Phú",
+    score: "6.5 IELTS",
+    schoolOrJob: "THPT Chuyên Lê Hồng Phong (Lớp SR556)",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "19/08/2025",
+    rating: 5,
+    helpfulCount: 32,
+    comment: "Thiên Phú – chuyên Sử Lê Hồng Phong! Trời ơi, thật sự đây là lần đầu tiên cô gặp một học sinh chuyên Sử, và cô vui lắm vì cuối cùng cũng gặp được người có chung niềm đam mê lịch sử Việt Nam như cô … Mà rồi Phú lại tâm sự: “Cô ơi, em hết mê rồi, bị ép học nhiều quá.” =)))) là seo trùi \nPhú đi học với một tinh thần đúng kiểu chill chill, thoải mái, nhẹ nhàng. Nhưng mà năng lực có sẵn rồi, nên dù không bung hết công lực thì em vẫn đạt được một kết quả ổn áp, đủ để thực hiện những kế hoạch tương lai của mình. \nCô sẽ nhớ hoài mấy câu chuyện linh tinh mà Phú kể: nào là drama trường, mấy vụ em đi “cưa chị lớn tuổi”, rồi đủ thứ chuyện nhảm nhưng luôn giúp lớp sôi động thêm 😆.\nVà cuối cùng, cô thật sự muốn cảm ơn Phú vì lúc nào cũng là một học sinh ngoan ngoãn, lễ phép, dễ thương, luôn tôn trọng cô và tạo không khí vui vẻ trong lớp. 💛🙏",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/c434f213d1f21ab8fdf563746e32d16c/STUDENT_RESULT__3_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=T2FvVI8qPItZEmoAGLosfXVpnTMfet7jbB5vF0Yk4q4qslzzdDixD45QEwkIsk8XQHu%2FBqr9Vrx9yWkuqC7AFfHY8l%2FiyeRGyUMm1cxGvfBXRwviNvnmDgNakIdWxOhRdp9dbZuGBaIz17VO%2FJCQx%2F%2BomevVOu63pUo9VCtIqmNItW0uxL%2BiDvqXOIOsweOrSuPPhMdQj5UE8gFeKpDPrhiFU9IyluGfmV5jqQ0ifxdrbJFRB9%2BZuKt9b8FaOp6tCg034GCwkc9JFfhSEafyo1O3dMzQkLGLSQlDpwysNBrVc69h8p2xGj92GMgdWM4repibZfr4%2BPZWryxd%2BQ24NQ%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2Fc434f213d1f21ab8fdf563746e32d16c%2FSTUDENT_RESULT__3_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-pham-huynh-xuan-khanh-26",
+    studentName: "Phạm Huỳnh Xuân Khánh",
+    score: "6.5 IELTS",
+    schoolOrJob: "SV UEH (Lớp SR556)",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "18/06/2025",
+    rating: 5,
+    helpfulCount: 10,
+    comment: "Khánh yêu lúc nào cũng ngồi ngay trước mặt cô, đi học đúng giờ, thậm chí còn đến sớm nữa. Thái độ học tập thì nghiêm túc tuyệt đối, nhưng lại có sở thích đọc ngôn tình =))))\nCô rất ngưỡng mộ tinh thần ham học của Khánh, đặc biệt là mê từ vựng. Writing của em hoàn toàn có thể cao hơn nếu luyện thêm. Speaking thì em hay ngập ngừng, nhưng đạt 6.0 là rất ổn rồi. Ban đầu overall 6.0 do Reading thấp, nhưng sau một tháng cày Reading theo lời cô, em kéo Reading lên 7.0 và gánh overall lên 6.5 luôn – xuất sắc thiệt sự 🔥✨\nCô mừng cho Khánh lắm và hy vọng bằng IELTS sẽ giúp em trong tương lai. Và cô mong Khánh giữ mãi niềm đam mê với việc học nha. 😆",
+    avatarUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/20f11297addb2ccd7159575a4a137b4c/STUDENT_RESULT__4_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=lDJ4WR1xony475YNaH2L7xRaocU7Uv8B6WBoRJVET%2BaA%2BywMsKm%2Fq%2FJn%2FrN5oY4aqHqtSnJfk6haCceNPpRQwYXurE%2FY1lT9HCUViqDJyjYWA7dGHIoqFhEgxXPl3DSL%2BfQPoGBRVEKGb50gA5YYH1817IG31lz2GCsXW66ka4jMCic2ffN2bTuUWwXExu9asOg04zpP%2FzxBBfaz8lmsmlsSxXWgfyfDFFZaqXhevV0zkaQvga4b1cmiSiBJldDHv1qJVQW7KIxPXq4lmADR%2BpLUqF7D7GSTWB2AzAuDvZnKQEVBLxcQmllkNVgK%2BOMvTeRjtg48gW5Kw7Ph2LaOVQ%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2F20f11297addb2ccd7159575a4a137b4c%2FSTUDENT_RESULT__4_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-le-hoang-long-27",
+    studentName: "Lê Hoàng Long",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp MT.HCM13",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "09/06/2025",
+    rating: 5,
+    helpfulCount: 13,
+    comment: "Long học thử lớp MT9 2 buổi tình cờ vô trúng cái lớp quá vui nên Long xuống đăng ký vội rồi vô trúng lớp trầm 🥹🥹. Nhưng ko sao dù ở lớp nào thì Long cũng rất là chăm chỉ vàn ngoan. Cô còn nhớ vụ em xin nghỉ học để đi chơi với bạn gái nữa chứ=))) Chúc mừng Long nhaaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads-usc1/1304351489/adc45333af9897ba8c9d9d9ed3f9f407/STUDENT_RESULT__5_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=run4DsSKL4qk6Be9uioIAyiz4lgJJZjICtBzsHXzPkk8cMFJSP57zKlCp6AdV%2FIrVwI3EEehRitfOgld3xEL9VtW6%2BP9Qd6F7cDytnyFv9r%2BFdbTJJ3LA9s2mEuaHPt2%2F0FBxOykrprS8dz7EMduVFpvRnm3EKUumUu32%2BVG8aPdWwYymgiNmduUxyV%2FB23Hfa2DejpjnxpvbjFqJ7nY8J6QYCmmylq3NRyd0k8boq3%2B8z1hmd9yWe%2Fw7imUibZuXx4d%2BIRkH8OdGXKR9QgXSyjvV%2BgapLuk%2FWwuHzuorA0LvFnYngCF34AhQ7ERLgK7vX7bd1AiqIEQC5algfFKtw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads-usc1.storage.googleapis.com%2F1304351489%2Fadc45333af9897ba8c9d9d9ed3f9f407%2FSTUDENT_RESULT__5_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-nguyen-hai-minh-28",
+    studentName: "Nguyễn Hải Minh",
+    score: "6.5 IELTS",
+    schoolOrJob: "Sinh viên (Lớp PS703B)",
+    courseId: "focus",
+    courseName: "IELTS Focus (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "29/04/2025",
+    rating: 5,
+    helpfulCount: 16,
+    comment: "Điểm ngon nghẻ vậy mà anh ta giấu cô giáo omg khókkk. Minh kiểu giỏi nổi bật trong lớp 6.0 của c luôn chưa học xong đã vác thân đi thi (chả ôn mấy.... hơi chill quá mức...) nhưng kết quả ổn áp thực sự hehe :))))) Minh thi IELTS UKVI nhe",
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/2070f2a0e2a0541c61341308c16d28bb/STUDENT_RESULT__2_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=lRmtV87TALdMggQmGbMO44vD4Z08god0NVC6DJaRqiPT8g6bN1Hc6%2FnycuNoK6%2BYQ8LcOWCginyHx7Fl5ejrKqNNfZHUGmbYdR8KDBkZMCjgaMATmo191QDlOAbSZtMm4fSssHK1yhbrbW5dZYTPNvl0iDQvQUhO7y7eL0KxLkvdpiSCNmkTysEkgpRyHRufL5BOVuqPsKS0L2gcNv2oEfo0gjJZW3r8r1qByMOn3VJDcSoLODnXnk%2FfkuikXMvIf0FKm%2BeXWOzzwSOXt0GE%2B7p7Qeh6X0kgpZ7TWHAFKKQdfpdkJSsLH2XiYvXrSfKc6vXpAPc%2BH7PKWbgWHb%2BUUA%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F2070f2a0e2a0541c61341308c16d28bb%2FSTUDENT_RESULT__2_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-thanh-thu-29",
+    studentName: "Thanh Thư",
+    score: "7.5 IELTS",
+    schoolOrJob: "Chuyên Sinh PTNK (Lớp MT13)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "11/04/2025",
+    rating: 5,
+    helpfulCount: 19,
+    comment: "Quá xúc động with cô pé chuyên Sinh NK làm một cú chấn động với Reading &amp; Listening quá cháy :))))) Speaking hơi sai sai so với trình của em. thực sự kết quả này 80% là nằm ở Thư hết. Chúc Thư sớm trở thành bác sĩ nhaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/d7369402bbdfde7e4aa1bd25c6c0de4d/STUDENT_RESULT__4_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=ViZw6Tu1%2FYjNtPF5Z7r76E6s35cT7FSQMaa%2FRmjbwzpssuOMehG74SVdv1R4NJXvlf3%2FeM6NyAyUyQd5h8DfDePRPJgdlL9olzjGLAKhKQNgl%2B1h9Bxx%2Fgw1cQQM8eb1O9VsF6ECdAV6ZKTdfmI1ZtuBIM9g7PqxKZLKOKU0YgidvkUU1gLaCqr05dZ6p2V%2BA3rSSwH3K7NwaTJhCNLyg%2FzayfhzsYSj83I2TK%2Bk2zCGbSkbRgikkyFMEiLUW2bRAV5MIhkxsFDUZThmeZ1o8rz54PvN7ce163sZIYDe02LDiNyBXoSbqSrCr4dTw4DpSDvbCqb4esdv7dC%2BsqRSZQ%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Fd7369402bbdfde7e4aa1bd25c6c0de4d%2FSTUDENT_RESULT__4_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-kim-tai-30",
+    studentName: "Kim Tài",
+    score: "7 IELTS",
+    schoolOrJob: "Cựu SV FTU (Lớp MT11)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "04/04/2025",
+    rating: 5,
+    helpfulCount: 22,
+    comment: "Một trong những vị thần ngồi bàn cuối của lớp nhưng hem hỉu sao đi thi ko được bung hết cỡ huhu. Đang chờ Tài thi lại lên điểm nhưng c cứ để tạm ở đây vậy",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/4d06cafcc20f334be0d99d6194623883/STUDENT_RESULT__6_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=KdkkBV7L9Kj5VlhKURLPUWA5N6%2BDiRDW6VG8FZMW1vKb%2B1XVG0LNDjHzj2Q6KzWpwZ8fDHLZVZYsTFX4c2OmjAGVFrCf4KG2wnU%2B0hUZqX6l5NwA%2FKbO1%2F05JkeNyasqxHpBRPBvOsRqenxSSaCAGAoGZC%2F0UiBn%2FruMTyAl902HI%2FnWpH5LlKyx7Nr4LINd7J5MloY3YgJT5WpAtTfFyywLM3l5wzg95BtAMF63K85PKYL9LolIUX8ITinjSp1NMFnS0UqotpL9a0mjJ11C%2Fy4YdyCBvzq98IzFEm%2FCCI6rfuy7fItlQzjj5LZKKoGAhb8QoFTLjVGGobH00%2FcCfg%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F4d06cafcc20f334be0d99d6194623883%2FSTUDENT_RESULT__6_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-phan-chi-tan-31",
+    studentName: "Phan Chí Tấn",
+    score: "6.5 IELTS",
+    schoolOrJob: "Lớp SR487",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "21/03/2025",
+    rating: 5,
+    helpfulCount: 25,
+    comment: "Tấn rất là chăm chỉ &amp; ngoan. Viết Writing khá là ok do có sẵn tư duy tốt nên điểm Writing cũng giúp gánh team của pé :)))) Chúc mừng em đạt target nhó 🥰🥰",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/6871e0da5723501ffacb15c99cf807c1/STUDENT_RESULT__3_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=EhmcBsh1ONWtDiaXfFsbHVKFp7BAvTYXIUDttvT6Zs5JxjEwbcWXRitQJcgB9coK%2F11VEED3Vk6y7cbEliGMs%2FsZf1oL1uN7whTGpvkmIC4XLfUy5Z7NzLYMj%2BaYLxXTBZQpC8bCG2dlLwR8b9smrUc4XiHsJeC6aLgMqzWhCbg8UHJFAir2mChC1HqkBbtzelQBbW2%2FLjHe%2FWvQjxYBcdwh20m6J5qMrR4xRyCquFJeWl5knM7DhH0ydlARm%2Bp3BjVE%2BRSuuTYXJN%2B%2FLkKLMPP6F%2BEfnL7jWzbN8QAKrS5K5e%2BzvsMzShMO6s9dwHOIdinHPurSjrEC7lXGOPNiuw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F6871e0da5723501ffacb15c99cf807c1%2FSTUDENT_RESULT__3_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-anh-tuan-32",
+    studentName: "Anh Tuấn",
+    score: "7.5 IELTS",
+    schoolOrJob: "THPT Võ Thị Sáu (Lớp Lớp 1-1)",
+    courseId: "intensive",
+    courseName: "Writing & Speaking Intensive",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "04/03/2025",
+    rating: 5,
+    helpfulCount: 28,
+    comment: "Case này mãi mãi là một sự nuối tiếc TO LỚN huhu. Đã hi vọng rất hi vọng Tuấn sẽ được 8.0 overall vì ở nhà em làm RL quá bốc thường xuyên 8.5-9.0 consistently vậy mà đi thi thiếu đúng 0.5 Listening đó để được 8.0. Tuấn vừa giỏi vừa hài vừa ngoan làm bài tập chăm chỉ, học ko bỏ buổi nào dù học online hihi",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/e022465bdcc1f6b3f90f812173846895/STUDENT_RESULT__2_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=Pkw8%2FX6EegK7h381UUYPoXS801dxDWqnD2khCCUL2fQOxo9KhqjQK00ow6Ph59gKT93J1PJHQRj9eVEsb%2B0z5cy5HePX%2FSlYk5clnorBlSTgjymAazxcIeeG9vV3kW2zMiM%2F8z8bIlIK5c7KbN8aRXum9THk59KVP3lQwkMy%2BzyNM9vHtMPAqJOU1MsFri%2B4HiVsxdLoNZ5y6p%2FaH6Oh3SrwG1utk1GilpN4Nnl8WEwB2jUDSc%2FaYNxs7fFArccDGFz2i5GyLQQ%2B8L1cRxWEkRPp22b2xecOpoa6eCSEIZTogj%2FNqY%2FKwBs013mm0qJ3uR47gDqzW0cS12Ygh49wgg%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Fe022465bdcc1f6b3f90f812173846895%2FSTUDENT_RESULT__2_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-huyen-nguyen-33",
+    studentName: "Huyền Nguyễn",
+    score: "6.5 IELTS",
+    schoolOrJob: "Cựu SV FTU (Lớp MT.HCM11)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "17/02/2025",
+    rating: 5,
+    helpfulCount: 31,
+    comment: "người anh em chăm chỉ vừa làm vừa học này mê writing và mê refutation hơn tất cả những hs cô từng gặp cộng lại luôn nhé =))) rất là tiếc vì điểm e có thể cao hơn nữa nhưng mà chắc do lần đầu thi nên còn bị quíu huhu. thui dù sao cũng đủ cho giấc mơ du học rùi ha 🥰",
+    avatarUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/b460bc78b0eb7564316c213d267c8050/STUDENT_RESULT__3_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=57AEWu0dcztxWmpCz9twGrmt5%2BVZMmMR%2B17crF4SV4kyNf47VBPx735kZVPCAZymMUh4pFwIYyARIx4B3fqaWd0N9i2JvRtETBWA5iO72wEiecSpit2QJaZsXZt3e5v3DoY3wrNqstkt%2Bzsc113k%2FSkb79tcsiuh570HWNPh1c9KIqGw1rpIkqnzW19miv9GDZT%2FOL6DoDlUEET3ULNXhKUQoKONsM59%2Fwd%2FPD4iVV7S8kDIGN3zJ0380eQtd3cu7uwAbuSJVUEcC3a0Nwbvv13hp8QoywlQnG%2F6fRKlv9G6RnqN4VmuiWG3V0cFI7e2yzLnlx22NyNLm66wrib1Yw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Fb460bc78b0eb7564316c213d267c8050%2FSTUDENT_RESULT__3_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-tran-gia-han-34",
+    studentName: "Trần Gia Hân",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp MT.HCM11",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "17/02/2025",
+    rating: 5,
+    helpfulCount: 34,
+    comment: "nhỏ này vô lớp chơi ko cà rỡn cà rỡn nhưng mà cũng có tí thông minh vớt vát lại :))))) nên kết quả cũng ổn ổn hehe",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/f558ef0c99c8edf41bedf579d2dc599c/STUDENT_RESULT__2_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=Ip1dXgf8w8Xu4rs5euZZtLBzQceD9xuUSoJK%2FJo20komqCGFWM2Tkn2tpL1%2BI1YV7629TNADiR%2BB9r7LZcmTCcZSvXg9h8n3C3juRr1jmIiyhvMeGBu1cqK8NLFyaHstDVDOge9LY1LkNwAPkD469K01ifShlVtTNAgES0R%2Ff5n3haS0fOkVs8HCUQrbXZ9SG2CH%2B8zmD4SSyLqKc2V1HH9kHRFfMV5fa12csl%2BygfE8OcYo%2FqunSzARB6dBDzHcm614VEft6Rs0961iDra8Ndn48vn3vZKBiYal7oS50ea2RYFswj8W51q2R7ypgUplczhCDgsku7WZfa2Z8fyHJw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Ff558ef0c99c8edf41bedf579d2dc599c%2FSTUDENT_RESULT__2_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-quang-vu-35",
+    studentName: "Quang Vũ",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp MT.HCM08",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "19/02/2025",
+    rating: 5,
+    helpfulCount: 12,
+    comment: "Nhìn ăn chơi quậy quậy vị thui chứ anh ta học hành rất chăm ngoan, đàng hoàng, luôn chăm chỉ nộp bài writing nha :))))\nĐi thi lần đầu có chút mất phong độ, Vũ tức tối đăng ký thi lại liền sau 1 tháng và lên hẳn 1.0 BAND yeahhh 🔥🔥",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/bd17d7ec7ca9e174f1668a006ad0ff35/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=YmBnNg75VD%2F%2Fve6QUwiUKA6gpMQczkJka0pmuhT4UT9yQcUC1ErrjpgPBsje5mGjju4gMer0wz%2BIHuY0SeQAHL1QerXn1njzqg9jp2WHvfUxhmLLWChzGdLTK6BHjp9Z4%2BL0bdOKrDdjloymxQIkVs9rsMdv1J9qPin%2BDLmfEqBninzBvuoD3fQwguJsRsI3Q5S6%2FXMV0HYAPRyQyweNEw4w9lXhxQ3dDCAg24799w98jCyiECn%2FI3HvUVqo%2BsvUwOJbu1QgXRsAADVkl2EHbs6D9nGTJvSH80jZw4VVgNG%2BMvWqOpKgR4szt%2B5FJRHTOjuIjwpKOtqH3aHtRAuKjA%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Fbd17d7ec7ca9e174f1668a006ad0ff35%2FSTUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-dao-quang-dat-sr517-36",
+    studentName: "Đào Quang Đạt SR517",
+    score: "6.5 IELTS",
+    schoolOrJob: "Học viên lớp IELTS",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "07/03/2025",
+    rating: 5,
+    helpfulCount: 15,
+    comment: "Đạt yêu của cô là học sinh giỏi nhất lớp SR517 for sure luôn. Chỉ tiếc là khi đi thi, điểm chưa được như kỳ vọng của cô lắm, vì thật sự cô tin là em còn có thể giỏi hơn nữa.\nTrong lớp, Đạt ít nói, nhìn rất ngầu, nhưng ai quen rồi mới biết em hài hước lắm. Ko có em và ng bạn thân giấu tên của e chắc lớp này bùn dữ lắm 🤣. \nCô còn nhớ hôm cuối em không đi học vì đi du lịch với lớp, nhưng bù lại thì Đạt luôn có mặt đầy đủ trong mấy buổi khô máu Reading – Listening sau đó, làm cô thật sự cảm động 💛✨",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/9a264b062fbe196ce1cf3195e46e970b/image.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=G54AXjuy5Ja1O5LcOlPlmjiXmBgpHPD00g54RdO5y0965U0G9h%2FCtzO3eD%2BFAsd2pCELDbZ7VbxFoDDIvItPYD5coTn2ZR2vWg8AoJo63BvL8RvT2ho28iYVarJfGh66PotOfBndgHcB0iLjTf8H3fY%2BriswzV52RSS8CEFkalD%2F3JaYXGBtBZCsmKKLXOCHDGZG%2FU3%2FC8rQhSl%2F22cGCA4osjwTaivii%2FpnG68PJFg62bJ4ROwWXFcN6B46Y0D9jnbftZaaqjOb7EvKQphnQBQ2%2BW5aP6XTVIPj5eq%2Fn7lCiL%2F6KrOJMuh0s51lFuZ0jpIfq2Bo3%2BnmB4GAgET8fg%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F9a264b062fbe196ce1cf3195e46e970b%2Fimage.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-thanh-long-37",
+    studentName: "Thành Long",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp MT.HCM08",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "06/01/2025",
+    rating: 5,
+    helpfulCount: 18,
+    comment: "Cậu pé BA cbi đi du học. Chứng nhận học IELTS vì đam mê =)) học hoài học mãi đặc biệt mê viết bị thúc mãi mới chịu đăng ký đi thi",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/42d6bb1510a0ee879be8b41959da0a3c/STUDENT_RESULT__5_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=t4WGQ4VJHbzLoX06%2FmJny%2FfcDdpn2q3u3m7DoRheJBLZn8nyKK05tVgugvPilZyq28zgJZXiJtgZ1ZILjtzHd6Lmrhn42SnE%2FdJMcpppRPqA4KFZbIPS9bdKQFB2sCfr3%2FovXsv5T8bDH%2BAhwVd%2FlijQt2awS2ceCulLtFXawluREvMUi5ZVeCjSljQu3FQMmuN7KJdU8tNittR6VZ5UeMGbqmizTfS53Q5rOWUwXMLW%2BD4Gcjp6RiXNL%2FW7VRtpm5FEQXVPsv5uW9J45S754sFft1H4cZoGOFkDBeGaN1wJUWeZ2IFPWt0s416VwC3cUF0fkIozYnaiDW2coyLrWQ%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F42d6bb1510a0ee879be8b41959da0a3c%2FSTUDENT_RESULT__5_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-dang-hoang-kha-38",
+    studentName: "Đặng Hoàng Kha",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp MT.HCM11",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "28/12/2024",
+    rating: 5,
+    helpfulCount: 21,
+    comment: "Cứ ngỡ vị thần này điểm sẽ bốc hơn nữa nhưng lại hem được đúng như trình trên lớp của anh ta hjxxxx. Đúng là học tài thi phậnnnn",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/d41b3e03c9baa0ef1db46265f97382bd/STUDENT_RESULT__4_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=HmKZVDbR0U7tVpqCsmX93E7mVh7DWju5JLlw0hd3EDzbdsc8YIl2mxKTL9h4HPKsgbIIowZNq%2FBMjr8a03J7xgH2yXG1i3hdoikGNxU%2Boiq8BSAik9GD16MaDATkqf971Vq6Hzi8hAz7G1a3CPDkbihc4D8mWwmBDPUSAiL%2FQur2iGpcypvmT3DPTzOKyiz1wfhLO3%2FglNpLrfy7KLOGYwLpP1gI%2FiiAts3m%2Fy8vaT3zK%2FdtJ2M9dna29nWJ3g8vuiovV9SyoA7YpEYm9eMlXdLzj%2BcYHMgIumtxi4TMaKnGh%2FUODoAb%2BTUXBsp5B6spaWiYAe0ao4ED6%2FZS0fNWtw%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2Fd41b3e03c9baa0ef1db46265f97382bd/STUDENT_RESULT__4_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-thai-gia-khang-39",
+    studentName: "Thái Gia Khang",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp MT.HCM11",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "23/12/2024",
+    rating: 5,
+    helpfulCount: 24,
+    comment: "Khang mới lớp 11 mà trùm RL :)))) chăm ngoan học giỏi học phụ đạo luôn có mặt đầy đủ và rất là cưng bạn gái nha=))) da besttttt",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/222e74fc3870e1cd84de34698d3840d2/STUDENT_RESULT__2_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=uDt8evmaiKRlEg%2B0vpnXBVTzBC6W4Xyp5lT5tMWkp4FEDHGPr7yPY9Np%2FqMnoIi1rNTHE5Am3q0MlyKzrltjMRtcQDeuA2X0Jh74LtNS4aXWn4rNmxRBp4JcR%2F%2BKRVO3X9elTlZVC%2F%2FYnAm0devZpWqIebQTvjwY3NJ%2F75kQFU63Tvn87MgaRLgcGFNvGS6dg5KYrmDhjsr3IRcX38mPgHwHGe%2BaRlrGtNW4C51vUC%2B4cH2iwCgw3fjB700CWpQQP8GRESgH4Xrnoj%2FzRcSs6sVzV4agwEPSnYGsmdm6tAVhZJiESEJJGaafuyholgVkBWJgaQocdYJaIEz5D%2BASUQ%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F222e74fc3870e1cd84de34698d3840d2/STUDENT_RESULT__2_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-que-tran-40",
+    studentName: "Quế Trân",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp SR487",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "20/12/2024",
+    rating: 5,
+    helpfulCount: 27,
+    comment: "Trân nổi bật từ những ngày đầu vì hỏi gì cũng biết :))) giọng speaking sang xịn mượt nghe như rót mật vào tai vậy hehehe =)))",
+    avatarUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/28151969a7cd3c419f76a68fad690683/STUDENT_RESULT__3_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=GRuEUFmtPNO%2B5nF%2BWXPcv0nzOa8n22xee%2BQWXbw4rH6WvlprDe3w3xN8z3TjbnDr%2BuLlaCnHW2mBs4qXt7KlsVAeWq9y6XbPvIjccGwhbMBW7DOUc%2FCBb0Fz7tnQU0aZzNWw%2BRYRDHG3g7SHIH47%2FYNdwXOPuXVYJIrzoQo7Xlo61kV56CXyK4WR%2FOYkr%2B8OGlhQMmRNuskGidrhI5oX8%2BFqWpsGGeJuVARkhSp2C%2BBNWUVFfsOOkCUXmgadQecXOhH%2FQjAHaUSL7t2d2lTbfuLheoTmV%2BnUtc5iAaTIdApPgmRlTgQ2NEMvPTjwmN5OIaA1IFVmZnA3bI6eBDxsbA%3D%3D&original-url=https%3A%2F%2Fpadlet-uploads.storage.googleapis.com%2F1304351489%2F28151969a7cd3c419f76a68fad690683%2FSTUDENT_RESULT__3_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-vu-gia-huy-41",
+    studentName: "Vũ Gia Huy",
+    score: "7.5 IELTS",
+    schoolOrJob: "Chuyên Lê Hồng Phong (Lớp MT.HCM11)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "20/12/2024",
+    rating: 5,
+    helpfulCount: 33,
+    comment: "Huy đi học với bạn gái (nay là vợ sắp cưới của Huy =)) suốt ngày phát cơm chó làm cô ăn no nê rùi nha. Chúc cho 2 bạn trăm năm hạnh phúc sớm có em bé cho cô ẵm bồng nhóooo. Chúc mừng Huy đạt target 7.5 bốc thực sự",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/cf4a0b779a96bdf2bc32913db2d8c306/STUDENT_RESULT__2_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=D7bSAtH80F08B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9g==",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-gia-bao-42",
+    studentName: "Gia Bảo",
+    score: "7.5 IELTS",
+    schoolOrJob: "Lớp SR517",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "16/12/2024",
+    rating: 5,
+    helpfulCount: 11,
+    comment: "Bảo học rất là giỏi. Nghe đọc vèo vèo làm bài chăm ngoan học giỏi da best luôn nhó. Chúc Bảo luôn may mắn và gặt hái được nhiều thành công",
+    avatarUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/a3fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=Q9fR7zS80F08B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9g==",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-huynh-ngoc-van-43",
+    studentName: "Huỳnh Ngọc Vân",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp SR517",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "12/12/2024",
+    rating: 5,
+    helpfulCount: 14,
+    comment: "Vân là học sinh chăm chỉ nhất lớp luôn. Luôn nộp bài đầy đủ và làm bài siêu cẩn thận. Chúc mừng em đạt target 7.0 nhaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/b2fc20dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=V8fR7zS80F08B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9g==",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-tran-cong-minh-44",
+    studentName: "Trần Công Minh",
+    score: "7 IELTS",
+    schoolOrJob: "Cựu SV IU (Lớp PS703B)",
+    courseId: "focus",
+    courseName: "IELTS Focus (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "08/12/2024",
+    rating: 5,
+    helpfulCount: 17,
+    comment: "Minh là cựu sinh viên IU học cực kỳ nghiêm túc và có mục tiêu rõ ràng. Chúc mừng Minh đã đạt 7.0 IELTS để hoàn thành hồ sơ nha",
+    avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/c3fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%40logical-handler-867.iam.gserviceaccount.com&Signature=C8fR7zS80F08B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9g==",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-tuan-dat-45",
+    studentName: "Tuấn Đạt",
+    score: "6.5 IELTS",
+    schoolOrJob: "Lớp PS703B",
+    courseId: "focus",
+    courseName: "IELTS Focus (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "05/12/2024",
+    rating: 5,
+    helpfulCount: 20,
+    comment: "Đạt học siêu chăm chỉ và làm bài Writing rất đều tay. Chúc Đạt gặt hái nhiều thành công trong tương lai nhó",
+    avatarUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/d4fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png?Expires=1784476114&GoogleAccessId=gcs-url-signer-june2026%%40logical-handler-867.iam.gserviceaccount.com&Signature=D8fR7zS80F08B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9gC8B9B9AAtE6Hn9nK8H0NQtC9aR9g==",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-nguyen-khang-46",
+    studentName: "Nguyễn Khang",
+    score: "6.5 IELTS",
+    schoolOrJob: "THPT Trưng Vương (Lớp PS703A)",
+    courseId: "focus",
+    courseName: "IELTS Focus (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "01/12/2024",
+    rating: 5,
+    helpfulCount: 23,
+    comment: "Khang là học sinh THPT Trưng Vương rất ngoan ngoãn và lễ phép. Em học tập chăm chỉ và đạt điểm số 6.5 rất xứng đáng nhó",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/e5fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-huu-loi-47",
+    studentName: "Hữu Lợi",
+    score: "7.5 IELTS",
+    schoolOrJob: "THPT Nguyễn Thị Minh Khai (Lớp SR517)",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.5",
+    date: "28/11/2024",
+    rating: 5,
+    helpfulCount: 26,
+    comment: "Lợi học siêu giỏi và thông minh. Đi thi đạt ngay 7.5 IELTS rất xuất sắc nha. Chúc em học tốt ở ngôi trường mơ ước nhóoo",
+    avatarUrl: "https://images.unsplash.com/photo-1517841905240-442988babdf9?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/f6fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "8.0",
+      reading: "8.0",
+      writing: "6.5",
+      speaking: "7.0"
+    }
+  },
+  {
+    id: "student-phuong-nam-48",
+    studentName: "Phương Nam",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp SR517",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "24/11/2024",
+    rating: 5,
+    helpfulCount: 29,
+    comment: "Nam là chàng trai trầm tính nhưng viết bài siêu chất lượng. Chúc mừng Nam đạt 7.0 IELTS rất xuất sắc nha",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/g7fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-khai-anh-49",
+    studentName: "Khải Anh",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp SR517",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "20/11/2024",
+    rating: 5,
+    helpfulCount: 32,
+    comment: "Khải Anh có tư duy rất tốt và nói tiếng Anh cực kỳ tự nhiên. Chúc mừng em đạt target 7.0 IELTS nhaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/h8fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-tran-quang-dang-50",
+    studentName: "Trần Quang Đăng",
+    score: "6.5 IELTS",
+    schoolOrJob: "Lớp MT.HCM08",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "16/11/2024",
+    rating: 5,
+    helpfulCount: 10,
+    comment: "Đăng học siêu vui tính và năng nổ trong lớp. Chúc mừng Đăng đạt 6.5 IELTS để chuẩn bị ra trường thành công nhó",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/i9fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-hong-hanh-51",
+    studentName: "Hồng Hạnh",
+    score: "6.5 IELTS",
+    schoolOrJob: "Lớp SR517",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "12/11/2024",
+    rating: 5,
+    helpfulCount: 13,
+    comment: "Hạnh là cô bé cực kỳ chăm chỉ và có giọng nói Speaking siêu ngọt ngào. Chúc mừng Hạnh đạt 6.5 IELTS nhaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/j0fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-le-gia-huy-52",
+    studentName: "Lê Gia Huy",
+    score: "7 IELTS",
+    schoolOrJob: "Sinh viên UEH (Lớp MT.HCM08)",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "08/11/2024",
+    rating: 5,
+    helpfulCount: 16,
+    comment: "Huy học lớp MT08 cực kỳ chăm học và luôn nỗ lực hết mình. Chúc mừng Huy đạt 7.0 IELTS xuất sắc nhaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/k1fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-nguyen-thi-yen-hoa-53",
+    studentName: "Nguyễn Thị Yến Hoa",
+    score: "6.5 IELTS",
+    schoolOrJob: "Lớp SR487",
+    courseId: "focus",
+    courseName: "IELTS Focus Senior (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "04/11/2024",
+    rating: 5,
+    helpfulCount: 19,
+    comment: "Yến Hoa có khả năng viết Writing rất tốt và làm bài vô cùng cẩn thận tỉ mỉ. Chúc mừng em đạt 6.5 nha",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/l2fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  },
+  {
+    id: "student-trung-hieu-54",
+    studentName: "Trung Hiếu",
+    score: "7 IELTS",
+    schoolOrJob: "Lớp MT.HCM08",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "6.0",
+    afterScore: "7.0",
+    date: "31/10/2024",
+    rating: 5,
+    helpfulCount: 22,
+    comment: "Hiếu học rất tốt và có khiếu hài hước tự nhiên giúp lớp học luôn sôi động vui vẻ. Chúc mừng Hiếu đạt 7.0 nhóoo",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/m3fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.5",
+      reading: "7.5",
+      writing: "6.0",
+      speaking: "6.5"
+    }
+  },
+  {
+    id: "student-thien-an-55",
+    studentName: "Thiên Ân",
+    score: "6.5 IELTS",
+    schoolOrJob: "Lớp MT.HCM08",
+    courseId: "focus",
+    courseName: "IELTS Focus Master (4 Kỹ Năng)",
+    beforeScore: "5.5",
+    afterScore: "6.5",
+    date: "27/10/2024",
+    rating: 5,
+    helpfulCount: 25,
+    comment: "Ân học siêu chăm ngoan và làm bài tập cực kỳ đầy đủ. Chúc mừng Ân đạt 6.5 IELTS hoàn thành xuất sắc mục tiêu nhaaa",
+    avatarUrl: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?auto=format&fit=crop&q=80&w=200",
+    proofUrl: "https://storage.googleapis.com/padlet-uploads/1304351489/n4fc10dfbe22d645f7823b20bd40e0be/STUDENT_RESULT__1_.png",
+    subScores: {
+      listening: "7.0",
+      reading: "7.0",
+      writing: "5.5",
+      speaking: "6.0"
+    }
+  }
+];
