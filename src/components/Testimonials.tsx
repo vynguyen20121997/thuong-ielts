@@ -180,9 +180,9 @@ export default function Testimonials() {
     }
 
     // 3. Search Query Filter
-    const matchesSearch = 
+    const matchesSearch =
       item.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.comment.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.comment || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.schoolOrJob.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.score.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -371,7 +371,7 @@ export default function Testimonials() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTestimonials.slice(0, visibleCount).map((test) => {
-              const isLongComment = test.comment.length > 180;
+              const isLongComment = (test.comment?.length ?? 0) > 180;
               const isExpanded = expandedReviews[test.id] || false;
               const hasVoted = helpfulVotes[test.id] || false;
 
@@ -440,28 +440,30 @@ export default function Testimonials() {
                     </div>
 
                     {/* Review text comment with toggle triggers */}
-                    <div className="relative mb-5">
-                      <p className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? 'line-clamp-4' : ''}`}>
-                        "{test.comment}"
-                      </p>
-                      
-                      {!isExpanded && isLongComment && (
-                        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-                      )}
+                    {test.comment && (
+                      <div className="relative mb-5">
+                        <p className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? 'line-clamp-4' : ''}`}>
+                          "{test.comment}"
+                        </p>
 
-                      {isLongComment && (
-                        <button
-                          onClick={() => toggleExpand(test.id)}
-                          className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#E15243] hover:text-[#D04335] inline-flex items-center gap-1 cursor-pointer"
-                        >
-                          {isExpanded ? (
-                            <>Rút gọn <ChevronUp size={12} /></>
-                          ) : (
-                            <>Xem thêm <ChevronDown size={12} /></>
-                          )}
-                        </button>
-                      )}
-                    </div>
+                        {!isExpanded && isLongComment && (
+                          <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                        )}
+
+                        {isLongComment && (
+                          <button
+                            onClick={() => toggleExpand(test.id)}
+                            className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#E15243] hover:text-[#D04335] inline-flex items-center gap-1 cursor-pointer"
+                          >
+                            {isExpanded ? (
+                              <>Rút gọn <ChevronUp size={12} /></>
+                            ) : (
+                              <>Xem thêm <ChevronDown size={12} /></>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div>
