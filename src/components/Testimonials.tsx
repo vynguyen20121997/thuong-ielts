@@ -178,19 +178,20 @@ export default function Testimonials() {
   };
 
   // Filter Logic
-  const filteredTestimonials = testimonials.filter(item => {
+  const matchesFilters = (item: ExtendedTestimonialItem, bandOverride?: string) => {
     // 1. Course Filter
     const matchesCourse = activeCourseFilter === "all" || item.courseId === activeCourseFilter;
-    
+
     // 2. Band Filter
+    const band = bandOverride ?? activeBandFilter;
     let matchesBand = true;
-    if (activeBandFilter !== "all") {
+    if (band !== "all") {
       const numericScore = parseFloat(item.score.replace(/[^\d.]/g, ''));
-      if (activeBandFilter === "8.0+") {
+      if (band === "8.0+") {
         matchesBand = numericScore >= 8.0;
-      } else if (activeBandFilter === "7.0-7.5") {
+      } else if (band === "7.0-7.5") {
         matchesBand = numericScore >= 7.0 && numericScore <= 7.5;
-      } else if (activeBandFilter === "6.0-6.5") {
+      } else if (band === "6.0-6.5") {
         matchesBand = numericScore >= 6.0 && numericScore <= 6.5;
       }
     }
@@ -203,7 +204,19 @@ export default function Testimonials() {
       item.score.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesCourse && matchesBand && matchesSearch;
-  });
+  };
+
+  const filteredTestimonials = testimonials.filter(item => matchesFilters(item));
+
+  const bandFilterOptions = [
+    { label: "Tất cả Band", value: "all" },
+    { label: "8.0+ IELTS", value: "8.0+" },
+    { label: "7.0 - 7.5", value: "7.0-7.5" },
+    { label: "6.0 - 6.5", value: "6.0-6.5" }
+  ].map(band => ({
+    ...band,
+    count: testimonials.filter(item => matchesFilters(item, band.value)).length
+  }));
 
   return (
     <section
@@ -322,22 +335,26 @@ export default function Testimonials() {
               <Filter size={16} className="text-[#E15243]" />
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60">Phân loại điểm:</span>
               <div className="flex gap-1.5 flex-wrap">
-                {[
-                  { label: "Tất cả Band", value: "all" },
-                  { label: "8.0+ IELTS", value: "8.0+" },
-                  { label: "7.0 - 7.5", value: "7.0-7.5" },
-                  { label: "6.0 - 6.5", value: "6.0-6.5" }
-                ].map((band) => (
+                {bandFilterOptions.map((band) => (
                   <button
                     key={band.value}
                     onClick={() => setActiveBandFilter(band.value)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       activeBandFilter === band.value
                         ? "bg-[#1A1A1A] text-[#FAF9F6]"
                         : "bg-black/5 hover:bg-black/10 text-[#1A1A1A]/80"
                     }`}
                   >
                     {band.label}
+                    <span
+                      className={`font-mono text-[10px] px-1.5 py-0.5 rounded-full ${
+                        activeBandFilter === band.value
+                          ? "bg-white/15 text-[#FAF9F6]"
+                          : "bg-black/10 text-[#1A1A1A]/60"
+                      }`}
+                    >
+                      {band.count}
+                    </span>
                   </button>
                 ))}
               </div>
