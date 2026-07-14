@@ -78,7 +78,7 @@ export default function About() {
               <span className="font-mono text-[9px] text-[#14532D] tracking-[0.25em] uppercase block mb-1 font-bold">
                 Triết lý hàng đầu
               </span>
-              <p className="font-serif italic text-sm text-[#1A1A1A]/90 leading-relaxed">
+              <p className="font-sans italic text-sm text-[#1A1A1A]/90 leading-relaxed">
                 "Thấu hiểu bản chất học thuật giúp bạn làm chủ mọi đề thi IELTS, thay vì cầu may vào các bộ từ vựng tủ."
               </p>
             </div>
@@ -123,69 +123,71 @@ export default function About() {
             </p>
           </div>
 
-          {/* The Core Principles list */}
-          <div className="reveal-element grid grid-cols-1 sm:grid-cols-2 gap-6">
-            
-            {/* Principle 1 */}
-            <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#15803D]/10 flex items-center justify-center shrink-0 border border-[#15803D]/20">
-                <Brain className="text-[#15803D]" size={16} />
+          {/* The Core Principles - featured flagship + supporting trio */}
+          <div className="reveal-element">
+
+            {/* Featured Principle: the "Logic" methodology, full width */}
+            <div className="flex gap-4 items-start p-5 bg-[#14532D]/5 border border-[#14532D]/15 rounded-2xl mb-5">
+              <div className="h-11 w-11 rounded-xl bg-[#14532D] flex items-center justify-center shrink-0">
+                <Brain className="text-white" size={20} />
               </div>
               <div>
-                <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#14532D]/70 font-bold block mb-1">
+                  Phương pháp cốt lõi
+                </span>
+                <h4 className="font-bold text-base text-[#1A1A1A] mb-1">
                   Sơ Đồ Tư Duy Logic
                 </h4>
-                <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
+                <p className="text-sm text-[#1A1A1A]/70 leading-relaxed">
                   Bản đồ hóa từ vựng đồng nghĩa, tối giản hóa cấu trúc câu giúp hiểu nhanh 100% văn bản học thuật.
                 </p>
               </div>
             </div>
 
-            {/* Principle 2 */}
-            <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#15803D]/10 flex items-center justify-center shrink-0 border border-[#15803D]/20">
-                <Compass className="text-[#15803D]" size={16} />
+            {/* Supporting principles, tighter trio */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="flex gap-3">
+                <div className="h-8 w-8 rounded-lg bg-[#15803D]/10 flex items-center justify-center shrink-0 border border-[#15803D]/20">
+                  <Compass className="text-[#15803D]" size={16} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
+                    Nghe Chủ Động
+                  </h4>
+                  <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
+                    Phát hiện bẫy thông tin, paraphrase trong hội thoại thực tế của Listening.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
-                  Kỹ Thuật Nghe Chủ Động
-                </h4>
-                <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
-                  Rèn luyện phản xạ phát hiện bẫy thông tin, paraphrase trong hội thoại thực tế của IELTS Listening.
-                </p>
+
+              <div className="flex gap-3">
+                <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
+                  <Bookmark className="text-[#14532D]" size={16} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
+                    Nói & Viết Sắc Bén
+                  </h4>
+                  <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
+                    Lập luận mạch lạc, thuyết phục tối đa các giám khảo khó tính nhất.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
+                  <GraduationCap className="text-[#14532D]" size={16} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
+                    Chăm Sóc 1-Kèm-1
+                  </h4>
+                  <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
+                    Sửa chi tiết bài viết, ghi âm nói hàng tuần để tối ưu tiến bộ.
+                  </p>
+                </div>
               </div>
             </div>
-
-            {/* Principle 3 */}
-            <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
-                <Bookmark className="text-[#14532D]" size={16} />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
-                  Nói & Viết Sắc Bén
-                </h4>
-                <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
-                  Lập luận mạch lạc, sử dụng các từ liên kết luận điểm thuyết phục tối đa các giám khảo khó tính nhất.
-                </p>
-              </div>
-            </div>
-
-            {/* Principle 4 */}
-            <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
-                <GraduationCap className="text-[#14532D]" size={16} />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
-                  Chăm Sóc Kép 1-Kèm-1
-                </h4>
-                <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
-                  Sửa chi tiết từng bài viết, ghi âm nói trực tiếp hàng tuần để tối ưu hóa sự tiến bộ trong thời gian ngắn nhất.
-                </p>
-              </div>
-            </div>
-
           </div>
 
         </div>

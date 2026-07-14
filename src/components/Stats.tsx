@@ -154,73 +154,79 @@ export default function Stats() {
         {/* Divider Line */}
         <div className="divider-line h-px bg-black/10 w-full mb-12" />
 
-        {/* Stats Grid Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-12">
-          
-          {/* Stat 1 - Overall */}
-          <div className="stat-block flex flex-col justify-between text-left relative" id="stat-overall">
-            <div>
-              <div className="h-10 w-10 bg-[#14532D]/10 border border-[#14532D]/20 rounded-lg flex items-center justify-center mb-6">
-                <Award className="text-[#14532D]" size={20} />
+        {/* Stats Bento Layout: featured Overall Band + supporting trio */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+
+          {/* Featured Stat - Overall Band (dark card, larger presence) */}
+          <div className="stat-block lg:col-span-5 bg-[#14532D] text-white rounded-3xl p-8 md:p-10 flex flex-col justify-between text-left relative overflow-hidden" id="stat-overall">
+            <div className="absolute -right-8 -bottom-8 opacity-10">
+              <Award size={180} />
+            </div>
+            <div className="relative z-10">
+              <div className="h-10 w-10 bg-white/15 rounded-lg flex items-center justify-center mb-8">
+                <Award className="text-[#9FE870]" size={20} />
               </div>
-              <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#1A1A1A]">
+              <p className="font-serif text-7xl md:text-8xl font-bold tracking-tight mb-3">
                 <span ref={overallRef}>0.0</span>
               </p>
-              <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">IELTS Overall Band</h3>
-              <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
+              <h3 className="text-lg font-bold mb-2">IELTS Overall Band</h3>
+              <p className="text-white/70 text-sm leading-relaxed max-w-sm">
                 Chứng chỉ IELTS Academic chuẩn quốc tế, chứng thực khả năng sử dụng tiếng Anh học thuật toàn diện.
               </p>
             </div>
           </div>
 
-          {/* Stat 2 - Listening */}
-          <div className="stat-block flex flex-col justify-between text-left relative" id="stat-listening">
-            <div>
-              <div className="h-10 w-10 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-6">
-                <Star className="text-[#15803D]" size={20} />
+          {/* Supporting trio, tighter cards */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+            {/* Stat 2 - Listening */}
+            <div className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left" id="stat-listening">
+              <div>
+                <div className="h-9 w-9 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-5">
+                  <Star className="text-[#15803D]" size={18} />
+                </div>
+                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#15803D]">
+                  <span ref={listeningRef}>0.0</span>
+                </p>
+                <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Listening Score</h3>
+                <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
+                  Điểm số 9.0 tuyệt đối nhờ phương pháp chép chính tả và bóc tách sơ đồ hội thoại.
+                </p>
               </div>
-              <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#15803D]">
-                <span ref={listeningRef}>0.0</span>
-              </p>
-              <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Listening Score</h3>
-              <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
-                Đạt điểm số 9.0 tuyệt đối ở kỹ năng Nghe thông qua phương pháp luyện tập chép chính tả và bóc tách sơ đồ hội thoại.
-              </p>
+            </div>
+
+            {/* Stat 3 - Students */}
+            <div className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left" id="stat-students">
+              <div>
+                <div className="h-9 w-9 bg-[#14532D]/10 border border-[#14532D]/20 rounded-lg flex items-center justify-center mb-5">
+                  <Users className="text-[#14532D]" size={18} />
+                </div>
+                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#1A1A1A]">
+                  <span ref={studentsRef}>0</span><span className="text-[#14532D]">+</span>
+                </p>
+                <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Học Viên Đạt Đích</h3>
+                <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
+                  Đồng hành cùng hàng nghìn học viên tại Việt Nam và hải ngoại chinh phục mục tiêu.
+                </p>
+              </div>
+            </div>
+
+            {/* Stat 4 - Pass Rate */}
+            <div className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left" id="stat-pass">
+              <div>
+                <div className="h-9 w-9 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-5">
+                  <CheckCircle2 className="text-[#15803D]" size={18} />
+                </div>
+                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#1A1A1A]">
+                  <span ref={passRef}>0</span><span className="text-[#15803D]">%</span>
+                </p>
+                <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Đạt Target Đầu Ra</h3>
+                <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
+                  Tỉ lệ đạt hoặc vượt điểm target cam kết nhờ phương pháp tập trung cốt lõi.
+                </p>
+              </div>
             </div>
           </div>
-
-          {/* Stat 3 - Students */}
-          <div className="stat-block flex flex-col justify-between text-left relative" id="stat-students">
-            <div>
-              <div className="h-10 w-10 bg-[#14532D]/10 border border-[#14532D]/20 rounded-lg flex items-center justify-center mb-6">
-                <Users className="text-[#14532D]" size={20} />
-              </div>
-              <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#1A1A1A]">
-                <span ref={studentsRef}>0</span><span className="text-[#14532D]">+</span>
-              </p>
-              <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Học Viên Đạt Đích</h3>
-              <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
-                Đã đồng hành cùng hàng nghìn học viên tại Việt Nam và hải ngoại vượt qua nỗi sợ tiếng Anh, hoàn thành ước mơ học tập.
-              </p>
-            </div>
-          </div>
-
-          {/* Stat 4 - Pass Rate */}
-          <div className="stat-block flex flex-col justify-between text-left relative" id="stat-pass">
-            <div>
-              <div className="h-10 w-10 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-6">
-                <CheckCircle2 className="text-[#15803D]" size={20} />
-              </div>
-              <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#1A1A1A]">
-                <span ref={passRef}>0</span><span className="text-[#15803D]">%</span>
-              </p>
-              <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Đạt Target Đầu Ra</h3>
-              <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
-                Tỉ lệ học viên đạt hoặc vượt điểm target cam kết trong lộ trình ban đầu nhờ phương pháp dạy tập trung vào cốt lõi.
-              </p>
-            </div>
-          </div>
-
         </div>
 
         {/* Small quote inside stats */}

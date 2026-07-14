@@ -127,35 +127,67 @@ export default function Services() {
           </p>
         </div>
 
-        {/* Courses Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-          {courses.map((course) => (
+        {/* Featured flagship course, full width */}
+        <div
+          className="course-card bg-[#14532D] text-white p-8 md:p-12 rounded-3xl flex flex-col md:flex-row md:items-center gap-8 justify-between transition-all duration-300 hover:shadow-xl group cursor-pointer text-left mb-8 relative overflow-hidden"
+          onClick={() => setSelectedCourse(courses[0])}
+          id={`course-card-${courses[0].id}`}
+        >
+          <div className="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+            <BookOpen size={220} />
+          </div>
+          <div className="relative z-10 md:max-w-xl">
+            <span className="font-mono text-[10px] uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full font-bold inline-block mb-5">
+              Chương trình chủ lực · {courses[0].duration}
+            </span>
+            <h3 className="font-serif text-3xl md:text-4xl font-bold mb-3">
+              {courses[0].title}
+            </h3>
+            <p className="font-mono text-xs font-semibold tracking-wider mb-4 uppercase text-[#9FE870]">
+              {courses[0].target}
+            </p>
+            <p className="text-sm md:text-base text-white/75 leading-relaxed mb-6">
+              {courses[0].description}
+            </p>
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white group-hover:text-[#9FE870] transition-colors">
+              <span>Tìm hiểu chi tiết giáo trình</span>
+              <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </div>
+          </div>
+          <div className="relative z-10 h-16 w-16 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
+            {getIcon(courses[0].id)}
+          </div>
+        </div>
+
+        {/* Remaining courses, tighter trio */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          {courses.slice(1).map((course) => (
             <div
               key={course.id}
-              className="course-card bg-white border border-black/5 hover:border-[#14532D]/55 p-8 md:p-10 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 group cursor-pointer text-left"
+              className="course-card bg-white border border-black/5 hover:border-[#14532D]/55 p-6 md:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 group cursor-pointer text-left"
               onClick={() => setSelectedCourse(course)}
               id={`course-card-${course.id}`}
             >
               <div>
                 {/* Upper line metadata */}
-                <div className="flex items-center justify-between mb-8">
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center border ${
+                <div className="flex items-center justify-between mb-6">
+                  <div className={`h-11 w-11 rounded-xl flex items-center justify-center border ${
                     course.id === "masterclass" || course.id === "speaking"
                       ? "bg-[#15803D]/10 border-[#15803D]/20"
                       : "bg-[#14532D]/10 border-[#14532D]/20"
                   }`}>
                     {getIcon(course.id)}
                   </div>
-                  <span className="font-mono text-xs text-[#1A1A1A]/50 uppercase tracking-widest bg-black/5 border border-black/5 px-3 py-1 rounded-full font-bold">
+                  <span className="font-mono text-[10px] text-[#1A1A1A]/50 uppercase tracking-widest bg-black/5 border border-black/5 px-2.5 py-1 rounded-full font-bold">
                     {course.duration}
                   </span>
                 </div>
 
                 {/* Course Main Details */}
-                <h3 className="font-serif text-2xl font-bold text-[#1A1A1A] group-hover:text-[#14532D] transition-colors mb-2">
+                <h3 className="font-serif text-xl font-bold text-[#1A1A1A] group-hover:text-[#14532D] transition-colors mb-2">
                   {course.title}
                 </h3>
-                <p className={`font-mono text-xs font-semibold tracking-wider mb-4 uppercase ${
+                <p className={`font-mono text-[11px] font-semibold tracking-wider mb-3 uppercase ${
                   course.id === "masterclass" || course.id === "speaking"
                     ? "text-[#15803D]"
                     : "text-[#14532D]"
@@ -168,8 +200,8 @@ export default function Services() {
               </div>
 
               {/* Readmore trigger */}
-              <div className="pt-6 border-t border-black/5 flex items-center justify-between text-xs font-bold text-[#1A1A1A]/80 group-hover:text-[#14532D] transition-colors uppercase tracking-wider">
-                <span>Tìm hiểu chi tiết giáo trình</span>
+              <div className="pt-5 border-t border-black/5 flex items-center justify-between text-xs font-bold text-[#1A1A1A]/80 group-hover:text-[#14532D] transition-colors uppercase tracking-wider">
+                <span>Chi tiết giáo trình</span>
                 <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </div>
             </div>

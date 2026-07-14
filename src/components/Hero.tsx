@@ -146,7 +146,7 @@ export default function Hero({ onScrollTo }: HeroProps) {
 
           {/* Slogan & Introduction with Delay Animation */}
           <div ref={subRef} className="max-w-xl">
-            <p className="font-serif italic text-base md:text-lg text-[#1A1A1A]/70 leading-relaxed mb-6 border-l-2 border-[#14532D] pl-4">
+            <p className="font-sans italic text-base md:text-lg text-[#1A1A1A]/70 leading-relaxed mb-6 border-l-2 border-[#14532D] pl-4">
               Chuyên gia <span className="text-[#14532D] not-italic font-sans font-bold">Luyện thi IELTS</span> và Phát triển <span className="text-[#15803D] not-italic font-sans font-bold">Tư duy Biện chứng</span>
             </p>
             
@@ -193,8 +193,42 @@ export default function Hero({ onScrollTo }: HeroProps) {
           </div>
         </div>
 
-        {/* Right Column: Empty grid space to showcase the portrait */}
-        <div ref={rightSideRef} className="md:col-span-5 order-1 md:order-2 h-[150px] md:h-auto flex justify-center md:justify-end items-end relative pointer-events-none select-none">
+        {/* Right Column: Floating credential cards over the green block */}
+        <div ref={rightSideRef} className="md:col-span-5 order-1 md:order-2 h-[280px] md:h-[420px] relative">
+
+          {/* Large overall band card */}
+          <div className="absolute top-2 md:top-8 left-2 md:left-4 bg-white rounded-3xl shadow-xl p-6 w-[190px] md:w-[220px] rotate-[-3deg] border border-black/5">
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#1A1A1A]/50 font-bold block mb-2">
+              Overall Band
+            </span>
+            <span className="font-serif text-5xl md:text-6xl font-black text-[#14532D] block leading-none">
+              8.5
+            </span>
+            <span className="font-mono text-[10px] text-[#1A1A1A]/60 block mt-2">
+              IELTS Academic
+            </span>
+          </div>
+
+          {/* Small listening score card, overlapping */}
+          <div className="absolute top-[150px] md:top-[220px] left-[110px] md:left-[150px] bg-[#14532D] text-white rounded-2xl shadow-xl p-5 w-[150px] md:w-[170px] rotate-[4deg]">
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/60 font-bold block mb-1">
+              Listening
+            </span>
+            <span className="font-serif text-3xl md:text-4xl font-black block leading-none">
+              9.0
+            </span>
+          </div>
+
+          {/* Trust pill card, bottom */}
+          <div className="absolute bottom-2 right-2 md:right-6 bg-white rounded-full shadow-xl px-5 py-3 flex items-center gap-3 border border-black/5">
+            <div className="h-8 w-8 rounded-full bg-[#9FE870] flex items-center justify-center shrink-0">
+              <Award size={16} className="text-[#14532D]" />
+            </div>
+            <div className="text-left">
+              <span className="font-serif text-base font-black text-[#1A1A1A] block leading-none">1.500+</span>
+              <span className="font-mono text-[8px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold">Học viên đạt đích</span>
+            </div>
+          </div>
         </div>
 
       </div>
