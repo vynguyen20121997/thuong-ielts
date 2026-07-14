@@ -7,8 +7,10 @@ import {
   Plus, 
   Upload, 
   X, 
-  ChevronDown, 
-  ChevronUp, 
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
   Check, 
   CheckCircle2, 
   MessageSquare, 
@@ -34,7 +36,9 @@ export default function Testimonials() {
   const [activeBandFilter, setActiveBandFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [expandedReviews, setExpandedReviews] = useState<Record<string, boolean>>({});
-  const [selectedProofUrl, setSelectedProofUrl] = useState<string | null>(null);
+  const [cardImageIndex, setCardImageIndex] = useState<Record<string, number>>({});
+  const [selectedProofImages, setSelectedProofImages] = useState<string[] | null>(null);
+  const [selectedProofIndex, setSelectedProofIndex] = useState<number>(0);
   const [selectedProofName, setSelectedProofName] = useState<string>("");
   const [helpfulVotes, setHelpfulVotes] = useState<Record<string, boolean>>({});
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState<boolean>(false);
@@ -78,6 +82,19 @@ export default function Testimonials() {
       ...prev,
       [id]: !prev[id]
     }));
+  };
+
+  const changeCardImage = (e: React.MouseEvent, id: string, delta: number, total: number) => {
+    e.stopPropagation();
+    setCardImageIndex(prev => {
+      const current = prev[id] || 0;
+      const next = (current + delta + total) % total;
+      return { ...prev, [id]: next };
+    });
+  };
+
+  const changeLightboxImage = (delta: number, total: number) => {
+    setSelectedProofIndex(prev => (prev + delta + total) % total);
   };
 
   const handleHelpfulClick = (id: string) => {
@@ -137,7 +154,7 @@ export default function Testimonials() {
       helpfulCount: 0,
       comment: formComment,
       avatarUrl: `https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random() * 500000)}?auto=format&fit=crop&q=80&w=200`,
-      proofUrl: uploadedProof || "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=600",
+      proofUrl: [uploadedProof || "https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&q=80&w=600"],
       subScores: {
         listening: formL,
         reading: formR,
@@ -454,26 +471,57 @@ export default function Testimonials() {
                   </div>
 
                   <div>
-                    {/* Clickable Verification Image Proof attachment */}
-                    {test.proofUrl && (
-                      <div 
-                        onClick={() => {
-                          setSelectedProofUrl(test.proofUrl || null);
-                          setSelectedProofName(test.studentName);
-                        }}
-                        className="mb-6 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
-                      >
-                        <img
-                          src={test.proofUrl}
-                          alt="Bảng điểm xác minh"
-                          className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
-                          <Maximize2 size={14} />
-                          Phóng to bảng điểm
+                    {/* Clickable Verification Image Proof attachment (carousel if multiple) */}
+                    {test.proofUrl && test.proofUrl.length > 0 && (() => {
+                      const images = test.proofUrl!;
+                      const currentIndex = cardImageIndex[test.id] || 0;
+                      const safeIndex = currentIndex < images.length ? currentIndex : 0;
+                      return (
+                        <div
+                          onClick={() => {
+                            setSelectedProofImages(images);
+                            setSelectedProofIndex(safeIndex);
+                            setSelectedProofName(test.studentName);
+                          }}
+                          className="mb-6 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
+                        >
+                          <img
+                            src={images[safeIndex]}
+                            alt="Bảng điểm xác minh"
+                            className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
+                            <Maximize2 size={14} />
+                            Phóng to bảng điểm
+                          </div>
+
+                          {images.length > 1 && (
+                            <>
+                              <button
+                                onClick={(e) => changeCardImage(e, test.id, -1, images.length)}
+                                className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                              >
+                                <ChevronLeft size={16} />
+                              </button>
+                              <button
+                                onClick={(e) => changeCardImage(e, test.id, 1, images.length)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                              >
+                                <ChevronRight size={16} />
+                              </button>
+                              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2 py-1 bg-black/40 rounded-full">
+                                {images.map((_, i) => (
+                                  <span
+                                    key={i}
+                                    className={`h-1.5 rounded-full transition-all ${i === safeIndex ? 'w-3 bg-white' : 'w-1.5 bg-white/50'}`}
+                                  />
+                                ))}
+                              </div>
+                            </>
+                          )}
                         </div>
-                      </div>
-                    )}
+                      );
+                    })()}
                   </div>
                 </div>
               );
@@ -497,18 +545,18 @@ export default function Testimonials() {
 
         {/* Lightbox Modal Overlay for score reports */}
         <AnimatePresence>
-          {selectedProofUrl && (
+          {selectedProofImages && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedProofUrl(null)}
+              onClick={() => setSelectedProofImages(null)}
               className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4"
               id="proof-lightbox-overlay"
             >
               {/* Close Button top-right */}
-              <button 
-                onClick={() => setSelectedProofUrl(null)}
+              <button
+                onClick={() => setSelectedProofImages(null)}
                 className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer"
                 id="close-lightbox"
               >
@@ -523,11 +571,44 @@ export default function Testimonials() {
                 onClick={(e) => e.stopPropagation()}
                 className="max-w-3xl w-full flex flex-col items-center"
               >
-                <img 
-                  src={selectedProofUrl} 
-                  alt="IELTS Report Proof" 
-                  className="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain border border-white/10 shadow-2xl"
-                />
+                <div className="relative w-full flex items-center justify-center">
+                  {selectedProofImages.length > 1 && (
+                    <button
+                      onClick={() => changeLightboxImage(-1, selectedProofImages.length)}
+                      className="absolute left-0 md:-left-14 p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer z-10"
+                    >
+                      <ChevronLeft size={22} />
+                    </button>
+                  )}
+
+                  <img
+                    src={selectedProofImages[selectedProofIndex]}
+                    alt="IELTS Report Proof"
+                    className="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain border border-white/10 shadow-2xl"
+                  />
+
+                  {selectedProofImages.length > 1 && (
+                    <button
+                      onClick={() => changeLightboxImage(1, selectedProofImages.length)}
+                      className="absolute right-0 md:-right-14 p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer z-10"
+                    >
+                      <ChevronRight size={22} />
+                    </button>
+                  )}
+                </div>
+
+                {selectedProofImages.length > 1 && (
+                  <div className="flex items-center gap-2 mt-4">
+                    {selectedProofImages.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setSelectedProofIndex(i)}
+                        className={`h-1.5 rounded-full transition-all cursor-pointer ${i === selectedProofIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/60'}`}
+                      />
+                    ))}
+                  </div>
+                )}
+
                 <div className="mt-4 text-center">
                   <h4 className="text-white font-serif font-bold text-lg mb-1">
                     Chứng thực bảng điểm IELTS - Học viên {selectedProofName}
