@@ -386,19 +386,18 @@ export default function Testimonials() {
                   </div>
 
                   <div>
-                    {/* Upper row: Star rating & Target Band status */}
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star 
-                            key={i} 
-                            size={14} 
-                            className={`${i < test.rating ? 'fill-[#E15243] text-[#E15243]' : 'text-black/10'}`} 
-                          />
-                        ))}
+                    {/* Upper row: Student Info & Target Band status */}
+                    <div className="flex items-start justify-between gap-3 mb-5">
+                      <div>
+                        <h4 className="font-serif font-black text-sm text-[#1A1A1A] leading-tight">
+                          {test.studentName}
+                        </h4>
+                        <p className="font-mono text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest mt-0.5 font-extrabold leading-none">
+                          {test.schoolOrJob}
+                        </p>
                       </div>
 
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#E15243]/10 border border-[#E15243]/20 text-[#E15243] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#E15243]/10 border border-[#E15243]/20 text-[#E15243] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
                         <Award size={10} />
                         {test.score}
                       </span>
@@ -475,23 +474,6 @@ export default function Testimonials() {
                         </div>
                       </div>
                     )}
-
-                    {/* Divider Line */}
-                    <div className="h-px bg-black/5 w-full mb-4" />
-
-                    {/* Bottom Student Bio row & Upvotes */}
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <h4 className="font-serif font-black text-xs text-[#1A1A1A] leading-tight">
-                            {test.studentName}
-                          </h4>
-                          <p className="font-mono text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest mt-0.5 font-extrabold leading-none">
-                            {test.schoolOrJob}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               );
