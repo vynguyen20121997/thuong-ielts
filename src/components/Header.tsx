@@ -39,34 +39,34 @@ export default function Header({ onScrollTo }: HeaderProps) {
           : "py-6 bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 flex items-center justify-between gap-3">
         {/* Text Logo */}
         <button
           onClick={() => handleNavClick("hero")}
-          className="group flex items-center cursor-pointer text-left animate-fade-in"
+          className="group flex items-center cursor-pointer text-left animate-fade-in shrink-0"
           id="logo-button"
         >
           {/* Reference Image Styled Square Logo */}
-          <div className="w-10 h-10 border-2 border-[#14532D] flex items-center justify-center font-bold text-xl text-[#14532D] font-serif mr-3 transition-colors duration-300 group-hover:bg-[#14532D] group-hover:text-white rounded">
+          <div className="w-9 h-9 md:w-10 md:h-10 border-2 border-[#14532D] flex items-center justify-center font-bold text-lg md:text-xl text-[#14532D] font-serif mr-2 md:mr-3 transition-colors duration-300 group-hover:bg-[#14532D] group-hover:text-white rounded shrink-0">
             H
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-lg md:text-xl font-black tracking-tight text-[#1A1A1A]">
+            <span className="font-serif text-base md:text-lg lg:text-xl font-black tracking-tight text-[#1A1A1A] whitespace-nowrap">
               HNT<span className="text-[#14532D]">.</span>IELTS
             </span>
-            <span className="font-mono text-[9px] tracking-[0.2em] text-[#1A1A1A]/60 uppercase transition-all duration-300 group-hover:text-[#14532D] font-bold">
+            <span className="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-[#1A1A1A]/60 uppercase transition-all duration-300 group-hover:text-[#14532D] font-bold whitespace-nowrap">
               Hồ Ngọc Thương
             </span>
           </div>
         </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-10" id="desktop-nav">
+        <nav className="hidden md:flex items-center gap-3 lg:gap-8 xl:gap-10 min-w-0" id="desktop-nav">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
-              className="relative py-2 text-sm font-semibold text-[#1A1A1A]/70 hover:text-[#14532D] transition-colors cursor-pointer group animate-fade-in"
+              className="relative py-2 text-xs lg:text-sm font-semibold text-[#1A1A1A]/70 hover:text-[#14532D] transition-colors cursor-pointer group animate-fade-in whitespace-nowrap"
               id={`nav-link-${item.id}`}
             >
               {item.label}
@@ -76,13 +76,13 @@ export default function Header({ onScrollTo }: HeaderProps) {
         </nav>
 
         {/* Action Button */}
-        <div className="hidden lg:block" id="header-action-container">
+        <div className="hidden md:block shrink-0" id="header-action-container">
           <button
             onClick={() => handleNavClick("contact")}
-            className="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer"
+            className="group relative inline-flex items-center gap-1.5 lg:gap-2 px-3.5 lg:px-6 py-2 lg:py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-[10px] lg:text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer whitespace-nowrap"
             id="header-cta"
           >
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="relative z-10 flex items-center gap-1.5 lg:gap-2">
               Đăng ký học
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
             </span>
@@ -92,7 +92,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="lg:hidden p-2 text-[#1A1A1A] hover:text-[#14532D] transition-colors cursor-pointer"
+          className="md:hidden p-2 text-[#1A1A1A] hover:text-[#14532D] transition-colors cursor-pointer shrink-0"
           aria-label="Toggle Menu"
           id="mobile-menu-toggle"
         >
@@ -102,7 +102,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 top-[68px] bg-white z-40 lg:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 ${
+        className={`fixed inset-0 top-[68px] bg-white z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 ${
           isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
         }`}
         id="mobile-menu-drawer"
