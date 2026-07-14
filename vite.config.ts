@@ -17,6 +17,14 @@ export default defineConfig(() => {
       hmr: process.env.DISABLE_HMR !== 'true',
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      // Cho phep truy cap qua domain Render (neu lo chay dev server tren production).
+      allowedHosts: ['.onrender.com'],
+    },
+    preview: {
+      // `yarn preview` serve ban build trong dist/ - dung lenh nay tren Render.
+      host: true,
+      port: Number(process.env.PORT) || 4173,
+      allowedHosts: ['.onrender.com'],
     },
   };
 });
