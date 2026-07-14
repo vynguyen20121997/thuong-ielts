@@ -15,7 +15,6 @@ import {
   Calendar, 
   ThumbsUp, 
   Filter, 
-  ArrowRight,
   Sparkles,
   ShieldCheck,
   Maximize2
@@ -405,17 +404,6 @@ export default function Testimonials() {
                       </span>
                     </div>
 
-                    {/* Target Improvement Badges (Before / After progress) */}
-                    {test.beforeScore && test.afterScore && (
-                      <div className="flex items-center gap-2 mb-4 bg-[#E15243]/5 border border-[#E15243]/10 p-2.5 rounded-xl text-[11px] font-bold text-[#1A1A1A]">
-                        <span className="text-[#1A1A1A]/50">Đầu vào:</span>
-                        <span className="font-mono px-1.5 py-0.5 bg-black/5 rounded">{test.beforeScore}</span>
-                        <ArrowRight size={12} className="text-[#E15243] shrink-0" />
-                        <span className="text-[#1A1A1A]/50">Đầu ra cam kết:</span>
-                        <span className="font-mono px-1.5 py-0.5 bg-[#E15243] text-white rounded font-extrabold">{test.afterScore}</span>
-                      </div>
-                    )}
-
                     {/* Subskills Breakdown parameters */}
                     {test.subScores && (
                       <div className="grid grid-cols-4 gap-1.5 mb-4 font-mono text-[9px] text-center uppercase tracking-wider font-extrabold text-[#1A1A1A]/75">
@@ -474,12 +462,12 @@ export default function Testimonials() {
                           setSelectedProofUrl(test.proofUrl || null);
                           setSelectedProofName(test.studentName);
                         }}
-                        className="mb-6 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in aspect-[16/9] shadow-sm"
+                        className="mb-6 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
                       >
-                        <img 
-                          src={test.proofUrl} 
-                          alt="Bảng điểm xác minh" 
-                          className="w-full h-full object-cover group-hover/proof:scale-105 transition-transform duration-500"
+                        <img
+                          src={test.proofUrl}
+                          alt="Bảng điểm xác minh"
+                          className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
                           <Maximize2 size={14} />
