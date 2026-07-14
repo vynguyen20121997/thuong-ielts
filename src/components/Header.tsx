@@ -61,7 +61,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
         </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8 lg:gap-12" id="desktop-nav">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-10" id="desktop-nav">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -76,7 +76,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
         </nav>
 
         {/* Action Button */}
-        <div className="hidden md:block" id="header-action-container">
+        <div className="hidden lg:block" id="header-action-container">
           <button
             onClick={() => handleNavClick("contact")}
             className="group relative inline-flex items-center gap-2 px-6 py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer"
@@ -92,7 +92,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden p-2 text-[#1A1A1A] hover:text-[#14532D] transition-colors cursor-pointer"
+          className="lg:hidden p-2 text-[#1A1A1A] hover:text-[#14532D] transition-colors cursor-pointer"
           aria-label="Toggle Menu"
           id="mobile-menu-toggle"
         >
@@ -102,7 +102,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 top-[68px] bg-white z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 ${
+        className={`fixed inset-0 top-[68px] bg-white z-40 lg:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 ${
           isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
         }`}
         id="mobile-menu-drawer"
