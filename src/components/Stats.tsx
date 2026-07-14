@@ -136,7 +136,7 @@ export default function Stats() {
         {/* Editorial Subtitle & Title */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16 items-end">
           <div className="lg:col-span-6">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#E15243] uppercase block mb-3 font-bold">
+            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
               Thực Chứng Đẳng Cấp
             </span>
             <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A]">
@@ -160,8 +160,8 @@ export default function Stats() {
           {/* Stat 1 - Overall */}
           <div className="stat-block flex flex-col justify-between text-left relative" id="stat-overall">
             <div>
-              <div className="h-10 w-10 bg-[#E15243]/10 border border-[#E15243]/20 rounded-lg flex items-center justify-center mb-6">
-                <Award className="text-[#E15243]" size={20} />
+              <div className="h-10 w-10 bg-[#14532D]/10 border border-[#14532D]/20 rounded-lg flex items-center justify-center mb-6">
+                <Award className="text-[#14532D]" size={20} />
               </div>
               <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#1A1A1A]">
                 <span ref={overallRef}>0.0</span>
@@ -176,10 +176,10 @@ export default function Stats() {
           {/* Stat 2 - Listening */}
           <div className="stat-block flex flex-col justify-between text-left relative" id="stat-listening">
             <div>
-              <div className="h-10 w-10 bg-[#8BA8D1]/10 border border-[#8BA8D1]/20 rounded-lg flex items-center justify-center mb-6">
-                <Star className="text-[#8BA8D1]" size={20} />
+              <div className="h-10 w-10 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-6">
+                <Star className="text-[#15803D]" size={20} />
               </div>
-              <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#8BA8D1]">
+              <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#15803D]">
                 <span ref={listeningRef}>0.0</span>
               </p>
               <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Listening Score</h3>
@@ -192,11 +192,11 @@ export default function Stats() {
           {/* Stat 3 - Students */}
           <div className="stat-block flex flex-col justify-between text-left relative" id="stat-students">
             <div>
-              <div className="h-10 w-10 bg-[#E15243]/10 border border-[#E15243]/20 rounded-lg flex items-center justify-center mb-6">
-                <Users className="text-[#E15243]" size={20} />
+              <div className="h-10 w-10 bg-[#14532D]/10 border border-[#14532D]/20 rounded-lg flex items-center justify-center mb-6">
+                <Users className="text-[#14532D]" size={20} />
               </div>
               <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#1A1A1A]">
-                <span ref={studentsRef}>0</span><span className="text-[#E15243]">+</span>
+                <span ref={studentsRef}>0</span><span className="text-[#14532D]">+</span>
               </p>
               <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Học Viên Đạt Đích</h3>
               <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
@@ -208,11 +208,11 @@ export default function Stats() {
           {/* Stat 4 - Pass Rate */}
           <div className="stat-block flex flex-col justify-between text-left relative" id="stat-pass">
             <div>
-              <div className="h-10 w-10 bg-[#8BA8D1]/10 border border-[#8BA8D1]/20 rounded-lg flex items-center justify-center mb-6">
-                <CheckCircle2 className="text-[#8BA8D1]" size={20} />
+              <div className="h-10 w-10 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-6">
+                <CheckCircle2 className="text-[#15803D]" size={20} />
               </div>
               <p className="font-serif text-6xl md:text-7xl font-bold tracking-tight mb-3 text-[#1A1A1A]">
-                <span ref={passRef}>0</span><span className="text-[#8BA8D1]">%</span>
+                <span ref={passRef}>0</span><span className="text-[#15803D]">%</span>
               </p>
               <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">Đạt Target Đầu Ra</h3>
               <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">

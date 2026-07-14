@@ -24,7 +24,7 @@ export default function Footer({ onScrollTo }: FooterProps) {
           <div className="md:col-span-5 flex flex-col justify-between">
             <div>
               <span className="font-serif text-2xl md:text-3xl font-black tracking-tight text-[#1A1A1A] block mb-1">
-                HNT<span className="text-[#E15243]">.</span>IELTS
+                HNT<span className="text-[#14532D]">.</span>IELTS
               </span>
               <span className="font-mono text-[9px] tracking-[0.3em] text-[#1A1A1A]/40 uppercase block mb-6 font-bold">
                 Hồ Ngọc Thương
@@ -42,22 +42,22 @@ export default function Footer({ onScrollTo }: FooterProps) {
           {/* Sitemaps */}
           <div className="md:col-span-4 grid grid-cols-2 gap-8">
             <div>
-              <h4 className="font-mono text-[10px] font-bold text-[#E15243] uppercase tracking-widest mb-6">Chương trình</h4>
+              <h4 className="font-mono text-[10px] font-bold text-[#14532D] uppercase tracking-widest mb-6">Chương trình</h4>
               <ul className="space-y-3 text-sm text-[#1A1A1A]/70 font-bold">
-                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">IELTS Focus (4 Kỹ Năng)</button></li>
-                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">Reading Masterclass</button></li>
-                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">Listening Masterclass</button></li>
-                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">Writing & Speaking Intensive</button></li>
+                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">IELTS Focus (4 Kỹ Năng)</button></li>
+                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">Reading Masterclass</button></li>
+                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">Listening Masterclass</button></li>
+                <li><button onClick={() => onScrollTo("courses")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">Writing & Speaking Intensive</button></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-mono text-[10px] font-bold text-[#E15243] uppercase tracking-widest mb-6">Thông tin</h4>
+              <h4 className="font-mono text-[10px] font-bold text-[#14532D] uppercase tracking-widest mb-6">Thông tin</h4>
               <ul className="space-y-3 text-sm text-[#1A1A1A]/70 font-bold">
-                <li><button onClick={() => onScrollTo("about")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">Về cô Ngọc Thương</button></li>
-                <li><button onClick={() => onScrollTo("about")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">Phương pháp Logic</button></li>
-                <li><button onClick={() => onScrollTo("stats")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">Bảng điểm vàng</button></li>
-                <li><button onClick={() => onScrollTo("testimonials")} className="hover:text-[#E15243] transition-colors cursor-pointer text-left">Cảm nhận học viên</button></li>
+                <li><button onClick={() => onScrollTo("about")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">Về cô Ngọc Thương</button></li>
+                <li><button onClick={() => onScrollTo("about")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">Phương pháp Logic</button></li>
+                <li><button onClick={() => onScrollTo("stats")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">Bảng điểm vàng</button></li>
+                <li><button onClick={() => onScrollTo("testimonials")} className="hover:text-[#14532D] transition-colors cursor-pointer text-left">Cảm nhận học viên</button></li>
               </ul>
             </div>
           </div>
@@ -65,13 +65,13 @@ export default function Footer({ onScrollTo }: FooterProps) {
           {/* Action Col */}
           <div className="md:col-span-3 flex flex-col justify-between items-start md:items-end">
             <div className="text-left md:text-right">
-              <h4 className="font-mono text-[10px] font-bold text-[#E15243] uppercase tracking-widest mb-6">Khởi đầu lộ trình</h4>
+              <h4 className="font-mono text-[10px] font-bold text-[#14532D] uppercase tracking-widest mb-6">Khởi đầu lộ trình</h4>
               <p className="text-sm text-[#1A1A1A]/60 leading-relaxed mb-6">
                 Tham gia test thử năng lực và thảo luận lộ trình cùng giáo viên hoàn toàn miễn phí ngay hôm nay.
               </p>
               <button
                 onClick={() => onScrollTo("contact")}
-                className="px-6 py-3 bg-[#1A1A1A] hover:bg-[#E15243] text-[#FAF9F6] hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md cursor-pointer"
+                className="px-6 py-3 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md cursor-pointer"
               >
                 Nhận lịch tư vấn miễn phí
               </button>
@@ -94,7 +94,7 @@ export default function Footer({ onScrollTo }: FooterProps) {
           {/* Back to top button */}
           <button
             onClick={handleBackToTop}
-            className="group flex items-center gap-2 p-3 bg-black/5 border border-black/10 text-[#1A1A1A] hover:bg-[#E15243] hover:text-white hover:border-[#E15243] transition-all duration-300 cursor-pointer text-xs"
+            className="group flex items-center gap-2 p-3 bg-black/5 border border-black/10 text-[#1A1A1A] hover:bg-[#14532D] hover:text-white hover:border-[#14532D] transition-all duration-300 cursor-pointer text-xs"
             aria-label="Back to Top"
             id="back-to-top-button"
           >

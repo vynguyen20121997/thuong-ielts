@@ -62,7 +62,7 @@ export default function Contact() {
           
           {/* Left Column: Direct Contact Info & Booking Slogan */}
           <div className="lg:col-span-5 contact-reveal text-left">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#E15243] uppercase block mb-3 font-bold">
+            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
               Đồng Hành Cùng Bạn
             </span>
             <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight mb-6">
@@ -78,8 +78,8 @@ export default function Contact() {
             <div className="space-y-6 mb-12" id="contact-channels-list">
               
               <div className="flex gap-4 items-start">
-                <div className="h-10 w-10 bg-[#E15243]/10 rounded-xl flex items-center justify-center shrink-0 border border-[#E15243]/20">
-                  <Phone className="text-[#E15243]" size={18} />
+                <div className="h-10 w-10 bg-[#14532D]/10 rounded-xl flex items-center justify-center shrink-0 border border-[#14532D]/20">
+                  <Phone className="text-[#14532D]" size={18} />
                 </div>
                 <div>
                   <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#1A1A1A]/50 mb-0.5 font-bold">Hotline Tư Vấn</h4>
@@ -88,8 +88,8 @@ export default function Contact() {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="h-10 w-10 bg-[#E15243]/10 rounded-xl flex items-center justify-center shrink-0 border border-[#E15243]/20">
-                  <Mail className="text-[#E15243]" size={18} />
+                <div className="h-10 w-10 bg-[#14532D]/10 rounded-xl flex items-center justify-center shrink-0 border border-[#14532D]/20">
+                  <Mail className="text-[#14532D]" size={18} />
                 </div>
                 <div>
                   <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#1A1A1A]/50 mb-0.5 font-bold">Email Hỗ Trợ</h4>
@@ -98,8 +98,8 @@ export default function Contact() {
               </div>
 
               <div className="flex gap-4 items-start">
-                <div className="h-10 w-10 bg-[#E15243]/10 rounded-xl flex items-center justify-center shrink-0 border border-[#E15243]/20">
-                  <MapPin className="text-[#E15243]" size={18} />
+                <div className="h-10 w-10 bg-[#14532D]/10 rounded-xl flex items-center justify-center shrink-0 border border-[#14532D]/20">
+                  <MapPin className="text-[#14532D]" size={18} />
                 </div>
                 <div>
                   <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#1A1A1A]/50 mb-0.5 font-bold">Địa Chỉ Lớp Học</h4>
@@ -117,11 +117,11 @@ export default function Contact() {
                 Kênh Học Tập Cộng Đồng
               </p>
               <div className="flex gap-4 text-xs font-bold text-[#1A1A1A]/80">
-                <a href="#facebook" className="hover:text-[#E15243] transition-colors">Facebook Page</a>
+                <a href="#facebook" className="hover:text-[#14532D] transition-colors">Facebook Page</a>
                 <span className="text-[#1A1A1A]/20">•</span>
-                <a href="#youtube" className="hover:text-[#E15243] transition-colors">TikTok Series</a>
+                <a href="#youtube" className="hover:text-[#14532D] transition-colors">TikTok Series</a>
                 <span className="text-[#1A1A1A]/20">•</span>
-                <a href="#group" className="hover:text-[#E15243] transition-colors">Group Học Thuật</a>
+                <a href="#group" className="hover:text-[#14532D] transition-colors">Group Học Thuật</a>
               </div>
             </div>
 
@@ -141,7 +141,7 @@ export default function Contact() {
                   {/* Name field */}
                   <div className="text-left">
                     <label htmlFor="fullname" className="block text-xs font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                      Họ Và Tên Học Viên <span className="text-[#E15243] font-bold">*</span>
+                      Họ Và Tên Học Viên <span className="text-[#14532D] font-bold">*</span>
                     </label>
                     <input
                       type="text"
@@ -150,7 +150,7 @@ export default function Contact() {
                       value={formData.fullname}
                       onChange={(e) => setFormData({ ...formData, fullname: e.target.value })}
                       placeholder="Ví dụ: Nguyễn Văn A"
-                      className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all duration-300"
+                      className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all duration-300"
                     />
                   </div>
 
@@ -158,7 +158,7 @@ export default function Contact() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="text-left">
                       <label htmlFor="phone" className="block text-xs font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">
-                        Số Điện Thoại <span className="text-[#E15243] font-bold">*</span>
+                        Số Điện Thoại <span className="text-[#14532D] font-bold">*</span>
                       </label>
                       <input
                         type="tel"
@@ -167,7 +167,7 @@ export default function Contact() {
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="Số Zalo nhận tài liệu"
-                        className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all duration-300"
+                        className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all duration-300"
                       />
                     </div>
 
@@ -181,7 +181,7 @@ export default function Contact() {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="Để nhận kết quả bài test"
-                        className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all duration-300"
+                        className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all duration-300"
                       />
                     </div>
                   </div>
@@ -196,7 +196,7 @@ export default function Contact() {
                         id="currentLevel"
                         value={formData.currentLevel}
                         onChange={(e) => setFormData({ ...formData, currentLevel: e.target.value })}
-                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#E15243] transition-all font-sans"
+                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#14532D] transition-all font-sans"
                       >
                         <option value="zero" className="bg-white text-[#1A1A1A]">Mất Gốc / Chưa biết gì</option>
                         <option value="basic" className="bg-white text-[#1A1A1A]">Đã biết cơ bản</option>
@@ -213,7 +213,7 @@ export default function Contact() {
                         id="targetScore"
                         value={formData.targetScore}
                         onChange={(e) => setFormData({ ...formData, targetScore: e.target.value })}
-                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#E15243] transition-all font-sans"
+                        className="w-full px-4 py-3 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#14532D] transition-all font-sans"
                       >
                         <option value="6.0" className="bg-white text-[#1A1A1A]">IELTS 6.0</option>
                         <option value="6.5" className="bg-white text-[#1A1A1A]">IELTS 6.5 (Tiêu chuẩn)</option>
@@ -234,14 +234,14 @@ export default function Contact() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Ví dụ: Em muốn thi gấp trong 4 tháng tới, kỹ năng yếu nhất là Đọc..."
-                      className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all duration-300 resize-none"
+                      className="w-full px-4 py-3 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all duration-300 resize-none"
                     />
                   </div>
 
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full py-4 bg-[#1A1A1A] hover:bg-[#E15243] text-[#FAF9F6] hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg cursor-pointer"
+                    className="w-full py-4 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg cursor-pointer"
                   >
                     Gửi yêu cầu đăng ký tư vấn
                     <Send size={14} />
@@ -254,7 +254,7 @@ export default function Contact() {
               ) : (
                 /* Success View Box */
                 <div className="py-12 px-4 text-center space-y-6 animate-in fade-in duration-300" id="success-message">
-                  <div className="h-16 w-16 bg-[#E15243]/10 rounded-full flex items-center justify-center mx-auto text-[#E15243] mb-2 border border-[#E15243]/20">
+                  <div className="h-16 w-16 bg-[#14532D]/10 rounded-full flex items-center justify-center mx-auto text-[#14532D] mb-2 border border-[#14532D]/20">
                     <CheckCircle2 size={40} />
                   </div>
                   
@@ -268,7 +268,7 @@ export default function Contact() {
                   </div>
 
                   <div className="p-5 bg-black/5 border border-black/10 rounded-2xl text-left max-w-md mx-auto space-y-3">
-                    <h4 className="text-xs font-mono font-bold text-[#E15243] uppercase tracking-wider">Thông tin tóm tắt:</h4>
+                    <h4 className="text-xs font-mono font-bold text-[#14532D] uppercase tracking-wider">Thông tin tóm tắt:</h4>
                     <ul className="text-xs text-[#1A1A1A]/80 space-y-1 font-sans font-medium">
                       <li>• Trình độ hiện tại: <strong>{formData.currentLevel === 'zero' ? 'Mất gốc' : formData.currentLevel === 'basic' ? 'Cơ bản' : formData.currentLevel === 'level-4-5' ? 'IELTS 4.0-5.0' : 'IELTS 5.5-6.0'}</strong></li>
                       <li>• Band điểm mục tiêu: <strong>{formData.targetScore} IELTS</strong></li>

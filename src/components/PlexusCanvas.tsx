@@ -65,7 +65,7 @@ export default function PlexusCanvas({ className = "absolute inset-0 w-full h-fu
       draw(c: CanvasRenderingContext2D) {
         c.beginPath();
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        c.fillStyle = `rgba(217, 119, 6, ${this.alpha})`; // Amber color
+        c.fillStyle = `rgba(20, 83, 45, ${this.alpha})`; // Dark green
         c.fill();
       }
     }
@@ -123,8 +123,8 @@ export default function PlexusCanvas({ className = "absolute inset-0 w-full h-fu
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            // Draw gradient lines from amber to crimson
-            ctx.strokeStyle = `rgba(245, 158, 11, ${alpha})`;
+            // Draw gradient connection lines in the brand green
+            ctx.strokeStyle = `rgba(34, 139, 74, ${alpha})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
@@ -143,7 +143,7 @@ export default function PlexusCanvas({ className = "absolute inset-0 w-full h-fu
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = `rgba(239, 68, 68, ${alpha})`; // Crimson active lines
+            ctx.strokeStyle = `rgba(134, 214, 90, ${alpha})`; // Bright green active lines
             ctx.lineWidth = 1;
             ctx.stroke();
           }

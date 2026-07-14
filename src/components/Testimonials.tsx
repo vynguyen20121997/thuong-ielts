@@ -234,8 +234,8 @@ export default function Testimonials() {
         {/* Header Block & Slogan */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-16">
           <div className="max-w-2xl text-left">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#E15243] uppercase block mb-3 font-bold flex items-center gap-1.5">
-              <Sparkles size={14} className="text-[#E15243]" />
+            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold flex items-center gap-1.5">
+              <Sparkles size={14} className="text-[#14532D]" />
               Góc Vinh Danh Học Viên
             </span>
             <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight mb-4">
@@ -249,7 +249,7 @@ export default function Testimonials() {
 
           <button
             onClick={() => setIsSubmitModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-3.5 bg-[#1A1A1A] hover:bg-[#E15243] text-[#FAF9F6] hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md whitespace-nowrap self-start lg:self-end"
+            className="flex items-center gap-2 px-6 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md whitespace-nowrap self-start lg:self-end"
             id="write-review-button"
           >
             <Plus size={16} />
@@ -264,7 +264,7 @@ export default function Testimonials() {
             <span className="font-serif text-6xl font-black text-[#1A1A1A] mb-2">{totalRating}</span>
             <div className="flex gap-1 mb-2">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} size={20} className="fill-[#E15243] text-[#E15243]" />
+                <Star key={i} size={20} className="fill-[#14532D] text-[#14532D]" />
               ))}
             </div>
             <p className="text-xs text-[#1A1A1A]/60 font-mono uppercase tracking-wider font-bold">
@@ -283,7 +283,7 @@ export default function Testimonials() {
                 <span className="font-mono font-bold w-12 text-left shrink-0">{item.star} Sao</span>
                 <div className="flex-1 h-2 bg-black/5 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-[#E15243] rounded-full" 
+                    className="h-full bg-[#14532D] rounded-full" 
                     style={{ width: `${item.percentage}%` }}
                   />
                 </div>
@@ -295,7 +295,7 @@ export default function Testimonials() {
 
           {/* Quick trust metrics */}
           <div className="md:col-span-3 bg-white border border-black/5 p-5 rounded-2xl flex flex-col justify-center text-center md:text-left">
-            <div className="text-[#E15243] font-serif text-2xl font-black mb-1">1,520+</div>
+            <div className="text-[#14532D] font-serif text-2xl font-black mb-1">1,520+</div>
             <p className="text-xs text-[#1A1A1A]/80 font-semibold mb-3 leading-relaxed">
               Học viên đã nộp bảng điểm chứng chỉ quốc tế IELTS về lớp.
             </p>
@@ -318,7 +318,7 @@ export default function Testimonials() {
                 placeholder="Tìm tên học viên, bài viết hoặc điểm số..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/40 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all duration-300"
+                className="w-full pl-11 pr-4 py-3 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/40 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all duration-300"
               />
               {searchQuery && (
                 <button 
@@ -332,7 +332,7 @@ export default function Testimonials() {
 
             {/* Band brackets selector filter */}
             <div className="flex items-center gap-3 w-full md:w-auto shrink-0 justify-end">
-              <Filter size={16} className="text-[#E15243]" />
+              <Filter size={16} className="text-[#14532D]" />
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60">Phân loại điểm:</span>
               <div className="flex gap-1.5 flex-wrap">
                 {bandFilterOptions.map((band) => (
@@ -381,7 +381,7 @@ export default function Testimonials() {
                   onClick={() => setActiveCourseFilter(course.value)}
                   className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${
                     activeCourseFilter === course.value
-                      ? "bg-[#E15243] text-white border-[#E15243] shadow-sm"
+                      ? "bg-[#14532D] text-white border-[#14532D] shadow-sm"
                       : "bg-white border-black/5 text-[#1A1A1A]/70 hover:bg-black/5"
                   }`}
                 >
@@ -411,11 +411,11 @@ export default function Testimonials() {
               return (
                 <div
                   key={test.id}
-                  className="testimonial-card bg-white border border-black/5 hover:border-[#E15243]/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left"
+                  className="testimonial-card bg-white border border-black/5 hover:border-[#14532D]/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left"
                   id={test.id}
                 >
                   {/* Decorative Quote Mark */}
-                  <div className="absolute top-6 right-6 text-black/5 group-hover:text-[#E15243]/10 transition-colors pointer-events-none">
+                  <div className="absolute top-6 right-6 text-black/5 group-hover:text-[#14532D]/10 transition-colors pointer-events-none">
                     <Quote size={40} />
                   </div>
 
@@ -431,7 +431,7 @@ export default function Testimonials() {
                         </p>
                       </div>
 
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#E15243]/10 border border-[#E15243]/20 text-[#E15243] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
                         <Award size={10} />
                         {test.score}
                       </span>
@@ -449,7 +449,7 @@ export default function Testimonials() {
 
                     {/* Course Program & Date tags */}
                     <div className="flex flex-wrap gap-2 items-center mb-4 text-[10px] font-mono text-black/40 font-bold uppercase tracking-wider">
-                      <span className="inline-flex items-center gap-1 text-[#E15243] font-extrabold">
+                      <span className="inline-flex items-center gap-1 text-[#14532D] font-extrabold">
                         <Check size={12} />
                         {test.courseName}
                       </span>
@@ -474,7 +474,7 @@ export default function Testimonials() {
                         {isLongComment && (
                           <button
                             onClick={() => toggleExpand(test.id)}
-                            className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#E15243] hover:text-[#D04335] inline-flex items-center gap-1 cursor-pointer"
+                            className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
                           >
                             {isExpanded ? (
                               <>Rút gọn <ChevronUp size={12} /></>
@@ -697,7 +697,7 @@ export default function Testimonials() {
                       {/* Name input */}
                       <div>
                         <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-1.5">
-                          Họ Và Tên Học Viên <span className="text-[#E15243]">*</span>
+                          Họ Và Tên Học Viên <span className="text-[#14532D]">*</span>
                         </label>
                         <input
                           type="text"
@@ -705,14 +705,14 @@ export default function Testimonials() {
                           value={formName}
                           onChange={(e) => setFormName(e.target.value)}
                           placeholder="Ví dụ: Hoàng Mai Chi"
-                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all"
+                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all"
                         />
                       </div>
 
                       {/* school or job */}
                       <div>
                         <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-1.5">
-                          Trường Học / Nghề Nghiệp <span className="text-[#E15243]">*</span>
+                          Trường Học / Nghề Nghiệp <span className="text-[#14532D]">*</span>
                         </label>
                         <input
                           type="text"
@@ -720,7 +720,7 @@ export default function Testimonials() {
                           value={formSchool}
                           onChange={(e) => setFormSchool(e.target.value)}
                           placeholder="Ví dụ: Đại học Ngoại Thương"
-                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all"
+                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all"
                         />
                       </div>
                     </div>
@@ -734,7 +734,7 @@ export default function Testimonials() {
                         <select
                           value={formCourse}
                           onChange={(e) => setFormCourse(e.target.value)}
-                          className="w-full px-4 py-2.5 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#E15243] transition-all font-sans"
+                          className="w-full px-4 py-2.5 bg-white border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#14532D] transition-all font-sans"
                         >
                           <option value="focus">IELTS Focus 4 Kỹ Năng</option>
                           <option value="reading">Reading Masterclass</option>
@@ -753,7 +753,7 @@ export default function Testimonials() {
                           value={formBeforeScore}
                           onChange={(e) => setFormBeforeScore(e.target.value)}
                           placeholder="Ví dụ: 5.5"
-                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#E15243] focus:bg-white transition-all font-mono"
+                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#14532D] focus:bg-white transition-all font-mono"
                         />
                       </div>
 
@@ -767,7 +767,7 @@ export default function Testimonials() {
                           value={formAfterScore}
                           onChange={(e) => setFormAfterScore(e.target.value)}
                           placeholder="Ví dụ: 7.5 IELTS"
-                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#E15243] focus:bg-white transition-all font-mono"
+                          className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] focus:outline-none focus:border-[#14532D] focus:bg-white transition-all font-mono"
                         />
                       </div>
                     </div>
@@ -784,7 +784,7 @@ export default function Testimonials() {
                             type="text" 
                             value={formL} 
                             onChange={(e) => setFormL(e.target.value)} 
-                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#E15243] focus:outline-none" 
+                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#14532D] focus:outline-none" 
                           />
                         </div>
                         <div>
@@ -793,7 +793,7 @@ export default function Testimonials() {
                             type="text" 
                             value={formR} 
                             onChange={(e) => setFormR(e.target.value)} 
-                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#E15243] focus:outline-none" 
+                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#14532D] focus:outline-none" 
                           />
                         </div>
                         <div>
@@ -802,7 +802,7 @@ export default function Testimonials() {
                             type="text" 
                             value={formW} 
                             onChange={(e) => setFormW(e.target.value)} 
-                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#E15243] focus:outline-none" 
+                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#14532D] focus:outline-none" 
                           />
                         </div>
                         <div>
@@ -811,7 +811,7 @@ export default function Testimonials() {
                             type="text" 
                             value={formS} 
                             onChange={(e) => setFormS(e.target.value)} 
-                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#E15243] focus:outline-none" 
+                            className="w-full px-2.5 py-1.5 bg-white border border-black/10 rounded-lg text-center font-mono text-xs focus:border-[#14532D] focus:outline-none" 
                           />
                         </div>
                       </div>
@@ -826,22 +826,22 @@ export default function Testimonials() {
                             key={star}
                             type="button"
                             onClick={() => setFormRating(star)}
-                            className="text-[#E15243] hover:scale-110 transition-transform cursor-pointer"
+                            className="text-[#14532D] hover:scale-110 transition-transform cursor-pointer"
                           >
                             <Star 
                               size={20} 
-                              className={`${star <= formRating ? 'fill-[#E15243]' : 'text-black/10'}`} 
+                              className={`${star <= formRating ? 'fill-[#14532D]' : 'text-black/10'}`} 
                             />
                           </button>
                         ))}
                       </div>
-                      <span className="font-mono text-xs font-bold text-[#E15243]">({formRating} / 5 Sao)</span>
+                      <span className="font-mono text-xs font-bold text-[#14532D]">({formRating} / 5 Sao)</span>
                     </div>
 
                     {/* Comment text block */}
                     <div>
                       <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-1.5">
-                        Nội Dung Đánh Giá Chi Tiết <span className="text-[#E15243]">*</span>
+                        Nội Dung Đánh Giá Chi Tiết <span className="text-[#14532D]">*</span>
                       </label>
                       <textarea
                         required
@@ -849,7 +849,7 @@ export default function Testimonials() {
                         value={formComment}
                         onChange={(e) => setFormComment(e.target.value)}
                         placeholder="Hãy viết cảm nhận thực tế của bạn về giáo trình, sự tận tình của giáo viên và phương pháp học đã giúp bạn bứt phá như thế nào..."
-                        className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#E15243] focus:bg-white transition-all resize-none"
+                        className="w-full px-4 py-2.5 bg-black/5 border border-black/10 rounded-xl text-sm text-[#1A1A1A] placeholder-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D] focus:bg-white transition-all resize-none"
                       />
                     </div>
 
@@ -858,7 +858,7 @@ export default function Testimonials() {
                       <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-1.5">
                         Tải Lên Bảng Điểm / File Xác Minh (Tùy chọn)
                       </label>
-                      <div className="border-2 border-dashed border-black/10 hover:border-[#E15243]/40 rounded-2xl p-4 text-center transition-all bg-black/[0.01]">
+                      <div className="border-2 border-dashed border-black/10 hover:border-[#14532D]/40 rounded-2xl p-4 text-center transition-all bg-black/[0.01]">
                         <input
                           type="file"
                           id="proof-upload-input"
@@ -867,7 +867,7 @@ export default function Testimonials() {
                           className="hidden"
                         />
                         <label htmlFor="proof-upload-input" className="cursor-pointer flex flex-col items-center justify-center gap-2">
-                          <Upload size={20} className="text-[#E15243]" />
+                          <Upload size={20} className="text-[#14532D]" />
                           <span className="text-xs font-bold text-[#1A1A1A]">
                             {uploadedProof ? "✓ Đã chọn file minh chứng thành công" : "Kéo thả hoặc nhấp để tải ảnh bảng điểm (TRF)"}
                           </span>
@@ -889,7 +889,7 @@ export default function Testimonials() {
                       </button>
                       <button
                         type="submit"
-                        className="px-6 py-2.5 bg-[#1A1A1A] hover:bg-[#E15243] text-[#FAF9F6] hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md cursor-pointer"
+                        className="px-6 py-2.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md cursor-pointer"
                       >
                         Gửi nhận xét
                       </button>

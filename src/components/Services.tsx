@@ -95,13 +95,13 @@ export default function Services() {
   const getIcon = (id: string) => {
     switch (id) {
       case "focus":
-        return <BookOpen className="text-[#E15243]" size={24} />;
+        return <BookOpen className="text-[#14532D]" size={24} />;
       case "masterclass":
-        return <Headphones className="text-[#8BA8D1]" size={24} />;
+        return <Headphones className="text-[#15803D]" size={24} />;
       case "intensive":
-        return <PenTool className="text-[#E15243]" size={24} />;
+        return <PenTool className="text-[#14532D]" size={24} />;
       default:
-        return <Sparkles className="text-[#8BA8D1]" size={24} />;
+        return <Sparkles className="text-[#15803D]" size={24} />;
     }
   };
 
@@ -115,7 +115,7 @@ export default function Services() {
         
         {/* Editorial Heading */}
         <div className="max-w-3xl mb-16 text-left">
-          <span className="font-mono text-xs tracking-[0.25em] text-[#E15243] uppercase block mb-3 font-bold">
+          <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
             Lộ Trình Tinh Gọn - Cá Nhân Hóa
           </span>
           <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight mb-4">
@@ -132,7 +132,7 @@ export default function Services() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="course-card bg-white border border-black/5 hover:border-[#E15243]/55 p-8 md:p-10 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 group cursor-pointer text-left"
+              className="course-card bg-white border border-black/5 hover:border-[#14532D]/55 p-8 md:p-10 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 group cursor-pointer text-left"
               onClick={() => setSelectedCourse(course)}
               id={`course-card-${course.id}`}
             >
@@ -141,8 +141,8 @@ export default function Services() {
                 <div className="flex items-center justify-between mb-8">
                   <div className={`h-12 w-12 rounded-xl flex items-center justify-center border ${
                     course.id === "masterclass" || course.id === "speaking"
-                      ? "bg-[#8BA8D1]/10 border-[#8BA8D1]/20"
-                      : "bg-[#E15243]/10 border-[#E15243]/20"
+                      ? "bg-[#15803D]/10 border-[#15803D]/20"
+                      : "bg-[#14532D]/10 border-[#14532D]/20"
                   }`}>
                     {getIcon(course.id)}
                   </div>
@@ -152,13 +152,13 @@ export default function Services() {
                 </div>
 
                 {/* Course Main Details */}
-                <h3 className="font-serif text-2xl font-bold text-[#1A1A1A] group-hover:text-[#E15243] transition-colors mb-2">
+                <h3 className="font-serif text-2xl font-bold text-[#1A1A1A] group-hover:text-[#14532D] transition-colors mb-2">
                   {course.title}
                 </h3>
                 <p className={`font-mono text-xs font-semibold tracking-wider mb-4 uppercase ${
                   course.id === "masterclass" || course.id === "speaking"
-                    ? "text-[#8BA8D1]"
-                    : "text-[#E15243]"
+                    ? "text-[#15803D]"
+                    : "text-[#14532D]"
                 }`}>
                   {course.target}
                 </p>
@@ -168,7 +168,7 @@ export default function Services() {
               </div>
 
               {/* Readmore trigger */}
-              <div className="pt-6 border-t border-black/5 flex items-center justify-between text-xs font-bold text-[#1A1A1A]/80 group-hover:text-[#E15243] transition-colors uppercase tracking-wider">
+              <div className="pt-6 border-t border-black/5 flex items-center justify-between text-xs font-bold text-[#1A1A1A]/80 group-hover:text-[#14532D] transition-colors uppercase tracking-wider">
                 <span>Tìm hiểu chi tiết giáo trình</span>
                 <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </div>
@@ -200,15 +200,15 @@ export default function Services() {
               <div className="flex items-center gap-3 mb-4">
                 <div className={`h-10 w-10 rounded-lg flex items-center justify-center border ${
                   selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                    ? "bg-[#8BA8D1]/10 border-[#8BA8D1]/20"
-                    : "bg-[#E15243]/10 border-[#E15243]/20"
+                    ? "bg-[#15803D]/10 border-[#15803D]/20"
+                    : "bg-[#14532D]/10 border-[#14532D]/20"
                 }`}>
                   {getIcon(selectedCourse.id)}
                 </div>
                 <span className={`font-mono text-xs tracking-wider font-semibold uppercase ${
                   selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                    ? "text-[#8BA8D1]"
-                    : "text-[#E15243]"
+                    ? "text-[#15803D]"
+                    : "text-[#14532D]"
                 }`}>
                   {selectedCourse.focus}
                 </span>
@@ -222,8 +222,8 @@ export default function Services() {
                 <p>Thời gian học: <strong className="text-[#1A1A1A]">{selectedCourse.duration}</strong></p>
                 <p>Mục tiêu: <strong className={`font-bold ${
                   selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                    ? "text-[#8BA8D1]"
-                    : "text-[#E15243]"
+                    ? "text-[#15803D]"
+                    : "text-[#14532D]"
                 }`}>{selectedCourse.target}</strong></p>
               </div>
 
@@ -240,13 +240,13 @@ export default function Services() {
                   <li key={index} className="flex gap-3 text-sm text-[#1A1A1A]/85 leading-relaxed">
                     <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 border ${
                       selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                        ? "bg-[#8BA8D1]/10 border-[#8BA8D1]/20"
-                        : "bg-[#E15243]/10 border-[#E15243]/20"
+                        ? "bg-[#15803D]/10 border-[#15803D]/20"
+                        : "bg-[#14532D]/10 border-[#14532D]/20"
                     }`}>
                       <Check size={12} className={`font-bold ${
                         selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                          ? "text-[#8BA8D1]"
-                          : "text-[#E15243]"
+                          ? "text-[#15803D]"
+                          : "text-[#14532D]"
                       }`} />
                     </div>
                     <span>{highlight}</span>
@@ -271,7 +271,7 @@ export default function Services() {
                       contactSection.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
-                  className="px-6 py-2.5 bg-[#E15243] hover:bg-[#D04335] text-white text-xs font-bold rounded-xl transition-colors uppercase tracking-wider shadow-md text-center"
+                  className="px-6 py-2.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] text-xs font-bold rounded-xl transition-colors uppercase tracking-wider shadow-md text-center"
                 >
                   Đăng ký tư vấn miễn phí
                 </a>

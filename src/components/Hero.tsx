@@ -100,11 +100,11 @@ export default function Hero({ onScrollTo }: HeroProps) {
       id="hero"
       className="relative min-h-[110vh] pt-32 pb-32 md:py-0 md:h-screen flex items-center justify-center overflow-hidden bg-white"
     >
-      {/* Signature Soft Blue Block on the right (exactly like reference image) */}
-      <div className="absolute right-0 top-0 bottom-0 w-full md:w-[35%] lg:w-[30%] bg-[#8BA8D1] hidden md:block z-0" />
+      {/* Signature Bright Green Block on the right */}
+      <div className="absolute right-0 top-0 bottom-0 w-full md:w-[35%] lg:w-[30%] bg-[#9FE870] hidden md:block z-0" />
 
       {/* Decorative Glowing Light Leak Streaks - softened for clean look */}
-      <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-red-600/[0.02] blur-[150px] pointer-events-none z-0" />
+      <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-[#14532D]/[0.03] blur-[150px] pointer-events-none z-0" />
       
       {/* Integrated Portrait of Cô Thương in the background */}
       <div 
@@ -138,7 +138,7 @@ export default function Hero({ onScrollTo }: HeroProps) {
               </span>
             </span>{" "}
             <span className="char-mask-wrapper block">
-              <span ref={addTitleWord} className="char-mask-inner text-[#E15243]">
+              <span ref={addTitleWord} className="char-mask-inner text-[#14532D]">
                 Luyện Thi IELTS Logic
               </span>
             </span>
@@ -146,8 +146,8 @@ export default function Hero({ onScrollTo }: HeroProps) {
 
           {/* Slogan & Introduction with Delay Animation */}
           <div ref={subRef} className="max-w-xl">
-            <p className="font-serif italic text-base md:text-lg text-[#1A1A1A]/70 leading-relaxed mb-6 border-l-2 border-[#E15243] pl-4">
-              Chuyên gia <span className="text-[#E15243] not-italic font-sans font-bold">Luyện thi IELTS</span> và Phát triển <span className="text-[#8BA8D1] not-italic font-sans font-bold">Tư duy Biện chứng</span>
+            <p className="font-serif italic text-base md:text-lg text-[#1A1A1A]/70 leading-relaxed mb-6 border-l-2 border-[#14532D] pl-4">
+              Chuyên gia <span className="text-[#14532D] not-italic font-sans font-bold">Luyện thi IELTS</span> và Phát triển <span className="text-[#15803D] not-italic font-sans font-bold">Tư duy Biện chứng</span>
             </p>
             
             <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-8">
@@ -157,19 +157,19 @@ export default function Hero({ onScrollTo }: HeroProps) {
             {/* Quick Credentials List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10 text-xs font-mono text-[#1A1A1A]/75">
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#E15243] shrink-0" />
+                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
                 <span>Cá nhân hóa lộ trình 1-Kèm-1</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#E15243] shrink-0" />
+                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
                 <span>Cam kết đầu ra bằng văn bản</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#E15243] shrink-0" />
+                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
                 <span>Sửa bài trực tiếp hàng tuần</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#E15243] shrink-0" />
+                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
                 <span>Phương pháp bóc tách đề khoa học</span>
               </div>
             </div>
@@ -178,14 +178,14 @@ export default function Hero({ onScrollTo }: HeroProps) {
             <div className="flex flex-wrap items-center gap-4 mb-8">
               <button
                 onClick={() => onScrollTo("contact")}
-                className="group px-8 py-3.5 bg-[#E15243] hover:bg-[#D04335] text-white font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
+                className="group px-8 py-3.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
               >
                 Nhận Lộ Trình Miễn Phí
                 <ChevronRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
               </button>
               <button
                 onClick={() => onScrollTo("courses")}
-                className="px-8 py-3.5 border border-black/15 hover:border-[#E15243] text-[#1A1A1A] font-bold text-xs rounded-full hover:bg-black/5 transition-all duration-300 cursor-pointer tracking-wider uppercase"
+                className="px-8 py-3.5 border border-black/15 hover:border-[#14532D] text-[#1A1A1A] font-bold text-xs rounded-full hover:bg-black/5 transition-all duration-300 cursor-pointer tracking-wider uppercase"
               >
                 Xem Khóa Học
               </button>
@@ -210,19 +210,19 @@ export default function Hero({ onScrollTo }: HeroProps) {
 
       {/* Floating Vertical Navigation Sidebar (Right-side, like reference image) */}
       <div className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 bg-white/90 border border-black/5 p-3 rounded-full backdrop-blur-md shadow-lg">
-        <button onClick={() => onScrollTo("hero")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#E15243] transition-colors cursor-pointer" id="side-nav-hero">
+        <button onClick={() => onScrollTo("hero")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-hero">
           <Compass size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Trang Chủ</span>
         </button>
-        <button onClick={() => onScrollTo("about")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#E15243] transition-colors cursor-pointer" id="side-nav-about">
+        <button onClick={() => onScrollTo("about")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-about">
           <AwardIcon size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Giới Thiệu</span>
         </button>
-        <button onClick={() => onScrollTo("courses")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#E15243] transition-colors cursor-pointer" id="side-nav-courses">
+        <button onClick={() => onScrollTo("courses")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-courses">
           <MessageSquare size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Khóa Học</span>
         </button>
-        <button onClick={() => onScrollTo("contact")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#E15243] transition-colors cursor-pointer" id="side-nav-contact">
+        <button onClick={() => onScrollTo("contact")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-contact">
           <ShieldAlert size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Tư Vấn</span>
         </button>

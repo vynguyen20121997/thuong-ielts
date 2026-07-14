@@ -96,7 +96,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#FAF9F6] text-[#1A1A1A] antialiased selection:bg-amber-600/20 selection:text-amber-950">
+    <div className="relative min-h-screen bg-[#FAF9F6] text-[#1A1A1A] antialiased selection:bg-green-600/20 selection:text-green-950">
       {/* Immersive Editorial Border Frame */}
       <div className="fixed inset-0 pointer-events-none border-[12px] border-white/60 z-40" />
 

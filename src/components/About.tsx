@@ -53,8 +53,8 @@ export default function About() {
       className="py-28 bg-white relative overflow-hidden border-b border-black/5"
     >
       {/* Decorative background visual elements */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 rounded-full bg-[#8BA8D1]/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#E15243]/3 blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/4 right-0 w-96 h-96 rounded-full bg-[#15803D]/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#14532D]/3 blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
         
@@ -75,7 +75,7 @@ export default function About() {
 
             {/* Float Label */}
             <div className="absolute bottom-8 left-8 right-8 z-20 bg-white/95 border border-black/5 p-5 rounded-2xl shadow-xl">
-              <span className="font-mono text-[9px] text-[#E15243] tracking-[0.25em] uppercase block mb-1 font-bold">
+              <span className="font-mono text-[9px] text-[#14532D] tracking-[0.25em] uppercase block mb-1 font-bold">
                 Triết lý hàng đầu
               </span>
               <p className="font-serif italic text-sm text-[#1A1A1A]/90 leading-relaxed">
@@ -89,7 +89,7 @@ export default function About() {
         <div className="lg:col-span-7 order-1 lg:order-2 text-left">
           
           <div className="reveal-element">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#E15243] uppercase block mb-3 font-bold">
+            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
               Giảng Viên & Người Truyền Cảm Hứng
             </span>
             <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] mb-8 leading-[1.15]">
@@ -100,8 +100,8 @@ export default function About() {
 
           {/* Education Block */}
           <div className="reveal-element flex gap-4 p-6 bg-white border border-black/5 rounded-2xl mb-8 shadow-sm">
-            <div className="h-12 w-12 rounded-xl bg-[#E15243]/10 flex items-center justify-center shrink-0">
-              <GraduationCap className="text-[#E15243]" size={24} />
+            <div className="h-12 w-12 rounded-xl bg-[#14532D]/10 flex items-center justify-center shrink-0">
+              <GraduationCap className="text-[#14532D]" size={24} />
             </div>
             <div>
               <h3 className="font-serif font-bold text-lg text-[#1A1A1A] mb-1">
@@ -128,8 +128,8 @@ export default function About() {
             
             {/* Principle 1 */}
             <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#8BA8D1]/10 flex items-center justify-center shrink-0 border border-[#8BA8D1]/20">
-                <Brain className="text-[#8BA8D1]" size={16} />
+              <div className="h-8 w-8 rounded-lg bg-[#15803D]/10 flex items-center justify-center shrink-0 border border-[#15803D]/20">
+                <Brain className="text-[#15803D]" size={16} />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
@@ -143,8 +143,8 @@ export default function About() {
 
             {/* Principle 2 */}
             <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#8BA8D1]/10 flex items-center justify-center shrink-0 border border-[#8BA8D1]/20">
-                <Compass className="text-[#8BA8D1]" size={16} />
+              <div className="h-8 w-8 rounded-lg bg-[#15803D]/10 flex items-center justify-center shrink-0 border border-[#15803D]/20">
+                <Compass className="text-[#15803D]" size={16} />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
@@ -158,8 +158,8 @@ export default function About() {
 
             {/* Principle 3 */}
             <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#E15243]/10 flex items-center justify-center shrink-0 border border-[#E15243]/20">
-                <Bookmark className="text-[#E15243]" size={16} />
+              <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
+                <Bookmark className="text-[#14532D]" size={16} />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">
@@ -173,8 +173,8 @@ export default function About() {
 
             {/* Principle 4 */}
             <div className="flex gap-3">
-              <div className="h-8 w-8 rounded-lg bg-[#E15243]/10 flex items-center justify-center shrink-0 border border-[#E15243]/20">
-                <GraduationCap className="text-[#E15243]" size={16} />
+              <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
+                <GraduationCap className="text-[#14532D]" size={16} />
               </div>
               <div>
                 <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">

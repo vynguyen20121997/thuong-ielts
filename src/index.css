@@ -7,6 +7,15 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
+/*
+  Brand accent palette (Wise-inspired two-tone green system).
+  Components use these as literal Tailwind arbitrary values, e.g. text-[#14532D].
+  - #9FE870  GREEN_BRIGHT        solid CTA fills, badge highlights, decorative blocks
+  - #86D65A  GREEN_BRIGHT_HOVER  hover state for bright-fill buttons
+  - #14532D  GREEN_DARK          text, icons, borders, small accents on light backgrounds
+  - #052E16  GREEN_DARKER        hover/darken state for dark-green text and fills
+*/
+
 /* Base Editorial Styling */
 body {
   background-color: #FFFFFF; /* Bright white background */

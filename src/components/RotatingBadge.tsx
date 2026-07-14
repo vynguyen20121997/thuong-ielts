@@ -48,7 +48,7 @@ export default function RotatingBadge({ onClick }: RotatingBadgeProps) {
       id="rotating-badge-wrapper"
     >
       {/* Background Glow */}
-      <div className="absolute inset-0 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-all duration-300 pointer-events-none" />
+      <div className="absolute inset-0 bg-green-500/10 rounded-full blur-xl group-hover:bg-green-500/20 transition-all duration-300 pointer-events-none" />
 
       {/* Spinning Outer Ring Text */}
       <div ref={badgeRef} className="absolute inset-0 w-full h-full">
@@ -60,7 +60,7 @@ export default function RotatingBadge({ onClick }: RotatingBadgeProps) {
               fill="none"
             />
           </defs>
-          <text className="font-mono text-[6px] tracking-[0.24em] fill-white/60 group-hover:fill-amber-500 uppercase transition-colors duration-300">
+          <text className="font-mono text-[6px] tracking-[0.24em] fill-white/60 group-hover:fill-green-500 uppercase transition-colors duration-300">
             <textPath href="#textPath" startOffset="0%">
               HNT.IELTS • TU DUY LOGIC • SINCE 2018 • EXCELLENCE •
             </textPath>
@@ -69,7 +69,7 @@ export default function RotatingBadge({ onClick }: RotatingBadgeProps) {
       </div>
 
       {/* Center Static Circle with Hover Interaction */}
-      <div className="relative w-16 h-16 bg-white/10 hover:bg-amber-600 border border-white/10 hover:border-amber-500 text-white hover:text-black rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 z-10">
+      <div className="relative w-16 h-16 bg-white/10 hover:bg-green-600 border border-white/10 hover:border-green-500 text-white hover:text-black rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 z-10">
         <ArrowUpRight size={22} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         <span className="font-mono text-[7px] font-bold tracking-wider mt-0.5 uppercase">
           Tư Vấn
