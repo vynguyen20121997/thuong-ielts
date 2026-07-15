@@ -14,6 +14,7 @@ import About from "./components/About";
 import Stats from "./components/Stats";
 import Services from "./components/Services";
 import Testimonials from "./components/Testimonials";
+import Feedback from "./components/Feedback";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
@@ -117,6 +118,10 @@ export default function App() {
 
         <div id="testimonials-container">
           <Testimonials />
+        </div>
+
+        <div id="feedback-container">
+          <Feedback />
         </div>
 
         <div id="courses-container" className="reveal-up">

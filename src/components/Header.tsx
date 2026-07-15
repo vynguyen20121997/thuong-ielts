@@ -22,6 +22,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
     { label: "Thành Tích", id: "stats" },
     { label: "Khóa Học", id: "courses" },
     { label: "Cảm Nhận", id: "testimonials" },
+    { label: "Feedback", id: "feedback" },
     { label: "Tư Vấn", id: "contact" },
   ];
 

@@ -1,0 +1,139 @@
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { Heart, Quote, X, ChevronDown, Maximize2 } from "lucide-react";
+import { feedbackItems } from "../data/feedbackData";
+
+const BATCH = 12;
+
+export default function Feedback() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const [visibleCount, setVisibleCount] = useState<number>(BATCH);
+  const [lightbox, setLightbox] = useState<{ url: string; subject: string } | null>(null);
+
+  const visible = feedbackItems.slice(0, visibleCount);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="feedback"
+      className="py-24 md:py-28 bg-[#FAF9F6] relative overflow-hidden border-b border-black/5"
+    >
+      {/* Soft green ambient glows */}
+      <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#9FE870]/20 blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#14532D]/[0.04] blur-[120px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+
+        {/* Heading */}
+        <div className="max-w-2xl mb-14 text-left">
+          <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
+            <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
+            Học Viên Nói Gì Về Cô Thương
+          </span>
+          <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight mb-4">
+            Bức Tường Cảm Nhận
+          </h2>
+          <p className="text-[#1A1A1A]/70 text-sm md:text-base leading-relaxed">
+            Hàng trăm lời nhắn thật từ các thế hệ học viên gửi cô Ngọc Thương qua từng khóa học — về sự tận tâm, phương pháp dễ hiểu và những giờ học đầy tiếng cười.
+          </p>
+        </div>
+
+        {/* Masonry wall of feedback screenshots */}
+        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-5 [column-fill:_balance]">
+          {visible.map((item, i) => (
+            <motion.button
+              key={item.id}
+              type="button"
+              onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
+              initial={reduce ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.5, delay: (i % BATCH) * 0.03, ease: [0.16, 1, 0.3, 1] }}
+              className="feedback-card group mb-5 block w-full break-inside-avoid text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
+            >
+              {/* Subject caption */}
+              <div className="px-5 pt-5 pb-3">
+                <Quote size={18} className="text-[#9FE870] mb-2" />
+                <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
+                  {item.subject}
+                </p>
+                {item.date && (
+                  <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold mt-2 block">
+                    {item.date}
+                  </span>
+                )}
+              </div>
+
+              {/* Screenshot */}
+              <div className="relative bg-black/[0.03] border-t border-black/5">
+                <img
+                  src={item.imageUrl}
+                  alt={`Cảm nhận học viên: ${item.subject}`}
+                  loading="lazy"
+                  className="w-full h-auto object-contain"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
+                  <Maximize2 size={14} />
+                  Phóng to
+                </div>
+              </div>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Load more */}
+        {visibleCount < feedbackItems.length && (
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => setVisibleCount((p) => p + BATCH)}
+              className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-black/10 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#1A1A1A] hover:text-[#FAF9F6] hover:border-[#1A1A1A] transition-all duration-300 cursor-pointer shadow-sm"
+              id="feedback-load-more"
+            >
+              <span>Xem thêm cảm nhận ({feedbackItems.length - visibleCount})</span>
+              <ChevronDown size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightbox(null)}
+            className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4"
+            id="feedback-lightbox"
+          >
+            <button
+              onClick={() => setLightbox(null)}
+              className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer"
+            >
+              <X size={24} />
+            </button>
+
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-2xl w-full flex flex-col items-center"
+            >
+              <img
+                src={lightbox.url}
+                alt={`Cảm nhận học viên: ${lightbox.subject}`}
+                className="max-h-[78vh] w-auto max-w-full rounded-2xl object-contain border border-white/10 shadow-2xl"
+              />
+              <p className="mt-4 text-center text-white font-serif font-bold text-base max-w-lg">
+                {lightbox.subject}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
