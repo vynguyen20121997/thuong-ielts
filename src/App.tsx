@@ -4,68 +4,42 @@
  */
 
 import { useEffect, useRef } from "react";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import Header from "./components/Header";
-import Hero from "./components/Hero";
-import About from "./components/About";
-import Stats from "./components/Stats";
-import Services from "./components/Services";
-import Testimonials from "./components/Testimonials";
-import Feedback from "./components/Feedback";
-import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import StudentResultsPage from "./pages/StudentResultsPage";
+import StudentFeedbackPage from "./pages/StudentFeedbackPage";
 
 // Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
-export default function App() {
+function AppShell() {
   const lenisRef = useRef<Lenis | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // 1. Initialize Lenis Smooth Scroll
+    // 1. Initialize Lenis Smooth Scroll (persists across route changes)
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential smoothing
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       touchMultiplier: 1.5,
       infinite: false,
     });
 
     lenisRef.current = lenis;
-
-    // 2. Synchronize Lenis scroll triggers with GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
-    // 3. Connect GSAP ticker with Lenis frame loop
     const updateTicker = (time: number) => {
-      lenis.raf(time * 1000); // converting seconds to milliseconds
+      lenis.raf(time * 1000);
     };
     gsap.ticker.add(updateTicker);
-
-    // Lag smoothing prevents jumping during heavy rendering frames
     gsap.ticker.lagSmoothing(0);
-
-    // 4. Reveal-on-scroll trigger animation setup
-    const revealElements = document.querySelectorAll(".reveal-up");
-    revealElements.forEach((el) => {
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 55 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 85%", // starts when element top is 85% from viewport top
-            toggleActions: "play none none none",
-          },
-        }
-      );
-    });
 
     return () => {
       lenis.destroy();
@@ -74,20 +48,28 @@ export default function App() {
     };
   }, []);
 
-  // Smooth scroll to a target section
+  // On route change: jump to top and refresh triggers for the new page.
+  useEffect(() => {
+    lenisRef.current?.scrollTo(0, { immediate: true });
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+  }, [location.pathname]);
+
+  // Smooth scroll to a section on the homepage. If we are on another route,
+  // navigate home first and let HomePage resolve the pending scroll target.
   const handleScrollToSection = (sectionId: string) => {
+    if (location.pathname !== "/") {
+      navigate("/", { state: { scrollTo: sectionId } });
+      return;
+    }
+
     if (sectionId === "hero") {
-      lenisRef.current?.scrollTo(0, {
-        duration: 1.5,
-      });
+      lenisRef.current?.scrollTo(0, { duration: 1.5 });
       return;
     }
 
     const target = document.getElementById(sectionId);
     if (target) {
-      // Calculate scroll offset based on sticky navbar height
       const navbarHeight = document.getElementById("header-nav")?.offsetHeight || 80;
-      
       lenisRef.current?.scrollTo(target, {
         offset: -navbarHeight,
         duration: 1.6,
@@ -104,34 +86,11 @@ export default function App() {
       {/* Modern Sticky Navigation */}
       <Header onScrollTo={handleScrollToSection} />
 
-      {/* Main Sections */}
-      <main className="relative z-10">
-        <Hero onScrollTo={handleScrollToSection} />
-        
-        <div id="about-container" className="reveal-up">
-          <About />
-        </div>
-
-        <div id="stats-container">
-          <Stats />
-        </div>
-
-        <div id="testimonials-container">
-          <Testimonials />
-        </div>
-
-        <div id="feedback-container">
-          <Feedback />
-        </div>
-
-        <div id="courses-container" className="reveal-up">
-          <Services />
-        </div>
-
-        <div id="contact-container" className="reveal-up">
-          <Contact />
-        </div>
-      </main>
+      <Routes>
+        <Route path="/" element={<HomePage onScrollTo={handleScrollToSection} />} />
+        <Route path="/ket-qua-hoc-vien" element={<StudentResultsPage />} />
+        <Route path="/cam-nhan-hoc-vien" element={<StudentFeedbackPage />} />
+      </Routes>
 
       {/* Footer block */}
       <Footer onScrollTo={handleScrollToSection} />
@@ -139,3 +98,10 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
+  );
+}

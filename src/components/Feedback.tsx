@@ -1,23 +1,30 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Heart, Quote, X, ChevronDown, Maximize2 } from "lucide-react";
+import { Heart, Quote, X, ChevronDown, Maximize2, ArrowRight } from "lucide-react";
 import { feedbackItems } from "../data/feedbackData";
 
+interface FeedbackProps {
+  variant?: "preview" | "full";
+}
+
+const PREVIEW_COUNT = 8;
 const BATCH = 12;
 
-export default function Feedback() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+export default function Feedback({ variant = "full" }: FeedbackProps) {
+  const isPreview = variant === "preview";
   const reduce = useReducedMotion();
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
   const [lightbox, setLightbox] = useState<{ url: string; subject: string } | null>(null);
 
-  const visible = feedbackItems.slice(0, visibleCount);
+  const visible = isPreview
+    ? feedbackItems.slice(0, PREVIEW_COUNT)
+    : feedbackItems.slice(0, visibleCount);
 
   return (
     <section
-      ref={sectionRef}
       id="feedback"
-      className="py-24 md:py-28 bg-[#FAF9F6] relative overflow-hidden border-b border-black/5"
+      className={`${isPreview ? "py-24 md:py-28" : "pt-32 pb-24"} bg-[#FAF9F6] relative overflow-hidden border-b border-black/5`}
     >
       {/* Soft green ambient glows */}
       <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#9FE870]/20 blur-[130px] pointer-events-none" />
@@ -25,21 +32,47 @@ export default function Feedback() {
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
 
-        {/* Heading */}
-        <div className="max-w-2xl mb-14 text-left">
-          <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
-            <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
-            Học Viên Nói Gì Về Cô Thương
-          </span>
-          <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight mb-4">
-            Bức Tường Cảm Nhận
-          </h2>
-          <p className="text-[#1A1A1A]/70 text-sm md:text-base leading-relaxed">
-            Hàng trăm lời nhắn thật từ các thế hệ học viên gửi cô Ngọc Thương qua từng khóa học — về sự tận tâm, phương pháp dễ hiểu và những giờ học đầy tiếng cười.
-          </p>
-        </div>
+        {/* Header */}
+        {isPreview ? (
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-14">
+            <div className="max-w-2xl text-left">
+              <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
+                <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
+                Học Viên Nói Gì Về Cô Thương
+              </span>
+              <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
+                150+ Đánh Giá Tích Cực <br />
+                Từ Học Viên
+              </h2>
+            </div>
 
-        {/* Masonry wall of feedback screenshots */}
+            <Link
+              to="/cam-nhan-hoc-vien"
+              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md whitespace-nowrap self-start lg:self-end"
+            >
+              Xem toàn bộ
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
+        ) : (
+          <div className="max-w-3xl mb-12 text-left">
+            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-4 font-bold flex items-center gap-1.5">
+              <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
+              Cảm Nhận Học Viên
+            </span>
+            <h1 className="font-serif text-6xl md:text-8xl font-black tracking-tighter text-[#14532D] leading-none mb-4">
+              150
+            </h1>
+            <p className="font-serif text-xl md:text-2xl font-bold text-[#1A1A1A] mb-4">
+              câu chuyện thật về những trải nghiệm học tập đáng nhớ
+            </p>
+            <p className="text-[#1A1A1A]/70 text-sm md:text-base leading-relaxed">
+              Mỗi học viên đều có một trải nghiệm và hành trình học tập riêng. Cùng lắng nghe những chia sẻ chân thành từ các bạn đã và đang đồng hành cùng Thương Hồ&rsquo;s Class trên hành trình chinh phục IELTS.
+            </p>
+          </div>
+        )}
+
+        {/* Masonry wall */}
         <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-5 [column-fill:_balance]">
           {visible.map((item, i) => (
             <motion.button
@@ -52,7 +85,6 @@ export default function Feedback() {
               transition={{ duration: 0.5, delay: (i % BATCH) * 0.03, ease: [0.16, 1, 0.3, 1] }}
               className="feedback-card group mb-5 block w-full break-inside-avoid text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
             >
-              {/* Subject caption */}
               <div className="px-5 pt-5 pb-3">
                 <Quote size={18} className="text-[#9FE870] mb-2" />
                 <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
@@ -65,7 +97,6 @@ export default function Feedback() {
                 )}
               </div>
 
-              {/* Screenshot */}
               <div className="relative bg-black/[0.03] border-t border-black/5">
                 <img
                   src={item.imageUrl}
@@ -82,8 +113,8 @@ export default function Feedback() {
           ))}
         </div>
 
-        {/* Load more */}
-        {visibleCount < feedbackItems.length && (
+        {/* Full-page load more */}
+        {!isPreview && visibleCount < feedbackItems.length && (
           <div className="mt-12 text-center">
             <button
               onClick={() => setVisibleCount((p) => p + BATCH)}

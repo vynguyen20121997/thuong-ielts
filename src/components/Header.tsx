@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 
 interface HeaderProps {
   onScrollTo: (sectionId: string) => void;
@@ -17,13 +18,17 @@ export default function Header({ onScrollTo }: HeaderProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
+  // Scroll-anchor items on the homepage
+  const scrollItems = [
     { label: "Giới Thiệu", id: "about" },
     { label: "Thành Tích", id: "stats" },
     { label: "Khóa Học", id: "courses" },
-    { label: "Cảm Nhận", id: "testimonials" },
-    { label: "Feedback", id: "feedback" },
-    { label: "Tư Vấn", id: "contact" },
+  ];
+
+  // Dedicated pages grouped under "Học Viên"
+  const studentPages = [
+    { label: "Kết quả học viên", to: "/ket-qua-hoc-vien" },
+    { label: "Cảm nhận học viên", to: "/cam-nhan-hoc-vien" },
   ];
 
   const handleNavClick = (id: string) => {
@@ -47,7 +52,6 @@ export default function Header({ onScrollTo }: HeaderProps) {
           className="group flex items-center cursor-pointer text-left animate-fade-in shrink-0"
           id="logo-button"
         >
-          {/* Reference Image Styled Square Logo */}
           <div className="w-9 h-9 md:w-10 md:h-10 border-2 border-[#14532D] flex items-center justify-center font-bold text-lg md:text-xl text-[#14532D] font-serif mr-2 md:mr-3 transition-colors duration-300 group-hover:bg-[#14532D] group-hover:text-white rounded shrink-0">
             H
           </div>
@@ -63,7 +67,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-3 lg:gap-8 xl:gap-10 min-w-0" id="desktop-nav">
-          {navItems.map((item) => (
+          {scrollItems.map((item) => (
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
@@ -74,6 +78,37 @@ export default function Header({ onScrollTo }: HeaderProps) {
               <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out group-hover:w-full" />
             </button>
           ))}
+
+          {/* Học Viên dropdown */}
+          <div className="relative group py-2" id="nav-hocvien">
+            <button className="flex items-center gap-1 text-xs lg:text-sm font-semibold text-[#1A1A1A]/70 group-hover:text-[#14532D] transition-colors cursor-pointer whitespace-nowrap">
+              Học Viên
+              <ChevronDown size={14} className="transition-transform duration-300 group-hover:rotate-180" />
+            </button>
+            {/* Bridge + dropdown panel (opens on hover) */}
+            <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
+              <div className="bg-white border border-black/5 rounded-2xl shadow-xl p-2 w-56">
+                {studentPages.map((p) => (
+                  <Link
+                    key={p.to}
+                    to={p.to}
+                    className="block px-4 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A]/80 hover:text-[#14532D] hover:bg-[#9FE870]/15 transition-colors whitespace-nowrap"
+                  >
+                    {p.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleNavClick("contact")}
+            className="relative py-2 text-xs lg:text-sm font-semibold text-[#1A1A1A]/70 hover:text-[#14532D] transition-colors cursor-pointer group animate-fade-in whitespace-nowrap"
+            id="nav-link-contact"
+          >
+            Tư Vấn
+            <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out group-hover:w-full" />
+          </button>
         </nav>
 
         {/* Action Button */}
@@ -103,28 +138,52 @@ export default function Header({ onScrollTo }: HeaderProps) {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 top-[68px] bg-white z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 ${
+        className={`fixed inset-0 top-[68px] bg-white z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${
           isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
         }`}
         id="mobile-menu-drawer"
       >
-        <div className="flex flex-col gap-8">
-          {navItems.map((item, index) => (
+        <div className="flex flex-col gap-7">
+          {scrollItems.map((item) => (
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
               className="font-serif text-3xl font-bold text-left text-[#1A1A1A] hover:text-[#14532D] transition-colors focus:outline-none cursor-pointer"
-              style={{
-                transitionDelay: `${index * 50}ms`,
-              }}
               id={`mobile-link-${item.id}`}
             >
               {item.label}
             </button>
           ))}
+
+          {/* Học Viên group */}
+          <div>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold block mb-3">
+              Học Viên
+            </span>
+            <div className="flex flex-col gap-4 pl-1">
+              {studentPages.map((p) => (
+                <Link
+                  key={p.to}
+                  to={p.to}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="font-serif text-2xl font-bold text-left text-[#1A1A1A] hover:text-[#14532D] transition-colors"
+                >
+                  {p.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleNavClick("contact")}
+            className="font-serif text-3xl font-bold text-left text-[#1A1A1A] hover:text-[#14532D] transition-colors focus:outline-none cursor-pointer"
+            id="mobile-link-contact"
+          >
+            Tư Vấn
+          </button>
         </div>
 
-        <div className="flex flex-col gap-6" id="mobile-menu-footer">
+        <div className="flex flex-col gap-6 pt-8" id="mobile-menu-footer">
           <button
             onClick={() => handleNavClick("contact")}
             className="w-full py-4 bg-[#9FE870] text-[#14532D] hover:bg-[#86D65A] font-bold text-center rounded-xl flex items-center justify-center gap-2 text-sm tracking-wider uppercase shadow-lg transition-colors"
@@ -133,7 +192,7 @@ export default function Header({ onScrollTo }: HeaderProps) {
             Đăng ký học ngay
             <ArrowRight size={16} />
           </button>
-          
+
           <div className="text-center">
             <p className="font-mono text-xs text-[#1A1A1A]/40">
               © 2026 Hồ Ngọc Thương. All rights reserved.
