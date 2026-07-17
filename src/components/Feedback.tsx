@@ -3,6 +3,12 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Heart, Quote, X, ChevronDown, Maximize2, ArrowRight } from "lucide-react";
 import { feedbackItems } from "../data/feedbackData";
+import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
+
+function firstLetter(s: string): string {
+  const t = s.trim();
+  return t ? t[0].toUpperCase() : "?";
+}
 
 interface FeedbackProps {
   variant?: "preview" | "full";
@@ -21,19 +27,35 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
     ? feedbackItems.slice(0, PREVIEW_COUNT)
     : feedbackItems.slice(0, visibleCount);
 
+  const headerAvatars: HeaderAvatar[] = feedbackItems
+    .slice(0, 14)
+    .map((f) => ({ label: firstLetter(f.subject) }));
+
   return (
     <section
       id="feedback"
-      className={`${isPreview ? "py-24 md:py-28" : "pt-32 pb-24"} bg-[#FAF9F6] relative overflow-hidden border-b border-black/5`}
+      className={`${isPreview ? "py-24 md:py-28" : "pb-24"} bg-[#FAF9F6] relative overflow-hidden border-b border-black/5`}
     >
       {/* Soft green ambient glows */}
       <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#9FE870]/20 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#14532D]/[0.04] blur-[120px] pointer-events-none" />
 
+      {/* Full-page hero header */}
+      {!isPreview && (
+        <StudentPageHeader
+          eyebrow="Cảm Nhận Học Viên"
+          count={150}
+          heading="câu chuyện thật về những trải nghiệm học tập đáng nhớ"
+          description="Mỗi học viên đều có một trải nghiệm và hành trình học tập riêng. Cùng lắng nghe những chia sẻ chân thành từ các bạn đã và đang đồng hành cùng Thương Hồ's Class trên hành trình chinh phục IELTS."
+          avatars={headerAvatars}
+          overflow={Math.max(0, feedbackItems.length - 14)}
+        />
+      )}
+
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
 
-        {/* Header */}
-        {isPreview ? (
+        {/* Preview header */}
+        {isPreview && (
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-14">
             <div className="max-w-2xl text-left">
               <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
@@ -53,22 +75,6 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
               Xem toàn bộ
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
-          </div>
-        ) : (
-          <div className="max-w-3xl mb-12 text-left">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-4 font-bold flex items-center gap-1.5">
-              <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
-              Cảm Nhận Học Viên
-            </span>
-            <h1 className="font-serif text-6xl md:text-8xl font-black tracking-tighter text-[#14532D] leading-none mb-4">
-              150
-            </h1>
-            <p className="font-serif text-xl md:text-2xl font-bold text-[#1A1A1A] mb-4">
-              câu chuyện thật về những trải nghiệm học tập đáng nhớ
-            </p>
-            <p className="text-[#1A1A1A]/70 text-sm md:text-base leading-relaxed">
-              Mỗi học viên đều có một trải nghiệm và hành trình học tập riêng. Cùng lắng nghe những chia sẻ chân thành từ các bạn đã và đang đồng hành cùng Thương Hồ&rsquo;s Class trên hành trình chinh phục IELTS.
-            </p>
           </div>
         )}
 

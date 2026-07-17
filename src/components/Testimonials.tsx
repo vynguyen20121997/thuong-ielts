@@ -17,6 +17,12 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 
 import { ExtendedTestimonialItem, initialTestimonials } from "../data/testimonialsData";
+import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
+
+function firstLetter(name: string): string {
+  const t = name.trim();
+  return t ? t[0].toUpperCase() : "?";
+}
 
 interface TestimonialsProps {
   variant?: "preview" | "full";
@@ -71,6 +77,11 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
   const shown = isPreview ? filtered.slice(0, PREVIEW_COUNT) : filtered.slice(0, visibleCount);
 
+  const headerAvatars: HeaderAvatar[] = useMemo(
+    () => sorted.slice(0, 14).map((t) => ({ label: firstLetter(t.studentName) })),
+    [sorted]
+  );
+
   const toggleExpand = (id: string) =>
     setExpandedReviews((prev) => ({ ...prev, [id]: !prev[id] }));
 
@@ -88,17 +99,29 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   return (
     <section
       id="testimonials"
-      className={`${isPreview ? "py-24" : "pt-32 pb-24"} bg-white text-[#1A1A1A] relative overflow-hidden border-t border-b border-black/5`}
+      className={`${isPreview ? "py-24" : "pb-24"} bg-white text-[#1A1A1A] relative overflow-hidden border-t border-b border-black/5`}
     >
       {/* Decorative Grid Lines */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(black_1px,transparent_1px)] [background-size:24px_24px]" />
       </div>
 
+      {/* Full-page hero header */}
+      {!isPreview && (
+        <StudentPageHeader
+          eyebrow="Kết Quả Học Viên"
+          count={124}
+          heading="hành trình & mục tiêu được chinh phục"
+          description="Mỗi điểm số là kết quả của một hành trình học tập nghiêm túc, từ việc xác định đúng vấn đề đến xây dựng lộ trình phù hợp và kiên trì cải thiện từng kỹ năng. Cùng nhìn lại những thành tích nổi bật của các học viên đã đồng hành cùng Thương Hồ's Class và đạt được mục tiêu IELTS của mình."
+          avatars={headerAvatars}
+          overflow={Math.max(0, initialTestimonials.length - 14)}
+        />
+      )}
+
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
 
-        {/* Header */}
-        {isPreview ? (
+        {/* Preview header */}
+        {isPreview && (
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-14">
             <div className="max-w-2xl text-left">
               <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
@@ -118,22 +141,6 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
               Xem toàn bộ
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
-          </div>
-        ) : (
-          <div className="max-w-3xl mb-12 text-left">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-4 font-bold flex items-center gap-1.5">
-              <Sparkles size={14} className="text-[#14532D]" />
-              Kết Quả Học Viên
-            </span>
-            <h1 className="font-serif text-6xl md:text-8xl font-black tracking-tighter text-[#14532D] leading-none mb-4">
-              124
-            </h1>
-            <p className="font-serif text-xl md:text-2xl font-bold text-[#1A1A1A] mb-4">
-              hành trình &amp; mục tiêu được chinh phục
-            </p>
-            <p className="text-[#1A1A1A]/70 text-sm md:text-base leading-relaxed">
-              Mỗi điểm số là kết quả của một hành trình học tập nghiêm túc, từ việc xác định đúng vấn đề đến xây dựng lộ trình phù hợp và kiên trì cải thiện từng kỹ năng. Cùng nhìn lại những thành tích nổi bật của các học viên đã đồng hành cùng Thương Hồ&rsquo;s Class và đạt được mục tiêu IELTS của mình.
-            </p>
           </div>
         )}
 
