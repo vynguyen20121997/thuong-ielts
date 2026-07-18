@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Heart, Quote, X, ChevronDown, Maximize2, ArrowRight } from "lucide-react";
+import { Heart, Quote, X, Maximize2, ArrowRight } from "lucide-react";
 import { feedbackItems } from "../data/feedbackData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
 import Carousel from "./Carousel";
@@ -23,10 +23,32 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
   const reduce = useReducedMotion();
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
   const [lightbox, setLightbox] = useState<{ url: string; subject: string } | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const visible = isPreview
     ? feedbackItems.slice(0, PREVIEW_COUNT)
     : feedbackItems.slice(0, visibleCount);
+
+  const hasMore = !isPreview && visibleCount < feedbackItems.length;
+
+  // Lazy-load more cards as the sentinel scrolls into view, instead of a manual "load more" click
+  const loadMore = useCallback(() => {
+    setVisibleCount((p) => p + BATCH);
+  }, []);
+
+  useEffect(() => {
+    if (isPreview || !hasMore) return;
+    const node = loadMoreRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore();
+      },
+      { rootMargin: "400px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isPreview, hasMore, loadMore]);
 
   const headerAvatars: HeaderAvatar[] = feedbackItems
     .slice(0, 14)
@@ -78,9 +100,9 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                   key={item.id}
                   type="button"
                   onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
-                  className="feedback-card group snap-start shrink-0 w-[280px] sm:w-[320px] self-start text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
+                  className="feedback-card group snap-start shrink-0 w-[320px] sm:w-[380px] flex flex-col text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
                 >
-                  <div className="px-5 pt-5 pb-3">
+                  <div className="px-5 pt-5 pb-3 shrink-0">
                     <Quote size={18} className="text-[#9FE870] mb-2" />
                     <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
                       {item.subject}
@@ -91,16 +113,16 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                       </span>
                     )}
                   </div>
-                  <div className="relative bg-black/[0.03] border-t border-black/5">
+                  <div className="relative bg-black/[0.03] border-t border-black/5 flex-1 min-h-[340px]">
                     <img
                       src={item.imageUrl}
                       alt={`Cảm nhận học viên: ${item.subject}`}
                       loading="lazy"
-                      className="w-full h-auto object-contain"
+                      className="absolute inset-0 w-full h-full object-contain"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
                       <Maximize2 size={14} />
-                      Phóng to
+                      Phóng to để đọc rõ hơn
                     </div>
                   </div>
                 </button>
@@ -159,16 +181,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
               ))}
             </div>
 
-            {visibleCount < feedbackItems.length && (
-              <div className="mt-12 text-center">
-                <button
-                  onClick={() => setVisibleCount((p) => p + BATCH)}
-                  className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-black/10 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#1A1A1A] hover:text-[#FAF9F6] hover:border-[#1A1A1A] transition-all duration-300 cursor-pointer shadow-sm"
-                  id="feedback-load-more"
-                >
-                  <span>Xem thêm cảm nhận ({feedbackItems.length - visibleCount})</span>
-                  <ChevronDown size={14} />
-                </button>
+            {hasMore && (
+              <div ref={loadMoreRef} className="mt-12 flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold" id="feedback-load-more">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+                Đang tải thêm...
               </div>
             )}
           </>
@@ -198,7 +214,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-2xl w-full flex flex-col items-center"
+              className="max-w-3xl w-full flex flex-col items-center"
             >
               <img
                 src={lightbox.url}

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
-import { Award, CheckCircle2, ChevronRight, MessageSquare, Compass, ShieldAlert, Award as AwardIcon } from "lucide-react";
+import { Award, ChevronRight, MessageSquare, Compass, ShieldAlert, Award as AwardIcon } from "lucide-react";
 import PlexusCanvas from "./PlexusCanvas";
 import { initialTestimonials } from "../data/testimonialsData";
 import { feedbackItems } from "../data/feedbackData";
@@ -96,7 +96,7 @@ export default function Hero() {
     <section
       ref={containerRef}
       id="hero"
-      className="relative min-h-[110vh] pt-32 pb-32 md:py-0 md:h-screen flex items-center justify-center overflow-hidden bg-white"
+      className="relative min-h-[100dvh] pt-32 pb-32 md:py-16 flex items-center justify-center overflow-hidden bg-white"
     >
       {/* Signature Bright Green Block on the right */}
       <div className="absolute right-0 top-0 bottom-0 w-full md:w-[35%] lg:w-[30%] bg-[#9FE870] hidden md:block z-0" />
@@ -105,10 +105,16 @@ export default function Hero() {
       <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-[#14532D]/[0.03] blur-[150px] pointer-events-none z-0" />
       
       {/* Integrated Portrait of Cô Thương in the background */}
-      <div 
+      <div
         ref={portraitRef}
         className="absolute bottom-0 right-0 w-full md:w-[48%] lg:w-[42%] h-[55%] md:h-[95%] pointer-events-none select-none z-5"
-      />
+      >
+        <img
+          src="/images/ho-ngoc-thuong-portrait.png"
+          alt="Cô Hồ Ngọc Thương"
+          className="absolute bottom-0 right-0 h-full w-auto max-w-none object-contain object-bottom"
+        />
+      </div>
 
       {/* 3D Plexus Canvas Interactive Background (Overlays the portrait image) */}
       <PlexusCanvas className="absolute inset-0 w-full h-full pointer-events-none z-10" />
@@ -137,7 +143,7 @@ export default function Hero() {
             </span>{" "}
             <span className="char-mask-wrapper block">
               <span ref={addTitleWord} className="char-mask-inner text-[#14532D]">
-                Luyện Thi IELTS Logic
+                Chuyên Gia IELTS Master
               </span>
             </span>
           </h1>
@@ -147,28 +153,32 @@ export default function Hero() {
             <p className="font-sans italic text-base md:text-lg text-[#1A1A1A]/70 leading-relaxed mb-6 border-l-2 border-[#14532D] pl-4">
               Chuyên gia <span className="text-[#14532D] not-italic font-sans font-bold">Luyện thi IELTS</span> và Phát triển <span className="text-[#15803D] not-italic font-sans font-bold">Tư duy Biện chứng</span>
             </p>
-            
-            <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-8">
-              Cử nhân Đại học Ngoại Thương (FTU), chứng chỉ giảng dạy CELTA (Cambridge) - IELTS Overall 8.5 (Listening & Reading 9.0). Giúp học viên bứt phá điểm số thông qua phương pháp sơ đồ hóa và rèn luyện tư duy phân tích chiều sâu.
+
+            <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-4">
+              <span className="text-[#1A1A1A] font-bold">Cử nhân xuất sắc Đại học Ngoại Thương (FTU)</span>, chứng chỉ giảng dạy <span className="text-[#1A1A1A] font-bold">CELTA do Cambridge cấp</span>, <span className="text-[#1A1A1A] font-bold">IELTS Overall 8.5</span> (Listening &amp; Reading tuyệt đối 9.0). Hơn <span className="text-[#14532D] font-bold">4 năm trực tiếp đứng lớp</span>, dẫn dắt <span className="text-[#1A1A1A] font-bold">{initialTestimonials.length}+ học viên đạt điểm cao</span> và nhận <span className="text-[#1A1A1A] font-bold">{feedbackItems.length}+ phản hồi tích cực</span> bằng phương pháp sơ đồ hóa tư duy logic.
             </p>
 
-            {/* Quick Credentials List */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10 text-xs font-mono text-[#1A1A1A]/75">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
-                <span>Cá nhân hóa lộ trình 1-Kèm-1</span>
+            <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-8">
+              Theo đuổi IELTS vì đam mê, và sau khi chạm mốc 8.5 Overall thì chọn con đường giảng dạy để giúp người khác đi nhanh hơn con đường mình từng đi.
+            </p>
+
+            {/* Achievement stat strip */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-5 sm:divide-x sm:divide-black/10 mb-10 max-w-md">
+              <div className="sm:pr-4">
+                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">8.5</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Overall Band</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
-                <span>Cam kết đầu ra bằng văn bản</span>
+              <div className="sm:px-4">
+                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">9.0</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Listening</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
-                <span>Sửa bài trực tiếp hàng tuần</span>
+              <div className="sm:px-4">
+                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">94%</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Đạt Target</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={14} className="text-[#14532D] shrink-0" />
-                <span>Phương pháp bóc tách đề khoa học</span>
+              <div className="sm:pl-4">
+                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">2.500+</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Học Viên Đã Dạy</span>
               </div>
             </div>
 
@@ -185,15 +195,21 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right Column: Floating credential cards over the green block */}
-        <div ref={rightSideRef} className="md:col-span-5 order-1 md:order-2 h-[280px] md:h-[420px] relative">
+        {/* Right Column: Floating credential cards over the green block.
+            Positions/sizes are percentage + clamp()-based (not fixed px) so the
+            cluster scales fluidly with the column and never overlaps at any
+            zoom level or intermediate viewport width. */}
+        <div ref={rightSideRef} className="md:col-span-5 order-1 md:order-2 w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[10/11] relative">
 
           {/* Large overall band card */}
-          <div className="absolute top-2 md:top-8 left-2 md:left-4 bg-white rounded-3xl shadow-xl p-6 w-[190px] md:w-[220px] rotate-[-3deg] border border-black/5">
+          <div
+            className="absolute bg-white rounded-3xl shadow-xl p-[clamp(0.9rem,3vw,1.5rem)] rotate-[-3deg] border border-black/5"
+            style={{ top: "2%", left: "2%", width: "clamp(140px, 42%, 220px)" }}
+          >
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#1A1A1A]/50 font-bold block mb-2">
               Overall Band
             </span>
-            <span className="font-serif text-5xl md:text-6xl font-black text-[#14532D] block leading-none">
+            <span className="font-serif text-[clamp(1.75rem,5vw,3.75rem)] font-black text-[#14532D] block leading-none">
               8.5
             </span>
             <span className="font-mono text-[10px] text-[#1A1A1A]/60 block mt-2">
@@ -202,17 +218,21 @@ export default function Hero() {
           </div>
 
           {/* Small listening score card, overlapping */}
-          <div className="absolute top-[150px] md:top-[220px] left-[110px] md:left-[150px] bg-[#14532D] text-white rounded-2xl shadow-xl p-5 w-[150px] md:w-[170px] rotate-[4deg]">
+          <div
+            className="absolute bg-[#14532D] text-white rounded-2xl shadow-xl p-[clamp(0.75rem,2.5vw,1.25rem)] rotate-[4deg]"
+            style={{ top: "42%", left: "34%", width: "clamp(110px, 32%, 170px)" }}
+          >
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/60 font-bold block mb-1">
               Listening
             </span>
-            <span className="font-serif text-3xl md:text-4xl font-black block leading-none">
+            <span className="font-serif text-[clamp(1.25rem,3.5vw,2.25rem)] font-black block leading-none">
               9.0
             </span>
           </div>
 
-          {/* Trust pills, bottom: link straight into the results / feedback sections below */}
-          <div className="absolute bottom-2 right-0 md:right-4 flex flex-col gap-2">
+          {/* Trust pills, bottom-left: link straight into the results / feedback sections below.
+              Kept clear of the portrait's face and hands on the right side of the frame. */}
+          <div className="absolute bottom-[4%] left-0 flex flex-col gap-2 max-w-[85%]">
             <Link
               to="/ket-qua-hoc-vien"
               className="group bg-white rounded-full shadow-xl pl-2 pr-4 py-2 flex items-center gap-3 border border-black/5 hover:border-[#14532D]/30 transition-colors"

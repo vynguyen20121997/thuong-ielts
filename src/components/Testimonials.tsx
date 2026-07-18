@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   Quote,
@@ -8,7 +8,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
-  Check,
   Calendar,
   Sparkles,
   ArrowRight,
@@ -44,6 +43,12 @@ function yearOf(date: string): string | null {
   return m ? m[1] : null;
 }
 
+// Parse "8.5 IELTS" -> 8.5; unknown formats sort last.
+function scoreKey(score: string): number {
+  const m = score.match(/(\d+(\.\d+)?)/);
+  return m ? Number(m[1]) : 0;
+}
+
 export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const isPreview = variant === "preview";
 
@@ -53,6 +58,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const [selectedProofIndex, setSelectedProofIndex] = useState<number>(0);
   const [selectedProofName, setSelectedProofName] = useState<string>("");
   const [activeYear, setActiveYear] = useState<string>("all");
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
 
   // Sort newest-first by year/date
@@ -76,7 +82,34 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     return sorted.filter((t) => yearOf(t.date) === activeYear);
   }, [sorted, isPreview, activeYear]);
 
-  const shown = isPreview ? filtered.slice(0, PREVIEW_COUNT) : filtered.slice(0, visibleCount);
+  // Highest band score first, for the homepage honor-roll preview
+  const byScore = useMemo(
+    () => [...initialTestimonials].sort((a, b) => scoreKey(b.score) - scoreKey(a.score)),
+    []
+  );
+
+  const shown = isPreview ? byScore.slice(0, PREVIEW_COUNT) : filtered.slice(0, visibleCount);
+
+  const hasMore = !isPreview && filtered.length > visibleCount;
+
+  // Lazy-load more cards as the sentinel scrolls into view, instead of a manual "load more" click
+  const loadMore = useCallback(() => {
+    setVisibleCount((p) => p + BATCH);
+  }, []);
+
+  useEffect(() => {
+    if (isPreview || !hasMore) return;
+    const node = loadMoreRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore();
+      },
+      { rootMargin: "400px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isPreview, hasMore, loadMore]);
 
   const headerAvatars: HeaderAvatar[] = useMemo(
     () => sorted.slice(0, 14).map((t) => ({ label: firstLetter(t.studentName) })),
@@ -113,60 +146,6 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           <Quote size={40} />
         </div>
 
-        <div>
-          <div className="flex items-start justify-between gap-3 mb-5">
-            <div>
-              <h4 className="font-serif font-black text-sm text-[#1A1A1A] leading-tight">
-                {test.studentName}
-              </h4>
-              <p className="font-mono text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest mt-0.5 font-extrabold leading-none">
-                {test.schoolOrJob}
-              </p>
-            </div>
-
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
-              <Award size={10} />
-              {test.score}
-            </span>
-          </div>
-
-          {/* Course Program & Date tags */}
-          <div className="flex flex-wrap gap-2 items-center mb-4 text-[10px] font-mono text-black/40 font-bold uppercase tracking-wider">
-            <span className="inline-flex items-center gap-1 text-[#14532D] font-extrabold">
-              <Check size={12} />
-              {test.courseName}
-            </span>
-            <span>•</span>
-            <span className="inline-flex items-center gap-1">
-              <Calendar size={10} />
-              {test.date}
-            </span>
-          </div>
-
-          {test.comment && (
-            <div className="relative mb-5">
-              <p className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}>
-                "{test.comment}"
-              </p>
-              {!isExpanded && isLongComment && (
-                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-              )}
-              {isLongComment && (
-                <button
-                  onClick={() => toggleExpand(test.id)}
-                  className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
-                >
-                  {isExpanded ? (
-                    <>Rút gọn <ChevronUp size={12} /></>
-                  ) : (
-                    <>Xem thêm <ChevronDown size={12} /></>
-                  )}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
         {/* Proof image carousel */}
         {test.proofUrl && test.proofUrl.length > 0 && (() => {
           const images = test.proofUrl!;
@@ -179,7 +158,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 setSelectedProofIndex(safeIndex);
                 setSelectedProofName(test.studentName);
               }}
-              className="mt-1 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
+              className="mb-5 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
             >
               <img
                 src={images[safeIndex]}
@@ -218,6 +197,55 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             </div>
           );
         })()}
+
+        <div>
+          <div className="flex items-start justify-between gap-3 mb-5">
+            <div>
+              <h4 className="font-serif font-black text-sm text-[#1A1A1A] leading-tight">
+                {test.studentName}
+              </h4>
+              <p className="font-mono text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest mt-0.5 font-extrabold leading-none">
+                {test.schoolOrJob}
+              </p>
+            </div>
+
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
+              <Award size={10} />
+              {test.score}
+            </span>
+          </div>
+
+          {/* Date tag */}
+          <div className="flex flex-wrap gap-2 items-center mb-4 text-[10px] font-mono text-black/40 font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1">
+              <Calendar size={10} />
+              {test.date}
+            </span>
+          </div>
+
+          {test.comment && (
+            <div className="relative mb-5">
+              <p className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}>
+                "{test.comment}"
+              </p>
+              {!isExpanded && isLongComment && (
+                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+              )}
+              {isLongComment && (
+                <button
+                  onClick={() => toggleExpand(test.id)}
+                  className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
+                >
+                  {isExpanded ? (
+                    <>Rút gọn <ChevronUp size={12} /></>
+                  ) : (
+                    <>Xem thêm <ChevronDown size={12} /></>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -318,15 +346,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
               {shown.map((test) => renderCard(test))}
             </div>
 
-            {filtered.length > visibleCount && (
-              <div className="mt-12 text-center">
-                <button
-                  onClick={() => setVisibleCount((p) => p + BATCH)}
-                  className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-black/10 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#1A1A1A] hover:text-[#FAF9F6] hover:border-[#1A1A1A] transition-all duration-300 cursor-pointer shadow-sm"
-                >
-                  <span>Xem thêm ({filtered.length - visibleCount})</span>
-                  <ChevronDown size={14} />
-                </button>
+            {hasMore && (
+              <div ref={loadMoreRef} className="mt-12 flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+                Đang tải thêm...
               </div>
             )}
           </>
