@@ -1,14 +1,10 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { Award, CheckCircle2, ChevronRight, MessageSquare, Compass, ShieldAlert, Award as AwardIcon } from "lucide-react";
 import PlexusCanvas from "./PlexusCanvas";
-import RotatingBadge from "./RotatingBadge";
 
-interface HeroProps {
-  onScrollTo: (sectionId: string) => void;
-}
-
-export default function Hero({ onScrollTo }: HeroProps) {
+export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
   const titleWordsRef = useRef<HTMLSpanElement[]>([]);
@@ -176,21 +172,19 @@ export default function Hero({ onScrollTo }: HeroProps) {
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4 mb-8">
-              <button
-                onClick={() => onScrollTo("contact")}
+              <Link
+                to="/tu-van"
                 className="group px-8 py-3.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
               >
                 Nhận Lộ Trình Miễn Phí
                 <ChevronRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-              {/* Tạm ẩn nút "Xem Khóa Học"
-              <button
-                onClick={() => onScrollTo("courses")}
+              </Link>
+              <Link
+                to="/khoa-hoc"
                 className="px-8 py-3.5 border border-black/15 hover:border-[#14532D] text-[#1A1A1A] font-bold text-xs rounded-full hover:bg-black/5 transition-all duration-300 cursor-pointer tracking-wider uppercase"
               >
                 Xem Khóa Học
-              </button>
-              */}
+              </Link>
             </div>
           </div>
         </div>
@@ -246,22 +240,22 @@ export default function Hero({ onScrollTo }: HeroProps) {
 
       {/* Floating Vertical Navigation Sidebar (Right-side, like reference image) */}
       <div className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 bg-white/90 border border-black/5 p-3 rounded-full backdrop-blur-md shadow-lg">
-        <button onClick={() => onScrollTo("hero")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-hero">
+        <Link to="/" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-hero">
           <Compass size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Trang Chủ</span>
-        </button>
-        <button onClick={() => onScrollTo("about")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-about">
+        </Link>
+        <Link to="/gioi-thieu" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-about">
           <AwardIcon size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Giới Thiệu</span>
-        </button>
-        <button onClick={() => onScrollTo("courses")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-courses">
+        </Link>
+        <Link to="/khoa-hoc" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-courses">
           <MessageSquare size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Khóa Học</span>
-        </button>
-        <button onClick={() => onScrollTo("contact")} className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-contact">
+        </Link>
+        <Link to="/tu-van" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-contact">
           <ShieldAlert size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Tư Vấn</span>
-        </button>
+        </Link>
       </div>
 
     </section>
