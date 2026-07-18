@@ -39,17 +39,7 @@ export default function Footer() {
           </div>
 
           {/* Sitemaps */}
-          <div className="md:col-span-4 grid grid-cols-2 gap-8">
-            <div>
-              <h4 className="font-mono text-[10px] font-bold text-[#14532D] uppercase tracking-widest mb-6">Chương trình</h4>
-              <ul className="space-y-3 text-sm text-[#1A1A1A]/70 font-bold">
-                <li><Link to="/khoa-hoc" className="hover:text-[#14532D] transition-colors text-left">IELTS Focus (4 Kỹ Năng)</Link></li>
-                <li><Link to="/khoa-hoc" className="hover:text-[#14532D] transition-colors text-left">Reading Masterclass</Link></li>
-                <li><Link to="/khoa-hoc" className="hover:text-[#14532D] transition-colors text-left">Listening Masterclass</Link></li>
-                <li><Link to="/khoa-hoc" className="hover:text-[#14532D] transition-colors text-left">Writing & Speaking Intensive</Link></li>
-              </ul>
-            </div>
-
+          <div className="md:col-span-4 grid grid-cols-1 gap-8">
             <div>
               <h4 className="font-mono text-[10px] font-bold text-[#14532D] uppercase tracking-widest mb-6">Thông tin</h4>
               <ul className="space-y-3 text-sm text-[#1A1A1A]/70 font-bold">

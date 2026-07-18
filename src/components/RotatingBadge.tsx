@@ -72,7 +72,7 @@ export default function RotatingBadge({ onClick }: RotatingBadgeProps) {
       <div className="relative w-16 h-16 bg-white/10 hover:bg-green-600 border border-white/10 hover:border-green-500 text-white hover:text-black rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 z-10">
         <ArrowUpRight size={22} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         <span className="font-mono text-[7px] font-bold tracking-wider mt-0.5 uppercase">
-          Tư Vấn
+          Liên Hệ
         </span>
       </div>
     </div>

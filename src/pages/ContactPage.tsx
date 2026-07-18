@@ -3,7 +3,7 @@ import Contact from "../components/Contact";
 
 export default function ContactPage() {
   useEffect(() => {
-    document.title = "Tư vấn | HNT.IELTS - Hồ Ngọc Thương";
+    document.title = "Liên hệ | HNT.IELTS - Hồ Ngọc Thương";
   }, []);
 
   return (

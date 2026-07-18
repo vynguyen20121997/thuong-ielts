@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { Award, CheckCircle2, ChevronRight, MessageSquare, Compass, ShieldAlert, Award as AwardIcon } from "lucide-react";
 import PlexusCanvas from "./PlexusCanvas";
+import { initialTestimonials } from "../data/testimonialsData";
+import { feedbackItems } from "../data/feedbackData";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -170,20 +172,14 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* CTAs */}
+            {/* CTA */}
             <div className="flex flex-wrap items-center gap-4 mb-8">
               <Link
-                to="/tu-van"
+                to="/gioi-thieu"
                 className="group px-8 py-3.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
               >
-                Nhận Lộ Trình Miễn Phí
+                Về Cô Thương
                 <ChevronRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
-              <Link
-                to="/khoa-hoc"
-                className="px-8 py-3.5 border border-black/15 hover:border-[#14532D] text-[#1A1A1A] font-bold text-xs rounded-full hover:bg-black/5 transition-all duration-300 cursor-pointer tracking-wider uppercase"
-              >
-                Xem Khóa Học
               </Link>
             </div>
           </div>
@@ -215,15 +211,32 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Trust pill card, bottom */}
-          <div className="absolute bottom-2 right-2 md:right-6 bg-white rounded-full shadow-xl px-5 py-3 flex items-center gap-3 border border-black/5">
-            <div className="h-8 w-8 rounded-full bg-[#9FE870] flex items-center justify-center shrink-0">
-              <Award size={16} className="text-[#14532D]" />
-            </div>
-            <div className="text-left">
-              <span className="font-serif text-base font-black text-[#1A1A1A] block leading-none">1.500+</span>
-              <span className="font-mono text-[8px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold">Học viên đạt đích</span>
-            </div>
+          {/* Trust pills, bottom: link straight into the results / feedback sections below */}
+          <div className="absolute bottom-2 right-0 md:right-4 flex flex-col gap-2">
+            <Link
+              to="/ket-qua-hoc-vien"
+              className="group bg-white rounded-full shadow-xl pl-2 pr-4 py-2 flex items-center gap-3 border border-black/5 hover:border-[#14532D]/30 transition-colors"
+            >
+              <span className="h-8 w-8 rounded-full bg-[#9FE870] flex items-center justify-center shrink-0">
+                <Award size={16} className="text-[#14532D]" />
+              </span>
+              <span className="text-left">
+                <span className="font-serif text-sm font-black text-[#1A1A1A] block leading-none">{initialTestimonials.length}+</span>
+                <span className="font-mono text-[8px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold group-hover:text-[#14532D] transition-colors">Học viên đạt đích</span>
+              </span>
+            </Link>
+            <Link
+              to="/cam-nhan-hoc-vien"
+              className="group bg-white rounded-full shadow-xl pl-2 pr-4 py-2 flex items-center gap-3 border border-black/5 hover:border-[#14532D]/30 transition-colors"
+            >
+              <span className="h-8 w-8 rounded-full bg-[#14532D] flex items-center justify-center shrink-0">
+                <MessageSquare size={16} className="text-white" />
+              </span>
+              <span className="text-left">
+                <span className="font-serif text-sm font-black text-[#1A1A1A] block leading-none">{feedbackItems.length}+</span>
+                <span className="font-mono text-[8px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold group-hover:text-[#14532D] transition-colors">Đánh giá tích cực</span>
+              </span>
+            </Link>
           </div>
         </div>
 
@@ -248,13 +261,9 @@ export default function Hero() {
           <AwardIcon size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Giới Thiệu</span>
         </Link>
-        <Link to="/khoa-hoc" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-courses">
-          <MessageSquare size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Khóa Học</span>
-        </Link>
         <Link to="/tu-van" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-contact">
           <ShieldAlert size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Tư Vấn</span>
+          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Liên Hệ</span>
         </Link>
       </div>
 

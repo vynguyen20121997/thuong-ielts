@@ -21,7 +21,6 @@ export default function Header() {
   const navItems = [
     { label: "Giới Thiệu", to: "/gioi-thieu" },
     { label: "Thành Tích", to: "/thanh-tich" },
-    { label: "Khóa Học", to: "/khoa-hoc" },
   ];
 
   const studentPages = [
@@ -110,7 +109,7 @@ export default function Header() {
           <NavLink to="/tu-van" className={linkClass}>
             {({ isActive }) => (
               <>
-                Tư Vấn
+                Liên Hệ
                 <span
                   className={`absolute bottom-0 left-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out ${
                     isActive ? "w-full" : "w-0 group-hover:w-full"
@@ -124,12 +123,12 @@ export default function Header() {
         {/* Action Button */}
         <div className="hidden md:block shrink-0" id="header-action-container">
           <Link
-            to="/tu-van"
+            to="/gioi-thieu"
             className="group relative inline-flex items-center gap-1.5 lg:gap-2 px-3.5 lg:px-6 py-2 lg:py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-[10px] lg:text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer whitespace-nowrap"
             id="header-cta"
           >
             <span className="relative z-10 flex items-center gap-1.5 lg:gap-2">
-              Đăng ký học
+              Về Cô Thương
               <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
             </span>
           </Link>
@@ -186,17 +185,17 @@ export default function Header() {
             to="/tu-van"
             className="font-serif text-3xl font-bold text-left text-[#1A1A1A] hover:text-[#14532D] transition-colors cursor-pointer"
           >
-            Tư Vấn
+            Liên Hệ
           </Link>
         </div>
 
         <div className="flex flex-col gap-6 pt-8" id="mobile-menu-footer">
           <Link
-            to="/tu-van"
+            to="/gioi-thieu"
             className="w-full py-4 bg-[#9FE870] text-[#14532D] hover:bg-[#86D65A] font-bold text-center rounded-xl flex items-center justify-center gap-2 text-sm tracking-wider uppercase shadow-lg transition-colors"
             id="mobile-cta"
           >
-            Đăng ký học ngay
+            Về Cô Thương
             <ArrowRight size={16} />
           </Link>
 
