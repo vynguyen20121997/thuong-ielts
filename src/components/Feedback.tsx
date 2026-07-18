@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Heart, Quote, X, ChevronDown, Maximize2, ArrowRight } from "lucide-react";
 import { feedbackItems } from "../data/feedbackData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
+import Carousel from "./Carousel";
 
 function firstLetter(s: string): string {
   const t = s.trim();
@@ -56,81 +57,121 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
 
         {/* Preview header */}
         {isPreview && (
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-14">
-            <div className="max-w-2xl text-left">
-              <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
-                <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
-                Học Viên Nói Gì Về Cô Thương
-              </span>
-              <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
-                150+ Đánh Giá Tích Cực <br />
-                Từ Học Viên
-              </h2>
-            </div>
-
-            <Link
-              to="/cam-nhan-hoc-vien"
-              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md whitespace-nowrap self-start lg:self-end"
-            >
-              Xem toàn bộ
-              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+          <div className="max-w-2xl text-left mb-12">
+            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
+              <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
+              Học Viên Nói Gì Về Cô Thương
+            </span>
+            <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
+              150+ Đánh Giá Tích Cực <br />
+              Từ Học Viên
+            </h2>
           </div>
         )}
 
-        {/* Masonry wall */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-5 [column-fill:_balance]">
-          {visible.map((item, i) => (
-            <motion.button
-              key={item.id}
-              type="button"
-              onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
-              initial={reduce ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.5, delay: (i % BATCH) * 0.03, ease: [0.16, 1, 0.3, 1] }}
-              className="feedback-card group mb-5 block w-full break-inside-avoid text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
-            >
-              <div className="px-5 pt-5 pb-3">
-                <Quote size={18} className="text-[#9FE870] mb-2" />
-                <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
-                  {item.subject}
-                </p>
-                {item.date && (
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold mt-2 block">
-                    {item.date}
-                  </span>
-                )}
-              </div>
+        {/* Cards: carousel on homepage preview, masonry on full page */}
+        {isPreview ? (
+          <>
+            <Carousel ariaLabel="Cảm nhận học viên">
+              {visible.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
+                  className="feedback-card group snap-start shrink-0 w-[280px] sm:w-[320px] self-start text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
+                >
+                  <div className="px-5 pt-5 pb-3">
+                    <Quote size={18} className="text-[#9FE870] mb-2" />
+                    <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
+                      {item.subject}
+                    </p>
+                    {item.date && (
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold mt-2 block">
+                        {item.date}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative bg-black/[0.03] border-t border-black/5">
+                    <img
+                      src={item.imageUrl}
+                      alt={`Cảm nhận học viên: ${item.subject}`}
+                      loading="lazy"
+                      className="w-full h-auto object-contain"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
+                      <Maximize2 size={14} />
+                      Phóng to
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </Carousel>
 
-              <div className="relative bg-black/[0.03] border-t border-black/5">
-                <img
-                  src={item.imageUrl}
-                  alt={`Cảm nhận học viên: ${item.subject}`}
-                  loading="lazy"
-                  className="w-full h-auto object-contain"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
-                  <Maximize2 size={14} />
-                  Phóng to
-                </div>
-              </div>
-            </motion.button>
-          ))}
-        </div>
+            <div className="mt-10 text-center">
+              <Link
+                to="/cam-nhan-hoc-vien"
+                className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
+              >
+                Xem toàn bộ
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Masonry wall */}
+            <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-5 [column-fill:_balance]">
+              {visible.map((item, i) => (
+                <motion.button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
+                  initial={reduce ? false : { opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.5, delay: (i % BATCH) * 0.03, ease: [0.16, 1, 0.3, 1] }}
+                  className="feedback-card group mb-5 block w-full break-inside-avoid text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
+                >
+                  <div className="px-5 pt-5 pb-3">
+                    <Quote size={18} className="text-[#9FE870] mb-2" />
+                    <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
+                      {item.subject}
+                    </p>
+                    {item.date && (
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold mt-2 block">
+                        {item.date}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative bg-black/[0.03] border-t border-black/5">
+                    <img
+                      src={item.imageUrl}
+                      alt={`Cảm nhận học viên: ${item.subject}`}
+                      loading="lazy"
+                      className="w-full h-auto object-contain"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
+                      <Maximize2 size={14} />
+                      Phóng to
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
 
-        {/* Full-page load more */}
-        {!isPreview && visibleCount < feedbackItems.length && (
-          <div className="mt-12 text-center">
-            <button
-              onClick={() => setVisibleCount((p) => p + BATCH)}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-black/10 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#1A1A1A] hover:text-[#FAF9F6] hover:border-[#1A1A1A] transition-all duration-300 cursor-pointer shadow-sm"
-              id="feedback-load-more"
-            >
-              <span>Xem thêm cảm nhận ({feedbackItems.length - visibleCount})</span>
-              <ChevronDown size={14} />
-            </button>
-          </div>
+            {visibleCount < feedbackItems.length && (
+              <div className="mt-12 text-center">
+                <button
+                  onClick={() => setVisibleCount((p) => p + BATCH)}
+                  className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-black/10 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#1A1A1A] hover:text-[#FAF9F6] hover:border-[#1A1A1A] transition-all duration-300 cursor-pointer shadow-sm"
+                  id="feedback-load-more"
+                >
+                  <span>Xem thêm cảm nhận ({feedbackItems.length - visibleCount})</span>
+                  <ChevronDown size={14} />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 

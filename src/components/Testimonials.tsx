@@ -18,6 +18,7 @@ import { AnimatePresence, motion } from "motion/react";
 
 import { ExtendedTestimonialItem, initialTestimonials } from "../data/testimonialsData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
+import Carousel from "./Carousel";
 
 function firstLetter(name: string): string {
   const t = name.trim();
@@ -96,6 +97,131 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const changeLightboxImage = (delta: number, total: number) =>
     setSelectedProofIndex((prev) => (prev + delta + total) % total);
 
+  const renderCard = (test: ExtendedTestimonialItem) => {
+    const isLongComment = (test.comment?.length ?? 0) > 180;
+    const isExpanded = expandedReviews[test.id] || false;
+
+    return (
+      <div
+        key={test.id}
+        className={`testimonial-card bg-white border border-black/5 hover:border-[#14532D]/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left ${
+          isPreview ? "snap-start shrink-0 w-[300px] sm:w-[340px]" : ""
+        }`}
+        id={test.id}
+      >
+        <div className="absolute top-6 right-6 text-black/5 group-hover:text-[#14532D]/10 transition-colors pointer-events-none">
+          <Quote size={40} />
+        </div>
+
+        <div>
+          <div className="flex items-start justify-between gap-3 mb-5">
+            <div>
+              <h4 className="font-serif font-black text-sm text-[#1A1A1A] leading-tight">
+                {test.studentName}
+              </h4>
+              <p className="font-mono text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest mt-0.5 font-extrabold leading-none">
+                {test.schoolOrJob}
+              </p>
+            </div>
+
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
+              <Award size={10} />
+              {test.score}
+            </span>
+          </div>
+
+          {/* Course Program & Date tags */}
+          <div className="flex flex-wrap gap-2 items-center mb-4 text-[10px] font-mono text-black/40 font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1 text-[#14532D] font-extrabold">
+              <Check size={12} />
+              {test.courseName}
+            </span>
+            <span>•</span>
+            <span className="inline-flex items-center gap-1">
+              <Calendar size={10} />
+              {test.date}
+            </span>
+          </div>
+
+          {test.comment && (
+            <div className="relative mb-5">
+              <p className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}>
+                "{test.comment}"
+              </p>
+              {!isExpanded && isLongComment && (
+                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+              )}
+              {isLongComment && (
+                <button
+                  onClick={() => toggleExpand(test.id)}
+                  className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
+                >
+                  {isExpanded ? (
+                    <>Rút gọn <ChevronUp size={12} /></>
+                  ) : (
+                    <>Xem thêm <ChevronDown size={12} /></>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Proof image carousel */}
+        {test.proofUrl && test.proofUrl.length > 0 && (() => {
+          const images = test.proofUrl!;
+          const currentIndex = cardImageIndex[test.id] || 0;
+          const safeIndex = currentIndex < images.length ? currentIndex : 0;
+          return (
+            <div
+              onClick={() => {
+                setSelectedProofImages(images);
+                setSelectedProofIndex(safeIndex);
+                setSelectedProofName(test.studentName);
+              }}
+              className="mt-1 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
+            >
+              <img
+                src={images[safeIndex]}
+                alt={`Bảng điểm ${test.studentName}`}
+                loading="lazy"
+                className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
+                <Maximize2 size={14} />
+                Phóng to bảng điểm
+              </div>
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => changeCardImage(e, test.id, -1, images.length)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button
+                    onClick={(e) => changeCardImage(e, test.id, 1, images.length)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2 py-1 bg-black/40 rounded-full">
+                    {images.map((_, i) => (
+                      <span
+                        key={i}
+                        className={`h-1.5 rounded-full transition-all ${i === safeIndex ? "w-3 bg-white" : "w-1.5 bg-white/50"}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
+      </div>
+    );
+  };
+
   return (
     <section
       id="testimonials"
@@ -122,25 +248,15 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
         {/* Preview header */}
         {isPreview && (
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-14">
-            <div className="max-w-2xl text-left">
-              <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
-                <Sparkles size={14} className="text-[#14532D]" />
-                Góc Vinh Danh Học Viên
-              </span>
-              <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
-                120+ Học Viên Thành Công <br />
-                Chinh Phục Mục Tiêu IELTS
-              </h2>
-            </div>
-
-            <Link
-              to="/ket-qua-hoc-vien"
-              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md whitespace-nowrap self-start lg:self-end"
-            >
-              Xem toàn bộ
-              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+          <div className="max-w-2xl text-left mb-12">
+            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
+              <Sparkles size={14} className="text-[#14532D]" />
+              Góc Vinh Danh Học Viên
+            </span>
+            <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
+              120+ Học Viên Thành Công <br />
+              Chinh Phục Mục Tiêu IELTS
+            </h2>
           </div>
         )}
 
@@ -179,143 +295,41 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           </div>
         )}
 
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {shown.map((test) => {
-            const isLongComment = (test.comment?.length ?? 0) > 180;
-            const isExpanded = expandedReviews[test.id] || false;
+        {/* Cards: carousel on homepage preview, grid on full page */}
+        {isPreview ? (
+          <>
+            <Carousel ariaLabel="Kết quả học viên">
+              {shown.map((test) => renderCard(test))}
+            </Carousel>
 
-            return (
-              <div
-                key={test.id}
-                className="testimonial-card bg-white border border-black/5 hover:border-[#14532D]/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left"
-                id={test.id}
+            <div className="mt-10 text-center">
+              <Link
+                to="/ket-qua-hoc-vien"
+                className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
               >
-                <div className="absolute top-6 right-6 text-black/5 group-hover:text-[#14532D]/10 transition-colors pointer-events-none">
-                  <Quote size={40} />
-                </div>
+                Xem toàn bộ
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {shown.map((test) => renderCard(test))}
+            </div>
 
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-5">
-                    <div>
-                      <h4 className="font-serif font-black text-sm text-[#1A1A1A] leading-tight">
-                        {test.studentName}
-                      </h4>
-                      <p className="font-mono text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest mt-0.5 font-extrabold leading-none">
-                        {test.schoolOrJob}
-                      </p>
-                    </div>
-
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
-                      <Award size={10} />
-                      {test.score}
-                    </span>
-                  </div>
-
-                  {/* Course Program & Date tags */}
-                  <div className="flex flex-wrap gap-2 items-center mb-4 text-[10px] font-mono text-black/40 font-bold uppercase tracking-wider">
-                    <span className="inline-flex items-center gap-1 text-[#14532D] font-extrabold">
-                      <Check size={12} />
-                      {test.courseName}
-                    </span>
-                    <span>•</span>
-                    <span className="inline-flex items-center gap-1">
-                      <Calendar size={10} />
-                      {test.date}
-                    </span>
-                  </div>
-
-                  {test.comment && (
-                    <div className="relative mb-5">
-                      <p className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}>
-                        "{test.comment}"
-                      </p>
-                      {!isExpanded && isLongComment && (
-                        <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-                      )}
-                      {isLongComment && (
-                        <button
-                          onClick={() => toggleExpand(test.id)}
-                          className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
-                        >
-                          {isExpanded ? (
-                            <>Rút gọn <ChevronUp size={12} /></>
-                          ) : (
-                            <>Xem thêm <ChevronDown size={12} /></>
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                {/* Proof image carousel */}
-                {test.proofUrl && test.proofUrl.length > 0 && (() => {
-                  const images = test.proofUrl!;
-                  const currentIndex = cardImageIndex[test.id] || 0;
-                  const safeIndex = currentIndex < images.length ? currentIndex : 0;
-                  return (
-                    <div
-                      onClick={() => {
-                        setSelectedProofImages(images);
-                        setSelectedProofIndex(safeIndex);
-                        setSelectedProofName(test.studentName);
-                      }}
-                      className="mt-1 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
-                    >
-                      <img
-                        src={images[safeIndex]}
-                        alt={`Bảng điểm ${test.studentName}`}
-                        loading="lazy"
-                        className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
-                        <Maximize2 size={14} />
-                        Phóng to bảng điểm
-                      </div>
-                      {images.length > 1 && (
-                        <>
-                          <button
-                            onClick={(e) => changeCardImage(e, test.id, -1, images.length)}
-                            className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
-                          >
-                            <ChevronLeft size={16} />
-                          </button>
-                          <button
-                            onClick={(e) => changeCardImage(e, test.id, 1, images.length)}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
-                          >
-                            <ChevronRight size={16} />
-                          </button>
-                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2 py-1 bg-black/40 rounded-full">
-                            {images.map((_, i) => (
-                              <span
-                                key={i}
-                                className={`h-1.5 rounded-full transition-all ${i === safeIndex ? "w-3 bg-white" : "w-1.5 bg-white/50"}`}
-                              />
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  );
-                })()}
+            {filtered.length > visibleCount && (
+              <div className="mt-12 text-center">
+                <button
+                  onClick={() => setVisibleCount((p) => p + BATCH)}
+                  className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-black/10 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#1A1A1A] hover:text-[#FAF9F6] hover:border-[#1A1A1A] transition-all duration-300 cursor-pointer shadow-sm"
+                >
+                  <span>Xem thêm ({filtered.length - visibleCount})</span>
+                  <ChevronDown size={14} />
+                </button>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Full-page load more */}
-        {!isPreview && filtered.length > visibleCount && (
-          <div className="mt-12 text-center">
-            <button
-              onClick={() => setVisibleCount((p) => p + BATCH)}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-white border border-black/10 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-[#1A1A1A] hover:text-[#FAF9F6] hover:border-[#1A1A1A] transition-all duration-300 cursor-pointer shadow-sm"
-            >
-              <span>Xem thêm ({filtered.length - visibleCount})</span>
-              <ChevronDown size={14} />
-            </button>
-          </div>
+            )}
+          </>
         )}
 
         {/* Lightbox */}

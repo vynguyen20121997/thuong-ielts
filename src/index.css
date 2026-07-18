@@ -65,3 +65,12 @@ html.lenis, html.lenis body {
   transform: translateY(100%);
 }
 
+/* Hide scrollbar for carousels / horizontal scrollers */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
