@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* Display typeface. Token kept as --font-serif so existing font-serif
+     utility usages across components pick this up without touching every file. */
+  --font-serif: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/*
+  Brand accent palette (Wise-inspired two-tone green system).
+  Components use these as literal Tailwind arbitrary values, e.g. text-[#14532D].
+  - #9FE870  GREEN_BRIGHT        solid CTA fills, badge highlights, decorative blocks
+  - #86D65A  GREEN_BRIGHT_HOVER  hover state for bright-fill buttons
+  - #14532D  GREEN_DARK          text, icons, borders, small accents on light backgrounds
+  - #052E16  GREEN_DARKER        hover/darken state for dark-green text and fills
+*/
+
+/* Base Editorial Styling */
+body {
+  background-color: #FFFFFF; /* Bright white background */
+  color: #1A1A1A; /* Charcoal text */
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Hide Scrollbar for Lenis smooth-scroll */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overflow: clip;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* GSAP Scroll reveal defaults */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* Character Masking styling */
+.char-mask-wrapper {
+  overflow: hidden;
+  display: inline-block;
+}
+
+.char-mask-inner {
+  display: inline-block;
+  transform: translateY(100%);
+}
+
+/* Hide scrollbar for carousels / horizontal scrollers */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+

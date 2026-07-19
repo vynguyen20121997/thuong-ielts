@@ -12,9 +12,9 @@ import dotenv from "dotenv";
 import { Pool } from "pg";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.join(__dirname, "..", ".env.local") });
-import { initialTestimonials } from "../src/data/testimonialsData";
-import { feedbackItems } from "../src/data/feedbackData";
+dotenv.config({ path: path.join(__dirname, "..", "apps", "web", ".env.local") });
+import { initialTestimonials } from "../apps/web/src/data/testimonialsData";
+import { feedbackItems } from "../apps/web/src/data/feedbackData";
 
 const pool = new Pool({
   host: process.env.PGHOST,
