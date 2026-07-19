@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Heart, Quote, X, Maximize2, ArrowRight } from "lucide-react";
-import { feedbackItems } from "../data/feedbackData";
+import { FeedbackItem } from "../data/feedbackData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
 import Carousel from "./Carousel";
 
@@ -26,6 +26,25 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
   const [lightbox, setLightbox] = useState<{ url: string; subject: string } | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/feedbacks")
+      .then((res) => res.json())
+      .then((data: FeedbackItem[]) => {
+        if (!cancelled) setFeedbackItems(data);
+      })
+      .catch((err) => console.error("Failed to load feedbacks:", err))
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const visible = isPreview
     ? feedbackItems.slice(0, PREVIEW_COUNT)
@@ -69,7 +88,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
       {!isPreview && (
         <StudentPageHeader
           eyebrow="Cảm Nhận Học Viên"
-          count={150}
+          count={feedbackItems.length}
           heading="câu chuyện thật về những trải nghiệm học tập đáng nhớ"
           description="Mỗi học viên đều có một trải nghiệm và hành trình học tập riêng. Cùng lắng nghe những chia sẻ chân thành từ các bạn đã và đang đồng hành cùng Thương Hồ's Class trên hành trình chinh phục IELTS."
           avatars={headerAvatars}
@@ -94,7 +113,16 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
         )}
 
         {/* Cards: carousel on homepage preview, masonry on full page */}
-        {isPreview ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2 py-16 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+            Đang tải dữ liệu...
+          </div>
+        ) : feedbackItems.length === 0 ? (
+          <div className="text-center py-16 text-sm text-[#1A1A1A]/50">
+            Chưa có dữ liệu cảm nhận.
+          </div>
+        ) : isPreview ? (
           <>
             <Carousel ariaLabel="Cảm nhận học viên">
               {visible.map((item) => (

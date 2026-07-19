@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { ExtendedTestimonialItem, initialTestimonials } from "../data/testimonialsData";
+import { ExtendedTestimonialItem } from "../data/testimonialsData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
 import Carousel from "./Carousel";
 
@@ -63,10 +63,29 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
 
+  const [testimonials, setTestimonials] = useState<ExtendedTestimonialItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/testimonials")
+      .then((res) => res.json())
+      .then((data: ExtendedTestimonialItem[]) => {
+        if (!cancelled) setTestimonials(data);
+      })
+      .catch((err) => console.error("Failed to load testimonials:", err))
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Sort newest-first by year/date
   const sorted = useMemo(
-    () => [...initialTestimonials].sort((a, b) => dateKey(b.date) - dateKey(a.date)),
-    []
+    () => [...testimonials].sort((a, b) => dateKey(b.date) - dateKey(a.date)),
+    [testimonials]
   );
 
   // Distinct years (desc) for the full-page filter
@@ -86,8 +105,8 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
   // Highest band score first, for the homepage honor-roll preview
   const byScore = useMemo(
-    () => [...initialTestimonials].sort((a, b) => scoreKey(b.score) - scoreKey(a.score)),
-    []
+    () => [...testimonials].sort((a, b) => scoreKey(b.score) - scoreKey(a.score)),
+    [testimonials]
   );
 
   const shown = isPreview ? byScore.slice(0, PREVIEW_COUNT) : filtered.slice(0, visibleCount);
@@ -266,11 +285,11 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
       {!isPreview && (
         <StudentPageHeader
           eyebrow="Kết Quả Học Viên"
-          count={124}
+          count={testimonials.length}
           heading="hành trình & mục tiêu được chinh phục"
           description="Mỗi điểm số là kết quả của một hành trình học tập nghiêm túc, từ việc xác định đúng vấn đề đến xây dựng lộ trình phù hợp và kiên trì cải thiện từng kỹ năng. Cùng nhìn lại những thành tích nổi bật của các học viên đã đồng hành cùng Thương Hồ's Class và đạt được mục tiêu IELTS của mình."
           avatars={headerAvatars}
-          overflow={Math.max(0, initialTestimonials.length - 14)}
+          overflow={Math.max(0, testimonials.length - 14)}
         />
       )}
 
@@ -326,7 +345,16 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
         )}
 
         {/* Cards: carousel on homepage preview, grid on full page */}
-        {isPreview ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2 py-16 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+            Đang tải dữ liệu...
+          </div>
+        ) : testimonials.length === 0 ? (
+          <div className="text-center py-16 text-sm text-[#1A1A1A]/50">
+            Chưa có dữ liệu học viên.
+          </div>
+        ) : isPreview ? (
           <>
             <Carousel ariaLabel="Kết quả học viên">
               {shown.map((test) => renderCard(test))}
