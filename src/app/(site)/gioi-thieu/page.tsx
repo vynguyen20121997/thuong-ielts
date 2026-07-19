@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import About from "../../components/About";
+import About from "../../../components/About";
 
 export const metadata: Metadata = {
   title: "Giới thiệu | HNT.IELTS - Hồ Ngọc Thương",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Contact from "../../components/Contact";
+import Contact from "../../../components/Contact";
 
 export const metadata: Metadata = {
   title: "Liên hệ | HNT.IELTS - Hồ Ngọc Thương",

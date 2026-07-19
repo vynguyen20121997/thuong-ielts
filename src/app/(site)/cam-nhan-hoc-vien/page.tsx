@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Feedback from "../../components/Feedback";
+import Feedback from "../../../components/Feedback";
 
 export const metadata: Metadata = {
   title: "Cảm nhận học viên | HNT.IELTS - Hồ Ngọc Thương",

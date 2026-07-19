@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Services from "../../components/Services";
+import Services from "../../../components/Services";
 
 export const metadata: Metadata = {
   title: "Khóa học | HNT.IELTS - Hồ Ngọc Thương",

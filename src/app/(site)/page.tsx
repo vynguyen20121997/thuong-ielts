@@ -1,6 +1,6 @@
-import Hero from "../components/Hero";
-import Testimonials from "../components/Testimonials";
-import Feedback from "../components/Feedback";
+import Hero from "../../components/Hero";
+import Testimonials from "../../components/Testimonials";
+import Feedback from "../../components/Feedback";
 
 export default function HomePage() {
   return (

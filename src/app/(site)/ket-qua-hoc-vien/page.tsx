@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Testimonials from "../../components/Testimonials";
+import Testimonials from "../../../components/Testimonials";
 
 export const metadata: Metadata = {
   title: "Kết quả học viên | HNT.IELTS - Hồ Ngọc Thương",
