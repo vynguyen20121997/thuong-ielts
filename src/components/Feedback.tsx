@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Heart, Quote, X, Maximize2, ArrowRight } from "lucide-react";
 import { feedbackItems } from "../data/feedbackData";
@@ -131,7 +133,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
 
             <div className="mt-10 text-center">
               <Link
-                to="/cam-nhan-hoc-vien"
+                href="/cam-nhan-hoc-vien"
                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
               >
                 Xem toàn bộ

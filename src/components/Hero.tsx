@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import gsap from "gsap";
 import { Award, ChevronRight, MessageSquare, Compass, ShieldAlert, Award as AwardIcon } from "lucide-react";
 import PlexusCanvas from "./PlexusCanvas";
@@ -185,7 +187,7 @@ export default function Hero() {
             {/* CTA */}
             <div className="flex flex-wrap items-center gap-4 mb-8">
               <Link
-                to="/gioi-thieu"
+                href="/gioi-thieu"
                 className="group px-8 py-3.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
               >
                 Về Cô Thương
@@ -234,7 +236,7 @@ export default function Hero() {
               Kept clear of the portrait's face and hands on the right side of the frame. */}
           <div className="absolute bottom-[4%] left-0 flex flex-col gap-2 max-w-[85%]">
             <Link
-              to="/ket-qua-hoc-vien"
+              href="/ket-qua-hoc-vien"
               className="group bg-white rounded-full shadow-xl pl-2 pr-4 py-2 flex items-center gap-3 border border-black/5 hover:border-[#14532D]/30 transition-colors"
             >
               <span className="h-8 w-8 rounded-full bg-[#9FE870] flex items-center justify-center shrink-0">
@@ -246,7 +248,7 @@ export default function Hero() {
               </span>
             </Link>
             <Link
-              to="/cam-nhan-hoc-vien"
+              href="/cam-nhan-hoc-vien"
               className="group bg-white rounded-full shadow-xl pl-2 pr-4 py-2 flex items-center gap-3 border border-black/5 hover:border-[#14532D]/30 transition-colors"
             >
               <span className="h-8 w-8 rounded-full bg-[#14532D] flex items-center justify-center shrink-0">
@@ -273,15 +275,15 @@ export default function Hero() {
 
       {/* Floating Vertical Navigation Sidebar (Right-side, like reference image) */}
       <div className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 bg-white/90 border border-black/5 p-3 rounded-full backdrop-blur-md shadow-lg">
-        <Link to="/" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-hero">
+        <Link href="/" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-hero">
           <Compass size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Trang Chủ</span>
         </Link>
-        <Link to="/gioi-thieu" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-about">
+        <Link href="/gioi-thieu" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-about">
           <AwardIcon size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Giới Thiệu</span>
         </Link>
-        <Link to="/tu-van" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-contact">
+        <Link href="/tu-van" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-contact">
           <ShieldAlert size={18} />
           <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Liên Hệ</span>
         </Link>

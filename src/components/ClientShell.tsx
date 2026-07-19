@@ -1,30 +1,19 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
+"use client";
 
-import { useEffect, useRef } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect, useRef, ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import HomePage from "./pages/HomePage";
-import AboutPage from "./pages/AboutPage";
-import StatsPage from "./pages/StatsPage";
-import CoursesPage from "./pages/CoursesPage";
-import ContactPage from "./pages/ContactPage";
-import StudentResultsPage from "./pages/StudentResultsPage";
-import StudentFeedbackPage from "./pages/StudentFeedbackPage";
+import Header from "./Header";
+import Footer from "./Footer";
 
-// Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
-function AppShell() {
+export default function ClientShell({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     // Initialize Lenis Smooth Scroll (persists across route changes)
@@ -55,7 +44,7 @@ function AppShell() {
   useEffect(() => {
     lenisRef.current?.scrollTo(0, { immediate: true });
     requestAnimationFrame(() => ScrollTrigger.refresh());
-  }, [location.pathname]);
+  }, [pathname]);
 
   return (
     <div className="relative min-h-screen bg-[#FAF9F6] text-[#1A1A1A] antialiased selection:bg-green-600/20 selection:text-green-950">
@@ -65,26 +54,10 @@ function AppShell() {
       {/* Modern Sticky Navigation */}
       <Header />
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/gioi-thieu" element={<AboutPage />} />
-        <Route path="/thanh-tich" element={<StatsPage />} />
-        <Route path="/khoa-hoc" element={<CoursesPage />} />
-        <Route path="/tu-van" element={<ContactPage />} />
-        <Route path="/ket-qua-hoc-vien" element={<StudentResultsPage />} />
-        <Route path="/cam-nhan-hoc-vien" element={<StudentFeedbackPage />} />
-      </Routes>
+      {children}
 
       {/* Footer block */}
       <Footer />
     </div>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AppShell />
-    </BrowserRouter>
   );
 }

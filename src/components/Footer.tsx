@@ -1,5 +1,7 @@
+"use client";
+
 import { ArrowUp } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function Footer() {
   const handleBackToTop = () => {
@@ -20,7 +22,7 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="md:col-span-5 flex flex-col justify-between">
             <div>
-              <Link to="/" className="inline-block">
+              <Link href="/" className="inline-block">
                 <span className="font-serif text-2xl md:text-3xl font-black tracking-tight text-[#1A1A1A] block mb-1">
                   HNT<span className="text-[#14532D]">.</span>IELTS
                 </span>
@@ -43,10 +45,10 @@ export default function Footer() {
             <div>
               <h4 className="font-mono text-[10px] font-bold text-[#14532D] uppercase tracking-widest mb-6">Thông tin</h4>
               <ul className="space-y-3 text-sm text-[#1A1A1A]/70 font-bold">
-                <li><Link to="/gioi-thieu" className="hover:text-[#14532D] transition-colors text-left">Về cô Ngọc Thương</Link></li>
-                <li><Link to="/thanh-tich" className="hover:text-[#14532D] transition-colors text-left">Bảng điểm vàng</Link></li>
-                <li><Link to="/ket-qua-hoc-vien" className="hover:text-[#14532D] transition-colors text-left">Kết quả học viên</Link></li>
-                <li><Link to="/cam-nhan-hoc-vien" className="hover:text-[#14532D] transition-colors text-left">Cảm nhận học viên</Link></li>
+                <li><Link href="/gioi-thieu" className="hover:text-[#14532D] transition-colors text-left">Về cô Ngọc Thương</Link></li>
+                <li><Link href="/thanh-tich" className="hover:text-[#14532D] transition-colors text-left">Bảng điểm vàng</Link></li>
+                <li><Link href="/ket-qua-hoc-vien" className="hover:text-[#14532D] transition-colors text-left">Kết quả học viên</Link></li>
+                <li><Link href="/cam-nhan-hoc-vien" className="hover:text-[#14532D] transition-colors text-left">Cảm nhận học viên</Link></li>
               </ul>
             </div>
           </div>
@@ -59,7 +61,7 @@ export default function Footer() {
                 Tham gia test thử năng lực và thảo luận lộ trình cùng giáo viên hoàn toàn miễn phí ngay hôm nay.
               </p>
               <Link
-                to="/tu-van"
+                href="/tu-van"
                 className="inline-block px-6 py-3 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md cursor-pointer"
               >
                 Nhận lịch tư vấn miễn phí

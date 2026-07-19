@@ -1,11 +1,14 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -16,7 +19,7 @@ export default function Header() {
   // Close the mobile drawer whenever the route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
   const navItems = [
     { label: "Giới Thiệu", to: "/gioi-thieu" },
@@ -28,12 +31,20 @@ export default function Header() {
     { label: "Cảm nhận học viên", to: "/cam-nhan-hoc-vien" },
   ];
 
-  const isStudentActive = studentPages.some((p) => p.to === location.pathname);
+  const isStudentActive = studentPages.some((p) => p.to === pathname);
 
-  const linkClass = ({ isActive }: { isActive: boolean }) =>
+  const linkClass = (isActive: boolean) =>
     `relative py-2 text-xs lg:text-sm font-semibold transition-colors cursor-pointer group whitespace-nowrap ${
       isActive ? "text-[#14532D]" : "text-[#1A1A1A]/70 hover:text-[#14532D]"
     }`;
+
+  const NavUnderline = ({ isActive }: { isActive: boolean }) => (
+    <span
+      className={`absolute bottom-0 left-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out ${
+        isActive ? "w-full" : "w-0 group-hover:w-full"
+      }`}
+    />
+  );
 
   return (
     <header
@@ -47,7 +58,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 flex items-center justify-between gap-3">
         {/* Text Logo */}
         <Link
-          to="/"
+          href="/"
           className="group flex items-center cursor-pointer text-left animate-fade-in shrink-0"
           id="logo-button"
         >
@@ -66,20 +77,15 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-3 lg:gap-8 xl:gap-10 min-w-0" id="desktop-nav">
-          {navItems.map((item) => (
-            <NavLink key={item.to} to={item.to} className={linkClass}>
-              {({ isActive }) => (
-                <>
-                  {item.label}
-                  <span
-                    className={`absolute bottom-0 left-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out ${
-                      isActive ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
-                  />
-                </>
-              )}
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            const isActive = pathname === item.to;
+            return (
+              <Link key={item.to} href={item.to} className={linkClass(isActive)}>
+                {item.label}
+                <NavUnderline isActive={isActive} />
+              </Link>
+            );
+          })}
 
           {/* Học Viên dropdown */}
           <div className="relative group py-2" id="nav-hocvien">
@@ -96,7 +102,7 @@ export default function Header() {
                 {studentPages.map((p) => (
                   <Link
                     key={p.to}
-                    to={p.to}
+                    href={p.to}
                     className="block px-4 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A]/80 hover:text-[#14532D] hover:bg-[#9FE870]/15 transition-colors whitespace-nowrap"
                   >
                     {p.label}
@@ -106,24 +112,16 @@ export default function Header() {
             </div>
           </div>
 
-          <NavLink to="/tu-van" className={linkClass}>
-            {({ isActive }) => (
-              <>
-                Liên Hệ
-                <span
-                  className={`absolute bottom-0 left-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out ${
-                    isActive ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
-                />
-              </>
-            )}
-          </NavLink>
+          <Link href="/tu-van" className={linkClass(pathname === "/tu-van")}>
+            Liên Hệ
+            <NavUnderline isActive={pathname === "/tu-van"} />
+          </Link>
         </nav>
 
         {/* Action Button */}
         <div className="hidden md:block shrink-0" id="header-action-container">
           <Link
-            to="/gioi-thieu"
+            href="/gioi-thieu"
             className="group relative inline-flex items-center gap-1.5 lg:gap-2 px-3.5 lg:px-6 py-2 lg:py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-[10px] lg:text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer whitespace-nowrap"
             id="header-cta"
           >
@@ -156,7 +154,7 @@ export default function Header() {
           {navItems.map((item) => (
             <Link
               key={item.to}
-              to={item.to}
+              href={item.to}
               className="font-serif text-3xl font-bold text-left text-[#1A1A1A] hover:text-[#14532D] transition-colors cursor-pointer"
             >
               {item.label}
@@ -172,7 +170,7 @@ export default function Header() {
               {studentPages.map((p) => (
                 <Link
                   key={p.to}
-                  to={p.to}
+                  href={p.to}
                   className="font-serif text-2xl font-bold text-left text-[#1A1A1A] hover:text-[#14532D] transition-colors"
                 >
                   {p.label}
@@ -182,7 +180,7 @@ export default function Header() {
           </div>
 
           <Link
-            to="/tu-van"
+            href="/tu-van"
             className="font-serif text-3xl font-bold text-left text-[#1A1A1A] hover:text-[#14532D] transition-colors cursor-pointer"
           >
             Liên Hệ
@@ -191,7 +189,7 @@ export default function Header() {
 
         <div className="flex flex-col gap-6 pt-8" id="mobile-menu-footer">
           <Link
-            to="/gioi-thieu"
+            href="/gioi-thieu"
             className="w-full py-4 bg-[#9FE870] text-[#14532D] hover:bg-[#86D65A] font-bold text-center rounded-xl flex items-center justify-center gap-2 text-sm tracking-wider uppercase shadow-lg transition-colors"
             id="mobile-cta"
           >

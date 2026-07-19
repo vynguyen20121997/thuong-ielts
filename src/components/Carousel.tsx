@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useEffect, useCallback, ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReducedMotion } from "motion/react";

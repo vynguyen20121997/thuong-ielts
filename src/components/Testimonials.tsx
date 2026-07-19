@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import {
   Quote,
   Award,
@@ -332,7 +334,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
             <div className="mt-10 text-center">
               <Link
-                to="/ket-qua-hoc-vien"
+                href="/ket-qua-hoc-vien"
                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
               >
                 Xem toàn bộ
