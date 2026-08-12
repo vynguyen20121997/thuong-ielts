@@ -1,0 +1,29 @@
+{
+  "name": "@thuong-ielts/admin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 2100 --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --port ${PORT:-4174}",
+    "clean": "rm -rf .next",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@thuong-ielts/db": "*",
+    "bcryptjs": "^3.0.3",
+    "next": "^16.2.10",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.14.0",
+    "@types/react": "19.2.17",
+    "autoprefixer": "^10.4.21",
+    "tailwindcss": "^4.1.14",
+    "typescript": "~5.8.2"
+  }
+}
