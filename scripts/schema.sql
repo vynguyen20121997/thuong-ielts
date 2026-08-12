@@ -47,6 +47,14 @@ CREATE TABLE IF NOT EXISTS blog_posts (
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Generic editable site content (single-row-per-section, JSON payload).
+-- Currently used for the homepage Hero section (portrait image + text).
+CREATE TABLE IF NOT EXISTS site_content (
+  key         TEXT PRIMARY KEY,
+  data        JSONB NOT NULL,
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE INDEX IF NOT EXISTS idx_testimonials_date ON testimonials (date DESC);
 CREATE INDEX IF NOT EXISTS idx_feedbacks_date ON feedbacks (date DESC);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_status_published ON blog_posts (status, published_at DESC);

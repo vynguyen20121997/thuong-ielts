@@ -37,3 +37,19 @@ export function toDisplayDate(isoDate: string | null): string {
   const [yyyy, mm, dd] = isoDate.split("-");
   return `${dd}/${mm}/${yyyy}`;
 }
+
+// Generic editable site content, stored one JSON blob per section key
+// (e.g. "hero"). Falls back to `fallback` if the row doesn't exist yet.
+export async function getSiteContent<T>(key: string, fallback: T): Promise<T> {
+  const { rows } = await pool.query(`SELECT data FROM site_content WHERE key = $1`, [key]);
+  if (rows.length === 0) return fallback;
+  return { ...fallback, ...rows[0].data } as T;
+}
+
+export async function setSiteContent<T>(key: string, data: T): Promise<void> {
+  await pool.query(
+    `INSERT INTO site_content (key, data, updated_at) VALUES ($1, $2, now())
+     ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`,
+    [key, JSON.stringify(data)]
+  );
+}

@@ -1,12 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { Award, ChevronRight, MessageSquare, Compass, ShieldAlert, Award as AwardIcon } from "lucide-react";
 import PlexusCanvas from "./PlexusCanvas";
 import { initialTestimonials } from "../data/testimonialsData";
 import { feedbackItems } from "../data/feedbackData";
+import type { HeroContent } from "@thuong-ielts/db";
+
+const DEFAULT_HERO: HeroContent = {
+  portraitUrl: "/images/ho-ngoc-thuong-portrait.png",
+  titleLine1: "Hồ Ngọc Thương",
+  titleLine2: "Chuyên Gia IELTS Master",
+  quote: "Chuyên gia Luyện thi IELTS và Phát triển Tư duy Biện chứng",
+  bio: "Cử nhân xuất sắc Đại học Ngoại Thương (FTU), chứng chỉ giảng dạy CELTA do Cambridge cấp, IELTS Overall 8.5 (Listening & Reading tuyệt đối 9.0). Hơn 4 năm trực tiếp đứng lớp, dẫn dắt nhiều học viên đạt điểm cao bằng phương pháp sơ đồ hóa tư duy logic.",
+  closingLine:
+    "Theo đuổi IELTS vì đam mê, và sau khi chạm mốc 8.5 Overall thì chọn con đường giảng dạy để giúp người khác đi nhanh hơn con đường mình từng đi.",
+};
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,6 +25,14 @@ export default function Hero() {
   const titleWordsRef = useRef<HTMLSpanElement[]>([]);
   const subRef = useRef<HTMLDivElement>(null);
   const rightSideRef = useRef<HTMLDivElement>(null);
+  const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
+
+  useEffect(() => {
+    fetch("/api/hero")
+      .then((res) => res.json())
+      .then((data) => setHero((prev) => ({ ...prev, ...data })))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -112,7 +131,7 @@ export default function Hero() {
         className="absolute bottom-0 right-0 w-full md:w-[48%] lg:w-[42%] h-[55%] md:h-[95%] pointer-events-none select-none z-5"
       >
         <img
-          src="/images/ho-ngoc-thuong-portrait.png"
+          src={hero.portraitUrl}
           alt="Cô Hồ Ngọc Thương"
           className="absolute bottom-0 right-0 h-full w-auto max-w-none object-contain object-bottom"
         />
@@ -140,12 +159,12 @@ export default function Hero() {
           <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl xl:text-[4.5rem] font-black tracking-tight text-[#1A1A1A] leading-[1.1] mb-6">
             <span className="char-mask-wrapper block">
               <span ref={addTitleWord} className="char-mask-inner">
-                Hồ Ngọc Thương
+                {hero.titleLine1}
               </span>
             </span>{" "}
             <span className="char-mask-wrapper block">
               <span ref={addTitleWord} className="char-mask-inner text-[#14532D]">
-                Chuyên Gia IELTS Master
+                {hero.titleLine2}
               </span>
             </span>
           </h1>
@@ -153,15 +172,15 @@ export default function Hero() {
           {/* Slogan & Introduction with Delay Animation */}
           <div ref={subRef} className="max-w-xl">
             <p className="font-sans italic text-base md:text-lg text-[#1A1A1A]/70 leading-relaxed mb-6 border-l-2 border-[#14532D] pl-4">
-              Chuyên gia <span className="text-[#14532D] not-italic font-sans font-bold">Luyện thi IELTS</span> và Phát triển <span className="text-[#15803D] not-italic font-sans font-bold">Tư duy Biện chứng</span>
+              {hero.quote}
             </p>
 
             <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-4">
-              <span className="text-[#1A1A1A] font-bold">Cử nhân xuất sắc Đại học Ngoại Thương (FTU)</span>, chứng chỉ giảng dạy <span className="text-[#1A1A1A] font-bold">CELTA do Cambridge cấp</span>, <span className="text-[#1A1A1A] font-bold">IELTS Overall 8.5</span> (Listening &amp; Reading tuyệt đối 9.0). Hơn <span className="text-[#14532D] font-bold">4 năm trực tiếp đứng lớp</span>, dẫn dắt <span className="text-[#1A1A1A] font-bold">{initialTestimonials.length}+ học viên đạt điểm cao</span> và nhận <span className="text-[#1A1A1A] font-bold">{feedbackItems.length}+ phản hồi tích cực</span> bằng phương pháp sơ đồ hóa tư duy logic.
+              {hero.bio}
             </p>
 
             <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-8">
-              Theo đuổi IELTS vì đam mê, và sau khi chạm mốc 8.5 Overall thì chọn con đường giảng dạy để giúp người khác đi nhanh hơn con đường mình từng đi.
+              {hero.closingLine}
             </p>
 
             {/* Achievement stat strip */}

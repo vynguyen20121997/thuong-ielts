@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
   { label: "Tổng quan", href: "/" },
+  { label: "Trang chủ (Hero)", href: "/hero" },
   { label: "Kết quả học viên", href: "/testimonials" },
   { label: "Cảm nhận học viên", href: "/feedbacks" },
 ];
