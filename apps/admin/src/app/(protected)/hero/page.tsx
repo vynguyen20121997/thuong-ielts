@@ -21,8 +21,19 @@ export default function AdminHeroPage() {
 
   useEffect(() => {
     fetch("/api/hero")
-      .then((res) => res.json())
-      .then(setContent)
+      .then((res) => {
+        if (!res.ok) throw new Error(`/api/hero returned ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        // Never load an {error} body into the edit form — saving it would
+        // overwrite the real hero row with garbage.
+        if (data && typeof data === "object" && !("error" in data)) setContent(data);
+      })
+      .catch((err) => {
+        console.error("Failed to load hero content:", err);
+        setError("Không tải được nội dung hero. Thử tải lại trang.");
+      })
       .finally(() => setIsLoading(false));
   }, []);
 

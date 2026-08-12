@@ -145,8 +145,12 @@ export default function AdminTestimonialsPage() {
 
   useEffect(() => {
     fetch("/api/testimonials")
-      .then((res) => res.json())
-      .then(setItems)
+      .then((res) => {
+        if (!res.ok) throw new Error(`/api/testimonials returned ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setItems(Array.isArray(data) ? data : []))
+      .catch((err) => console.error("Failed to load testimonials:", err))
       .finally(() => setIsLoading(false));
   }, []);
 

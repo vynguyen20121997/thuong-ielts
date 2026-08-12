@@ -29,9 +29,18 @@ export default function Hero() {
 
   useEffect(() => {
     fetch("/api/hero")
-      .then((res) => res.json())
-      .then((data) => setHero((prev) => ({ ...prev, ...data })))
-      .catch(() => {});
+      .then((res) => {
+        if (!res.ok) throw new Error(`/api/hero returned ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        // Merging an {error: "..."} body would inject a bogus key and blank
+        // the hero — only accept a plain content object.
+        if (data && typeof data === "object" && !("error" in data)) {
+          setHero((prev) => ({ ...prev, ...data }));
+        }
+      })
+      .catch((err) => console.error("Failed to load hero content:", err));
   }, []);
 
   useEffect(() => {

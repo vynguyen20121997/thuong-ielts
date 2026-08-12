@@ -69,9 +69,15 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   useEffect(() => {
     let cancelled = false;
     fetch("/api/testimonials")
-      .then((res) => res.json())
+      .then((res) => {
+        // fetch only rejects on network failure — an HTTP 500 still resolves,
+        // and its {error} body parses as valid JSON. Without this check the
+        // error object lands in state and crashes the sort/spread below.
+        if (!res.ok) throw new Error(`/api/testimonials returned ${res.status}`);
+        return res.json();
+      })
       .then((data: ExtendedTestimonialItem[]) => {
-        if (!cancelled) setTestimonials(data);
+        if (!cancelled) setTestimonials(Array.isArray(data) ? data : []);
       })
       .catch((err) => console.error("Failed to load testimonials:", err))
       .finally(() => {

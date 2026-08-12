@@ -95,8 +95,12 @@ export default function AdminFeedbacksPage() {
 
   useEffect(() => {
     fetch("/api/feedbacks")
-      .then((res) => res.json())
-      .then(setItems)
+      .then((res) => {
+        if (!res.ok) throw new Error(`/api/feedbacks returned ${res.status}`);
+        return res.json();
+      })
+      .then((data) => setItems(Array.isArray(data) ? data : []))
+      .catch((err) => console.error("Failed to load feedbacks:", err))
       .finally(() => setIsLoading(false));
   }, []);
 

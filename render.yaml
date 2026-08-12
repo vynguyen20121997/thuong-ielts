@@ -1,0 +1,81 @@
+# Render Blueprint — 1 repo (npm workspaces monorepo) => 2 Web Services.
+#
+# rootDir is intentionally NOT set: package-lock.json / node_modules live at the
+# repo root, and apps/* depend on the workspace package "@thuong-ielts/db": "*",
+# which only resolves when npm installs from the root. Each service instead
+# picks its app via the build/start command.
+#
+# Secrets (sync: false) are NOT read from this file — set them once in the
+# Render dashboard per service. Do not commit real credentials here.
+
+services:
+  - type: web
+    name: thuong-ielts-web
+    runtime: node
+    plan: starter
+    region: singapore
+    branch: main
+    buildCommand: npm ci && npm run build:web
+    startCommand: npm run start --workspace=apps/web
+    healthCheckPath: /
+    # Only redeploy when code this app actually uses changes.
+    buildFilter:
+      paths:
+        - apps/web/**
+        - packages/**
+        - package.json
+        - package-lock.json
+        - render.yaml
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: PGHOST
+        sync: false
+      - key: PGPORT
+        value: "5432"
+      - key: PGUSER
+        sync: false
+      - key: PGPASSWORD
+        sync: false
+      - key: PGDATABASE
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+
+  - type: web
+    name: thuong-ielts-admin
+    runtime: node
+    plan: starter
+    region: singapore
+    branch: main
+    buildCommand: npm ci && npm run build:admin
+    startCommand: npm run start --workspace=apps/admin
+    healthCheckPath: /login
+    buildFilter:
+      paths:
+        - apps/admin/**
+        - packages/**
+        - package.json
+        - package-lock.json
+        - render.yaml
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: PGHOST
+        sync: false
+      - key: PGPORT
+        value: "5432"
+      - key: PGUSER
+        sync: false
+      - key: PGPASSWORD
+        sync: false
+      - key: PGDATABASE
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: ADMIN_SESSION_SECRET
+        sync: false
