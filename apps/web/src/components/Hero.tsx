@@ -215,10 +215,10 @@ export default function Hero() {
             {/* CTA */}
             <div className="flex flex-wrap items-center gap-4 mb-8">
               <Link
-                href="/gioi-thieu"
+                href="/kiem-tra-kien-thuc"
                 className="group px-8 py-3.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
               >
-                Về Cô Thương
+                Kiểm Tra Kiến Thức IELTS
                 <ChevronRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>

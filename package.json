@@ -13,7 +13,8 @@
     "build:admin": "npm run build --workspace=apps/admin",
     "lint:web": "npm run lint --workspace=apps/web",
     "lint:admin": "npm run lint --workspace=apps/admin",
-    "migrate": "tsx scripts/migrate.ts"
+    "migrate": "tsx scripts/migrate.ts",
+    "check:reading": "tsx scripts/validate-reading.ts"
   },
   "devDependencies": {
     "@types/pg": "^8.15.5",

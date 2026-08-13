@@ -55,6 +55,41 @@ CREATE TABLE IF NOT EXISTS site_content (
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- "Kiểm tra kiến thức IELTS" — Reading exercises.
+--
+-- passage/questions/answer_key are JSONB rather than normalised child tables on
+-- purpose: a reading paper is a document, questions are heterogeneous (MCQ,
+-- TFNG, matching headings, gap-fill each need different fields), and the whole
+-- paper is always read and written as one unit. Normalising it would buy joins
+-- we never run and cost a schema migration every time a new question type is
+-- added.
+--
+-- answer_key is a SEPARATE column so that public queries can simply not select
+-- it. Leaking the answers to the browser then requires writing a new query, not
+-- merely forgetting to strip a field.
+CREATE TABLE IF NOT EXISTS reading_tests (
+  id                TEXT PRIMARY KEY,
+  slug              TEXT NOT NULL UNIQUE,
+  title             TEXT NOT NULL,
+  collection        TEXT,
+  topic             TEXT,
+  level             TEXT NOT NULL DEFAULT 'medium' CHECK (level IN ('easy', 'medium', 'hard')),
+  duration_seconds  INTEGER NOT NULL DEFAULT 1200,
+  question_count    INTEGER NOT NULL DEFAULT 0,
+  attempt_count     INTEGER NOT NULL DEFAULT 0,
+  is_free           BOOLEAN NOT NULL DEFAULT true,
+  cover_image_url   TEXT,
+  status            TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('draft', 'published')),
+  sort_order        INTEGER NOT NULL DEFAULT 0,
+  published_at      DATE,
+  passage           JSONB NOT NULL,
+  questions         JSONB NOT NULL,
+  answer_key        JSONB NOT NULL,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE INDEX IF NOT EXISTS idx_testimonials_date ON testimonials (date DESC);
+CREATE INDEX IF NOT EXISTS idx_reading_tests_status ON reading_tests (status, sort_order, published_at DESC);
 CREATE INDEX IF NOT EXISTS idx_feedbacks_date ON feedbacks (date DESC);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_status_published ON blog_posts (status, published_at DESC);

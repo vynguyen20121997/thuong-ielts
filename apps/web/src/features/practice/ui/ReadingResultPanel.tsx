@@ -1,0 +1,105 @@
+"use client";
+
+import Link from "next/link";
+import { AlarmClock, RotateCcw, Target, Timer } from "lucide-react";
+
+import { formatClock } from "../application/useReadingSession";
+import { formatBand } from "../domain/bandScore";
+import type { ReadingResult } from "../domain/types";
+
+/**
+ * Score summary shown after the server has graded the attempt.
+ * Presentation only — every number here was computed in `domain/scoring.ts`.
+ */
+export default function ReadingResultPanel({
+  result,
+  timedOut,
+  onRestart,
+}: {
+  result: ReadingResult;
+  timedOut: boolean;
+  onRestart: () => void;
+}) {
+  const percent = Math.round(result.accuracy * 100);
+
+  return (
+    <div className="bg-[#14532D] text-white rounded-2xl p-6 md:p-7 shadow-xl">
+      <div className="flex items-center gap-2 mb-5">
+        <Target size={15} className="text-[#9FE870]" />
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#9FE870]">
+          Kết quả bài làm
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div>
+          <span className="font-serif text-4xl font-black block leading-none">
+            {result.correct}
+            <span className="text-white/40 text-2xl">/{result.total}</span>
+          </span>
+          <span className="font-mono text-[9px] uppercase tracking-widest text-white/50 font-bold mt-2 block">
+            Câu đúng
+          </span>
+        </div>
+        <div>
+          <span className="font-serif text-4xl font-black block leading-none text-[#9FE870]">
+            {formatBand(result.band)}
+          </span>
+          <span className="font-mono text-[9px] uppercase tracking-widest text-white/50 font-bold mt-2 block">
+            Band ước lượng
+          </span>
+        </div>
+        <div>
+          <span className="font-serif text-4xl font-black block leading-none">{percent}%</span>
+          <span className="font-mono text-[9px] uppercase tracking-widest text-white/50 font-bold mt-2 block">
+            Độ chính xác
+          </span>
+        </div>
+      </div>
+
+      {/* Accuracy bar */}
+      <div className="h-1.5 w-full bg-white/15 rounded-full overflow-hidden mb-5">
+        <div
+          className="h-full bg-[#9FE870] rounded-full transition-all duration-700"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-white/60 mb-6">
+        <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold">
+          <Timer size={13} />
+          Thời gian làm: {formatClock(result.elapsedSeconds)}
+        </span>
+        {timedOut && (
+          <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold text-[#9FE870]">
+            <AlarmClock size={13} />
+            Hết giờ — bài được nộp tự động
+          </span>
+        )}
+      </div>
+
+      <p className="text-[13px] leading-relaxed text-white/70 mb-6">
+        Band ở trên là con số quy đổi tương đối từ thang 40 câu của IELTS Academic Reading, dùng để
+        theo dõi tiến bộ chứ không thay thế điểm thi thật. Kéo xuống dưới để xem đáp án và giải
+        thích cho từng câu.
+      </p>
+
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={onRestart}
+          className="group px-6 py-3 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase inline-flex items-center gap-2"
+        >
+          <RotateCcw size={14} className="transition-transform duration-500 group-hover:-rotate-180" />
+          Làm lại
+        </button>
+        <Link
+          href="/kiem-tra-kien-thuc/reading"
+          className="px-6 py-3 border border-white/25 hover:border-white/60 text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase inline-flex items-center"
+        >
+          Chọn đề khác
+        </Link>
+      </div>
+    </div>
+  );
+}

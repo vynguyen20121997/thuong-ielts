@@ -9,3 +9,15 @@ next-env.d.ts
 *.log
 .env*
 !.env.example
+
+# Moat task system
+.moat/
+
+# Claude Code configuration
+.claude/
+
+# Windsurf configuration
+.windsurf/
+
+# Codex CLI configuration
+.codex/
