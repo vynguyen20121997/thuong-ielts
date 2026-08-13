@@ -292,15 +292,6 @@ export default function Hero() {
 
       </div>
 
-      {/* Floating Trust Badge Strip - styled exactly like the reference image brand logos banner */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl bg-white border border-black/5 p-4 md:p-5 rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.04)] z-30 flex items-center justify-around gap-6 overflow-x-auto select-none no-scrollbar">
-        <span className="font-serif text-xs md:text-sm font-black text-black/35 tracking-tight whitespace-nowrap">IDP IELTS Partner</span>
-        <span className="font-serif text-xs md:text-sm font-black text-black/35 tracking-tight whitespace-nowrap">British Council</span>
-        <span className="font-mono text-[10px] md:text-xs font-bold text-black/35 uppercase tracking-widest whitespace-nowrap">CELTA Certified</span>
-        <span className="font-serif text-xs md:text-sm font-black text-black/35 italic tracking-tight whitespace-nowrap">VTV Education</span>
-        <span className="font-mono text-[10px] md:text-xs font-bold text-black/35 uppercase tracking-wider whitespace-nowrap">IELTS 9.0 Club</span>
-      </div>
-
       {/* Floating Vertical Navigation Sidebar (Right-side, like reference image) */}
       <div className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 bg-white/90 border border-black/5 p-3 rounded-full backdrop-blur-md shadow-lg">
         <Link href="/" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-hero">
