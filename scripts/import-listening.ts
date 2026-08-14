@@ -1,17 +1,13 @@
 /**
- * Imports IELTS reading exercises from a pair of Google Docs (questions +
- * answer key) into Postgres.
+ * Imports IELTS listening exercises from a pair of Google Docs plus the Drive
+ * ids of the recordings.
  *
- * Why an extractor instead of hand-typed data: passages run ~900 words and every
- * answer carries a multi-paragraph explanation. Retyping that is where silent
- * corruption comes from — a dropped clause in a passage changes which answer is
- * correct, and nothing crashes. Everything textual here is SLICED VERBATIM from
- * the source document. The spec file supplies only structure: which lines are
- * the passage, which question is which type, where its options live.
+ * Shares all document parsing with the reading importer (scripts/lib/ielts-doc)
+ * — same house style, same answer-key quirks. What differs is what surrounds the
+ * questions: a listening test has recordings and four sections instead of a
+ * passage.
  *
- * Explanations are copied in full, never summarised.
- *
- * Usage: npx tsx scripts/import-reading.ts <spec.json> [--dry]
+ * Usage: npx tsx scripts/import-listening.ts <spec.json> [--dry]
  */
 import fs from "fs";
 import path from "path";
@@ -21,49 +17,52 @@ import { Pool } from "pg";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, "..", "apps", "web", ".env.local") });
+
 import {
   expandGapAnswer,
   explanationMatchesQuestion,
   extractOptions,
-  extractParagraphs,
   fetchDocLines,
   indexQuestionLines,
+  optionToken,
   parseAnswerKey,
   sentenceForGap,
-  optionToken,
   type LineRange,
   type OptionSetSpec,
   type RawAnswer,
 } from "./lib/ielts-doc";
 
-
 interface QuestionSpec {
   n: number;
+  /** Which recorded part (1-4) this question belongs to. */
+  section: number;
   type: string;
-  /** Key into the test's `optionSets`. Omit for gap-fill. */
   options?: string;
-  /** Literal option list, for TRUE/FALSE/NOT GIVEN and friends. */
   literalOptions?: string[];
   maxWords?: number;
-  /** Instruction line shown above this question. */
   group?: string;
-  /** Overrides the auto-extracted prompt (used for gaps inside a summary). */
   prompt?: string;
-  /** Pull the prompt from the summary block instead of a question line. */
   fromSummary?: string;
-  /** Extra accepted spellings for gap-fill. */
   acceptable?: string[];
   /**
-   * Supplies an answer the source key omits entirely. Requires `note`, which is
-   * prepended to the explanation so the student is told this one was derived
-   * from the passage rather than taken from the official key.
+   * Replaces the answer read from the key. For the handful of entries whose
+   * notation is genuinely ambiguous — "(£) 115 / a/one hundred (and) fifteen"
+   * packs three spellings and an optional symbol into one line — the expander
+   * produces nonsense, so the forms are written out by hand instead. The doc's
+   * explanation is still kept.
    */
-  answerOverride?: string;
-  note?: string;
+  answer?: string;
+}
+
+interface TrackSpec {
+  part?: number;
+  /** Drive file id; turned into a proxy URL. Use `src` to point elsewhere. */
+  driveId?: string;
+  src?: string;
+  label?: string;
 }
 
 interface TestSpec {
-  /** Overrides the spec-level docs, so one file can cover a whole Cam book. */
   questionsDocId?: string;
   answersDocId?: string;
   id: string;
@@ -75,9 +74,9 @@ interface TestSpec {
   sortOrder: number;
   publishedAt: string;
   durationSeconds?: number;
-  passageTitle: string;
-  passageIntro?: string;
-  passage: LineRange & { labelled?: boolean };
+  /** Caveat shown above the player, e.g. "only Part 1 has a recording". */
+  note?: string;
+  audio: TrackSpec[];
   optionSets?: Record<string, OptionSetSpec>;
   summaries?: Record<string, LineRange>;
   questions: QuestionSpec[];
@@ -89,7 +88,17 @@ interface Spec {
   tests: TestSpec[];
 }
 
-// ── Build ─────────────────────────────────────────────────────────────────
+/**
+ * A browser cannot fetch a Drive file directly (Google answers media requests
+ * with an HTML interstitial and no CORS header), so recordings are served
+ * through our own route. Storing the finished URL keeps that decision out of
+ * the UI and makes a later move to object storage a data update.
+ */
+function trackUrl(track: TrackSpec): string {
+  if (track.src) return track.src;
+  if (!track.driveId) throw new Error("audio track cần driveId hoặc src");
+  return `/api/practice/listening/audio/${track.driveId}`;
+}
 
 function buildTest(spec: TestSpec, qLines: string[], key: Map<number, RawAnswer>) {
   const questionText = indexQuestionLines(qLines);
@@ -104,36 +113,36 @@ function buildTest(spec: TestSpec, qLines: string[], key: Map<number, RawAnswer>
   for (const q of spec.questions) {
     const id = `${spec.id}-q${q.n}`;
     let raw = key.get(q.n);
-
-    if (q.answerOverride) {
-      if (!q.note) throw new Error(`${spec.slug}: Q${q.n} override needs a note`);
-      console.log(`    ! doc gốc thiếu câu ${q.n} — dùng đáp án bổ sung "${q.answerOverride}"`);
-      raw = { answer: q.answerOverride, explanation: q.note };
-    } else if (raw && q.note) {
-      raw = { answer: raw.answer, explanation: `${q.note}\n\n${raw.explanation}` };
-    }
-    if (!raw) throw new Error(`${spec.slug}: no answer key entry for Q${q.n}`);
+    if (!raw) throw new Error(`${spec.slug}: thiếu đáp án cho câu ${q.n}`);
 
     let prompt = q.prompt;
     if (!prompt && q.fromSummary) {
       const summary = spec.summaries?.[q.fromSummary];
-      if (!summary) throw new Error(`${spec.slug}: unknown summary "${q.fromSummary}"`);
+      if (!summary) throw new Error(`${spec.slug}: không có summary "${q.fromSummary}"`);
       prompt = sentenceForGap(qLines, summary, q.n);
     }
     if (!prompt) prompt = questionText.get(q.n);
-    if (!prompt) throw new Error(`${spec.slug}: could not find the text of Q${q.n}`);
+    if (!prompt) throw new Error(`${spec.slug}: không tìm được nội dung câu ${q.n}`);
 
     if (raw.explanation && !explanationMatchesQuestion(raw.explanation, prompt)) {
-      console.log(
-        `    ! Q${q.n}: giải thích trong doc gốc thuộc về câu hỏi khác — đã bỏ phần giải thích`
-      );
+      console.log(`    ! Q${q.n}: giải thích thuộc câu khác — đã bỏ`);
       raw = { answer: raw.answer, explanation: "" };
     }
 
-    const base = { id, number: q.n, type: q.type, prompt, ...(q.group ? { group: q.group } : {}) };
+    const base = {
+      id,
+      number: q.n,
+      section: q.section,
+      type: q.type,
+      prompt,
+      ...(q.group ? { group: q.group } : {}),
+    };
 
     if (q.type === "gap-fill") {
-      const expanded = expandGapAnswer(raw.answer);
+      if (q.answer) {
+        console.log(`    ! Q${q.n}: ký hiệu đáp án gốc "${raw.answer}" — thay bằng "${q.answer}"`);
+      }
+      const expanded = expandGapAnswer(q.answer ?? raw.answer);
       const acceptable = [...new Set([...expanded.acceptable, ...(q.acceptable ?? [])])];
       if (expanded.acceptable.length) {
         console.log(
@@ -151,12 +160,8 @@ function buildTest(spec: TestSpec, qLines: string[], key: Map<number, RawAnswer>
     }
 
     const options = q.literalOptions ?? optionSets.get(q.options ?? "");
-    if (!options?.length) throw new Error(`${spec.slug}: Q${q.n} has no options`);
+    if (!options?.length) throw new Error(`${spec.slug}: câu ${q.n} không có lựa chọn`);
 
-    // The key writes the answer as "NOT GIVEN", "iv", "B", or "B (plantation)".
-    // Whichever form it uses, the stored answer must be the full option text so
-    // the grader compares like with like. Exact match is tried before the
-    // leading-marker match, or "NOT GIVEN" would be truncated to "NOT".
     const full = raw.answer.trim();
     const marker = full.match(/^([A-Za-z]{1,5})\b/)?.[1] ?? full;
     const matched =
@@ -164,25 +169,22 @@ function buildTest(spec: TestSpec, qLines: string[], key: Map<number, RawAnswer>
       options.find((o) => optionToken(o).toLowerCase() === marker.toLowerCase()) ??
       options.find((o) => o.toLowerCase() === marker.toLowerCase());
     if (!matched) {
-      throw new Error(`${spec.slug}: Q${q.n} answer "${full}" matches none of its options`);
+      throw new Error(`${spec.slug}: câu ${q.n} đáp án "${full}" không khớp lựa chọn nào`);
     }
 
     questions.push({ ...base, options });
     answerKey.push({ questionId: id, answer: matched, explanation: raw.explanation });
   }
 
-  return {
-    questions,
-    answerKey,
-    passage: {
-      title: spec.passageTitle,
-      ...(spec.passageIntro ? { intro: spec.passageIntro } : {}),
-      paragraphs: extractParagraphs(qLines, spec.passage),
-    },
-  };
+  const audio = spec.audio.map((t, i) => ({
+    ...(t.part ? { part: t.part } : {}),
+    src: trackUrl(t),
+    label: t.label ?? (t.part ? `Part ${t.part}` : `Bài nghe ${i + 1}`),
+  }));
+
+  return { questions, answerKey, audio };
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────
 const pool = new Pool({
   host: process.env.PGHOST,
   port: Number(process.env.PGPORT ?? 5432),
@@ -195,12 +197,10 @@ const pool = new Pool({
 async function main() {
   const specPath = process.argv[2];
   const dryRun = process.argv.includes("--dry");
-  if (!specPath) throw new Error("Usage: tsx scripts/import-reading.ts <spec.json> [--dry]");
+  if (!specPath) throw new Error("Usage: tsx scripts/import-listening.ts <spec.json> [--dry]");
 
   const spec = JSON.parse(fs.readFileSync(specPath, "utf-8")) as Spec;
 
-  // Documents are fetched once per pair and shared by every test that names
-  // them — a Cam book is four pairs covering twelve exercises.
   const docCache = new Map<string, Promise<string[]>>();
   const getDoc = (id: string) => {
     if (!docCache.has(id)) docCache.set(id, fetchDocLines(id));
@@ -215,26 +215,31 @@ async function main() {
     const [qLines, aLines] = await Promise.all([getDoc(qId), getDoc(aId)]);
     const key = parseAnswerKey(aLines);
     const built = buildTest(testSpec, qLines, key);
-    const words = built.passage.paragraphs.reduce((n, p) => n + p.text.split(/\s+/).length, 0);
-    const shortest = Math.min(...built.answerKey.map((e) => String(e.explanation).length));
+
+    const bySection = built.questions.reduce<Record<number, number>>((acc, q) => {
+      const s = Number(q.section) || 0;
+      acc[s] = (acc[s] ?? 0) + 1;
+      return acc;
+    }, {});
 
     console.log(
-      `  ${testSpec.slug.padEnd(44)} ${built.passage.paragraphs.length} đoạn / ${words} từ, ` +
-        `${built.questions.length} câu, giải thích ngắn nhất ${shortest} ký tự`
+      `  ${testSpec.slug.padEnd(42)} ${built.questions.length} câu ` +
+        `(${Object.entries(bySection).map(([s, n]) => `S${s}:${n}`).join(" ")}), ` +
+        `${built.audio.length} file nghe`
     );
 
     if (dryRun) continue;
 
     await pool.query(
-      `INSERT INTO reading_tests
+      `INSERT INTO listening_tests
          (id, slug, title, collection, topic, level, duration_seconds, question_count,
-          attempt_count, is_free, status, sort_order, published_at, passage, questions, answer_key)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,0,true,'published',$9,$10,$11,$12,$13)
+          attempt_count, is_free, status, sort_order, published_at, note, audio, questions, answer_key)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,0,true,'published',$9,$10,$11,$12,$13,$14)
        ON CONFLICT (slug) DO UPDATE SET
          title = EXCLUDED.title, collection = EXCLUDED.collection, topic = EXCLUDED.topic,
          level = EXCLUDED.level, duration_seconds = EXCLUDED.duration_seconds,
          question_count = EXCLUDED.question_count, sort_order = EXCLUDED.sort_order,
-         published_at = EXCLUDED.published_at, passage = EXCLUDED.passage,
+         published_at = EXCLUDED.published_at, note = EXCLUDED.note, audio = EXCLUDED.audio,
          questions = EXCLUDED.questions, answer_key = EXCLUDED.answer_key, updated_at = now()`,
       [
         testSpec.id,
@@ -243,11 +248,12 @@ async function main() {
         testSpec.collection,
         testSpec.topic,
         testSpec.level,
-        testSpec.durationSeconds ?? 1200,
+        testSpec.durationSeconds ?? 1800,
         built.questions.length,
         testSpec.sortOrder,
         testSpec.publishedAt,
-        JSON.stringify(built.passage),
+        testSpec.note ?? null,
+        JSON.stringify(built.audio),
         JSON.stringify(built.questions),
         JSON.stringify(built.answerKey),
       ]
