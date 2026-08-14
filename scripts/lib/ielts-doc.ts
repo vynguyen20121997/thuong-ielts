@@ -152,7 +152,12 @@ export function optionToken(option: string): string {
  * summary-completion question shows real context instead of a bare number.
  */
 export function sentenceForGap(lines: string[], range: LineRange, n: number): string {
-  const marker = new RegExp(`\\b${n}\\s*[…\\.]`);
+  // The dotted run does not always sit flush against the number: the papers
+  // write "10 £ ……" for a price and "38 % ……" for a share. Allowing a short
+  // symbol in between is what keeps those gaps findable — when the marker is
+  // missed the whole block is returned instead, and the student is shown the
+  // entire set of notes as if it were one question.
+  const marker = new RegExp(`\\b${n}\\s*[£$%€]?\\s*[…\\.]`);
   const block = slice(lines, range)
     .map((l) => l.trim().replace(/^[●•·\-–—*]\s*/, ""))
     .filter(Boolean);
