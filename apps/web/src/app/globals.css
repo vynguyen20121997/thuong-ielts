@@ -116,3 +116,22 @@ html {
     min-height: 42px;
   }
 }
+
+/*
+ * Lenis ships this rule:
+ *
+ *   .lenis.lenis-smooth [data-lenis-prevent] { overflow: clip; }
+ *
+ * `lenis-smooth` is on <html> for as long as the page is gliding, so every time
+ * the student scrolls the question column, the reading passage next to it stops
+ * being a scroll container. Losing `overflow: auto` throws away its scroll
+ * offset, so the passage snaps to the top; when the glide ends the class goes,
+ * `auto` returns, the browser restores the offset and it snaps back down. That
+ * round trip is the judder.
+ *
+ * `data-lenis-prevent` exists precisely to say "this element does its own
+ * scrolling", so keeping it scrollable throughout is what the attribute means.
+ */
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overflow: auto;
+}
