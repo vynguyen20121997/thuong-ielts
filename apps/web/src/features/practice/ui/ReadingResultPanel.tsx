@@ -15,10 +15,13 @@ export default function ReadingResultPanel({
   result,
   timedOut,
   onRestart,
+  catalogHref = "/kiem-tra-kien-thuc/reading",
 }: {
   result: ReadingResult;
   timedOut: boolean;
   onRestart: () => void;
+  /** Where "chọn đề khác" goes. The panel is shared with listening. */
+  catalogHref?: string;
 }) {
   const percent = Math.round(result.accuracy * 100);
 
@@ -94,7 +97,7 @@ export default function ReadingResultPanel({
           Làm lại
         </button>
         <Link
-          href="/kiem-tra-kien-thuc/reading"
+          href={catalogHref}
           className="px-6 py-3 border border-white/25 hover:border-white/60 text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase inline-flex items-center"
         >
           Chọn đề khác

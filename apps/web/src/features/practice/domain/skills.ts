@@ -22,10 +22,10 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     name: "Listening",
     label: "Nghe hiểu",
     description:
-      "Bài nghe theo section, có transcript và tua lại từng câu. Đang được biên soạn cùng cô Thương.",
+      "Đề nghe 4 section như thi thật, có file nghe ngay trên trang, được tua và nghe lại. Nộp bài là có điểm và band ước lượng.",
     href: "/kiem-tra-kien-thuc/listening",
-    status: "coming-soon",
-    hint: "Sắp ra mắt",
+    status: "available",
+    hint: "Có file nghe",
   },
   {
     id: "writing",
