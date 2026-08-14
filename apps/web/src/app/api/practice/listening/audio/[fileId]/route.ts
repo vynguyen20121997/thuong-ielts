@@ -21,6 +21,36 @@ const DRIVE_ENDPOINT = "https://drive.usercontent.google.com/download";
 /** Drive ids are opaque but bounded; reject anything that isn't one. */
 const VALID_ID = /^[A-Za-z0-9_-]{20,60}$/;
 
+/**
+ * Drive drops a connection now and then — observed as roughly one failure in
+ * two on a cold request. A single attempt therefore leaves the student staring
+ * at a dead player, so retry briefly before giving up. The doc importer needed
+ * the same treatment for the same reason.
+ */
+async function fetchWithRetry(fileId: string, range: string | null): Promise<Response> {
+  const attempts = 3;
+  let lastError: unknown;
+
+  for (let i = 0; i < attempts; i += 1) {
+    try {
+      return await fetch(`${DRIVE_ENDPOINT}?id=${fileId}&export=download`, {
+        headers: {
+          // Drive serves the real bytes to a plain client; a browser-ish request
+          // gets the virus-scan interstitial instead.
+          "User-Agent": "curl/8.0",
+          ...(range ? { Range: range } : {}),
+        },
+        cache: "no-store",
+      });
+    } catch (err) {
+      lastError = err;
+      if (i < attempts - 1) await new Promise((r) => setTimeout(r, 300 * (i + 1)));
+    }
+  }
+
+  throw lastError;
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ fileId: string }> }
@@ -31,15 +61,17 @@ export async function GET(
   }
 
   const range = request.headers.get("range");
-  const upstream = await fetch(`${DRIVE_ENDPOINT}?id=${fileId}&export=download`, {
-    headers: {
-      // Drive serves the real bytes to a plain client; a browser-ish request
-      // gets the virus-scan interstitial instead.
-      "User-Agent": "curl/8.0",
-      ...(range ? { Range: range } : {}),
-    },
-    cache: "no-store",
-  });
+
+  let upstream: Response;
+  try {
+    upstream = await fetchWithRetry(fileId, range);
+  } catch (err) {
+    // fetch() rejects (connection reset, DNS blip) rather than returning a
+    // status, so without this the request escapes as a 500 and the student sees
+    // a player that silently never starts.
+    console.error(`Không gọi được Drive cho file ${fileId}:`, err);
+    return NextResponse.json({ error: "Không tải được file nghe." }, { status: 502 });
+  }
 
   if (!upstream.ok && upstream.status !== 206) {
     console.error(`Drive trả ${upstream.status} cho file ${fileId}`);
