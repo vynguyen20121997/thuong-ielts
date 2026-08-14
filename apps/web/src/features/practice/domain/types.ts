@@ -54,6 +54,11 @@ interface QuestionBase {
   prompt: string;
   /** Optional group heading rendered above the first question of a block. */
   group?: string;
+  /**
+   * Listening only: which of the four recorded parts this question belongs to.
+   * Reading leaves it unset.
+   */
+  section?: number;
 }
 
 /** Any question answered by picking one of a fixed list of options. */
@@ -111,6 +116,44 @@ export interface ReadingTest extends ReadingTestSummary {
   questions: Question[];
 }
 
+/**
+ * One recording. Books differ: some ship a single file for the whole test,
+ * others one per part — hence a list rather than a column.
+ */
+export interface ListeningTrack {
+  /** 1-4 when the recording is split by part; absent for a whole-test file. */
+  part?: number;
+  /** Plain URL. Points at our Drive proxy today; swappable without code changes. */
+  src: string;
+  label: string;
+}
+
+/** Row shown in the listening catalog. Excludes audio and questions. */
+export interface ListeningTestSummary {
+  id: string;
+  slug: string;
+  title: string;
+  collection: string;
+  topic: string;
+  level: ReadingLevel;
+  durationSeconds: number;
+  questionCount: number;
+  attemptCount: number;
+  isFree: boolean;
+  publishedAt: string;
+  /**
+   * Caveat shown to the student before they start, e.g. that only some parts of
+   * this test have a recording. Absent for a complete test.
+   */
+  note?: string;
+}
+
+/** Everything the listening player needs. Still no answers. */
+export interface ListeningTest extends ListeningTestSummary {
+  audio: ListeningTrack[];
+  questions: Question[];
+}
+
 /** Server-only. Stored in its own column and never selected by public queries. */
 export interface AnswerKeyEntry {
   questionId: string;
@@ -145,3 +188,10 @@ export interface ReadingResult {
   elapsedSeconds: number;
   items: GradedQuestion[];
 }
+
+/**
+ * Grading is skill-agnostic — an answer is right or wrong the same way whether
+ * it came from a passage or a recording. The `Reading` names are historical;
+ * prefer this alias in code shared by both skills.
+ */
+export type AttemptResult = ReadingResult;
