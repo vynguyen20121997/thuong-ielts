@@ -99,3 +99,20 @@ body.exam-mode > *:not([data-exam]) {
 html {
   scrollbar-gutter: stable;
 }
+
+/*
+ * Touch devices get bigger targets. The exam is drawn at the size the desktop
+ * test uses — a 30px question button, a 32px answer box — which a mouse hits
+ * exactly and a fingertip does not. Widening only under `pointer: coarse`
+ * keeps the desktop layout identical while giving a tablet or phone something
+ * it can actually hit.
+ */
+@media (pointer: coarse) {
+  [data-exam-key] {
+    min-height: 42px;
+    min-width: 42px;
+  }
+  [data-exam-field] {
+    min-height: 42px;
+  }
+}

@@ -105,6 +105,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
     session.submit();
   };
 
+  const isStarting = session.status === "starting";
   const isReview = session.status === "finished";
   const disabled = isReview || session.status === "submitting";
   const track = test.audio[session.activeTrack];
@@ -181,6 +182,8 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
             ref={session.audioRef}
             src={track.src}
             preload="auto"
+            onCanPlayThrough={() => session.setAudioReady(true)}
+            onPlaying={session.handleAudioPlaying}
             onPlay={() => session.setAudioPlaying(true)}
             onPause={() => session.setAudioPlaying(false)}
             onEnded={session.handleTrackEnded}
@@ -216,6 +219,15 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               <strong>{Math.round(test.durationSeconds / 60)} phút</strong>.
             </li>
             <li>Hết giờ hệ thống tự nộp bài, nên hãy điền hết những gì nghe được.</li>
+            {/* A first-timer's two commonest worries, answered before they start. */}
+            <li>
+              Trong lúc làm bài bạn <strong>sửa lại đáp án thoải mái</strong> và quay về câu
+              trước bất cứ lúc nào — bấm số câu ở thanh dưới cùng để nhảy tới.
+            </li>
+            <li>
+              Nộp bài xong sẽ thấy <strong>điểm, band ước lượng và đáp án đúng</strong> của
+              từng câu.
+            </li>
           </ul>
 
           {session.canResume && (
@@ -234,6 +246,21 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               <span>{test.note}</span>
             </div>
           )}
+
+          {/*
+            Whether the recording is ready is the one thing a student on a poor
+            connection wants to know before committing to a play-once test.
+          */}
+          <p
+            className={`mt-6 flex items-center gap-2 text-[13px] ${
+              session.audioReady ? "text-[#14532D]" : "text-[#1A1A1A]/50"
+            }`}
+          >
+            <Volume2 size={15} />
+            {session.audioReady
+              ? "Bài nghe đã tải xong, bấm bắt đầu là nghe được ngay."
+              : "Đang tải bài nghe... Bạn vẫn bấm bắt đầu được, đồng hồ chỉ chạy khi có tiếng."}
+          </p>
 
           <div className="border-t border-black/10 mt-8 pt-6 flex items-center justify-between">
             <Link
@@ -255,6 +282,9 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               <button
                 type="button"
                 onClick={session.start}
+                // Focused on arrival so a keyboard user does not Tab through the
+                // whole marketing nav to reach the only button that matters.
+                autoFocus
                 className="px-8 py-3 rounded-xl border-2 border-[#14532D] text-[#14532D] hover:bg-[#14532D] hover:text-white font-bold text-[14px] transition-colors cursor-pointer"
               >
                 {session.canResume ? "Làm lại từ đầu" : "Bắt đầu"}
@@ -287,7 +317,9 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                   <Volume2 size={13} className={session.audioPlaying ? "text-[#14532D]" : "text-[#1A1A1A]/35"} />
                   {session.audioPlaying
                     ? `Audio is playing${track?.label ? ` · ${track.label}` : ""}`
-                    : "Audio chưa phát"}
+                    : isStarting
+                      ? "Đang tải bài nghe — đồng hồ chưa chạy"
+                      : "Audio chưa phát"}
                 </span>
               )}
             </p>
@@ -447,6 +479,20 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
       </div>
 
       {/*
+        One minute left. The paper submits itself at zero, so this is the last
+        chance to fill in a guess — worth interrupting for.
+      */}
+      {!isReview && session.remainingSeconds <= 60 && session.remainingSeconds > 0 && (
+        <div
+          role="alert"
+          className="fixed bottom-16 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 bg-red-600 text-white rounded-full px-5 py-2 text-[13px] font-bold shadow-lg"
+        >
+          <AlertTriangle size={15} />
+          Còn {session.remainingSeconds} giây — hết giờ bài sẽ tự nộp
+        </div>
+      )}
+
+      {/*
         Question navigator, following the exam's own design: every button and
         every section label carries a 3px track above it — grey for untouched,
         filled as the student answers, recoloured by correctness once the paper
@@ -528,6 +574,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               style={{ width: filled ? "100%" : "0%" }}
                             />
                             <span
+                              data-exam-key
                               className={`flex h-[30px] min-w-[30px] px-1 items-center justify-center rounded border text-[14px] bg-white transition-colors ${
                                 activeNumber === q.number
                                   ? "border-[#D97706] border-2 text-[#1A1A1A]"

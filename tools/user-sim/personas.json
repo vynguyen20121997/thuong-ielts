@@ -1,5 +1,5 @@
 {
-  "_comment": "Persona học sinh dùng cho cả hai nửa: Playwright lấy `scenario` để biết phải làm gì trên web, TinyTroupe lấy phần tiểu sử để biết phải phản ứng thế nào. Giữ chung một file để hai nửa không lệch nhau.",
+  "_comment": "Persona học sinh dùng cho cả hai nửa: Playwright lấy `scenario` để biết phải làm gì trên web, TinyTroupe lấy phần tiểu sử để biết phải phản ứng thế nào. Giữ chung một file để hai nửa không lệch nhau. Mỗi persona nhắm vào một bề mặt hỏng khác nhau, không phải cho đông cho vui.",
   "personas": [
     {
       "id": "mat-goc",
@@ -36,6 +36,61 @@
       "bio": "Học sinh lớp 10, thích bấm thử mọi thứ xem có gì hỏng không. Hay mở nhiều đề một lúc, tải lại trang giữa chừng, bấm nút quay lại của trình duyệt. Không đọc kỹ hướng dẫn.",
       "goal": "Mở đề Listening bị thiếu audio, bấm lung tung, tải lại trang giữa chừng.",
       "scenario": "curious-break"
+    },
+
+    {
+      "id": "ban-phim",
+      "name": "Quang Vinh",
+      "age": 24,
+      "level": "IELTS ~7.0",
+      "bio": "Lập trình viên đang ôn để đi du học. Quen dùng bàn phím, gần như không đụng chuột: Tab để nhảy ô, Space để chọn, PageDown để cuộn. Cũng là cách một người khiếm thị dùng máy, nên chỗ nào bàn phím không tới được là chỗ đó loại người ta ra.",
+      "goal": "Làm hết một section chỉ bằng bàn phím, không chạm chuột.",
+      "scenario": "keyboard-only"
+    },
+    {
+      "id": "mang-yeu",
+      "name": "Bảo Trân",
+      "age": 20,
+      "level": "IELTS ~5.5",
+      "bio": "Ở trọ, dùng chung wifi yếu với cả dãy phòng. File nghe hay tải chậm hoặc đứt giữa chừng. Sợ nhất là bấm Bắt đầu rồi đồng hồ chạy mà tiếng chưa ra, mất thời gian oan.",
+      "goal": "Vào bài khi mạng chậm, xem đồng hồ có chạy trước cả khi tiếng kịp ra không.",
+      "scenario": "slow-network"
+    },
+    {
+      "id": "het-gio",
+      "name": "Gia Bảo",
+      "age": 21,
+      "level": "IELTS ~6.5",
+      "bio": "Hay canh sát giờ, thích thử xem hết giờ thì hệ thống làm gì. Lo bị mất bài nếu đang gõ dở mà đồng hồ về 0.",
+      "goal": "Để đồng hồ chạy hết trong lúc đang gõ dở, xem hệ thống tự nộp thế nào.",
+      "scenario": "timeout"
+    },
+    {
+      "id": "quay-lai",
+      "name": "Khánh Linh",
+      "age": 18,
+      "level": "IELTS ~6.0",
+      "bio": "Học buổi tối, hay bị mẹ gọi ra ngoài giữa chừng nên phải bỏ dở rồi quay lại sau. Muốn làm tiếp đúng chỗ đã dừng chứ không phải làm lại từ đầu.",
+      "goal": "Thoát ra giữa chừng rồi quay lại làm tiếp.",
+      "scenario": "resume"
+    },
+    {
+      "id": "may-tinh-bang",
+      "name": "Tuấn Kiệt",
+      "age": 23,
+      "level": "IELTS ~6.0",
+      "bio": "Dùng iPad để học, cầm ngang. Màn hình không nhỏ như điện thoại nhưng cũng không rộng như laptop, và mọi thứ đều bấm bằng ngón tay nên nút nhỏ hơn đầu ngón là bấm trượt.",
+      "goal": "Làm bài trên máy tính bảng, bấm bằng ngón tay.",
+      "scenario": "tablet"
+    },
+    {
+      "id": "lan-dau",
+      "name": "Cô Mai",
+      "age": 41,
+      "level": "IELTS ~5.0, đi làm",
+      "bio": "Nhân viên văn phòng ôn IELTS để xin định cư. Chưa từng thi trên máy, quen làm đề trên giấy. Không rành máy tính, đọc hướng dẫn rất kỹ và sợ bấm nhầm làm hỏng bài.",
+      "goal": "Lần đầu vào làm bài trên máy, đọc kỹ hướng dẫn trước khi bắt đầu.",
+      "scenario": "first-timer"
     }
   ]
 }

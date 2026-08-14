@@ -18,7 +18,20 @@ import { submitListeningAttempt } from "../infrastructure/listeningApi";
  * and parts advance by themselves when one ends.
  */
 
-export type SessionStatus = "instructions" | "running" | "submitting" | "finished";
+export type SessionStatus =
+  | "instructions"
+  /** Start pressed, waiting for the recording to actually make a sound. */
+  | "starting"
+  | "running"
+  | "submitting"
+  | "finished";
+
+/**
+ * How long to wait for the recording before starting the clock anyway. A
+ * student on a bad connection should not lose exam time to buffering, but nor
+ * should they be stuck on a spinner if the audio is never going to arrive.
+ */
+const AUDIO_START_TIMEOUT_MS = 8000;
 
 /**
  * What we keep so an accidental reload does not cost the student the attempt.
@@ -61,6 +74,8 @@ export function useListeningSession(test: ListeningTest) {
   const [activeTrack, setActiveTrack] = useState(0);
   const [activeSection, setActiveSection] = useState(0);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  /** Enough of the recording is buffered to start without stalling. */
+  const [audioReady, setAudioReady] = useState(false);
   const [resumable, setResumable] = useState<SavedProgress | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -113,7 +128,7 @@ export function useListeningSession(test: ListeningTest) {
     setRemainingSeconds(resumable.remainingSeconds);
     setActiveTrack(resumable.activeTrack);
     setActiveSection(resumable.activeSection);
-    setStatus("running");
+    setStatus("starting");
 
     const audio = audioRef.current;
     if (audio) {
@@ -130,11 +145,26 @@ export function useListeningSession(test: ListeningTest) {
 
   const start = useCallback(() => {
     clearProgress();
-    setStatus("running");
+    // Not "running" yet: the countdown begins when the recording does, so a
+    // slow connection costs buffering time rather than exam time.
+    setStatus("starting");
     // Autoplay is only permitted because this runs inside the click handler of
     // the start button; moving it into an effect would get it blocked.
     void audioRef.current?.play().catch(() => setAudioPlaying(false));
   }, [clearProgress]);
+
+  /** Fired by the player once the element reports it is actually playing. */
+  const handleAudioPlaying = useCallback(() => {
+    setAudioPlaying(true);
+    setStatus((prev) => (prev === "starting" ? "running" : prev));
+  }, []);
+
+  // Never let a silent failure strand the student on the starting screen.
+  useEffect(() => {
+    if (status !== "starting") return;
+    const id = window.setTimeout(() => setStatus("running"), AUDIO_START_TIMEOUT_MS);
+    return () => window.clearTimeout(id);
+  }, [status]);
 
   /**
    * When a part finishes, move to the next recording on its own. The student
@@ -146,7 +176,7 @@ export function useListeningSession(test: ListeningTest) {
 
   // A new <audio src> does not play by itself; keep the run going across parts.
   useEffect(() => {
-    if (status !== "running" || activeTrack === 0) return;
+    if ((status !== "running" && status !== "starting") || activeTrack === 0) return;
     void audioRef.current?.play().catch(() => setAudioPlaying(false));
   }, [activeTrack, status]);
 
@@ -286,6 +316,9 @@ export function useListeningSession(test: ListeningTest) {
     audioRef,
     audioPlaying,
     setAudioPlaying,
+    handleAudioPlaying,
+    audioReady,
+    setAudioReady,
     handleTrackEnded,
     start,
     resume,

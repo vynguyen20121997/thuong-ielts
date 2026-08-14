@@ -74,6 +74,7 @@ export function GapInput({
         </span>
         <input
           id={`question-${field.number}`}
+          data-exam-field
           type="text"
           value={field.value}
           onChange={(e) => onChange(e.target.value)}
