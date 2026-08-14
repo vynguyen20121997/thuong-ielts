@@ -89,7 +89,47 @@ CREATE TABLE IF NOT EXISTS reading_tests (
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- "Kiểm tra kiến thức IELTS" — Listening exercises.
+--
+-- Same shape as reading_tests (see the note there on JSONB and on keeping
+-- answer_key in its own column), with the passage replaced by `audio`.
+--
+-- `audio` is an array of tracks: [{ "part": 1, "src": "...", "label": "..." }].
+-- Some books ship one recording for the whole test, others one file per part,
+-- so a single nullable column cannot express it. `src` is a plain URL — today
+-- it points at our Drive proxy, and moving the files to object storage later is
+-- an UPDATE, not a code change.
+CREATE TABLE IF NOT EXISTS listening_tests (
+  id                TEXT PRIMARY KEY,
+  slug              TEXT NOT NULL UNIQUE,
+  title             TEXT NOT NULL,
+  collection        TEXT,
+  topic             TEXT,
+  level             TEXT NOT NULL DEFAULT 'medium' CHECK (level IN ('easy', 'medium', 'hard')),
+  duration_seconds  INTEGER NOT NULL DEFAULT 1800,
+  question_count    INTEGER NOT NULL DEFAULT 0,
+  attempt_count     INTEGER NOT NULL DEFAULT 0,
+  is_free           BOOLEAN NOT NULL DEFAULT true,
+  status            TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('draft', 'published')),
+  sort_order        INTEGER NOT NULL DEFAULT 0,
+  published_at      DATE,
+  -- Warning shown above the player. Some Cambridge sets only ship recordings for
+  -- part of the test; those tests are published with the parts that do have audio
+  -- and this note says so, rather than letting the student discover it mid-test.
+  note              TEXT,
+  audio             JSONB NOT NULL,
+  questions         JSONB NOT NULL,
+  answer_key        JSONB NOT NULL,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE INDEX IF NOT EXISTS idx_testimonials_date ON testimonials (date DESC);
 CREATE INDEX IF NOT EXISTS idx_reading_tests_status ON reading_tests (status, sort_order, published_at DESC);
+-- CREATE TABLE IF NOT EXISTS is a no-op on an existing table, so columns added
+-- after the first deploy need their own idempotent statement.
+ALTER TABLE listening_tests ADD COLUMN IF NOT EXISTS note TEXT;
+
+CREATE INDEX IF NOT EXISTS idx_listening_tests_status ON listening_tests (status, sort_order, published_at DESC);
 CREATE INDEX IF NOT EXISTS idx_feedbacks_date ON feedbacks (date DESC);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_status_published ON blog_posts (status, published_at DESC);

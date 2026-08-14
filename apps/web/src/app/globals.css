@@ -74,3 +74,64 @@ html.lenis, html.lenis body {
   display: none;
 }
 
+
+/*
+ * Exam mode: while a listening test is open, everything else on the page is
+ * hidden and only the exam remains.
+ *
+ * The exam used to be a fixed, full-screen overlay with its own scrollbar. That
+ * looked right but scrolled wrong — the page underneath moved when the wheel
+ * was over empty space, and the keyboard could not scroll a nested container at
+ * all (PageDown did nothing even with the container focused). Hiding the rest
+ * of the page instead lets the exam scroll as an ordinary document, so wheel,
+ * keyboard, touch and the scrollbar all behave the way they do everywhere else.
+ */
+body.exam-mode > *:not([data-exam]) {
+  display: none;
+}
+
+/*
+ * Always reserve the scrollbar's width, even on pages short enough not to need
+ * one. Without it every navigation between a short page and a long one shifts
+ * all centred content sideways by the scrollbar's width — most visible in the
+ * exam, where a short section sits ~8px right of a long one.
+ */
+html {
+  scrollbar-gutter: stable;
+}
+
+/*
+ * Touch devices get bigger targets. The exam is drawn at the size the desktop
+ * test uses — a 30px question button, a 32px answer box — which a mouse hits
+ * exactly and a fingertip does not. Widening only under `pointer: coarse`
+ * keeps the desktop layout identical while giving a tablet or phone something
+ * it can actually hit.
+ */
+@media (pointer: coarse) {
+  [data-exam-key] {
+    min-height: 42px;
+    min-width: 42px;
+  }
+  [data-exam-field] {
+    min-height: 42px;
+  }
+}
+
+/*
+ * Lenis ships this rule:
+ *
+ *   .lenis.lenis-smooth [data-lenis-prevent] { overflow: clip; }
+ *
+ * `lenis-smooth` is on <html> for as long as the page is gliding, so every time
+ * the student scrolls the question column, the reading passage next to it stops
+ * being a scroll container. Losing `overflow: auto` throws away its scroll
+ * offset, so the passage snaps to the top; when the glide ends the class goes,
+ * `auto` returns, the browser restores the offset and it snaps back down. That
+ * round trip is the judder.
+ *
+ * `data-lenis-prevent` exists precisely to say "this element does its own
+ * scrolling", so keeping it scrollable throughout is what the attribute means.
+ */
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overflow: auto;
+}

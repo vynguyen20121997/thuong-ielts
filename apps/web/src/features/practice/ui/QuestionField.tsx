@@ -113,8 +113,9 @@ export default function QuestionField({
                     : "border-black/10 focus:border-[#14532D]/50"
               } disabled:cursor-default`}
             />
+            {/* Wording stays skill-neutral: this field serves reading and listening. */}
             <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/35 font-bold block mt-2">
-              Viết không quá {question.maxWords} từ lấy từ bài đọc
+              Viết không quá {question.maxWords} từ
             </span>
           </div>
         )}

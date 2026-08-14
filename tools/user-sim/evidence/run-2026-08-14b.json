@@ -1,0 +1,57 @@
+{
+  "_comment": "Lượt chạy thứ hai, trên giao diện Listening mới (định dạng thi trên máy). Chỉ ghi việc quan sát được.",
+  "chayLuc": "2026-08-14b",
+  "moiTruong": "localhost:2000 (dev), giao diện thi mới",
+  "quanSat": [
+    {
+      "id": "OBS-11",
+      "persona": "ban-phim",
+      "trang": "/kiem-tra-kien-thuc/listening/cam13-listening-test2",
+      "suKien": "Trên màn hướng dẫn phải bấm Tab 10 lần mới tới nút Bắt đầu, 9 lần đầu đi qua menu marketing. Vào trong bài thi thì chỉ 2 lần Tab là tới ô nhập đầu tiên. Tab vào ô nào thì nút số tương ứng ở thanh dưới sáng viền cam.",
+      "doDo": { "tabDenBatDau": 10, "tabDenOnhapDauTien": 2, "dongBoNutSo": true }
+    },
+    {
+      "id": "OBS-12",
+      "persona": "mang-yeu",
+      "trang": "/kiem-tra-kien-thuc/listening/cam14-listening-test2",
+      "suKien": "Chặn audio 3 giây để giả lập mạng chậm. Trong suốt 3 giây đó đồng hồ đứng yên ở 30 phút và thanh trạng thái ghi 'Đang tải bài nghe — đồng hồ chưa chạy'. Tiếng ra thì đồng hồ mới chạy.",
+      "doDo": { "dongHoLuc1s5": "30", "trangThai": "Đang tải bài nghe — đồng hồ chưa chạy", "dongHoSauKhiTiengRa": "30" },
+      "trangThai": "ĐÃ SỬA trong lượt này — trước đó bấm Bắt đầu là đồng hồ chạy ngay kể cả khi tiếng chưa ra."
+    },
+    {
+      "id": "OBS-13",
+      "persona": "het-gio",
+      "trang": "/kiem-tra-kien-thuc/listening/cam12-listening-test1",
+      "suKien": "Đặt đồng hồ còn 8 giây rồi để chạy hết trong lúc đang gõ. Hệ thống tự nộp, giữ nguyên 3 đáp án đã gõ, chấm 3/10 band 4.0, audio dừng, và panel kết quả ghi rõ 'Hết giờ — bài được nộp tự động'.",
+      "doDo": { "tuNop": true, "giuDapAn": 3, "diem": "3/10", "coBaoHetGio": true }
+    },
+    {
+      "id": "OBS-14",
+      "persona": "may-tinh-bang",
+      "trang": "/kiem-tra-kien-thuc/listening/cam13-listening-test2",
+      "suKien": "Màn 820x1180: không tràn ngang, nút Nộp bài 143x54 dễ bấm. Nhưng nút số trên thanh chỉ 30x38 và ô nhập cao 32 — dưới mức 44px khuyến nghị cho vùng chạm bằng ngón tay.",
+      "doDo": { "nutSo": "30x38", "oNhap": "cao 32", "nutNop": "143x54", "datChuan44": false },
+      "trangThai": "ĐÃ SỬA trong lượt này — nới vùng chạm lên 42px khi thiết bị dùng cảm ứng (pointer: coarse), giao diện máy tính giữ nguyên."
+    },
+    {
+      "id": "OBS-15",
+      "persona": "lan-dau",
+      "trang": "/kiem-tra-kien-thuc/listening/cam15-listening-test4",
+      "suKien": "Màn hướng dẫn nói rõ: nghe một lần, số câu, thời gian, hết giờ tự nộp, cần tai nghe, và ghi chú đề thiếu audio. Nhưng không nói có sửa lại đáp án được không, cũng không nói nộp xong có xem đáp án không.",
+      "doDo": { "traLoiDuoc": 4, "conThieu": ["sửa lại đáp án được không", "nộp xong có xem đáp án không"] },
+      "trangThai": "ĐÃ SỬA trong lượt này — thêm hai dòng trả lời đúng hai câu đó."
+    },
+    {
+      "id": "OBS-16",
+      "persona": "quay-lai",
+      "trang": "/kiem-tra-kien-thuc/listening/cam15-listening-test3",
+      "suKien": "Nhập 6 câu rồi tải lại trang: màn hướng dẫn hiện nút 'Tiếp tục bài đang làm dở'. Bấm vào thì đủ 6 đáp án trở lại, audio chạy tiếp từ đúng chỗ bị cắt chứ không phát lại từ đầu, đồng hồ không reset.",
+      "doDo": { "dapAnGiuLai": 6, "audioTiepTuc": true, "dongHoGiuNguyen": true }
+    }
+  ],
+  "khongKiemTraDuoc": [
+    "Chất lượng âm thanh (agent không nghe được)",
+    "Đề dễ hay khó so với trình độ thật",
+    "Cảm giác khi bấm bằng ngón tay thật trên màn cảm ứng thật"
+  ]
+}

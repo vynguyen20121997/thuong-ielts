@@ -1,0 +1,70 @@
+{
+  "_comment": "Bằng chứng do Playwright thu thập. Chỉ ghi việc ĐÃ QUAN SÁT ĐƯỢC, không ghi ý kiến. TinyTroupe đọc file này để persona bình luận, nhờ vậy nhận xét luôn có gốc là sự kiện thật chứ không phải do model bịa.",
+  "chayLuc": "2026-08-14",
+  "moiTruong": "localhost:2000 (dev)",
+  "quanSat": [
+    {
+      "id": "OBS-01",
+      "persona": "mat-goc",
+      "trang": "/kiem-tra-kien-thuc/reading",
+      "suKien": "Trang đổ ra 99 thẻ đề cùng lúc, không phân trang. Có bộ lọc theo bộ sách và theo độ khó; lọc 'Cơ bản' còn 19 đề.",
+      "doDo": { "soTheDe": 99, "sauKhiLocCoBan": 19, "phanTrang": false }
+    },
+    {
+      "id": "OBS-02",
+      "persona": "mat-goc",
+      "trang": "/kiem-tra-kien-thuc/reading/cam12-test4-history-of-glass",
+      "suKien": "Làm sai 11/13 câu. Bảng kết quả ghi 'Kéo xuống dưới để xem đáp án và giải thích cho từng câu', nhưng cả 11 câu sai chỉ hiện đáp án đúng, không câu nào có giải thích.",
+      "doDo": { "diem": "2/13", "band": 3.0, "soCauSai": 11, "soCauCoGiaiThich": 0, "panelHuaCoGiaiThich": true }
+    },
+    {
+      "id": "OBS-03",
+      "persona": "mat-goc",
+      "trang": "/kiem-tra-kien-thuc/reading/cam10-test1-stepwells",
+      "suKien": "Cùng thao tác trên đề Cam 10 thì mỗi câu sai đều có đoạn giải thích dài (dạng 'Question / Keywords / dẫn chứng trong bài').",
+      "doDo": { "soCauSai": 11, "soCauCoGiaiThich": 10 },
+      "ghiChu": "Chứng minh giao diện hiển thị được; chênh lệch là do dữ liệu, không phải do code."
+    },
+    {
+      "id": "OBS-04",
+      "persona": "voi-vang",
+      "trang": "/kiem-tra-kien-thuc/listening/cam15-listening-test2",
+      "suKien": "Mới làm 5/30 câu đã bấm Nộp bài. Hệ thống chấm ngay, không hỏi lại câu nào. Bấm nút 3 lần liên tiếp nhưng chỉ 1 lượt làm được ghi nhận.",
+      "doDo": { "soCauDaLam": 5, "tongCau": 30, "coHoiXacNhan": false, "soLuotGhiNhan": 1 }
+    },
+    {
+      "id": "OBS-05",
+      "persona": "dien-thoai",
+      "trang": "/kiem-tra-kien-thuc/listening/cam17-listening-test1",
+      "suKien": "Màn hình 390x844: không tràn ngang. Thanh sticky (điều khiển + audio) chiếm 174px, tức 21% chiều cao màn hình, còn lại 590px cho câu hỏi. Tên đề bị ẩn ở khổ máy nhỏ.",
+      "doDo": { "tranNgang": false, "chieuCaoSticky": 174, "tyLeManHinh": "21%", "tenDeHienThi": false }
+    },
+    {
+      "id": "OBS-06",
+      "persona": "dien-thoai",
+      "trang": "/api/practice/listening/audio/1RU3gn3HPrfVLhE6KJn7dliMbaSQXgnqx",
+      "suKien": "Proxy audio trả lỗi 500, trình phát đứng im không báo gì. Gọi lại lần hai thì thành công. Nguyên nhân: fetch tới Drive ném exception nên nhánh xử lý lỗi 502 không chạy tới.",
+      "doDo": { "lanDau": 500, "lanHai": 200 },
+      "trangThai": "ĐÃ SỬA — thêm 3 lần thử lại; sau khi sửa gọi 6 lần đều 200."
+    },
+    {
+      "id": "OBS-07",
+      "persona": "to-mo",
+      "trang": "/kiem-tra-kien-thuc/listening/cam12-listening-test1",
+      "suKien": "Nhập 4 câu rồi tải lại trang: mất sạch đáp án đã nhập, đồng hồ quay về đầu. Không có hộp thoại cảnh báo trước khi rời trang.",
+      "doDo": { "cauGiuLaiDuoc": 0, "cauDaNhap": 4, "dongHoTruoc": "09:49", "dongHoSau": "09:58", "coCanhBaoRoiTrang": false }
+    },
+    {
+      "id": "OBS-08",
+      "persona": "to-mo",
+      "trang": "/kiem-tra-kien-thuc/listening/cam12-listening-test1",
+      "suKien": "Đề thiếu audio hiện đúng ghi chú màu vàng ngay đầu trang và trên thẻ ở danh sách.",
+      "doDo": { "hienGhiChu": true }
+    }
+  ],
+  "khongKiemTraDuoc": [
+    "Chất lượng âm thanh (agent không nghe được, chỉ biết file tải về được hay không)",
+    "Đề dễ hay khó so với trình độ thật của học sinh",
+    "Cảm nhận thẩm mỹ về giao diện"
+  ]
+}

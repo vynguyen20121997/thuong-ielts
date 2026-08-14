@@ -14,7 +14,9 @@
     "lint:web": "npm run lint --workspace=apps/web",
     "lint:admin": "npm run lint --workspace=apps/admin",
     "migrate": "tsx scripts/migrate.ts",
-    "check:reading": "tsx scripts/validate-reading.ts"
+    "check:reading": "tsx scripts/validate-reading.ts",
+    "check:listening": "tsx scripts/validate-listening.ts",
+    "check:coverage": "tsx scripts/coverage.ts"
   },
   "devDependencies": {
     "@types/pg": "^8.15.5",
