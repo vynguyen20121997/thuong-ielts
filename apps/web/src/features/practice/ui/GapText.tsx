@@ -17,8 +17,14 @@ import type { GradedQuestion } from "../domain/types";
  * `numbers` is a list: every question whose blank lives in this sentence.
  */
 
-/** "7…………" / "7 ....." — number, optional space, then the dotted run. */
-const GAP = /(\d{1,2})\s*[….]{2,}/g;
+/**
+ * "7…………", "7 .....", "10 £ ……" — the question number, an optional currency or
+ * percent sign, then the dotted run. The symbol is captured rather than eaten
+ * because it belongs to the sentence: the paper reads "cost: £ ___", not
+ * "cost: ___". Must stay in step with `sentenceForGap` in the importer, which
+ * tolerates the same symbols when it looks for the gap.
+ */
+const GAP = /(\d{1,2})\s*([£$%€])?\s*[….]{2,}/g;
 
 export interface GapField {
   number: number;
@@ -26,6 +32,8 @@ export interface GapField {
   value: string;
   maxWords: number;
   review?: GradedQuestion;
+  /** The question the navigator is pointing at — drawn to match its button. */
+  active?: boolean;
 }
 
 /**
@@ -37,10 +45,13 @@ export function GapInput({
   field,
   disabled,
   onChange,
+  onFocus,
 }: {
   field: GapField;
   disabled: boolean;
   onChange: (value: string) => void;
+  /** Lets the navigator mark which question is being edited. */
+  onFocus?: (number: number) => void;
 }) {
   const review = field.review;
   const state = review ? (review.isCorrect ? "correct" : "wrong") : "idle";
@@ -54,7 +65,9 @@ export function GapInput({
               ? "bg-[#9FE870] text-[#14532D] border-[#14532D]/30"
               : state === "wrong"
                 ? "bg-red-100 text-red-700 border-red-300"
-                : "bg-[#F3F2EE] text-[#1A1A1A]/60 border-black/25"
+                : field.active
+                  ? "bg-[#FEF3C7] text-[#92400E] border-[#D97706]"
+                  : "bg-[#F3F2EE] text-[#1A1A1A]/60 border-black/25"
           }`}
         >
           {field.number}
@@ -64,15 +77,20 @@ export function GapInput({
           type="text"
           value={field.value}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={() => onFocus?.(field.number)}
           disabled={disabled}
           aria-label={`Câu ${field.number}`}
           title={`Tối đa ${field.maxWords} từ`}
-          className={`w-40 border rounded-r px-2 py-1 text-[15px] leading-normal bg-white scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-[#14532D]/25 disabled:bg-[#FAF9F6] disabled:cursor-default ${
+          // No `bg-white` in the base: it and the active tint are the same kind
+          // of utility, so whichever Tailwind happens to emit last would win.
+          className={`w-40 border rounded-r px-2 py-1 text-[15px] leading-normal scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-[#14532D]/25 disabled:bg-[#FAF9F6] disabled:cursor-default ${
             state === "correct"
-              ? "border-[#14532D]/30"
+              ? "bg-white border-[#14532D]/30"
               : state === "wrong"
-                ? "border-red-300 text-red-700"
-                : "border-black/25 focus:border-[#14532D]"
+                ? "bg-white border-red-300 text-red-700"
+                : field.active
+                  ? "bg-[#FFFBEB] border-[#D97706]"
+                  : "bg-white border-black/25 focus:border-[#14532D]"
           }`}
         />
       </span>
@@ -90,11 +108,13 @@ export default function GapText({
   fields,
   disabled,
   onChange,
+  onFocus,
 }: {
   text: string;
   fields: GapField[];
   disabled: boolean;
   onChange: (questionId: string, value: string) => void;
+  onFocus?: (number: number) => void;
 }) {
   const byNumber = new Map(fields.map((f) => [f.number, f]));
   const parts: React.ReactNode[] = [];
@@ -107,13 +127,19 @@ export default function GapText({
     // replacing it would put an input where this student has nothing to answer.
     if (!field) continue;
 
-    parts.push(<Fragment key={key++}>{text.slice(cursor, match.index)}</Fragment>);
+    parts.push(
+      <Fragment key={key++}>
+        {text.slice(cursor, match.index)}
+        {match[2] ? `${match[2]} ` : ""}
+      </Fragment>
+    );
     parts.push(
       <GapInput
         key={key++}
         field={field}
         disabled={disabled}
         onChange={(value) => onChange(field.questionId, value)}
+        onFocus={onFocus}
       />
     );
     cursor = match.index + match[0].length;
@@ -125,5 +151,5 @@ export default function GapText({
 
 /** True when this prompt has a blank we can render inline for `number`. */
 export function hasInlineGap(text: string, number: number): boolean {
-  return new RegExp(`\\b${number}\\s*[….]{2,}`).test(text);
+  return new RegExp(`\\b${number}\\s*[£$%€]?\\s*[….]{2,}`).test(text);
 }

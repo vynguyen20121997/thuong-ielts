@@ -74,3 +74,28 @@ html.lenis, html.lenis body {
   display: none;
 }
 
+
+/*
+ * Exam mode: while a listening test is open, everything else on the page is
+ * hidden and only the exam remains.
+ *
+ * The exam used to be a fixed, full-screen overlay with its own scrollbar. That
+ * looked right but scrolled wrong — the page underneath moved when the wheel
+ * was over empty space, and the keyboard could not scroll a nested container at
+ * all (PageDown did nothing even with the container focused). Hiding the rest
+ * of the page instead lets the exam scroll as an ordinary document, so wheel,
+ * keyboard, touch and the scrollbar all behave the way they do everywhere else.
+ */
+body.exam-mode > *:not([data-exam]) {
+  display: none;
+}
+
+/*
+ * Always reserve the scrollbar's width, even on pages short enough not to need
+ * one. Without it every navigation between a short page and a long one shifts
+ * all centred content sideways by the scrollbar's width — most visible in the
+ * exam, where a short section sits ~8px right of a long one.
+ */
+html {
+  scrollbar-gutter: stable;
+}

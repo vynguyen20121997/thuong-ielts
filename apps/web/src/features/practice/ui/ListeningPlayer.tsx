@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { AlertTriangle, ArrowLeft, ArrowRight, Check, Volume2 } from "lucide-react";
@@ -42,6 +42,47 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
   const session = useListeningSession(test);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  /** The exam's own scroll container — not the window. */
+  const examRef = useRef<HTMLDivElement>(null);
+  /** Which question the student is on, so the navigator can point at it. */
+  const [activeNumber, setActiveNumber] = useState<number | null>(null);
+
+  /**
+   * Jump to a question from the navigator: scroll it into view and put the
+   * caret in it, so the student can type straight away instead of hunting for
+   * the box they just asked for. Gap-fill carries the id on its input; a choice
+   * question carries it on the wrapper, so focus its first radio instead.
+   */
+  const goToQuestion = (number: number) => {
+    setActiveNumber(number);
+    const target = document.getElementById(`question-${number}`);
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    const field =
+      target instanceof HTMLInputElement
+        ? target
+        : target.querySelector<HTMLInputElement>("input");
+    field?.focus({ preventScroll: true });
+  };
+  const onExam = session.status !== "instructions";
+
+  /**
+   * Hide the rest of the page while the exam is open (see `body.exam-mode` in
+   * globals.css). The exam then scrolls as an ordinary document instead of as a
+   * nested container, which is what makes the wheel, the keyboard and touch all
+   * behave normally.
+   */
+  useEffect(() => {
+    if (!onExam) return;
+    document.body.classList.add("exam-mode");
+    return () => document.body.classList.remove("exam-mode");
+  }, [onExam]);
+
+  // A new section starts at its first question, not wherever the last one ended.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [session.activeSection]);
 
   const reviewByQuestion = useMemo(() => {
     if (!session.result) return null;
@@ -100,6 +141,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         value: session.answers[q.id] ?? "",
         maxWords: "maxWords" in q ? q.maxWords : 2,
         review,
+        active: activeNumber === q.number,
       };
 
       if (!hasInlineGap(q.prompt, q.number)) {
@@ -116,7 +158,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
     }
 
     return out;
-  }, [current, session.answers, reviewByQuestion]);
+  }, [current, session.answers, reviewByQuestion, activeNumber]);
 
   /**
    * One <audio> for the whole session, portalled so it keeps the same place in
@@ -135,6 +177,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
     mounted && track
       ? createPortal(
           <audio
+            data-exam
             ref={session.audioRef}
             src={track.src}
             preload="auto"
@@ -226,10 +269,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
 
   // ── Exam ────────────────────────────────────────────────────────────────
   const exam = (
-    // Full-screen: the marketing nav has no place in an exam, and the sample
-    // site hides it too. Fixed rather than a new route so the URL is unchanged.
-    // z-[60] because the site header is z-50 and would otherwise paint on top.
-    <div className="fixed inset-0 z-[60] bg-white overflow-y-auto pb-28">
+    <div ref={examRef} data-exam className="min-h-screen bg-white pb-28">
 
       <header className="sticky top-0 z-30 bg-white border-b border-black/10">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-2.5 flex items-center gap-3">
@@ -312,6 +352,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                             fields={block.fields}
                             disabled={disabled}
                             onChange={session.setAnswer}
+                            onFocus={setActiveNumber}
                           />
                         );
                       }
@@ -330,9 +371,11 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                                 value: session.answers[q.id] ?? "",
                                 maxWords: "maxWords" in q ? q.maxWords : 2,
                                 review,
+                                active: activeNumber === q.number,
                               }}
                               disabled={disabled}
                               onChange={(value) => session.setAnswer(q.id, value)}
+                              onFocus={setActiveNumber}
                             />
                           </p>
                         );
@@ -341,7 +384,15 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                       const q = block.question;
                       const review = block.review;
                       return (
-                        <div key={block.key} id={`question-${q.number}`} className="scroll-mt-32">
+                        <div
+                          key={block.key}
+                          id={`question-${q.number}`}
+                          className={`scroll-mt-32 rounded-lg transition-colors ${
+                            activeNumber === q.number && !review
+                              ? "bg-[#FFFBEB] ring-1 ring-[#D97706]/40 -mx-2 px-2 py-1"
+                              : ""
+                          }`}
+                        >
                           <p className="text-[15px] text-[#1A1A1A] mb-2">
                             <span className="font-bold mr-2">{q.number}</span>
                             {q.prompt}
@@ -370,6 +421,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                                     name={q.id}
                                     checked={chosen}
                                     onChange={() => session.setAnswer(q.id, option)}
+                                    onFocus={() => setActiveNumber(q.number)}
                                     disabled={disabled}
                                     className="mt-1.5 accent-[#14532D]"
                                   />
@@ -394,69 +446,107 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         )}
       </div>
 
-      {/* Question navigator */}
+      {/*
+        Question navigator, following the exam's own design: every button and
+        every section label carries a 3px track above it — grey for untouched,
+        filled as the student answers, recoloured by correctness once the paper
+        is marked. The number itself stays an outlined box throughout, so
+        "answered" and "currently editing" remain two separate signals.
+      */}
       <nav className="fixed bottom-0 inset-x-0 z-[70] bg-[#FAF9F6] border-t border-black/10">
-        <div className="max-w-6xl mx-auto px-3 md:px-6 py-2 flex items-center gap-3">
+        {/*
+          Full width, not the content column: the exam pins its submit panel to
+          the very edge of the screen, and the section list centres itself in
+          whatever space is left over.
+        */}
+        <div className="w-full pl-3 md:pl-6 flex items-stretch gap-3">
           {/*
             Only the section list scrolls. Keeping the actions outside it is what
-            stops "Nộp bài" from being pushed off a phone screen behind ten
-            question buttons — a student could not submit without knowing to
+            stops the submit button from being pushed off a phone screen behind
+            ten question buttons — a student could not submit without knowing to
             swipe the bar sideways first.
           */}
-          <div className="flex-1 min-w-0 flex items-center gap-3 md:gap-5 overflow-x-auto no-scrollbar">
-          {session.sectionProgress.map((progress, index) => {
-            const isCurrent = index === session.activeSection;
-            if (!isCurrent) {
+          <div className="flex-1 min-w-0 flex items-center justify-center gap-4 md:gap-6 overflow-x-auto no-scrollbar py-2">
+            {session.sectionProgress.map((progress, index) => {
+              const isCurrent = index === session.activeSection;
+              const percent = progress.total
+                ? Math.round((progress.answered / progress.total) * 100)
+                : 0;
+
               return (
-                <button
-                  key={progress.section}
-                  type="button"
-                  onClick={() => session.goToSection(index)}
-                  className="shrink-0 flex items-center gap-2 text-[12px] font-bold text-[#1A1A1A]/55 hover:text-[#14532D] transition-colors cursor-pointer whitespace-nowrap"
-                >
-                  <span>SECTION {progress.section}</span>
-                  <span className="font-normal text-[#1A1A1A]/45">
-                    {progress.answered} of {progress.total}
-                  </span>
-                </button>
-              );
-            }
+                <div key={progress.section} className="shrink-0 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => session.goToSection(index)}
+                    className="relative flex items-center gap-2 pt-2 cursor-pointer group whitespace-nowrap"
+                  >
+                    <span className="absolute top-0 left-0 right-0 h-[3px] rounded bg-[#D7D7D7]" />
+                    <span
+                      className="absolute top-0 left-0 h-[3px] rounded bg-[#14532D] transition-all duration-300"
+                      style={{ width: `${percent}%` }}
+                    />
+                    <span
+                      className={`text-[12px] font-black transition-colors ${
+                        isCurrent ? "text-[#1A1A1A]" : "text-[#1A1A1A]/55 group-hover:text-[#14532D]"
+                      }`}
+                    >
+                      SECTION {progress.section}
+                    </span>
+                    {/* The tally gives way to the numbers once the section is open. */}
+                    {!isCurrent && (
+                      <span className="text-[12px] text-[#1A1A1A]/45">
+                        {progress.answered} of {progress.total}
+                      </span>
+                    )}
+                  </button>
 
-            return (
-              <div key={progress.section} className="shrink-0 flex items-center gap-2">
-                <span className="text-[12px] font-black text-[#1A1A1A] whitespace-nowrap">
-                  SECTION {progress.section}
-                </span>
-                <div className="flex gap-1">
-                  {session.sections[index].questions.map((q) => {
-                    const done = (session.answers[q.id] ?? "").trim().length > 0;
-                    return (
-                      <button
-                        key={q.id}
-                        type="button"
-                        onClick={() => {
-                          document
-                            .getElementById(`question-${q.number}`)
-                            ?.scrollIntoView({ behavior: "smooth", block: "center" });
-                        }}
-                        className={`h-7 min-w-7 px-1 rounded border font-mono text-[11px] font-bold transition-colors cursor-pointer ${
-                          done
-                            ? "bg-[#14532D] text-white border-[#14532D]"
-                            : "bg-white text-[#1A1A1A]/60 border-black/20 hover:border-[#14532D]"
-                        }`}
-                      >
-                        {q.number}
-                      </button>
-                    );
-                  })}
+                  {isCurrent && (
+                    <div className="flex gap-1">
+                      {session.sections[index].questions.map((q) => {
+                        const done = (session.answers[q.id] ?? "").trim().length > 0;
+                        const review = reviewByQuestion?.get(q.id);
+                        const trackFill = review
+                          ? review.isCorrect
+                            ? "bg-[#14532D]"
+                            : done
+                              ? "bg-[#DC2626]"
+                              : "bg-[#9CA3AF]"
+                          : "bg-[#14532D]";
+                        const filled = review ? true : done;
+
+                        return (
+                          <button
+                            key={q.id}
+                            type="button"
+                            onClick={() => goToQuestion(q.number)}
+                            className="relative pt-2 cursor-pointer"
+                            aria-label={`Tới câu ${q.number}`}
+                          >
+                            <span className="absolute top-0 left-0 right-0 h-[3px] rounded bg-[#D7D7D7]" />
+                            <span
+                              className={`absolute top-0 left-0 h-[3px] rounded transition-all duration-300 ${trackFill}`}
+                              style={{ width: filled ? "100%" : "0%" }}
+                            />
+                            <span
+                              className={`flex h-[30px] min-w-[30px] px-1 items-center justify-center rounded border text-[14px] bg-white transition-colors ${
+                                activeNumber === q.number
+                                  ? "border-[#D97706] border-2 text-[#1A1A1A]"
+                                  : "border-[#D8DCE3] text-[#333] hover:border-[#14532D]"
+                              }`}
+                            >
+                              {q.number}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              </div>
-            );
-          })}
-
+              );
+            })}
           </div>
 
-          <div className="shrink-0 flex items-center gap-2">
+          <div className="shrink-0 flex items-center gap-2 py-2">
             <button
               type="button"
               onClick={() => session.goToSection(session.activeSection - 1)}
@@ -475,19 +565,24 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
             >
               <ArrowRight size={16} />
             </button>
-            {!isReview && (
-              <button
-                type="button"
-                onClick={confirmSubmit}
-                disabled={session.status === "submitting"}
-                title="Nộp bài"
-                className="h-9 px-4 rounded bg-[#14532D] hover:bg-[#052E16] text-white flex items-center gap-2 font-bold text-[12px] disabled:opacity-60 disabled:cursor-wait cursor-pointer"
-              >
-                <Check size={16} />
-                {session.status === "submitting" ? "Đang chấm..." : "Nộp bài"}
-              </button>
-            )}
           </div>
+
+          {/* Submit sits in its own panel at the far edge, as in the exam. */}
+          {!isReview && (
+            <button
+              type="button"
+              onClick={confirmSubmit}
+              disabled={session.status === "submitting"}
+              title="Nộp bài"
+              aria-label="Nộp bài"
+              className="shrink-0 px-5 md:px-8 bg-[#EFEFEF] hover:bg-[#14532D] hover:text-white text-[#1A1A1A] flex items-center gap-2 disabled:opacity-60 disabled:cursor-wait cursor-pointer transition-colors"
+            >
+              <Check size={26} strokeWidth={2.5} />
+              <span className="hidden md:inline font-bold text-[12px]">
+                {session.status === "submitting" ? "Đang chấm..." : "Nộp bài"}
+              </span>
+            </button>
+          )}
         </div>
       </nav>
     </div>

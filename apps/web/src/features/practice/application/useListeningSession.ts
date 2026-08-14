@@ -254,10 +254,15 @@ export function useListeningSession(test: ListeningTest) {
     [sections, answers]
   );
 
+  /**
+   * Only moves the pointer between sections. Scrolling back to the top belongs
+   * to the player: the exam renders in its own scroll container, so calling
+   * window.scrollTo here would scroll the marketing page underneath instead and
+   * leave the student halfway down the new section.
+   */
   const goToSection = useCallback(
     (index: number) => {
       setActiveSection(Math.max(0, Math.min(index, sections.length - 1)));
-      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     [sections.length]
   );
