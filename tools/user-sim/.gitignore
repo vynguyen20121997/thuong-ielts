@@ -1,1 +1,4 @@
 evidence/feedback-*.json
+.env
+.venv/
+__pycache__/

@@ -30,6 +30,28 @@ for _stream in (sys.stdout, sys.stderr):
 HERE = Path(__file__).parent
 
 
+def load_env() -> None:
+    """
+    Reads tools/user-sim/.env into the environment.
+
+    Hand-rolled rather than pulling in python-dotenv: this needs to parse
+    KEY=value and nothing else. The file is gitignored — the key must never
+    reach a commit.
+    """
+    env_file = HERE / ".env"
+    if not env_file.exists():
+        return
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip())
+
+
+load_env()
+
+
 def latest_evidence() -> Path:
     files = sorted(glob.glob(str(HERE / "evidence" / "run-*.json")))
     if not files:
@@ -101,7 +123,11 @@ def main() -> None:
             "persona": spec["name"],
             "scenario": spec["scenario"],
             "soQuanSat": len(quan_sat),
-            "nhanXet": person.pop_actions_and_get_contents_for("TALK", False),
+            # Returns a string when the agent spoke once, a list when it spoke
+            # several times. Normalise so consumers never have to check.
+            "nhanXet": (lambda t: [t] if isinstance(t, str) else list(t))(
+                person.pop_actions_and_get_contents_for("TALK", False)
+            ),
         })
 
     out = HERE / "evidence" / f"feedback-{evidence['chayLuc']}.json"
