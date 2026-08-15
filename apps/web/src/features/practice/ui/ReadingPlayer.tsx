@@ -7,7 +7,11 @@ import { AlertTriangle, ArrowLeft, BookOpen, ListChecks, Timer } from "lucide-re
 import { formatClock, useReadingSession } from "../application/useReadingSession";
 import { LEVEL_LABELS } from "../domain/catalog";
 import type { ReadingTest } from "../domain/types";
+import { useAnnotations } from "../application/useAnnotations";
+import { highlightsFor } from "../domain/annotations";
+import HighlightableText from "./HighlightableText";
 import PaperQuestion from "./PaperQuestion";
+import SelectionPopup from "./SelectionPopup";
 import ReadingResultPanel from "./ReadingResultPanel";
 
 /**
@@ -22,6 +26,12 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
   const [mobilePane, setMobilePane] = useState<"passage" | "questions">("passage");
   /** Which question the student is typing in, so it can be highlighted. */
   const [activeNumber, setActiveNumber] = useState<number | null>(null);
+  const marks = useAnnotations(test.slug);
+
+  /** The question a selection belongs to, so the popup can offer a bookmark. */
+  const selectedQuestion = marks.pending
+    ? test.questions.find((q) => q.id === marks.pending!.blockId)
+    : undefined;
 
   const reviewByQuestion = useMemo(() => {
     if (!session.result) return null;
@@ -126,7 +136,15 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-6 lg:gap-10 py-8">
+      {/*
+        One listener for the whole paper: a selection is only meaningful once
+        the mouse comes back up, and the handler works out for itself which
+        block it landed in.
+      */}
+      <div
+        className="grid md:grid-cols-2 gap-6 lg:gap-10 py-8"
+        onMouseUp={marks.captureSelection}
+      >
         {/* Passage */}
         <div className={`${mobilePane === "passage" ? "block" : "hidden"} md:block`}>
           <div
@@ -150,11 +168,16 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
               {test.passage.paragraphs.map((paragraph, index) => (
                 <p key={index} className="text-[15px] leading-[1.85] text-[#1A1A1A]/85">
                   {paragraph.label && (
-                    <span className="font-mono text-xs font-black text-[#14532D] mr-2 align-top">
+                    <span className="font-serif font-black text-[#14532D] mr-2">
                       {paragraph.label}
                     </span>
                   )}
-                  {paragraph.text}
+                  <HighlightableText
+                    blockId={`p${index}`}
+                    text={paragraph.text}
+                    highlights={highlightsFor(marks.annotations, `p${index}`)}
+                    onRemove={marks.removeHighlight}
+                  />
                 </p>
               ))}
             </div>
@@ -194,6 +217,10 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
                   </p>
                 )}
                 <PaperQuestion
+                  highlights={highlightsFor(marks.annotations, question.id)}
+                  onRemoveHighlight={marks.removeHighlight}
+                  bookmarked={marks.annotations.bookmarks.includes(question.number)}
+                  onToggleBookmark={() => marks.toggleQuestionBookmark(question.number)}
                   question={question}
                   value={session.answers[question.id] ?? ""}
                   onChange={(value) => session.setAnswer(question.id, value)}
@@ -220,6 +247,22 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
           )}
         </div>
       </div>
+
+      <SelectionPopup
+        selection={marks.pending}
+        onHighlight={marks.highlightSelection}
+        onBookmark={
+          selectedQuestion
+            ? () => {
+                marks.toggleQuestionBookmark(selectedQuestion.number);
+                marks.clearSelection();
+              }
+            : undefined
+        }
+        bookmarked={
+          selectedQuestion ? marks.annotations.bookmarks.includes(selectedQuestion.number) : false
+        }
+      />
     </div>
   );
 }

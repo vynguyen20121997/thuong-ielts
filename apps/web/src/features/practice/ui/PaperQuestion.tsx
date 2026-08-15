@@ -2,7 +2,11 @@
 
 import { Fragment } from "react";
 
+import { Bookmark } from "lucide-react";
+
+import type { Highlight } from "../domain/annotations";
 import { isChoiceQuestion, type GradedQuestion, type Question } from "../domain/types";
+import HighlightableText from "./HighlightableText";
 import GapText, { GapInput, hasInlineGap } from "./GapText";
 
 /**
@@ -96,6 +100,10 @@ export default function PaperQuestion({
   disabled,
   active,
   onFocus,
+  highlights = [],
+  onRemoveHighlight,
+  bookmarked = false,
+  onToggleBookmark,
 }: {
   question: Question;
   value: string;
@@ -104,6 +112,10 @@ export default function PaperQuestion({
   disabled: boolean;
   active?: boolean;
   onFocus?: (number: number) => void;
+  highlights?: Highlight[];
+  onRemoveHighlight?: (blockId: string, offset: number) => void;
+  bookmarked?: boolean;
+  onToggleBookmark?: () => void;
 }) {
   const wrong = review && !review.isCorrect;
 
@@ -113,19 +125,49 @@ export default function PaperQuestion({
       // instead, and two elements sharing one id is invalid HTML that makes
       // getElementById return whichever came first.
       id={isChoiceQuestion(question) ? `question-${question.number}` : undefined}
-      className={`scroll-mt-32 rounded-lg px-2 -mx-2 py-1 transition-colors ${
-        active && !review ? "bg-[#FFFBEB] ring-1 ring-[#D97706]/40" : ""
+      className={`group/q scroll-mt-32 rounded-lg px-2 -mx-2 py-1 transition-colors ${
+        active && !review
+          ? "bg-[#FFFBEB] ring-1 ring-[#D97706]/40"
+          : bookmarked
+            ? "bg-[#FFC107]/[0.07]"
+            : ""
       }`}
     >
       <div className="flex gap-3">
-        <span className="shrink-0 font-bold text-[15px] text-[#1A1A1A] pt-1 w-6">
-          {question.number}
+        <span className="shrink-0 flex items-start gap-1 pt-1">
+          <span className="font-bold text-[15px] text-[#1A1A1A] w-6">{question.number}</span>
+          {onToggleBookmark && (
+            <button
+              type="button"
+              onClick={onToggleBookmark}
+              title={bookmarked ? "Bỏ đánh dấu câu này" : "Đánh dấu để quay lại sau"}
+              aria-label={bookmarked ? `Bỏ đánh dấu câu ${question.number}` : `Đánh dấu câu ${question.number}`}
+              aria-pressed={bookmarked}
+              // Only shows on hover until it is set, so an unmarked paper stays
+              // clean — the exam site hides it the same way.
+              className={`cursor-pointer transition-opacity ${
+                bookmarked ? "opacity-100" : "opacity-0 group-hover/q:opacity-60 hover:!opacity-100"
+              }`}
+            >
+              <Bookmark
+                size={14}
+                className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-[#1A1A1A]/50"}
+              />
+            </button>
+          )}
         </span>
 
         <div className="min-w-0 flex-1">
           {isChoiceQuestion(question) ? (
             <>
-              <p className="text-[15px] leading-relaxed text-[#1A1A1A]">{question.prompt}</p>
+              <p className="text-[15px] leading-relaxed text-[#1A1A1A]">
+                <HighlightableText
+                  blockId={question.id}
+                  text={question.prompt}
+                  highlights={highlights}
+                  onRemove={onRemoveHighlight}
+                />
+              </p>
               <div className="mt-1.5 space-y-1">
                 {question.options.map((option) => {
                   const chosen = value === option;

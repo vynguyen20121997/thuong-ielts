@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, ArrowRight, Check, Volume2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ArrowRight, Bookmark, Check, Volume2 } from "lucide-react";
 
 import { formatClock } from "../application/useReadingSession";
 import { useListeningSession } from "../application/useListeningSession";
@@ -14,7 +14,11 @@ import {
   type ListeningTest,
   type Question,
 } from "../domain/types";
+import { useAnnotations } from "../application/useAnnotations";
+import { highlightsFor } from "../domain/annotations";
 import GapText, { GapInput, hasInlineGap, type GapField } from "./GapText";
+import HighlightableText from "./HighlightableText";
+import SelectionPopup from "./SelectionPopup";
 import ReadingResultPanel from "./ReadingResultPanel";
 
 /**
@@ -47,6 +51,10 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
   const examRef = useRef<HTMLDivElement>(null);
   /** Which question the student is on, so the navigator can point at it. */
   const [activeNumber, setActiveNumber] = useState<number | null>(null);
+  const marks = useAnnotations(test.slug);
+  const selectedQuestion = marks.pending
+    ? test.questions.find((q) => q.id === marks.pending!.blockId)
+    : undefined;
 
   /**
    * Jump to a question from the navigator: scroll it into view and put the
@@ -365,12 +373,17 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               </p>
             </div>
 
-            <div className="py-6 space-y-8">
+            <div className="py-6 space-y-8" onMouseUp={marks.captureSelection}>
               {groups.map((group, gi) => (
                 <section key={gi}>
                   {group.heading && (
                     <p className="text-[14px] text-[#1A1A1A]/80 leading-relaxed mb-4 font-medium border-l-2 border-[#14532D]/25 pl-3">
-                      {group.heading}
+                      <HighlightableText
+                        blockId={`g${gi}`}
+                        text={group.heading}
+                        highlights={highlightsFor(marks.annotations, `g${gi}`)}
+                        onRemove={marks.removeHighlight}
+                      />
                     </p>
                   )}
 
@@ -425,9 +438,20 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               : ""
                           }`}
                         >
-                          <p className="text-[15px] text-[#1A1A1A] mb-2">
-                            <span className="font-bold mr-2">{q.number}</span>
-                            {q.prompt}
+                          <p className="text-[15px] text-[#1A1A1A] mb-2 flex items-start gap-2">
+                            <span className="font-bold">{q.number}</span>
+                            <HighlightableText
+                              blockId={q.id}
+                              text={q.prompt}
+                              highlights={highlightsFor(marks.annotations, q.id)}
+                              onRemove={marks.removeHighlight}
+                              className="flex-1"
+                            />
+                            <BookmarkToggle
+                              number={q.number}
+                              bookmarked={marks.annotations.bookmarks.includes(q.number)}
+                              onToggle={() => marks.toggleQuestionBookmark(q.number)}
+                            />
                           </p>
                           <div className="space-y-1.5 pl-6">
                             {q.options.map((option) => {
@@ -573,6 +597,13 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               className={`absolute top-0 left-0 h-[3px] rounded transition-all duration-300 ${trackFill}`}
                               style={{ width: filled ? "100%" : "0%" }}
                             />
+                            {marks.annotations.bookmarks.includes(q.number) && (
+                              <Bookmark
+                                size={11}
+                                aria-hidden
+                                className="absolute -top-0.5 -right-1 z-10 text-[#FFC107] fill-[#FFC107] rotate-[25deg]"
+                              />
+                            )}
                             <span
                               data-exam-key
                               className={`flex h-[30px] min-w-[30px] px-1 items-center justify-center rounded border text-[14px] bg-white transition-colors ${
@@ -632,6 +663,22 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           )}
         </div>
       </nav>
+
+      <SelectionPopup
+        selection={marks.pending}
+        onHighlight={marks.highlightSelection}
+        onBookmark={
+          selectedQuestion
+            ? () => {
+                marks.toggleQuestionBookmark(selectedQuestion.number);
+                marks.clearSelection();
+              }
+            : undefined
+        }
+        bookmarked={
+          selectedQuestion ? marks.annotations.bookmarks.includes(selectedQuestion.number) : false
+        }
+      />
     </div>
   );
 
@@ -646,6 +693,38 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
       {audioElement}
       {mounted ? createPortal(exam, document.body) : null}
     </>
+  );
+}
+
+/**
+ * The flag a student sets on a question to come back to. Hidden until hovered
+ * unless it is set, so an unmarked paper stays clean.
+ */
+function BookmarkToggle({
+  number,
+  bookmarked,
+  onToggle,
+}: {
+  number: number;
+  bookmarked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={bookmarked}
+      aria-label={bookmarked ? `Bỏ đánh dấu câu ${number}` : `Đánh dấu câu ${number}`}
+      title={bookmarked ? "Bỏ đánh dấu" : "Đánh dấu để quay lại sau"}
+      className={`shrink-0 cursor-pointer transition-opacity ${
+        bookmarked ? "opacity-100" : "opacity-0 hover:opacity-100 focus:opacity-100"
+      }`}
+    >
+      <Bookmark
+        size={14}
+        className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-[#1A1A1A]/50"}
+      />
+    </button>
   );
 }
 
