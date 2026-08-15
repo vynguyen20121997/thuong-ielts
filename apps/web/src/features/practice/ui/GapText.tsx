@@ -46,12 +46,15 @@ export function GapInput({
   disabled,
   onChange,
   onFocus,
+  compact = false,
 }: {
   field: GapField;
   disabled: boolean;
   onChange: (value: string) => void;
   /** Lets the navigator mark which question is being edited. */
   onFocus?: (number: number) => void;
+  /** Narrower box, for the reading paper's single-column layout. */
+  compact?: boolean;
 }) {
   const review = field.review;
   const state = review ? (review.isCorrect ? "correct" : "wrong") : "idle";
@@ -84,7 +87,7 @@ export function GapInput({
           title={`Tối đa ${field.maxWords} từ`}
           // No `bg-white` in the base: it and the active tint are the same kind
           // of utility, so whichever Tailwind happens to emit last would win.
-          className={`w-40 border rounded-r px-2 py-1 text-[15px] leading-normal scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-[#14532D]/25 disabled:bg-[#FAF9F6] disabled:cursor-default ${
+          className={`${compact ? "w-24" : "w-40"} border rounded-r px-2 py-1 text-[15px] leading-normal scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-[#14532D]/25 disabled:bg-[#FAF9F6] disabled:cursor-default ${
             state === "correct"
               ? "bg-white border-[#14532D]/30"
               : state === "wrong"

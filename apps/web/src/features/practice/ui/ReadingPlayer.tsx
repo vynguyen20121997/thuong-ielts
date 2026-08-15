@@ -7,7 +7,7 @@ import { AlertTriangle, ArrowLeft, BookOpen, ListChecks, Timer } from "lucide-re
 import { formatClock, useReadingSession } from "../application/useReadingSession";
 import { LEVEL_LABELS } from "../domain/catalog";
 import type { ReadingTest } from "../domain/types";
-import QuestionField from "./QuestionField";
+import PaperQuestion from "./PaperQuestion";
 import ReadingResultPanel from "./ReadingResultPanel";
 
 /**
@@ -20,6 +20,8 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
   const session = useReadingSession(test);
   // Mobile only: the two panes do not fit side by side under `md`.
   const [mobilePane, setMobilePane] = useState<"passage" | "questions">("passage");
+  /** Which question the student is typing in, so it can be highlighted. */
+  const [activeNumber, setActiveNumber] = useState<number | null>(null);
 
   const reviewByQuestion = useMemo(() => {
     if (!session.result) return null;
@@ -178,20 +180,27 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
             </span>
           </div>
 
-          <div className="space-y-4">
+          {/*
+            One continuous paper rather than a stack of cards: the instructions
+            head their block exactly as printed, and each answer is written into
+            the line it belongs to.
+          */}
+          <div className="bg-white border border-black/5 rounded-2xl p-6 md:p-8 shadow-sm space-y-1">
             {test.questions.map((question) => (
-              <div key={question.id} className={question.group ? "pt-4" : undefined}>
+              <div key={question.id}>
                 {question.group && (
-                  <p className="font-mono text-[10px] leading-relaxed uppercase tracking-wider text-[#1A1A1A]/45 font-bold mb-3">
+                  <p className="text-[14px] leading-relaxed text-[#1A1A1A]/80 font-medium border-l-2 border-[#14532D]/25 pl-3 mt-7 first:mt-0 mb-4 whitespace-pre-line">
                     {question.group}
                   </p>
                 )}
-                <QuestionField
+                <PaperQuestion
                   question={question}
                   value={session.answers[question.id] ?? ""}
                   onChange={(value) => session.setAnswer(question.id, value)}
                   review={reviewByQuestion?.get(question.id)}
                   disabled={isReview || session.status === "submitting"}
+                  active={activeNumber === question.number}
+                  onFocus={setActiveNumber}
                 />
               </div>
             ))}
