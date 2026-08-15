@@ -113,7 +113,7 @@ export default function PaperQuestion({
   active?: boolean;
   onFocus?: (number: number) => void;
   highlights?: Highlight[];
-  onRemoveHighlight?: (blockId: string, offset: number) => void;
+  onRemoveHighlight?: (blockId: string, offset: number, rect: DOMRect) => void;
   bookmarked?: boolean;
   onToggleBookmark?: () => void;
 }) {

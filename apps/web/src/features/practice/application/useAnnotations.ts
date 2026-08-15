@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   addHighlight,
   emptyAnnotations,
+  removeAllHighlights,
   removeHighlightAt,
   toggleBookmark,
   type Annotations,
@@ -22,14 +23,20 @@ import {
  */
 
 export interface PendingSelection {
+  /**
+   * `selection` — fresh text was dragged over, so the popup offers to mark it.
+   * `existing` — an already-marked span was clicked, so it offers to unmark.
+   *
+   * Removing on the click itself would be quicker but undiscoverable, and one
+   * stray click would silently destroy a mark the student meant to keep.
+   */
+  kind: "selection" | "existing";
   blockId: string;
   start: number;
   end: number;
   /** Viewport position to anchor the popup to. */
   x: number;
   y: number;
-  /** Set when the click landed on an existing highlight instead. */
-  existingOffset?: number;
 }
 
 const storageKey = (slug: string) => `annotations:${slug}`;
@@ -109,6 +116,7 @@ export function useAnnotations(slug: string) {
 
     const rect = range.getBoundingClientRect();
     setPending({
+      kind: "selection",
       blockId: block.dataset.blockId!,
       start,
       end,
@@ -130,9 +138,33 @@ export function useAnnotations(slug: string) {
     clearSelection();
   }, [pending, clearSelection]);
 
-  /** Called when the student clicks an existing highlight. */
-  const removeHighlight = useCallback((blockId: string, offset: number) => {
-    setAnnotations((prev) => removeHighlightAt(prev, blockId, offset));
+  /** Opens the popup over a highlight the student clicked, offering to remove it. */
+  const selectExistingHighlight = useCallback(
+    (blockId: string, offset: number, rect: DOMRect) => {
+      window.getSelection()?.removeAllRanges();
+      setPending({
+        kind: "existing",
+        blockId,
+        start: offset,
+        end: offset,
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+      });
+    },
+    []
+  );
+
+  const removeHighlight = useCallback(() => {
+    setPending((current) => {
+      if (!current) return null;
+      setAnnotations((prev) => removeHighlightAt(prev, current.blockId, current.start));
+      return null;
+    });
+  }, []);
+
+  const removeAll = useCallback(() => {
+    setAnnotations(removeAllHighlights);
+    setPending(null);
   }, []);
 
   const toggleQuestionBookmark = useCallback((number: number) => {
@@ -154,7 +186,9 @@ export function useAnnotations(slug: string) {
     captureSelection,
     clearSelection,
     highlightSelection,
+    selectExistingHighlight,
     removeHighlight,
+    removeAll,
     toggleQuestionBookmark,
     reset,
   };

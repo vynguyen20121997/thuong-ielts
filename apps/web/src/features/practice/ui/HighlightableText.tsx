@@ -22,8 +22,8 @@ export default function HighlightableText({
   blockId: string;
   text: string;
   highlights: Highlight[];
-  /** Clicking a highlight removes it, as on the exam site. */
-  onRemove?: (blockId: string, offset: number) => void;
+  /** Clicking a highlight opens the popup over it, as on the exam site. */
+  onRemove?: (blockId: string, offset: number, rect: DOMRect) => void;
   className?: string;
 }) {
   const segments = segmentText(text, highlights);
@@ -50,8 +50,8 @@ export default function HighlightableText({
         return (
           <mark
             key={index}
-            onClick={() => onRemove?.(blockId, offset)}
-            title="Bấm để bỏ tô"
+            onClick={(e) => onRemove?.(blockId, offset, e.currentTarget.getBoundingClientRect())}
+            title="Bấm để xoá tô màu"
             className="bg-[#FFF86B] text-[#222] rounded-[2px] shadow-[0_1px_2px_rgba(0,0,0,0.067)] cursor-pointer"
           >
             {segment.text}

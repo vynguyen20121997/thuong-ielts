@@ -176,7 +176,7 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
                     blockId={`p${index}`}
                     text={paragraph.text}
                     highlights={highlightsFor(marks.annotations, `p${index}`)}
-                    onRemove={marks.removeHighlight}
+                    onRemove={marks.selectExistingHighlight}
                   />
                 </p>
               ))}
@@ -251,6 +251,8 @@ export default function ReadingPlayer({ test }: { test: ReadingTest }) {
       <SelectionPopup
         selection={marks.pending}
         onHighlight={marks.highlightSelection}
+        onRemove={marks.removeHighlight}
+        onRemoveAll={marks.removeAll}
         onBookmark={
           selectedQuestion
             ? () => {

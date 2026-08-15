@@ -94,6 +94,11 @@ export function removeHighlightAt(
   };
 }
 
+/** Wipes every highlight but keeps the bookmarks — they are separate marks. */
+export function removeAllHighlights(annotations: Annotations): Annotations {
+  return { ...annotations, highlights: [] };
+}
+
 export function toggleBookmark(annotations: Annotations, number: number): Annotations {
   const has = annotations.bookmarks.includes(number);
   return {

@@ -382,7 +382,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                         blockId={`g${gi}`}
                         text={group.heading}
                         highlights={highlightsFor(marks.annotations, `g${gi}`)}
-                        onRemove={marks.removeHighlight}
+                        onRemove={marks.selectExistingHighlight}
                       />
                     </p>
                   )}
@@ -444,7 +444,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               blockId={q.id}
                               text={q.prompt}
                               highlights={highlightsFor(marks.annotations, q.id)}
-                              onRemove={marks.removeHighlight}
+                              onRemove={marks.selectExistingHighlight}
                               className="flex-1"
                             />
                             <BookmarkToggle
@@ -667,6 +667,8 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
       <SelectionPopup
         selection={marks.pending}
         onHighlight={marks.highlightSelection}
+        onRemove={marks.removeHighlight}
+        onRemoveAll={marks.removeAll}
         onBookmark={
           selectedQuestion
             ? () => {
