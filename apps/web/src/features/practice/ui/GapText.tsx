@@ -113,12 +113,14 @@ export default function GapText({
   disabled,
   onChange,
   onFocus,
+  compact = false,
 }: {
   text: string;
   fields: GapField[];
   disabled: boolean;
   onChange: (questionId: string, value: string) => void;
   onFocus?: (number: number) => void;
+  compact?: boolean;
 }) {
   const byNumber = new Map(fields.map((f) => [f.number, f]));
   const parts: React.ReactNode[] = [];
@@ -144,6 +146,7 @@ export default function GapText({
         disabled={disabled}
         onChange={(value) => onChange(field.questionId, value)}
         onFocus={onFocus}
+        compact={compact}
       />
     );
     cursor = match.index + match[0].length;

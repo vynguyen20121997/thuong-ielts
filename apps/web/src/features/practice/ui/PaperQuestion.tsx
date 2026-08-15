@@ -3,7 +3,7 @@
 import { Fragment } from "react";
 
 import { isChoiceQuestion, type GradedQuestion, type Question } from "../domain/types";
-import { GapInput } from "./GapText";
+import GapText, { GapInput, hasInlineGap } from "./GapText";
 
 /**
  * Renders one reading question the way the paper does: a number, the text, and
@@ -20,7 +20,12 @@ import { GapInput } from "./GapText";
  * the layout stored at import time, which it currently is not.
  */
 
-/** The blank the reading importer writes: a run of underscores. */
+/**
+ * Two blank notations reach us from the importer. Most prompts keep the source
+ * document's own marker — "6………………" — and a handful were rewritten with a run
+ * of underscores. Both mean the same thing, so both must land an input in place
+ * rather than tacking one on the end.
+ */
 const BLANK = /_{3,}/;
 
 function AnswerLine({
@@ -48,6 +53,20 @@ function AnswerLine({
   const input = (
     <GapInput field={field} disabled={disabled} onChange={onChange} onFocus={onFocus} compact />
   );
+
+  // "6………………" — same notation the listening paper uses, so reuse its renderer.
+  if (hasInlineGap(question.prompt, question.number)) {
+    return (
+      <GapText
+        text={question.prompt}
+        fields={[field]}
+        disabled={disabled}
+        onChange={(_id, value) => onChange(value)}
+        onFocus={onFocus}
+        compact
+      />
+    );
+  }
 
   const match = question.prompt.match(BLANK);
   if (!match || match.index === undefined) {
