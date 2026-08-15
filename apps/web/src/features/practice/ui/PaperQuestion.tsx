@@ -51,7 +51,7 @@ function AnswerLine({
     review,
   };
   const input = (
-    <GapInput field={field} disabled={disabled} onChange={onChange} onFocus={onFocus} compact />
+    <GapInput field={field} disabled={disabled} onChange={onChange} onFocus={onFocus} variant="line" />
   );
 
   // "6………………" — same notation the listening paper uses, so reuse its renderer.
@@ -63,7 +63,7 @@ function AnswerLine({
         disabled={disabled}
         onChange={(_id, value) => onChange(value)}
         onFocus={onFocus}
-        compact
+        variant="line"
       />
     );
   }
@@ -72,7 +72,7 @@ function AnswerLine({
   if (!match || match.index === undefined) {
     // No blank in the sentence: the answer goes after the question, as on paper.
     return (
-      <p className="text-[15px] leading-[2.4] text-[#1A1A1A]">
+      <p className="text-[15px] leading-[2.1] text-[#1A1A1A]">
         {question.prompt}
         {input}
       </p>
@@ -80,7 +80,7 @@ function AnswerLine({
   }
 
   return (
-    <p className="text-[15px] leading-[2.4] text-[#1A1A1A]">
+    <p className="text-[15px] leading-[2.1] text-[#1A1A1A]">
       <Fragment>{question.prompt.slice(0, match.index)}</Fragment>
       {input}
       <Fragment>{question.prompt.slice(match.index + match[0].length)}</Fragment>
@@ -109,7 +109,10 @@ export default function PaperQuestion({
 
   return (
     <div
-      id={`question-${question.number}`}
+      // Only the choice questions carry the id: a gap-fill puts it on its input
+      // instead, and two elements sharing one id is invalid HTML that makes
+      // getElementById return whichever came first.
+      id={isChoiceQuestion(question) ? `question-${question.number}` : undefined}
       className={`scroll-mt-32 rounded-lg px-2 -mx-2 py-1 transition-colors ${
         active && !review ? "bg-[#FFFBEB] ring-1 ring-[#D97706]/40" : ""
       }`}

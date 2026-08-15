@@ -41,23 +41,79 @@ export interface GapField {
  * it. GapText renders a <p>; nesting that inside another <p> is invalid HTML
  * and React reports it as a hydration error.
  */
+/**
+ * How the blank is drawn.
+ *
+ * `box` matches the computer-delivered listening test, where an answer really
+ * is typed into a bordered field. `line` matches the printed reading paper,
+ * where the blank is a rule you write on — "11______" — so the sentence reads
+ * as one continuous line instead of being interrupted by a widget.
+ */
+export type GapVariant = "box" | "line";
+
 export function GapInput({
   field,
   disabled,
   onChange,
   onFocus,
-  compact = false,
+  variant = "box",
 }: {
   field: GapField;
   disabled: boolean;
   onChange: (value: string) => void;
   /** Lets the navigator mark which question is being edited. */
   onFocus?: (number: number) => void;
-  /** Narrower box, for the reading paper's single-column layout. */
-  compact?: boolean;
+  variant?: GapVariant;
 }) {
   const review = field.review;
   const state = review ? (review.isCorrect ? "correct" : "wrong") : "idle";
+
+  if (variant === "line") {
+    return (
+      <span className="inline-flex flex-col align-baseline mx-0.5">
+        <span className="inline-flex items-baseline gap-0.5">
+          <span
+            className={`font-bold text-[13px] ${
+              state === "correct"
+                ? "text-[#14532D]"
+                : state === "wrong"
+                  ? "text-red-600"
+                  : field.active
+                    ? "text-[#D97706]"
+                    : "text-[#1A1A1A]/70"
+            }`}
+          >
+            {field.number}
+          </span>
+          <input
+            id={`question-${field.number}`}
+            data-exam-field
+            type="text"
+            value={field.value}
+            onChange={(e) => onChange(e.target.value)}
+            onFocus={() => onFocus?.(field.number)}
+            disabled={disabled}
+            aria-label={`Câu ${field.number}`}
+            title={`Tối đa ${field.maxWords} từ`}
+            className={`w-28 bg-transparent px-1 text-[15px] text-center border-0 border-b-2 rounded-none focus:outline-none disabled:cursor-default ${
+              state === "correct"
+                ? "border-[#14532D] text-[#14532D] font-medium"
+                : state === "wrong"
+                  ? "border-red-400 text-red-700 font-medium"
+                  : field.active
+                    ? "border-[#D97706] border-solid"
+                    : "border-dotted border-[#1A1A1A]/45 focus:border-solid focus:border-[#14532D]"
+            }`}
+          />
+        </span>
+        {review && !review.isCorrect && (
+          <span className="text-[11px] text-[#14532D] mt-0.5 font-medium text-center">
+            {review.expected}
+          </span>
+        )}
+      </span>
+    );
+  }
 
   return (
     <span className="inline-flex flex-col align-middle mx-1">
@@ -87,7 +143,7 @@ export function GapInput({
           title={`Tối đa ${field.maxWords} từ`}
           // No `bg-white` in the base: it and the active tint are the same kind
           // of utility, so whichever Tailwind happens to emit last would win.
-          className={`${compact ? "w-24" : "w-40"} border rounded-r px-2 py-1 text-[15px] leading-normal scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-[#14532D]/25 disabled:bg-[#FAF9F6] disabled:cursor-default ${
+          className={`w-40 border rounded-r px-2 py-1 text-[15px] leading-normal scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-[#14532D]/25 disabled:bg-[#FAF9F6] disabled:cursor-default ${
             state === "correct"
               ? "bg-white border-[#14532D]/30"
               : state === "wrong"
@@ -113,14 +169,14 @@ export default function GapText({
   disabled,
   onChange,
   onFocus,
-  compact = false,
+  variant = "box",
 }: {
   text: string;
   fields: GapField[];
   disabled: boolean;
   onChange: (questionId: string, value: string) => void;
   onFocus?: (number: number) => void;
-  compact?: boolean;
+  variant?: GapVariant;
 }) {
   const byNumber = new Map(fields.map((f) => [f.number, f]));
   const parts: React.ReactNode[] = [];
@@ -146,14 +202,18 @@ export default function GapText({
         disabled={disabled}
         onChange={(value) => onChange(field.questionId, value)}
         onFocus={onFocus}
-        compact={compact}
+        variant={variant}
       />
     );
     cursor = match.index + match[0].length;
   }
   parts.push(<Fragment key={key++}>{text.slice(cursor)}</Fragment>);
 
-  return <p className="text-[15px] leading-[2.4] text-[#1A1A1A]">{parts}</p>;
+  return (
+    <p className={`text-[15px] text-[#1A1A1A] ${variant === "line" ? "leading-[2.1]" : "leading-[2.4]"}`}>
+      {parts}
+    </p>
+  );
 }
 
 /** True when this prompt has a blank we can render inline for `number`. */
