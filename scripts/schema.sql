@@ -23,6 +23,17 @@ CREATE TABLE IF NOT EXISTS testimonials (
   created_at     TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Durable image storage. Image bytes live in Postgres so testimonial proof
+-- images do not depend on expiring third-party URLs.
+CREATE TABLE IF NOT EXISTS media_assets (
+  id           UUID PRIMARY KEY,
+  content_type TEXT NOT NULL,
+  data         BYTEA NOT NULL,
+  byte_size    INTEGER NOT NULL,
+  source_url   TEXT,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS feedbacks (
   id                TEXT PRIMARY KEY,
   subject           TEXT NOT NULL,

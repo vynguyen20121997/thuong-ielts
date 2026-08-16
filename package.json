@@ -16,10 +16,13 @@
     "migrate": "tsx scripts/migrate.ts",
     "check:reading": "tsx scripts/validate-reading.ts",
     "check:listening": "tsx scripts/validate-listening.ts",
-    "check:coverage": "tsx scripts/coverage.ts"
+    "check:coverage": "tsx scripts/coverage.ts",
+    "import:testimonial-images": "tsx --env-file=apps/web/.env.local scripts/import-testimonial-images.ts"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
     "@types/pg": "^8.15.5",
+    "adm-zip": "^0.6.0",
     "dotenv": "^17.2.3",
     "pg": "^8.22.0",
     "tsx": "^4.21.0",
