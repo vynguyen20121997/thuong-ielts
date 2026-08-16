@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { requireStudent } from "../../../../../features/account/server/guard";
 import { getListeningTestBySlug } from "../../../../../features/practice/server/listeningRepository";
 import ListeningPlayer from "../../../../../features/practice/ui/ListeningPlayer";
 
@@ -24,6 +25,9 @@ export async function generateMetadata({
 
 export default async function ListeningTestPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  await requireStudent(`/kiem-tra-kien-thuc/listening/${slug}`);
+
   // Public projection — the answer key stays in the database.
   //
   // Listening KHÔNG dùng màn chờ chung như Reading: `ListeningPlayer` đã có màn

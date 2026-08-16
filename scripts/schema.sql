@@ -133,3 +133,79 @@ ALTER TABLE listening_tests ADD COLUMN IF NOT EXISTS note TEXT;
 CREATE INDEX IF NOT EXISTS idx_listening_tests_status ON listening_tests (status, sort_order, published_at DESC);
 CREATE INDEX IF NOT EXISTS idx_feedbacks_date ON feedbacks (date DESC);
 CREATE INDEX IF NOT EXISTS idx_blog_posts_status_published ON blog_posts (status, published_at DESC);
+
+/* ==================================================================
+   Học viên — tài khoản và hồ sơ
+
+   Trước đây DB không có bảng nào về người học: `testimonials` chỉ là tên
+   học viên dạng chữ để marketing, không phải tài khoản. Bốn bảng dưới đây
+   là toàn bộ phần danh tính.
+
+   Cố ý KHÔNG dùng schema mặc định của Auth.js (users/accounts/sessions với
+   id SERIAL và cột camelCase): phiên lưu trong JWT nên không cần bảng
+   sessions, và một bảng `students` do mình định nghĩa thì đọc hợp với phần
+   còn lại của DB — TEXT id, snake_case, tiếng nói giống các bảng kia.
+   ================================================================== */
+
+CREATE TABLE IF NOT EXISTS students (
+  id            TEXT PRIMARY KEY,
+  -- Cả hai đều cho phép NULL: đăng nhập bằng Google/Facebook thì chưa chắc
+  -- có số điện thoại, đăng nhập bằng số điện thoại thì không có email.
+  email         TEXT UNIQUE,
+  phone         TEXT UNIQUE,
+  name          TEXT,
+  avatar_url    TEXT,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_seen_at  TIMESTAMPTZ
+);
+
+/*
+  Một học viên có thể có nhiều cách đăng nhập. Tách ra bảng riêng để lần sau
+  em ấy đăng nhập bằng Facebook thay vì Google thì vẫn là một người, không
+  đẻ ra tài khoản thứ hai — nối theo email khi có, còn không thì tạo mới.
+*/
+CREATE TABLE IF NOT EXISTS student_identities (
+  provider             TEXT NOT NULL CHECK (provider IN ('google', 'facebook', 'phone')),
+  provider_account_id  TEXT NOT NULL,
+  student_id           TEXT NOT NULL REFERENCES students (id) ON DELETE CASCADE,
+  created_at           TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (provider, provider_account_id)
+);
+
+/*
+  Hỏi ngay sau lần đăng nhập đầu, trước khi cho vào phòng thi.
+
+  Lưu `age` đúng như học viên gõ, kèm ngày ghi nhận. Suy ngược ra năm sinh thì
+  sai ±1 tuổi; còn lưu mỗi tuổi mà không có mốc thời gian thì sang năm con số
+  đó thành nói dối.
+*/
+CREATE TABLE IF NOT EXISTS student_profiles (
+  student_id       TEXT PRIMARY KEY REFERENCES students (id) ON DELETE CASCADE,
+  age              SMALLINT CHECK (age BETWEEN 6 AND 100),
+  age_recorded_at  DATE,
+  occupation       TEXT CHECK (occupation IN ('student', 'worker', 'teacher')),
+  -- Band IELTS chạy 0–9 theo nửa điểm; target dưới 4.0 thì không có ý nghĩa.
+  target_band      NUMERIC(2,1) CHECK (target_band BETWEEN 4.0 AND 9.0),
+  completed_at     TIMESTAMPTZ,
+  updated_at       TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+/*
+  Mã OTP gửi qua Zalo ZNS.
+
+  Lưu bản băm chứ không lưu mã trần: ai đọc được DB cũng không đăng nhập hộ
+  được. `attempts` để khoá sau vài lần gõ sai, `last_sent_at` để chặn bấm gửi
+  lại liên tục — mỗi tin ZNS đều mất tiền.
+*/
+CREATE TABLE IF NOT EXISTS phone_otps (
+  phone         TEXT PRIMARY KEY,
+  code_hash     TEXT NOT NULL,
+  expires_at    TIMESTAMPTZ NOT NULL,
+  attempts      SMALLINT NOT NULL DEFAULT 0,
+  last_sent_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_student_identities_student ON student_identities (student_id);
+CREATE INDEX IF NOT EXISTS idx_students_last_seen ON students (last_seen_at DESC);

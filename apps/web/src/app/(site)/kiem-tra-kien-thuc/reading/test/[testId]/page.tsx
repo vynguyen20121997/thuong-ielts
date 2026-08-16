@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { requireStudent } from "../../../../../../features/account/server/guard";
 import { getExamOutline } from "../../../../../../features/practice/server/readingRepository";
 import ReadingExamGate from "../../../../../../features/practice/ui/ReadingExamGate";
 
@@ -36,6 +37,8 @@ export default async function ReadingFullTestPage({
   params: Promise<{ testId: string }>;
 }) {
   const { testId } = await params;
+
+  await requireStudent(`/kiem-tra-kien-thuc/reading/test/${testId}`);
 
   // Chỉ lấy bìa đề. Nội dung bài đọc tải sau, khi học sinh bấm bắt đầu.
   const outline = await getExamOutline("test", testId);
