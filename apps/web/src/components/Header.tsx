@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+
+import AccountMenu from "../features/account/ui/AccountMenu";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 
@@ -115,7 +117,8 @@ export default function Header() {
         </nav>
 
         {/* Action Button */}
-        <div className="hidden md:block shrink-0" id="header-action-container">
+        <div className="hidden md:flex items-center gap-3 shrink-0" id="header-action-container">
+          <AccountMenu />
           <Link
             href="/gioi-thieu"
             className="group relative inline-flex items-center gap-1.5 lg:gap-2 px-3.5 lg:px-6 py-2 lg:py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-2xs lg:text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer whitespace-nowrap"
@@ -183,6 +186,7 @@ export default function Header() {
         </div>
 
         <div className="flex flex-col gap-6 pt-8" id="mobile-menu-footer">
+          <AccountMenu compact />
           <Link
             href="/gioi-thieu"
             className="w-full py-4 bg-[#9FE870] text-[#14532D] hover:bg-[#86D65A] font-bold text-center rounded-xl flex items-center justify-center gap-2 text-sm tracking-wider uppercase shadow-lg transition-colors"
