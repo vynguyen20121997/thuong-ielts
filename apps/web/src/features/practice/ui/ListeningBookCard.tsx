@@ -96,7 +96,7 @@ export default function ListeningBookCard({
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls={panelId}
-          className="mt-4 flex items-center justify-between gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] px-4 py-3 text-2xs font-semibold text-white cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#14532D]/40"
+          className="mt-4 flex items-center justify-between gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] px-4 py-3.5 text-2xs font-semibold text-white cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#14532D]/40"
         >
           {open ? "Thu gọn" : `Chọn 1 trong ${group.tests.length} test`}
           <ChevronDown

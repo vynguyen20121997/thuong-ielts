@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -11,9 +11,15 @@ import {
   ListChecks,
   Loader2,
   Play,
+  RotateCcw,
   Timer,
 } from "lucide-react";
 
+import {
+  clearReadingProgress,
+  formatClock,
+  readReadingProgress,
+} from "../application/useReadingSession";
 import { LEVEL_LABELS } from "../domain/catalog";
 import type { ExamOutline, ReadingPaper } from "../domain/types";
 import { fetchReadingPaper } from "../infrastructure/readingApi";
@@ -43,27 +49,45 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
   const [phase, setPhase] = useState<Phase>("intro");
   const [paper, setPaper] = useState<ReadingPaper | null>(null);
   const [error, setError] = useState<string | null>(null);
+  /** Có bài đang làm dở trong phiên trình duyệt này không. */
+  const [saved, setSaved] = useState<{ remainingSeconds: number; answered: number } | null>(null);
+  const [resume, setResume] = useState(false);
 
-  const start = useCallback(async () => {
-    setPhase("loading");
-    setError(null);
+  // Đọc sau khi mount: sessionStorage không tồn tại lúc server render.
+  useEffect(() => {
+    const progress = readReadingProgress(outline.id);
+    if (!progress) return;
+    setSaved({
+      remainingSeconds: progress.remainingSeconds,
+      answered: Object.values(progress.answers).filter((v) => String(v).trim()).length,
+    });
+  }, [outline.id]);
 
-    const startedAt = Date.now();
-    try {
-      const loaded = await fetchReadingPaper(outline.mode, outline.id);
-      const remaining = MIN_LOADING_MS - (Date.now() - startedAt);
-      if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
+  const start = useCallback(
+    async (continuing: boolean) => {
+      setPhase("loading");
+      setError(null);
+      setResume(continuing);
+      if (!continuing) clearReadingProgress(outline.id);
 
-      setPaper(loaded);
-      setPhase("running");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Không tải được đề.");
-      setPhase("intro");
-    }
-  }, [outline.mode, outline.id]);
+      const startedAt = Date.now();
+      try {
+        const loaded = await fetchReadingPaper(outline.mode, outline.id);
+        const remaining = MIN_LOADING_MS - (Date.now() - startedAt);
+        if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
+
+        setPaper(loaded);
+        setPhase("running");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Không tải được đề.");
+        setPhase("intro");
+      }
+    },
+    [outline.mode, outline.id]
+  );
 
   if (phase === "running" && paper) {
-    return <ReadingPlayer paper={paper} />;
+    return <ReadingPlayer paper={paper} resume={resume} />;
   }
 
   const minutes = Math.round(outline.durationSeconds / 60);
@@ -182,16 +206,36 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
             </div>
           )}
 
+          {/*
+            Có bài dở thì mời làm tiếp, và để "làm lại từ đầu" thành lựa chọn
+            phụ — người tải nhầm trang muốn về đúng chỗ cũ, chứ hiếm ai muốn
+            xoá công sức vừa bỏ ra.
+          */}
+          {saved && !loading && (
+            <p className="mt-7 flex items-start gap-2 rounded-xl border border-[#9FE870]/50 bg-[#9FE870]/10 px-4 py-3 text-sm text-[#14532D]">
+              <RotateCcw size={15} className="shrink-0 mt-0.5" />
+              <span>
+                Bạn có bài đang làm dở: <b>{saved.answered} câu</b> đã điền, còn{" "}
+                <b className="tabular-nums">{formatClock(saved.remainingSeconds)}</b>.
+              </span>
+            </p>
+          )}
+
           <button
             type="button"
-            onClick={start}
+            onClick={() => start(Boolean(saved))}
             disabled={loading}
-            className="mt-7 w-full flex items-center justify-center gap-2.5 py-4 bg-[#14532D] hover:bg-[#052E16] disabled:cursor-wait text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
+            className="mt-4 w-full flex items-center justify-center gap-2.5 py-4 bg-[#14532D] hover:bg-[#052E16] disabled:cursor-wait text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
           >
             {loading ? (
               <>
                 <Loader2 size={16} className="animate-spin motion-reduce:animate-none" />
                 Đang tải đề...
+              </>
+            ) : saved ? (
+              <>
+                <RotateCcw size={15} />
+                Làm tiếp
               </>
             ) : (
               <>
@@ -200,6 +244,19 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
               </>
             )}
           </button>
+
+          {saved && !loading && (
+            <button
+              type="button"
+              onClick={() => {
+                setSaved(null);
+                start(false);
+              }}
+              className="mt-2 w-full py-3 text-2xs font-medium text-[#1A1A1A]/50 hover:text-[#14532D] cursor-pointer transition-colors"
+            >
+              Bỏ bài dở, làm lại từ đầu
+            </button>
+          )}
 
           {/*
             Thanh chạy trong lúc chờ request thật. Không có phần trăm vì không

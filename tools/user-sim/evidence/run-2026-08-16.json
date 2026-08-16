@@ -1,0 +1,148 @@
+{
+  "_comment": "Bằng chứng do Playwright thu thập. Chỉ ghi việc ĐÃ QUAN SÁT ĐƯỢC, không ghi ý kiến. TinyTroupe đọc file này để persona bình luận, nhờ vậy nhận xét luôn có gốc là sự kiện thật chứ không phải do model bịa.",
+  "chayLuc": "2026-08-16",
+  "moiTruong": "localhost:2000, Chromium qua Playwright. Lượt chạy đầu tiên sau khi thêm: bắt buộc đăng nhập, màn chờ trước phòng thi, gộp đề theo test/bộ, hộp cảnh báo khi thoát giữa chừng. Bằng chứng dưới đây là trạng thái TRƯỚC khi sửa.",
+  "quanSat": [
+    {
+      "id": "OBS-01",
+      "persona": "lan-dau",
+      "trang": "/kiem-tra-kien-thuc/reading",
+      "suKien": "Đang xem danh sách đề thì bấm 'Làm cả test'. Web đá thẳng sang trang đăng nhập, chưa kịp xem đề ra sao. Trang đăng nhập có nói vì sao phải đăng nhập, nhưng trong khung nội dung không có một đường link nào để quay lại xem tiếp các đề khác.",
+      "doDo": {
+        "danhMucChoKhachXem": true,
+        "bamLamBaiThiBiDayToi": "/dang-nhap",
+        "soCachDangNhap": 2,
+        "soLinkQuayLaiTrongNoiDung": 0
+      }
+    },
+    {
+      "id": "OBS-02",
+      "persona": "dien-thoai",
+      "trang": "/kiem-tra-kien-thuc/listening/cam13-listening-test1",
+      "suKien": "Làm bài nghe bằng điện thoại Android màn 360px. Không phải cuộn ngang, ô điền đáp án và nút số câu đều đủ to để bấm bằng ngón tay.",
+      "doDo": {
+        "tranNgang_px": 0,
+        "oNhapDapAn_cao_px": 42,
+        "nutSoCau_px": "42x42",
+        "ghiChu": "Đo lần đầu không bật cảm ứng ra 34px và 30px; đó là sai phương pháp đo, không phải lỗi của web."
+      }
+    },
+    {
+      "id": "OBS-03",
+      "persona": "dien-thoai",
+      "trang": "/kiem-tra-kien-thuc/listening/cam13-listening-test1",
+      "suKien": "Thanh trạng thái trong lúc làm bài viết bằng tiếng Anh: 'Audio is playing' và '30 minutes remaining', trong khi nút ngay cạnh là 'Nộp bài' và màn hướng dẫn trước đó toàn tiếng Việt.",
+      "doDo": {
+        "chuThoiGian": "30 minutes remaining",
+        "chuTrangThaiAudio": "Audio is playing",
+        "chuNutNop": "Nộp bài"
+      }
+    },
+    {
+      "id": "OBS-04",
+      "persona": "voi-vang",
+      "trang": "/kiem-tra-kien-thuc/reading/cam10-test1-stepwells",
+      "suKien": "Mới điền 3 trên 13 câu thì bấm 'Nộp bài'. Web chấm luôn, không hỏi lại câu nào. Bấm nút nộp ba lần liên tiếp nhưng chỉ chấm một lần.",
+      "doDo": {
+        "soCauDaLam": 3,
+        "tongSoCau": 13,
+        "soCauBoTrong": 10,
+        "coHoiLaiTruocKhiNop": false,
+        "soLanChamBai": 1,
+        "diem": "3/13"
+      }
+    },
+    {
+      "id": "OBS-05",
+      "persona": "to-mo",
+      "trang": "/kiem-tra-kien-thuc/reading/cam10-test1-stepwells",
+      "suKien": "Đang làm dở, đã điền 4 câu, đồng hồ còn 19:57 thì bấm tải lại trang. Trình duyệt có hiện hộp hỏi trước khi rời. Sau khi tải lại, web quay về màn chờ 'Bắt đầu làm bài', 4 câu đã điền mất sạch và đồng hồ quay lại từ đầu.",
+      "doDo": {
+        "soCauTruocKhiTaiLai": 4,
+        "dongHoTruocKhiTaiLai": "19:57",
+        "coHopCanhBaoTruocKhiRoi": true,
+        "soCauSauKhiTaiLai": 0,
+        "quayVeManCho": true
+      }
+    },
+    {
+      "id": "OBS-06",
+      "persona": "quay-lai",
+      "trang": "/kiem-tra-kien-thuc/listening/cam13-listening-test1",
+      "suKien": "Cũng tải lại trang giữa chừng nhưng ở bài Listening. Web quay về màn hướng dẫn và có mời làm tiếp bài đang dở, không bắt nghe lại từ đầu.",
+      "doDo": {
+        "coLuaChonLamTiep": true,
+        "chuTrenNut": [
+          "bắt đầu",
+          "làm tiếp"
+        ]
+      }
+    },
+    {
+      "id": "OBS-07",
+      "persona": "ban-phim",
+      "trang": "/kiem-tra-kien-thuc/reading/cam10-test1-stepwells",
+      "suKien": "Chỉ dùng bàn phím, không chạm chuột: 8 lần Tab là tới nút bắt đầu, Enter vào được bài, thêm 5 lần Tab là tới ô đáp án đầu tiên. Khi bấm nhầm nút thoát, hộp cảnh báo mở ra với nút 'Ở lại làm tiếp' được chọn sẵn, bấm Escape thì đóng.",
+      "doDo": {
+        "soLanTabToiNutBatDau": 8,
+        "vaoBaiBangEnter": true,
+        "soLanTabToiODapAn": 5,
+        "nutDuocChonSanTrongHopCanhBao": "Ở lại làm tiếp",
+        "escapeDongDuoc": true
+      }
+    },
+    {
+      "id": "OBS-08",
+      "persona": "to-mo",
+      "trang": "/kiem-tra-kien-thuc/reading/cam10-test1-stepwells",
+      "suKien": "Thử ba cách thoát khi đang làm bài: bấm nút quay lại trong trang, bấm nút back của trình duyệt, và tải lại trang. Cả ba đều bị hỏi lại trước khi đi. Sau khi đã nộp bài thì bấm quay lại không bị hỏi nữa.",
+      "doDo": {
+        "bamLinkTrongTrang_coHoi": true,
+        "nutBackTrinhDuyet_coHoi": true,
+        "taiLaiTrang_coHoi": true,
+        "sauKhiNopBai_conHoi": false
+      }
+    }
+  ],
+  "khongKiemTraDuoc": [
+    "Không nghe được audio: chỉ biết file tải về được, không biết tiếng có rõ hay đúng bài không.",
+    "Không đăng nhập được bằng Google thật (chưa có tài khoản thử), nên đoạn sau khi Google trả về chưa ai đi qua.",
+    "Không chờ hết 20 phút để xem bài tự nộp khi hết giờ."
+  ],
+  "daSuaSauLuotChay": {
+    "_comment": "Đo lại sau khi sửa, cùng kịch bản. Ghi ở đây để lần chạy sau còn đối chiếu.",
+    "OBS-01_duongQuayLai": {
+      "soLinkQuayLaiTrongNoiDung": 1,
+      "chu": "Quay lại xem các đề"
+    },
+    "OBS-03_ngonNgu": {
+      "chuThoiGian": "Còn 30 phút",
+      "chuTrangThaiAudio": "Đang phát · Section 1"
+    },
+    "OBS-04_hoiTruocKhiNop": {
+      "coHoiLai": true,
+      "cauHoi": "Bạn còn 10 câu chưa trả lời..."
+    },
+    "OBS-05_luuTamReading": {
+      "manChoBaoBaiDo": true,
+      "sauKhiLamTiep_soCau": 4,
+      "sauKhiLamTiep_dongHo": "19:07"
+    },
+    "OBS-07_loiTatBanPhim": {
+      "soLanTabToiLoiTat": 1,
+      "bamEnter_conTroToiODapAn": true
+    },
+    "nutTrenThe_sauNang": {
+      "readingLamCaTest_px": 44,
+      "readingLamTungPassage_px": 42,
+      "listeningChonTest_px": 44
+    }
+  },
+  "persona_hieuSai": {
+    "_comment": "Ghi lại để lần sau không ai sửa theo lời persona mà không kiểm bằng chứng.",
+    "Minh Khoa": "Nói web chấm chậm — bằng chứng không hề đo tốc độ chấm.",
+    "Thu Hà": "Nói cảm ứng không ăn, phải chạm đi chạm lại — thực ra 34/30px là ghi chú về phép đo sai của người chạy, không phải hành vi của web.",
+    "Đức Huy": "Kể là đang làm Listening — bằng chứng OBS-05 là bài Reading.",
+    "Khánh Linh": "Nói làm tiếp không phát lại audio, mất chỗ đang nghe — mã nguồn có tua lại đúng vị trí (useListeningSession dòng 136), bằng chứng cũng không nhắc gì tới audio."
+  }
+}

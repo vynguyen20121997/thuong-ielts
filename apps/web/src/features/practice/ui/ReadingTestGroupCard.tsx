@@ -141,7 +141,7 @@ export default function ReadingTestGroupCard({
         {full && (
           <Link
             href={`/kiem-tra-kien-thuc/reading/test/${group.id}`}
-            className="mt-4 flex items-center justify-center gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] px-4 py-3 text-2xs font-medium text-white transition-colors"
+            className="mt-4 flex items-center justify-center gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] px-4 py-3.5 text-2xs font-medium text-white transition-colors"
           >
             <Timer size={13} />
             Làm cả test · {minutes} phút
@@ -153,7 +153,7 @@ export default function ReadingTestGroupCard({
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls={panelId}
-          className={`${full ? "mt-2" : "mt-4"} flex items-center justify-between gap-2 w-full rounded-full border border-black/10 px-4 py-2.5 text-2xs font-medium text-[#14532D] hover:border-[#14532D]/40 hover:bg-[#14532D]/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#14532D]/40 cursor-pointer transition-colors`}
+          className={`${full ? "mt-2" : "mt-4"} flex items-center justify-between gap-2 w-full rounded-full border border-black/10 px-4 py-3 text-2xs font-medium text-[#14532D] hover:border-[#14532D]/40 hover:bg-[#14532D]/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#14532D]/40 cursor-pointer transition-colors`}
         >
           {open ? "Thu gọn" : "Hoặc làm từng passage"}
           <ChevronDown
