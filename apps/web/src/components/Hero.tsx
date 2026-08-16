@@ -3,7 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import gsap from "gsap";
-import { Award, ChevronRight, MessageSquare, Compass, ShieldAlert, Award as AwardIcon } from "lucide-react";
+import {
+  Award,
+  ChevronRight,
+  MessageSquare,
+  Compass,
+  ShieldAlert,
+  Award as AwardIcon,
+} from "lucide-react";
 import PlexusCanvas from "./PlexusCanvas";
 import { initialTestimonials } from "../data/testimonialsData";
 import { feedbackItems } from "../data/feedbackData";
@@ -56,28 +63,28 @@ export default function Hero() {
           ease: "power4.out",
           stagger: 0.15,
           delay: 0.1,
-        }
+        },
       );
 
       // 2. Sub-elements fade and slide
       gsap.fromTo(
         subRef.current,
         { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 1.3, ease: "power3.out", delay: 0.7 }
+        { opacity: 1, y: 0, duration: 1.3, ease: "power3.out", delay: 0.7 },
       );
 
       // 3. Right side reveal
       gsap.fromTo(
         rightSideRef.current,
         { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 1.6, ease: "power4.out", delay: 0.4 }
+        { opacity: 1, y: 0, duration: 1.6, ease: "power4.out", delay: 0.4 },
       );
 
       // 4. Portrait Image Reveal
       gsap.fromTo(
         portraitRef.current,
         { opacity: 0, scale: 1.05, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 2, ease: "power3.out", delay: 0.2 }
+        { opacity: 1, scale: 1, y: 0, duration: 2, ease: "power3.out", delay: 0.2 },
       );
     }, containerRef);
 
@@ -133,7 +140,7 @@ export default function Hero() {
 
       {/* Decorative Glowing Light Leak Streaks - softened for clean look */}
       <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-[#14532D]/[0.03] blur-[150px] pointer-events-none z-0" />
-      
+
       {/* Integrated Portrait of Cô Thương in the background */}
       <div
         ref={portraitRef}
@@ -159,13 +166,10 @@ export default function Hero() {
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center relative z-20">
-        
         {/* Left Column: Bold Slogan & Intros */}
         <div className="md:col-span-7 flex flex-col justify-center order-2 md:order-1 text-left relative py-12 md:py-0">
-          
-
           {/* Heading with Masking */}
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl xl:text-[4.5rem] font-black tracking-tight text-[#1A1A1A] leading-[1.1] mb-6">
+          <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl xl:text-[4.5rem] font-bold tracking-tight text-[#1A1A1A] leading-[1.1] mb-6">
             <span className="char-mask-wrapper block">
               <span ref={addTitleWord} className="char-mask-inner">
                 {hero.titleLine1}
@@ -195,20 +199,34 @@ export default function Hero() {
             {/* Achievement stat strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-5 sm:divide-x sm:divide-black/10 mb-10 max-w-md">
               <div className="sm:pr-4">
-                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">8.5</span>
-                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Overall Band</span>
+                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
+                  8.5
+                </span>
+                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">
+                  Overall band
+                </span>
               </div>
               <div className="sm:px-4">
-                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">9.0</span>
-                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Listening</span>
+                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
+                  9.0
+                </span>
+                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">Listening</span>
               </div>
               <div className="sm:px-4">
-                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">94%</span>
-                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Đạt Target</span>
+                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
+                  94%
+                </span>
+                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">
+                  Đạt target
+                </span>
               </div>
               <div className="sm:pl-4">
-                <span className="font-serif text-2xl md:text-3xl font-black text-[#14532D] block leading-none">2.500+</span>
-                <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold mt-1 block">Học Viên Đã Dạy</span>
+                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
+                  2.500+
+                </span>
+                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">
+                  Học viên
+                </span>
               </div>
             </div>
 
@@ -219,7 +237,10 @@ export default function Hero() {
                 className="group px-8 py-3.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
               >
                 Kiểm Tra Kiến Thức IELTS
-                <ChevronRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <ChevronRight
+                  size={14}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
               </Link>
             </div>
           </div>
@@ -229,22 +250,22 @@ export default function Hero() {
             Positions/sizes are percentage + clamp()-based (not fixed px) so the
             cluster scales fluidly with the column and never overlaps at any
             zoom level or intermediate viewport width. */}
-        <div ref={rightSideRef} className="md:col-span-5 order-1 md:order-2 w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[10/11] relative">
-
+        <div
+          ref={rightSideRef}
+          className="md:col-span-5 order-1 md:order-2 w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[10/11] relative"
+        >
           {/* Large overall band card */}
           <div
             className="absolute bg-white rounded-3xl shadow-xl p-[clamp(0.9rem,3vw,1.5rem)] rotate-[-3deg] border border-black/5"
             style={{ top: "2%", left: "2%", width: "clamp(140px, 42%, 220px)" }}
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#1A1A1A]/50 font-bold block mb-2">
-              Overall Band
+            <span className="text-2xs text-[#1A1A1A]/50 font-medium block mb-2">
+              Overall band
             </span>
-            <span className="font-serif text-[clamp(1.75rem,5vw,3.75rem)] font-black text-[#14532D] block leading-none">
+            <span className="font-serif text-[clamp(1.75rem,5vw,3.75rem)] font-bold text-[#14532D] block leading-none">
               8.5
             </span>
-            <span className="font-mono text-[10px] text-[#1A1A1A]/60 block mt-2">
-              IELTS Academic
-            </span>
+            <span className="font-mono text-2xs text-[#1A1A1A]/60 block mt-2">IELTS Academic</span>
           </div>
 
           {/* Small listening score card, overlapping */}
@@ -252,10 +273,10 @@ export default function Hero() {
             className="absolute bg-[#14532D] text-white rounded-2xl shadow-xl p-[clamp(0.75rem,2.5vw,1.25rem)] rotate-[4deg]"
             style={{ top: "42%", left: "34%", width: "clamp(110px, 32%, 170px)" }}
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/60 font-bold block mb-1">
+            <span className="text-2xs text-white/60 font-medium block mb-1">
               Listening
             </span>
-            <span className="font-serif text-[clamp(1.25rem,3.5vw,2.25rem)] font-black block leading-none">
+            <span className="font-serif text-[clamp(1.25rem,3.5vw,2.25rem)] font-bold block leading-none">
               9.0
             </span>
           </div>
@@ -271,8 +292,12 @@ export default function Hero() {
                 <Award size={16} className="text-[#14532D]" />
               </span>
               <span className="text-left">
-                <span className="font-serif text-sm font-black text-[#1A1A1A] block leading-none">{initialTestimonials.length}+</span>
-                <span className="font-mono text-[8px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold group-hover:text-[#14532D] transition-colors">Học viên đạt đích</span>
+                <span className="font-serif text-sm font-bold text-[#1A1A1A] block leading-none">
+                  {initialTestimonials.length}+
+                </span>
+                <span className="text-2xs text-[#1A1A1A]/50 font-medium group-hover:text-[#14532D] transition-colors">
+                  Học viên đạt đích
+                </span>
               </span>
             </Link>
             <Link
@@ -283,31 +308,51 @@ export default function Hero() {
                 <MessageSquare size={16} className="text-white" />
               </span>
               <span className="text-left">
-                <span className="font-serif text-sm font-black text-[#1A1A1A] block leading-none">{feedbackItems.length}+</span>
-                <span className="font-mono text-[8px] uppercase tracking-widest text-[#1A1A1A]/50 font-bold group-hover:text-[#14532D] transition-colors">Đánh giá tích cực</span>
+                <span className="font-serif text-sm font-bold text-[#1A1A1A] block leading-none">
+                  {feedbackItems.length}+
+                </span>
+                <span className="text-2xs text-[#1A1A1A]/50 font-medium group-hover:text-[#14532D] transition-colors">
+                  Đánh giá tích cực
+                </span>
               </span>
             </Link>
           </div>
         </div>
-
       </div>
 
       {/* Floating Vertical Navigation Sidebar (Right-side, like reference image) */}
       <div className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 bg-white/90 border border-black/5 p-3 rounded-full backdrop-blur-md shadow-lg">
-        <Link href="/" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-hero">
+        <Link
+          href="/"
+          className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer"
+          id="side-nav-hero"
+        >
           <Compass size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Trang Chủ</span>
+          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white text-2xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Trang Chủ
+          </span>
         </Link>
-        <Link href="/gioi-thieu" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-about">
+        <Link
+          href="/gioi-thieu"
+          className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer"
+          id="side-nav-about"
+        >
           <AwardIcon size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Giới Thiệu</span>
+          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white text-2xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Giới Thiệu
+          </span>
         </Link>
-        <Link href="/tu-van" className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer" id="side-nav-contact">
+        <Link
+          href="/tu-van"
+          className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer"
+          id="side-nav-contact"
+        >
           <ShieldAlert size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white font-mono text-[9px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">Liên Hệ</span>
+          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white text-2xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Liên Hệ
+          </span>
         </Link>
       </div>
-
     </section>
   );
 }

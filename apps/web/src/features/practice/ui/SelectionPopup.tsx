@@ -46,7 +46,7 @@ export default function SelectionPopup({
         <button
           type="button"
           onClick={onHighlight}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-[#1A1A1A] hover:bg-[#FAF9F6] cursor-pointer"
+          className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-[#1A1A1A] hover:bg-[#FAF9F6] cursor-pointer"
         >
           <Highlighter size={14} className="text-[#CA8A04]" />
           Tô màu
@@ -56,7 +56,7 @@ export default function SelectionPopup({
           <button
             type="button"
             onClick={onRemove}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-[#1A1A1A] hover:bg-[#FAF9F6] cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-[#1A1A1A] hover:bg-[#FAF9F6] cursor-pointer"
           >
             <Trash2 size={14} className="text-red-500" />
             Xoá
@@ -64,7 +64,7 @@ export default function SelectionPopup({
           <button
             type="button"
             onClick={onRemoveAll}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-[#1A1A1A]/70 hover:bg-[#FAF9F6] cursor-pointer border-l border-black/5"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-[#1A1A1A]/70 hover:bg-[#FAF9F6] cursor-pointer border-l border-black/5"
           >
             Xoá tất cả
           </button>
@@ -75,7 +75,7 @@ export default function SelectionPopup({
         <button
           type="button"
           onClick={onBookmark}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-[#1A1A1A] hover:bg-[#FAF9F6] cursor-pointer border-l border-black/5"
+          className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-[#1A1A1A] hover:bg-[#FAF9F6] cursor-pointer border-l border-black/5"
         >
           <Bookmark
             size={14}
@@ -85,6 +85,6 @@ export default function SelectionPopup({
         </button>
       )}
     </div>,
-    document.body
+    document.body,
   );
 }

@@ -1,13 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Display typeface. Token kept as --font-serif so existing font-serif
-     utility usages across components pick this up without touching every file. */
-  --font-serif: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /*
+    Ba họ chữ nạp ở `layout.tsx` qua next/font. Token giữ tên Tailwind
+    (`font-serif`, `font-sans`, `font-mono`) để không phải sửa hết class trong
+    component, nhưng bây giờ chúng nói đúng sự thật: `font-serif` RA serif.
+
+    Trước đây `--font-serif` trỏ vào Outfit — một sans hình học. 66 chỗ ghi
+    font-serif mà lên màn hình vẫn là sans, nên cả trang chỉ có một giọng chữ.
+  */
+  --font-serif: var(--font-display), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-numeric), ui-monospace, monospace;
+
+  /*
+    Thang cỡ chữ. Trước đây có 11 cỡ px tuỳ biến (6px → 17px) chồng lên thang
+    Tailwind — khoảng 22 cỡ khác nhau trên cùng một web. Giờ mọi cỡ nhỏ đều rơi
+    vào một trong các bậc dưới đây; muốn cỡ khác thì thêm bậc, đừng viết px rời.
+
+    `--text-2xs` là bậc nhỏ nhất được phép. Nhãn 9px in hoa cũ vừa khó đọc vừa
+    là thứ khiến trang trông như sinh tự động.
+  */
+  --text-2xs: 0.6875rem; /* 11px */
+  --text-2xs--line-height: 1.45;
 }
+
+/*
+  Ba quy ước chữ, để lần sau thêm màn hình mới thì theo:
+
+  1. `font-serif` cho tiêu đề. Không dùng cho câu chữ dài.
+  2. Nhãn nhỏ = `text-2xs font-medium`, chữ thường, không giãn chữ. Trước đây
+     mỗi nhãn là `font-mono text-[9px] uppercase tracking-[0.2em] font-bold` —
+     124 chỗ như vậy, với 4 giá trị giãn chữ khác nhau cho cùng một loại nhãn.
+  3. `font-mono` chỉ cho số liệu: đồng hồ, số câu, điểm, slug.
+
+  In hoa + `tracking-wider` chỉ còn ở nút bấm, và chỉ một kiểu duy nhất.
+*/
 
 /*
   Brand accent palette (Wise-inspired two-tone green system).
@@ -134,4 +162,19 @@ html {
  */
 .lenis.lenis-smooth [data-lenis-prevent] {
   overflow: auto;
+}
+
+/*
+ * Vạch chạy của màn chờ trước phòng thi. Không dùng phần trăm vì không đo được
+ * tiến độ thật của một request — vạch chạy qua lại nói đúng "đang chờ", không
+ * hứa hẹn con số nào. `prefers-reduced-motion` được xử lý ở component bằng
+ * `motion-reduce:` (vạch đứng yên, đầy khung).
+ */
+@keyframes gate-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
 }

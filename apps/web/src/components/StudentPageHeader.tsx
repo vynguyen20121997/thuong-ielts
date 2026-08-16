@@ -46,20 +46,20 @@ export default function StudentPageHeader({
       <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[160%] h-[560px] bg-gradient-to-b from-[#9FE870]/30 via-[#9FE870]/10 to-transparent rounded-b-[50%] pointer-events-none" />
 
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-        <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-5 font-bold inline-flex items-center gap-1.5">
+        <span className="text-xs text-[#14532D] mb-5 font-medium inline-flex items-center gap-1.5">
           <Sparkles size={14} className="text-[#14532D]" />
           {eyebrow}
         </span>
 
         {/* Big underlined total */}
         <div className="mb-4">
-          <span className="relative inline-block font-serif text-6xl md:text-8xl font-black tracking-tighter text-[#14532D] leading-none">
+          <span className="relative inline-block font-serif text-6xl md:text-8xl font-bold tracking-tighter text-[#14532D] leading-none">
             {count}
             <span className="absolute left-1/2 -translate-x-1/2 -bottom-2 md:-bottom-3 h-1.5 md:h-2 w-2/3 bg-[#9FE870] rounded-full" />
           </span>
         </div>
 
-        <h1 className="font-serif text-2xl md:text-4xl font-black tracking-tight text-[#1A1A1A] leading-tight mb-5 text-balance">
+        <h1 className="font-serif text-2xl md:text-4xl font-bold tracking-tight text-[#1A1A1A] leading-tight mb-5 text-balance">
           {heading}
         </h1>
 
@@ -79,7 +79,7 @@ export default function StudentPageHeader({
               {a.imageUrl ? (
                 <img src={a.imageUrl} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-white font-serif font-black text-sm md:text-base leading-none">
+                <span className="text-white font-serif font-bold text-sm md:text-base leading-none">
                   {a.label}
                 </span>
               )}
@@ -87,7 +87,7 @@ export default function StudentPageHeader({
           ))}
           {overflow > 0 && (
             <div className="h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center bg-[#14532D] ring-2 ring-white shadow-sm shrink-0">
-              <span className="text-white font-mono font-bold text-[11px] md:text-xs leading-none">
+              <span className="text-white font-mono font-bold text-2xs md:text-xs leading-none">
                 +{overflow}
               </span>
             </div>

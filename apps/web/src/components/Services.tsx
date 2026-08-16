@@ -19,13 +19,14 @@ export default function Services() {
       duration: "3.5 Tháng (42 Buổi)",
       target: "Đầu ra Cam kết 6.5+ IELTS",
       focus: "Toàn diện Nghe, Nói, Đọc, Viết",
-      description: "Lộ trình thiết kế bài bản từ mất gốc hoặc từ nền tảng cơ bản lên thẳng điểm số mong muốn. Tập trung xây dựng gốc rễ từ vựng học thuật, ngữ pháp nâng cao và phản xạ ngôn ngữ thực chiến.",
+      description:
+        "Lộ trình thiết kế bài bản từ mất gốc hoặc từ nền tảng cơ bản lên thẳng điểm số mong muốn. Tập trung xây dựng gốc rễ từ vựng học thuật, ngữ pháp nâng cao và phản xạ ngôn ngữ thực chiến.",
       highlights: [
         "Sĩ số lớp giới hạn tối đa 6-8 học viên để đảm bảo chất lượng sửa bài nói, viết trực tiếp.",
         "Xây dựng phản xạ tự tin trả lời Speaking theo các chủ đề phổ biến.",
         "Luyện tập tư duy tìm ý tưởng và bố cục bài viết Writing Task 1 & 2 logic.",
-        "Thi thử (Mock Test) chuẩn chỉ như thi thật mỗi tháng 1 lần."
-      ]
+        "Thi thử (Mock Test) chuẩn chỉ như thi thật mỗi tháng 1 lần.",
+      ],
     },
     {
       id: "masterclass",
@@ -33,13 +34,14 @@ export default function Services() {
       duration: "2 Tháng (24 Buổi)",
       target: "Mục tiêu 8.0 - 9.0 Đọc & Nghe",
       focus: "Tư duy Logic & Bóc Tách Đề Thi",
-      description: "Khóa học độc quyền làm nên thương hiệu của cô Ngọc Thương. Thích hợp cho các học viên đã có nền tảng tốt nhưng muốn tối ưu hóa điểm số tuyệt đối ở hai kỹ năng Đọc và Nghe.",
+      description:
+        "Khóa học độc quyền làm nên thương hiệu của cô Ngọc Thương. Thích hợp cho các học viên đã có nền tảng tốt nhưng muốn tối ưu hóa điểm số tuyệt đối ở hai kỹ năng Đọc và Nghe.",
       highlights: [
         "Làm chủ phương pháp sơ đồ hóa đoạn văn, giải quyết triệt để dạng Matching Headings.",
         "Bóc tách cấu trúc phát âm của người bản xứ (linking sounds, reduction) để nghe rõ từng từ.",
         "Học cách nhận diện bẫy nhiễu thông tin trong bài nghe (distractors) một cách chủ động.",
-        "Kho từ vựng Synonym (từ đồng nghĩa) phân loại theo chuyên đề bao quát 99% đề thi."
-      ]
+        "Kho từ vựng Synonym (từ đồng nghĩa) phân loại theo chuyên đề bao quát 99% đề thi.",
+      ],
     },
     {
       id: "intensive",
@@ -47,13 +49,14 @@ export default function Services() {
       duration: "2 Tháng (18 Buổi)",
       target: "Nâng Band 7.0+ Nói & Viết",
       focus: "Lập Luận Phản Biện & Sửa Bài Chi Tiết",
-      description: "Khóa học tập trung rèn luyện tư duy phản biện (Critical Thinking) để xử lý các chủ đề phức tạp trong Writing Task 2 và Speaking Part 3. Cam kết sửa chữa lỗi sai triệt để.",
+      description:
+        "Khóa học tập trung rèn luyện tư duy phản biện (Critical Thinking) để xử lý các chủ đề phức tạp trong Writing Task 2 và Speaking Part 3. Cam kết sửa chữa lỗi sai triệt để.",
       highlights: [
         "Sửa chi tiết 24 bài viết lớn nhỏ, chỉ rõ lỗi ngữ pháp, từ vựng và tư duy sắp xếp luận điểm.",
         "Luyện Speaking 1-kèm-1 định kỳ hàng tuần trực tiếp cùng cô Ngọc Thương.",
         "Nâng cấp kho từ vựng Academic và các cụm Idiomatic Collocations tự nhiên.",
-        "Chiến thuật lấy điểm tuyệt đối Coherence & Cohesion (Sự mạch lạc và gắn kết)."
-      ]
+        "Chiến thuật lấy điểm tuyệt đối Coherence & Cohesion (Sự mạch lạc và gắn kết).",
+      ],
     },
     {
       id: "speaking",
@@ -61,14 +64,15 @@ export default function Services() {
       duration: "1.5 Tháng (12 Buổi)",
       target: "Tự tin thuyết trình Tiếng Anh",
       focus: "Phát âm chuẩn & Làm chủ sân khấu",
-      description: "Không chỉ dừng lại ở bài thi IELTS, khóa học này giúp bạn phát triển khả năng nói tiếng Anh trước công chúng một cách tự tin, chuyên nghiệp và có sức hút mãnh liệt nhất.",
+      description:
+        "Không chỉ dừng lại ở bài thi IELTS, khóa học này giúp bạn phát triển khả năng nói tiếng Anh trước công chúng một cách tự tin, chuyên nghiệp và có sức hút mãnh liệt nhất.",
       highlights: [
         "Rèn luyện phát âm chuẩn Anh-Anh hoặc Anh-Mỹ thông qua phương pháp Shadowing.",
         "Kỹ thuật kiểm soát tốc độ nói, nhấn nhá từ ngữ (word stress) và điều tiết hơi thở.",
         "Sử dụng ngôn ngữ cơ thể (body language) và giao tiếp bằng ánh mắt thuyết phục người nghe.",
-        "Thực hành thuyết trình đề tài thực tế và được feedback chi tiết từng giây quay phim."
-      ]
-    }
+        "Thực hành thuyết trình đề tài thực tế và được feedback chi tiết từng giây quay phim.",
+      ],
+    },
   ];
 
   useEffect(() => {
@@ -87,7 +91,7 @@ export default function Services() {
             trigger: containerRef.current,
             start: "top 75%",
           },
-        }
+        },
       );
     }, containerRef);
 
@@ -114,13 +118,12 @@ export default function Services() {
       className="py-28 bg-white relative overflow-hidden border-b border-black/5"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        
         {/* Tạm ẩn Editorial Heading
         <div className="max-w-3xl mb-16 text-left">
-          <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
+          <span className="text-xs text-[#14532D] block mb-3 font-medium">
             Lộ Trình Tinh Gọn - Cá Nhân Hóa
           </span>
-          <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight mb-4">
+          <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A] leading-tight mb-4">
             Các Chương Trình Đào Tạo <br />
             Chuyên Sâu Điểm Nhấn
           </h2>
@@ -140,21 +143,20 @@ export default function Services() {
             <BookOpen size={220} />
           </div>
           <div className="relative z-10 md:max-w-xl">
-            <span className="font-mono text-[10px] uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full font-bold inline-block mb-5">
+            <span className="text-2xs bg-white/10 px-3 py-1 rounded-full font-medium inline-block mb-5">
               Chương trình chủ lực · {courses[0].duration}
             </span>
-            <h3 className="font-serif text-3xl md:text-4xl font-bold mb-3">
-              {courses[0].title}
-            </h3>
-            <p className="font-mono text-xs font-semibold tracking-wider mb-4 uppercase text-[#9FE870]">
-              {courses[0].target}
-            </p>
+            <h3 className="font-serif text-3xl md:text-4xl font-bold mb-3">{courses[0].title}</h3>
+            <p className="text-xs font-semibold mb-4 text-[#9FE870]">{courses[0].target}</p>
             <p className="text-sm md:text-base text-white/75 leading-relaxed mb-6">
               {courses[0].description}
             </p>
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white group-hover:text-[#9FE870] transition-colors">
               <span>Tìm hiểu chi tiết giáo trình</span>
-              <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+              <ChevronRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
             </div>
           </div>
           <div className="relative z-10 h-16 w-16 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
@@ -174,14 +176,12 @@ export default function Services() {
               <div>
                 {/* Upper line metadata */}
                 <div className="flex items-center justify-between mb-6">
-                  <div className={`h-11 w-11 rounded-xl flex items-center justify-center border ${
-                    course.id === "masterclass" || course.id === "speaking"
-                      ? "bg-[#15803D]/10 border-[#15803D]/20"
-                      : "bg-[#14532D]/10 border-[#14532D]/20"
-                  }`}>
+                  <div
+                    className={`h-11 w-11 rounded-xl flex items-center justify-center border ${course.id === "masterclass" || course.id === "speaking" ? "bg-[#15803D]/10 border-[#15803D]/20" : "bg-[#14532D]/10 border-[#14532D]/20"}`}
+                  >
                     {getIcon(course.id)}
                   </div>
-                  <span className="font-mono text-[10px] text-[#1A1A1A]/50 uppercase tracking-widest bg-black/5 border border-black/5 px-2.5 py-1 rounded-full font-bold">
+                  <span className="text-2xs text-[#1A1A1A]/50 bg-black/5 border border-black/5 px-2.5 py-1 rounded-full font-medium">
                     {course.duration}
                   </span>
                 </div>
@@ -190,11 +190,9 @@ export default function Services() {
                 <h3 className="font-serif text-xl font-bold text-[#1A1A1A] group-hover:text-[#14532D] transition-colors mb-2">
                   {course.title}
                 </h3>
-                <p className={`font-mono text-[11px] font-semibold tracking-wider mb-3 uppercase ${
-                  course.id === "masterclass" || course.id === "speaking"
-                    ? "text-[#15803D]"
-                    : "text-[#14532D]"
-                }`}>
+                <p
+                  className={`text-2xs font-semibold mb-3 ${course.id === "masterclass" || course.id === "speaking" ? "text-[#15803D]" : "text-[#14532D]"}`}
+                >
                   {course.target}
                 </p>
                 <p className="text-sm text-[#1A1A1A]/70 leading-relaxed mb-6 line-clamp-3">
@@ -205,7 +203,10 @@ export default function Services() {
               {/* Readmore trigger */}
               <div className="pt-5 border-t border-black/5 flex items-center justify-between text-xs font-bold text-[#1A1A1A]/80 group-hover:text-[#14532D] transition-colors uppercase tracking-wider">
                 <span>Chi tiết giáo trình</span>
-                <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <ChevronRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
               </div>
             </div>
           ))}
@@ -233,33 +234,39 @@ export default function Services() {
               </button>
 
               <div className="flex items-center gap-3 mb-4">
-                <div className={`h-10 w-10 rounded-lg flex items-center justify-center border ${
-                  selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                    ? "bg-[#15803D]/10 border-[#15803D]/20"
-                    : "bg-[#14532D]/10 border-[#14532D]/20"
-                }`}>
+                <div
+                  className={`h-10 w-10 rounded-lg flex items-center justify-center border ${selectedCourse.id === "masterclass" || selectedCourse.id === "speaking" ? "bg-[#15803D]/10 border-[#15803D]/20" : "bg-[#14532D]/10 border-[#14532D]/20"}`}
+                >
                   {getIcon(selectedCourse.id)}
                 </div>
-                <span className={`font-mono text-xs tracking-wider font-semibold uppercase ${
-                  selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                    ? "text-[#15803D]"
-                    : "text-[#14532D]"
-                }`}>
+                <span
+                  className={`text-xs font-semibold ${selectedCourse.id === "masterclass" || selectedCourse.id === "speaking" ? "text-[#15803D]" : "text-[#14532D]"}`}
+                >
                   {selectedCourse.focus}
                 </span>
               </div>
 
-              <h3 className="font-serif text-3xl font-black text-[#1A1A1A] mb-2">
+              <h3 className="font-serif text-3xl font-bold text-[#1A1A1A] mb-2">
                 {selectedCourse.title}
               </h3>
-              
+
               <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6 text-sm font-mono text-[#1A1A1A]/70">
-                <p>Thời gian học: <strong className="text-[#1A1A1A]">{selectedCourse.duration}</strong></p>
-                <p>Mục tiêu: <strong className={`font-bold ${
-                  selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                    ? "text-[#15803D]"
-                    : "text-[#14532D]"
-                }`}>{selectedCourse.target}</strong></p>
+                <p>
+                  Thời gian học:{" "}
+                  <strong className="text-[#1A1A1A]">{selectedCourse.duration}</strong>
+                </p>
+                <p>
+                  Mục tiêu:{" "}
+                  <strong
+                    className={`font-bold ${
+                      selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
+                        ? "text-[#15803D]"
+                        : "text-[#14532D]"
+                    }`}
+                  >
+                    {selectedCourse.target}
+                  </strong>
+                </p>
               </div>
 
               <div className="h-px bg-black/10 w-full mb-6" />
@@ -273,16 +280,17 @@ export default function Services() {
               <ul className="space-y-3 mb-8">
                 {selectedCourse.highlights.map((highlight, index) => (
                   <li key={index} className="flex gap-3 text-sm text-[#1A1A1A]/85 leading-relaxed">
-                    <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 border ${
-                      selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                        ? "bg-[#15803D]/10 border-[#15803D]/20"
-                        : "bg-[#14532D]/10 border-[#14532D]/20"
-                    }`}>
-                      <Check size={12} className={`font-bold ${
-                        selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
-                          ? "text-[#15803D]"
-                          : "text-[#14532D]"
-                      }`} />
+                    <div
+                      className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 border ${selectedCourse.id === "masterclass" || selectedCourse.id === "speaking" ? "bg-[#15803D]/10 border-[#15803D]/20" : "bg-[#14532D]/10 border-[#14532D]/20"}`}
+                    >
+                      <Check
+                        size={12}
+                        className={`font-bold ${
+                          selectedCourse.id === "masterclass" || selectedCourse.id === "speaking"
+                            ? "text-[#15803D]"
+                            : "text-[#14532D]"
+                        }`}
+                      />
                     </div>
                     <span>{highlight}</span>
                   </li>
@@ -314,7 +322,6 @@ export default function Services() {
             </div>
           </div>
         )}
-
       </div>
     </section>
   );

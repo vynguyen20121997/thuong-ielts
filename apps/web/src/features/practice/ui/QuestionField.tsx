@@ -37,15 +37,7 @@ export default function QuestionField({
     >
       <div className="flex items-start gap-3">
         <span
-          className={`h-7 w-7 shrink-0 rounded-full flex items-center justify-center font-mono text-[11px] font-black ${
-            state === "correct"
-              ? "bg-[#9FE870] text-[#14532D]"
-              : state === "wrong"
-                ? "bg-red-100 text-red-600"
-                : value.trim()
-                  ? "bg-[#14532D] text-white"
-                  : "bg-black/[0.06] text-[#1A1A1A]/50"
-          }`}
+          className={`h-7 w-7 shrink-0 rounded-full flex items-center justify-center font-mono text-2xs font-bold ${state === "correct" ? "bg-[#9FE870] text-[#14532D]" : state === "wrong" ? "bg-red-100 text-red-600" : value.trim() ? "bg-[#14532D] text-white" : "bg-black/[0.06] text-[#1A1A1A]/50"}`}
         >
           {state === "correct" ? (
             <Check size={14} />
@@ -71,17 +63,7 @@ export default function QuestionField({
               return (
                 <label
                   key={option}
-                  className={`flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border text-[13px] leading-snug transition-colors ${
-                    disabled ? "cursor-default" : "cursor-pointer"
-                  } ${
-                    review && isExpected
-                      ? "border-[#14532D]/40 bg-[#9FE870]/20 text-[#14532D] font-semibold"
-                      : selected
-                        ? review
-                          ? "border-red-300 bg-red-50 text-red-700"
-                          : "border-[#14532D] bg-[#14532D]/[0.06] text-[#14532D] font-semibold"
-                        : "border-black/[0.08] text-[#1A1A1A]/75 hover:border-[#14532D]/30"
-                  }`}
+                  className={`flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl border text-sm leading-snug transition-colors ${disabled ? "cursor-default" : "cursor-pointer"} ${review && isExpected ? "border-[#14532D]/40 bg-[#9FE870]/20 text-[#14532D] font-semibold" : selected ? (review ? "border-red-300 bg-red-50 text-red-700" : "border-[#14532D] bg-[#14532D]/[0.06] text-[#14532D] font-semibold") : "border-black/[0.08] text-[#1A1A1A]/75 hover:border-[#14532D]/30"}`}
                 >
                   <input
                     type="radio"
@@ -105,32 +87,24 @@ export default function QuestionField({
               disabled={disabled}
               onChange={(e) => onChange(e.target.value)}
               placeholder={`Tối đa ${question.maxWords} từ`}
-              className={`w-full max-w-sm bg-white border rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/30 focus:outline-none transition-colors ${
-                state === "correct"
-                  ? "border-[#9FE870]"
-                  : state === "wrong"
-                    ? "border-red-300 bg-red-50"
-                    : "border-black/10 focus:border-[#14532D]/50"
-              } disabled:cursor-default`}
+              className={`w-full max-w-sm bg-white border rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/30 focus:outline-none transition-colors ${state === "correct" ? "border-[#9FE870]" : state === "wrong" ? "border-red-300 bg-red-50" : "border-black/10 focus:border-[#14532D]/50"} disabled:cursor-default`}
             />
             {/* Wording stays skill-neutral: this field serves reading and listening. */}
-            <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/35 font-bold block mt-2">
+            <span className="text-2xs text-[#1A1A1A]/35 font-medium block mt-2">
               Viết không quá {question.maxWords} từ
             </span>
           </div>
         )}
 
         {review && !review.isCorrect && (
-          <p className="mt-3 text-[13px] text-[#1A1A1A]/70">
-            <span className="font-mono text-[9px] uppercase tracking-widest font-bold text-[#14532D] block mb-1">
-              Đáp án đúng
-            </span>
+          <p className="mt-3 text-sm text-[#1A1A1A]/70">
+            <span className="text-2xs font-medium text-[#14532D] block mb-1">Đáp án đúng</span>
             {review.expected}
           </p>
         )}
 
         {review?.explanation && (
-          <p className="mt-3 text-[13px] leading-relaxed text-[#1A1A1A]/65 bg-[#FAF9F6] border-l-2 border-[#9FE870] pl-3 py-2 rounded-r-lg">
+          <p className="mt-3 text-sm leading-relaxed text-[#1A1A1A]/65 bg-[#FAF9F6] border-l-2 border-[#9FE870] pl-3 py-2 rounded-r-lg">
             {review.explanation}
           </p>
         )}

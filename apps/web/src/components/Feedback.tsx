@@ -68,7 +68,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
       (entries) => {
         if (entries[0].isIntersecting) loadMore();
       },
-      { rootMargin: "400px" }
+      { rootMargin: "400px" },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -100,15 +100,14 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
       )}
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-
         {/* Preview header */}
         {isPreview && (
           <div className="max-w-2xl text-left mb-12">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
+            <span className="text-xs text-[#14532D] mb-3 font-medium flex items-center gap-1.5">
               <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
               Học Viên Nói Gì Về Cô Thương
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
+            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
               150+ Đánh Giá Tích Cực <br />
               Từ Học Viên
             </h2>
@@ -117,7 +116,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
 
         {/* Cards: carousel on homepage preview, masonry on full page */}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2 py-16 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold">
+          <div className="flex items-center justify-center gap-2 py-16 text-xs text-[#1A1A1A]/40 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
             Đang tải dữ liệu...
           </div>
@@ -137,11 +136,11 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 >
                   <div className="px-5 pt-5 pb-3 shrink-0">
                     <Quote size={18} className="text-[#9FE870] mb-2" />
-                    <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
+                    <p className="font-serif text-sm md:text-base font-bold text-[#1A1A1A] leading-snug">
                       {item.subject}
                     </p>
                     {item.date && (
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold mt-2 block">
+                      <span className="text-2xs text-[#1A1A1A]/40 font-medium mt-2 block">
                         {item.date}
                       </span>
                     )}
@@ -153,7 +152,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                       loading="lazy"
                       className="absolute inset-0 w-full h-full object-contain"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-medium gap-1.5 ">
                       <Maximize2 size={14} />
                       Phóng to để đọc rõ hơn
                     </div>
@@ -168,7 +167,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
               >
                 Xem toàn bộ
-                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight
+                  size={14}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
               </Link>
             </div>
           </>
@@ -189,11 +191,11 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 >
                   <div className="px-5 pt-5 pb-3">
                     <Quote size={18} className="text-[#9FE870] mb-2" />
-                    <p className="font-serif text-sm md:text-[15px] font-bold text-[#1A1A1A] leading-snug">
+                    <p className="font-serif text-sm md:text-base font-bold text-[#1A1A1A] leading-snug">
                       {item.subject}
                     </p>
                     {item.date && (
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold mt-2 block">
+                      <span className="text-2xs text-[#1A1A1A]/40 font-medium mt-2 block">
                         {item.date}
                       </span>
                     )}
@@ -205,7 +207,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                       loading="lazy"
                       className="w-full h-auto object-contain"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-medium gap-1.5 ">
                       <Maximize2 size={14} />
                       Phóng to
                     </div>
@@ -215,7 +217,11 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
             </div>
 
             {hasMore && (
-              <div ref={loadMoreRef} className="mt-12 flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold" id="feedback-load-more">
+              <div
+                ref={loadMoreRef}
+                className="mt-12 flex items-center justify-center gap-2 text-xs text-[#1A1A1A]/40 font-medium"
+                id="feedback-load-more"
+              >
                 <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
                 Đang tải thêm...
               </div>

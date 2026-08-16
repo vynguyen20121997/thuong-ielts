@@ -44,7 +44,7 @@ export default function RotatingBadge({ onClick }: RotatingBadgeProps) {
   }, []);
 
   return (
-    <div 
+    <div
       onClick={onClick}
       className="relative w-36 h-36 flex items-center justify-center cursor-pointer group active:scale-95 transition-all duration-300 select-none z-20"
       id="rotating-badge-wrapper"
@@ -62,7 +62,7 @@ export default function RotatingBadge({ onClick }: RotatingBadgeProps) {
               fill="none"
             />
           </defs>
-          <text className="font-mono text-[6px] tracking-[0.24em] fill-white/60 group-hover:fill-green-500 uppercase transition-colors duration-300">
+          <text className="text-2xs fill-white/60 group-hover:fill-green-500 transition-colors duration-300">
             <textPath href="#textPath" startOffset="0%">
               HNT.IELTS • TU DUY LOGIC • SINCE 2018 • EXCELLENCE •
             </textPath>
@@ -72,10 +72,11 @@ export default function RotatingBadge({ onClick }: RotatingBadgeProps) {
 
       {/* Center Static Circle with Hover Interaction */}
       <div className="relative w-16 h-16 bg-white/10 hover:bg-green-600 border border-white/10 hover:border-green-500 text-white hover:text-black rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 z-10">
-        <ArrowUpRight size={22} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        <span className="font-mono text-[7px] font-bold tracking-wider mt-0.5 uppercase">
-          Liên Hệ
-        </span>
+        <ArrowUpRight
+          size={22}
+          className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+        />
+        <span className="text-2xs font-medium mt-0.5 ">Liên Hệ</span>
       </div>
     </div>
   );

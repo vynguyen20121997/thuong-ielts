@@ -29,34 +29,28 @@ export default function ReadingResultPanel({
     <div className="bg-[#14532D] text-white rounded-2xl p-6 md:p-7 shadow-xl">
       <div className="flex items-center gap-2 mb-5">
         <Target size={15} className="text-[#9FE870]" />
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-[#9FE870]">
+        <span className="text-2xs font-medium text-[#9FE870]">
           Kết quả bài làm
         </span>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div>
-          <span className="font-serif text-4xl font-black block leading-none">
+          <span className="font-serif text-4xl font-bold block leading-none">
             {result.correct}
             <span className="text-white/40 text-2xl">/{result.total}</span>
           </span>
-          <span className="font-mono text-[9px] uppercase tracking-widest text-white/50 font-bold mt-2 block">
-            Câu đúng
-          </span>
+          <span className="text-2xs text-white/50 font-medium mt-2 block">Câu đúng</span>
         </div>
         <div>
-          <span className="font-serif text-4xl font-black block leading-none text-[#9FE870]">
+          <span className="font-serif text-4xl font-bold block leading-none text-[#9FE870]">
             {formatBand(result.band)}
           </span>
-          <span className="font-mono text-[9px] uppercase tracking-widest text-white/50 font-bold mt-2 block">
-            Band ước lượng
-          </span>
+          <span className="text-2xs text-white/50 font-medium mt-2 block">Band ước lượng</span>
         </div>
         <div>
-          <span className="font-serif text-4xl font-black block leading-none">{percent}%</span>
-          <span className="font-mono text-[9px] uppercase tracking-widest text-white/50 font-bold mt-2 block">
-            Độ chính xác
-          </span>
+          <span className="font-serif text-4xl font-bold block leading-none">{percent}%</span>
+          <span className="text-2xs text-white/50 font-medium mt-2 block">Độ chính xác</span>
         </div>
       </div>
 
@@ -69,19 +63,19 @@ export default function ReadingResultPanel({
       </div>
 
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-white/60 mb-6">
-        <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold">
+        <span className="flex items-center gap-1.5 font-mono text-2xs font-bold">
           <Timer size={13} />
           Thời gian làm: {formatClock(result.elapsedSeconds)}
         </span>
         {timedOut && (
-          <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold text-[#9FE870]">
+          <span className="flex items-center gap-1.5 font-mono text-2xs font-bold text-[#9FE870]">
             <AlarmClock size={13} />
             Hết giờ — bài được nộp tự động
           </span>
         )}
       </div>
 
-      <p className="text-[13px] leading-relaxed text-white/70 mb-6">
+      <p className="text-sm leading-relaxed text-white/70 mb-6">
         Band ở trên là con số quy đổi tương đối từ thang 40 câu của IELTS Academic Reading, dùng để
         theo dõi tiến bộ chứ không thay thế điểm thi thật. Kéo xuống dưới để xem đáp án và giải
         thích cho từng câu.
@@ -93,7 +87,10 @@ export default function ReadingResultPanel({
           onClick={onRestart}
           className="group px-6 py-3 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase inline-flex items-center gap-2"
         >
-          <RotateCcw size={14} className="transition-transform duration-500 group-hover:-rotate-180" />
+          <RotateCcw
+            size={14}
+            className="transition-transform duration-500 group-hover:-rotate-180"
+          />
           Làm lại
         </button>
         <Link

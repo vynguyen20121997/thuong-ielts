@@ -91,7 +91,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   // Sort newest-first by year/date
   const sorted = useMemo(
     () => [...testimonials].sort((a, b) => dateKey(b.date) - dateKey(a.date)),
-    [testimonials]
+    [testimonials],
   );
 
   // Distinct years (desc) for the full-page filter
@@ -112,7 +112,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   // Highest band score first, for the homepage honor-roll preview
   const byScore = useMemo(
     () => [...testimonials].sort((a, b) => scoreKey(b.score) - scoreKey(a.score)),
-    [testimonials]
+    [testimonials],
   );
 
   const shown = isPreview ? byScore.slice(0, PREVIEW_COUNT) : filtered.slice(0, visibleCount);
@@ -132,7 +132,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
       (entries) => {
         if (entries[0].isIntersecting) loadMore();
       },
-      { rootMargin: "400px" }
+      { rootMargin: "400px" },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -140,11 +140,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
   const headerAvatars: HeaderAvatar[] = useMemo(
     () => sorted.slice(0, 14).map((t) => ({ label: firstLetter(t.studentName) })),
-    [sorted]
+    [sorted],
   );
 
-  const toggleExpand = (id: string) =>
-    setExpandedReviews((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleExpand = (id: string) => setExpandedReviews((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const changeCardImage = (e: React.MouseEvent, id: string, delta: number, total: number) => {
     e.stopPropagation();
@@ -164,9 +163,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     return (
       <div
         key={test.id}
-        className={`testimonial-card bg-white border border-black/5 hover:border-[#14532D]/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left ${
-          isPreview ? "snap-start shrink-0 w-[300px] sm:w-[340px]" : ""
-        }`}
+        className={`testimonial-card bg-white border border-black/5 hover:border-[#14532D]/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left ${isPreview ? "snap-start shrink-0 w-[300px] sm:w-[340px]" : ""}`}
         id={test.id}
       >
         <div className="absolute top-6 right-6 text-black/5 group-hover:text-[#14532D]/10 transition-colors pointer-events-none">
@@ -174,76 +171,78 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
         </div>
 
         {/* Proof image carousel */}
-        {test.proofUrl && test.proofUrl.length > 0 && (() => {
-          const images = test.proofUrl!;
-          const currentIndex = cardImageIndex[test.id] || 0;
-          const safeIndex = currentIndex < images.length ? currentIndex : 0;
-          return (
-            <div
-              onClick={() => {
-                setSelectedProofImages(images);
-                setSelectedProofIndex(safeIndex);
-                setSelectedProofName(test.studentName);
-              }}
-              className="mb-5 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
-            >
-              <img
-                src={images[safeIndex]}
-                alt={`Bảng điểm ${test.studentName}`}
-                loading="lazy"
-                className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1.5 font-mono uppercase tracking-wider">
-                <Maximize2 size={14} />
-                Phóng to bảng điểm
+        {test.proofUrl &&
+          test.proofUrl.length > 0 &&
+          (() => {
+            const images = test.proofUrl!;
+            const currentIndex = cardImageIndex[test.id] || 0;
+            const safeIndex = currentIndex < images.length ? currentIndex : 0;
+            return (
+              <div
+                onClick={() => {
+                  setSelectedProofImages(images);
+                  setSelectedProofIndex(safeIndex);
+                  setSelectedProofName(test.studentName);
+                }}
+                className="mb-5 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
+              >
+                <img
+                  src={images[safeIndex]}
+                  alt={`Bảng điểm ${test.studentName}`}
+                  loading="lazy"
+                  className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-medium gap-1.5 ">
+                  <Maximize2 size={14} />
+                  Phóng to bảng điểm
+                </div>
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => changeCardImage(e, test.id, -1, images.length)}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button
+                      onClick={(e) => changeCardImage(e, test.id, 1, images.length)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2 py-1 bg-black/40 rounded-full">
+                      {images.map((_, i) => (
+                        <span
+                          key={i}
+                          className={`h-1.5 rounded-full transition-all ${i === safeIndex ? "w-3 bg-white" : "w-1.5 bg-white/50"}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
-              {images.length > 1 && (
-                <>
-                  <button
-                    onClick={(e) => changeCardImage(e, test.id, -1, images.length)}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
-                  >
-                    <ChevronLeft size={16} />
-                  </button>
-                  <button
-                    onClick={(e) => changeCardImage(e, test.id, 1, images.length)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
-                  >
-                    <ChevronRight size={16} />
-                  </button>
-                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2 py-1 bg-black/40 rounded-full">
-                    {images.map((_, i) => (
-                      <span
-                        key={i}
-                        className={`h-1.5 rounded-full transition-all ${i === safeIndex ? "w-3 bg-white" : "w-1.5 bg-white/50"}`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })()}
+            );
+          })()}
 
         <div>
           <div className="flex items-start justify-between gap-3 mb-5">
             <div>
-              <h4 className="font-serif font-black text-sm text-[#1A1A1A] leading-tight">
+              <h4 className="font-serif font-bold text-sm text-[#1A1A1A] leading-tight">
                 {test.studentName}
               </h4>
-              <p className="font-mono text-[9px] text-[#1A1A1A]/50 uppercase tracking-widest mt-0.5 font-extrabold leading-none">
+              <p className="text-2xs text-[#1A1A1A]/50 mt-0.5 font-extrabold leading-none">
                 {test.schoolOrJob}
               </p>
             </div>
 
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-[10px] font-mono uppercase tracking-wider rounded-full font-bold shadow-sm shrink-0">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-2xs rounded-full font-medium shadow-sm shrink-0">
               <Award size={10} />
               {test.score}
             </span>
           </div>
 
           {/* Date tag */}
-          <div className="flex flex-wrap gap-2 items-center mb-4 text-[10px] font-mono text-black/40 font-bold uppercase tracking-wider">
+          <div className="flex flex-wrap gap-2 items-center mb-4 text-2xs text-black/40 font-medium ">
             <span className="inline-flex items-center gap-1">
               <Calendar size={10} />
               {test.date}
@@ -252,7 +251,9 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
           {test.comment && (
             <div className="relative mb-5">
-              <p className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}>
+              <p
+                className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}
+              >
                 "{test.comment}"
               </p>
               {!isExpanded && isLongComment && (
@@ -261,12 +262,16 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
               {isLongComment && (
                 <button
                   onClick={() => toggleExpand(test.id)}
-                  className="mt-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
+                  className="mt-2 text-2xs font-medium text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
                 >
                   {isExpanded ? (
-                    <>Rút gọn <ChevronUp size={12} /></>
+                    <>
+                      Rút gọn <ChevronUp size={12} />
+                    </>
                   ) : (
-                    <>Xem thêm <ChevronDown size={12} /></>
+                    <>
+                      Xem thêm <ChevronDown size={12} />
+                    </>
                   )}
                 </button>
               )}
@@ -300,15 +305,14 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
       )}
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-
         {/* Preview header */}
         {isPreview && (
           <div className="max-w-2xl text-left mb-12">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
+            <span className="text-xs text-[#14532D] mb-3 font-medium flex items-center gap-1.5">
               <Sparkles size={14} className="text-[#14532D]" />
               Góc Vinh Danh Học Viên
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-black tracking-tight text-[#1A1A1A] leading-tight">
+            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
               120+ Học Viên Thành Công <br />
               Chinh Phục Mục Tiêu IELTS
             </h2>
@@ -323,11 +327,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 setActiveYear("all");
                 setVisibleCount(BATCH);
               }}
-              className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${
-                activeYear === "all"
-                  ? "bg-[#14532D] text-white border-[#14532D] shadow-sm"
-                  : "bg-white border-black/10 text-[#1A1A1A]/70 hover:bg-black/5"
-              }`}
+              className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${activeYear === "all" ? "bg-[#14532D] text-white border-[#14532D] shadow-sm" : "bg-white border-black/10 text-[#1A1A1A]/70 hover:bg-black/5"}`}
             >
               Tất cả
             </button>
@@ -338,11 +338,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                   setActiveYear(y);
                   setVisibleCount(BATCH);
                 }}
-                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${
-                  activeYear === y
-                    ? "bg-[#14532D] text-white border-[#14532D] shadow-sm"
-                    : "bg-white border-black/10 text-[#1A1A1A]/70 hover:bg-black/5"
-                }`}
+                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${activeYear === y ? "bg-[#14532D] text-white border-[#14532D] shadow-sm" : "bg-white border-black/10 text-[#1A1A1A]/70 hover:bg-black/5"}`}
               >
                 {y}
               </button>
@@ -352,7 +348,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
         {/* Cards: carousel on homepage preview, grid on full page */}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2 py-16 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold">
+          <div className="flex items-center justify-center gap-2 py-16 text-xs text-[#1A1A1A]/40 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
             Đang tải dữ liệu...
           </div>
@@ -372,7 +368,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
               >
                 Xem toàn bộ
-                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight
+                  size={14}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
               </Link>
             </div>
           </>
@@ -383,7 +382,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             </div>
 
             {hasMore && (
-              <div ref={loadMoreRef} className="mt-12 flex items-center justify-center gap-2 text-xs font-mono uppercase tracking-widest text-[#1A1A1A]/40 font-bold">
+              <div
+                ref={loadMoreRef}
+                className="mt-12 flex items-center justify-center gap-2 text-xs text-[#1A1A1A]/40 font-medium"
+              >
                 <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
                 Đang tải thêm...
               </div>
@@ -462,7 +464,6 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
     </section>
   );

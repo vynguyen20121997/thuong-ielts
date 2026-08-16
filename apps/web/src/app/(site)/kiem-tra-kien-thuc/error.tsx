@@ -30,7 +30,7 @@ export default function PracticeError({
           <AlertTriangle size={24} className="text-red-500" />
         </span>
 
-        <h1 className="font-serif text-3xl md:text-4xl font-black tracking-tight text-[#1A1A1A] leading-tight">
+        <h1 className="font-serif text-3xl md:text-4xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
           Không tải được đề luyện tập
         </h1>
         <p className="text-[#1A1A1A]/65 text-sm md:text-base leading-relaxed mt-4">
@@ -44,7 +44,10 @@ export default function PracticeError({
             onClick={reset}
             className="group px-6 py-3 bg-[#14532D] hover:bg-[#052E16] text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase inline-flex items-center gap-2"
           >
-            <RotateCcw size={14} className="transition-transform duration-500 group-hover:-rotate-180" />
+            <RotateCcw
+              size={14}
+              className="transition-transform duration-500 group-hover:-rotate-180"
+            />
             Thử lại
           </button>
           <Link
@@ -56,7 +59,7 @@ export default function PracticeError({
         </div>
 
         {error.digest && (
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#1A1A1A]/30 font-bold block mt-8">
+          <span className="text-2xs text-[#1A1A1A]/30 font-medium block mt-8">
             Mã lỗi: {error.digest}
           </span>
         )}

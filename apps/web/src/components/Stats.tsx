@@ -99,7 +99,7 @@ export default function Stats() {
             trigger: containerRef.current,
             start: "top 80%",
           },
-        }
+        },
       );
 
       // Block fade up reveal
@@ -116,7 +116,7 @@ export default function Stats() {
             trigger: containerRef.current,
             start: "top 80%",
           },
-        }
+        },
       );
     }, containerRef);
 
@@ -134,11 +134,10 @@ export default function Stats() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        
         {/* Editorial Subtitle & Title */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16 items-end">
           <div className="lg:col-span-6">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase block mb-3 font-bold">
+            <span className="text-xs text-[#14532D] block mb-3 font-medium">
               Thực Chứng Đẳng Cấp
             </span>
             <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A]">
@@ -148,7 +147,9 @@ export default function Stats() {
           </div>
           <div className="lg:col-span-6">
             <p className="text-[#1A1A1A]/70 text-sm md:text-base leading-relaxed">
-              Không chỉ sở hữu bảng điểm cá nhân xuất sắc với điểm số tối đa ở kỹ năng Nghe, cô Ngọc Thương đã giúp hơn hàng nghìn học viên đạt mục tiêu IELTS mong muốn để đi du học, định cư hoặc thăng tiến sự nghiệp.
+              Không chỉ sở hữu bảng điểm cá nhân xuất sắc với điểm số tối đa ở kỹ năng Nghe, cô Ngọc
+              Thương đã giúp hơn hàng nghìn học viên đạt mục tiêu IELTS mong muốn để đi du học, định
+              cư hoặc thăng tiến sự nghiệp.
             </p>
           </div>
         </div>
@@ -158,9 +159,11 @@ export default function Stats() {
 
         {/* Stats Bento Layout: featured Overall Band + supporting trio */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-
           {/* Featured Stat - Overall Band (dark card, larger presence) */}
-          <div className="stat-block lg:col-span-5 bg-[#14532D] text-white rounded-3xl p-8 md:p-10 flex flex-col justify-between text-left relative overflow-hidden" id="stat-overall">
+          <div
+            className="stat-block lg:col-span-5 bg-[#14532D] text-white rounded-3xl p-8 md:p-10 flex flex-col justify-between text-left relative overflow-hidden"
+            id="stat-overall"
+          >
             <div className="absolute -right-8 -bottom-8 opacity-10">
               <Award size={180} />
             </div>
@@ -173,16 +176,19 @@ export default function Stats() {
               </p>
               <h3 className="text-lg font-bold mb-2">IELTS Overall Band</h3>
               <p className="text-white/70 text-sm leading-relaxed max-w-sm">
-                Chứng chỉ IELTS Academic chuẩn quốc tế, chứng thực khả năng sử dụng tiếng Anh học thuật toàn diện.
+                Chứng chỉ IELTS Academic chuẩn quốc tế, chứng thực khả năng sử dụng tiếng Anh học
+                thuật toàn diện.
               </p>
             </div>
           </div>
 
           {/* Supporting trio, tighter cards */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6">
-
             {/* Stat 2 - Listening */}
-            <div className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left" id="stat-listening">
+            <div
+              className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left"
+              id="stat-listening"
+            >
               <div>
                 <div className="h-9 w-9 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-5">
                   <Star className="text-[#15803D]" size={18} />
@@ -198,13 +204,17 @@ export default function Stats() {
             </div>
 
             {/* Stat 3 - Students */}
-            <div className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left" id="stat-students">
+            <div
+              className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left"
+              id="stat-students"
+            >
               <div>
                 <div className="h-9 w-9 bg-[#14532D]/10 border border-[#14532D]/20 rounded-lg flex items-center justify-center mb-5">
                   <Users className="text-[#14532D]" size={18} />
                 </div>
                 <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#1A1A1A]">
-                  <span ref={studentsRef}>0</span><span className="text-[#14532D]">+</span>
+                  <span ref={studentsRef}>0</span>
+                  <span className="text-[#14532D]">+</span>
                 </p>
                 <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Học Viên Đạt Đích</h3>
                 <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
@@ -214,13 +224,17 @@ export default function Stats() {
             </div>
 
             {/* Stat 4 - Pass Rate */}
-            <div className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left" id="stat-pass">
+            <div
+              className="stat-block bg-white border border-black/10 rounded-2xl p-6 flex flex-col justify-between text-left"
+              id="stat-pass"
+            >
               <div>
                 <div className="h-9 w-9 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-5">
                   <CheckCircle2 className="text-[#15803D]" size={18} />
                 </div>
                 <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#1A1A1A]">
-                  <span ref={passRef}>0</span><span className="text-[#15803D]">%</span>
+                  <span ref={passRef}>0</span>
+                  <span className="text-[#15803D]">%</span>
                 </p>
                 <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Đạt Target Đầu Ra</h3>
                 <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
@@ -233,7 +247,7 @@ export default function Stats() {
 
         {/* Small quote inside stats */}
         <div className="divider-line h-px bg-black/10 w-full mt-16 mb-8" />
-        <p className="font-mono text-[10px] tracking-[0.2em] text-[#1A1A1A]/40 uppercase text-center font-bold">
+        <p className="text-2xs text-[#1A1A1A]/40 text-center font-medium">
           * Điểm số được kiểm chứng thực tế và cập nhật định kỳ hàng năm.
         </p>
       </div>

@@ -34,26 +34,18 @@ export default function Header() {
   const isStudentActive = studentPages.some((p) => p.to === pathname);
 
   const linkClass = (isActive: boolean) =>
-    `relative py-2 text-xs lg:text-sm font-semibold transition-colors cursor-pointer group whitespace-nowrap ${
-      isActive ? "text-[#14532D]" : "text-[#1A1A1A]/70 hover:text-[#14532D]"
-    }`;
+    `relative py-2 text-xs lg:text-sm font-semibold transition-colors cursor-pointer group whitespace-nowrap ${isActive ? "text-[#14532D]" : "text-[#1A1A1A]/70 hover:text-[#14532D]"}`;
 
   const NavUnderline = ({ isActive }: { isActive: boolean }) => (
     <span
-      className={`absolute bottom-0 left-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out ${
-        isActive ? "w-full" : "w-0 group-hover:w-full"
-      }`}
+      className={`absolute bottom-0 left-0 h-[2px] bg-[#14532D] transition-all duration-300 ease-out ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}
     />
   );
 
   return (
     <header
       id="header-nav"
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${
-        isScrolled
-          ? "py-4 bg-white/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_30px_rgba(26,26,26,0.03)]"
-          : "py-6 bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${isScrolled ? "py-4 bg-white/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_30px_rgba(26,26,26,0.03)]" : "py-6 bg-transparent"}`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 flex items-center justify-between gap-3">
         {/* Text Logo */}
@@ -66,17 +58,20 @@ export default function Header() {
             H
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-base md:text-lg lg:text-xl font-black tracking-tight text-[#1A1A1A] whitespace-nowrap">
+            <span className="font-serif text-base md:text-lg lg:text-xl font-bold tracking-tight text-[#1A1A1A] whitespace-nowrap">
               HNT<span className="text-[#14532D]">.</span>IELTS
             </span>
-            <span className="font-mono text-[8px] md:text-[9px] tracking-[0.2em] text-[#1A1A1A]/60 uppercase transition-all duration-300 group-hover:text-[#14532D] font-bold whitespace-nowrap">
+            <span className="text-2xs md:text-2xs text-[#1A1A1A]/60 transition-all duration-300 group-hover:text-[#14532D] font-medium whitespace-nowrap">
               Hồ Ngọc Thương
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-3 lg:gap-8 xl:gap-10 min-w-0" id="desktop-nav">
+        <nav
+          className="hidden md:flex items-center gap-3 lg:gap-8 xl:gap-10 min-w-0"
+          id="desktop-nav"
+        >
           {navItems.map((item) => {
             const isActive = pathname === item.to;
             return (
@@ -90,12 +85,13 @@ export default function Header() {
           {/* Học Viên dropdown */}
           <div className="relative group py-2" id="nav-hocvien">
             <button
-              className={`flex items-center gap-1 text-xs lg:text-sm font-semibold transition-colors cursor-pointer whitespace-nowrap ${
-                isStudentActive ? "text-[#14532D]" : "text-[#1A1A1A]/70 group-hover:text-[#14532D]"
-              }`}
+              className={`flex items-center gap-1 text-xs lg:text-sm font-semibold transition-colors cursor-pointer whitespace-nowrap ${isStudentActive ? "text-[#14532D]" : "text-[#1A1A1A]/70 group-hover:text-[#14532D]"}`}
             >
               Học Viên
-              <ChevronDown size={14} className="transition-transform duration-300 group-hover:rotate-180" />
+              <ChevronDown
+                size={14}
+                className="transition-transform duration-300 group-hover:rotate-180"
+              />
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
               <div className="bg-white border border-black/5 rounded-2xl shadow-xl p-2 w-56">
@@ -122,12 +118,15 @@ export default function Header() {
         <div className="hidden md:block shrink-0" id="header-action-container">
           <Link
             href="/gioi-thieu"
-            className="group relative inline-flex items-center gap-1.5 lg:gap-2 px-3.5 lg:px-6 py-2 lg:py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-[10px] lg:text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer whitespace-nowrap"
+            className="group relative inline-flex items-center gap-1.5 lg:gap-2 px-3.5 lg:px-6 py-2 lg:py-2.5 bg-[#9FE870] text-[#14532D] rounded-full text-2xs lg:text-xs font-bold uppercase tracking-wider overflow-hidden shadow-md transition-all duration-300 hover:bg-[#86D65A] cursor-pointer whitespace-nowrap"
             id="header-cta"
           >
             <span className="relative z-10 flex items-center gap-1.5 lg:gap-2">
               Về Cô Thương
-              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight
+                size={14}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
             </span>
           </Link>
         </div>
@@ -145,9 +144,7 @@ export default function Header() {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 top-[68px] bg-white z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${
-          isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
-        }`}
+        className={`fixed inset-0 top-[68px] bg-white z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}
         id="mobile-menu-drawer"
       >
         <div className="flex flex-col gap-7">
@@ -163,9 +160,7 @@ export default function Header() {
 
           {/* Học Viên group */}
           <div>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#1A1A1A]/40 font-bold block mb-3">
-              Học Viên
-            </span>
+            <span className="text-2xs text-[#1A1A1A]/40 font-medium block mb-3">Học Viên</span>
             <div className="flex flex-col gap-4 pl-1">
               {studentPages.map((p) => (
                 <Link
