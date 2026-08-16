@@ -58,7 +58,12 @@ async function migrateTestimonials() {
          course_name = EXCLUDED.course_name,
          comment = EXCLUDED.comment,
          avatar_url = EXCLUDED.avatar_url,
-         proof_urls = EXCLUDED.proof_urls,
+         -- Never replace durable, database-hosted images with expiring seed
+         -- URLs when this migration is run again after an image import.
+         proof_urls = CASE
+           WHEN testimonials.proof_urls[1] LIKE '/api/media/%' THEN testimonials.proof_urls
+           ELSE EXCLUDED.proof_urls
+         END,
          listening = EXCLUDED.listening,
          reading = EXCLUDED.reading,
          writing = EXCLUDED.writing,
