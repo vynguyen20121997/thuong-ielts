@@ -116,6 +116,52 @@ export interface ReadingTest extends ReadingTestSummary {
   questions: Question[];
 }
 
+/** Một passage kèm đúng bộ câu hỏi của nó, bên trong một lượt thi. */
+export interface ReadingSection {
+  /** Slug của dòng DB — chú thích và tô màu lưu theo khoá này. */
+  slug: string;
+  /** "Passage 1: Stepwells" */
+  label: string;
+  passage: ReadingPassage;
+  questions: Question[];
+}
+
+/**
+ * Thứ mà học sinh ngồi vào làm. DB lưu mỗi passage một dòng, nhưng một lượt
+ * thi có thể là một passage (20 phút) hoặc cả test ba passage (60 phút) —
+ * cùng một đồng hồ, cùng một phiếu trả lời, cùng một lần chấm.
+ *
+ * Player chỉ biết kiểu này, nên hai chế độ dùng chung một màn thi thay vì
+ * hai bản sao chép sẽ lệch nhau về sau.
+ */
+export interface ReadingPaper {
+  /** Slug của passage, hoặc "cam10-test1" khi thi cả test. */
+  id: string;
+  mode: "passage" | "test";
+  title: string;
+  collection: string;
+  level: ReadingLevel;
+  /** Tổng thời gian: một passage, hoặc cộng cả ba. */
+  durationSeconds: number;
+  sections: ReadingSection[];
+}
+
+/**
+ * Bìa đề: đủ để vẽ màn chờ trước khi thi, và nhẹ đủ để lấy mà không đụng tới
+ * cột JSONB. Nội dung bài đọc chỉ tải khi học sinh bấm bắt đầu.
+ */
+export interface ExamOutline {
+  id: string;
+  mode: ReadingPaper["mode"];
+  title: string;
+  collection: string;
+  level: ReadingLevel;
+  durationSeconds: number;
+  questionCount: number;
+  /** Một dòng cho mỗi passage sẽ phải làm. */
+  parts: { label: string; questionCount: number; durationSeconds: number }[];
+}
+
 /**
  * One recording. Books differ: some ship a single file for the whole test,
  * others one per part — hence a list rather than a column.
@@ -146,6 +192,12 @@ export interface ListeningTestSummary {
    * this test have a recording. Absent for a complete test.
    */
   note?: string;
+  /**
+   * Các phần thật sự có câu hỏi, ví dụ [1, 3, 4]. Suy từ `questions`, không
+   * phải từ `note`: đo trên cả 31 đề thì có 2 đề thiếu phần mà cột `note` để
+   * trống, nên `note` không đủ tin để biết đề có đủ 4 phần hay không.
+   */
+  sections: number[];
 }
 
 /** Everything the listening player needs. Still no answers. */

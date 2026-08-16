@@ -93,8 +93,10 @@ Chạy `npm run check:coverage` để xem tình trạng hiện tại thay vì d�
 ## Hai chỗ chưa nhất quán, biết trước kẻo ngạc nhiên
 
 - **Reading lưu mỗi passage một dòng** (99 dòng = 33 đề × 3 passage), còn **Listening lưu
-  cả bài một dòng**. Vì vậy chưa làm được đề Reading 60 phút trọn vẹn, và band ước lượng
-  từ 13 câu thì nhiễu.
+  cả bài một dòng**. Thi cả test 60 phút thì ghép ba dòng lúc truy vấn
+  (`getReadingPaper`), không đổi schema — ghép được là nhờ id câu hỏi duy nhất toàn cục
+  (`cam10-t1-p2-q14`) và số câu đã đánh liền 1→40 sẵn trong dữ liệu. Làm lẻ một passage
+  thì band ước lượng từ 13 câu vẫn nhiễu; làm cả test mới đủ 40 câu để quy đổi cho ra hồn.
 - **Bảng trong đề Reading đã bị làm phẳng thành câu** lúc nhập, nên không dựng lại được
   đúng bảng như tài liệu gốc. Muốn có thì phải nhập lại toàn bộ.
 

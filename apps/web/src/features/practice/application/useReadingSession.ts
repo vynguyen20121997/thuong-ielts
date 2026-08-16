@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { allQuestionsOf } from "../domain/paper";
 import { countAnswered } from "../domain/scoring";
-import type { ReadingAnswers, ReadingResult, ReadingTest } from "../domain/types";
+import type { ReadingAnswers, ReadingPaper, ReadingResult } from "../domain/types";
 import { submitReadingAttempt } from "../infrastructure/readingApi";
 
 /**
@@ -35,13 +36,17 @@ export interface ReadingSession {
   restart: () => void;
 }
 
-export function useReadingSession(test: ReadingTest): ReadingSession {
+export function useReadingSession(paper: ReadingPaper): ReadingSession {
   const [answers, setAnswers] = useState<ReadingAnswers>({});
   const [status, setStatus] = useState<SessionStatus>("running");
   const [result, setResult] = useState<ReadingResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState(test.durationSeconds);
+  const [remainingSeconds, setRemainingSeconds] = useState(paper.durationSeconds);
   const [timedOut, setTimedOut] = useState(false);
+
+  // Một phiếu trả lời cho cả bài, kể cả khi bài gồm ba passage: id câu hỏi là
+  // duy nhất toàn cục nên gộp lại không đụng nhau.
+  const questions = useMemo(() => allQuestionsOf(paper), [paper]);
 
   // Read inside the interval callback and inside submit() so neither has to be
   // re-created when the answers change — a re-created interval would drift.
@@ -51,7 +56,7 @@ export function useReadingSession(test: ReadingTest): ReadingSession {
   remainingRef.current = remainingSeconds;
   const submittingRef = useRef(false);
 
-  const elapsedSeconds = test.durationSeconds - remainingSeconds;
+  const elapsedSeconds = paper.durationSeconds - remainingSeconds;
 
   const setAnswer = useCallback((questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -76,9 +81,10 @@ export function useReadingSession(test: ReadingTest): ReadingSession {
 
       try {
         const graded = await submitReadingAttempt(
-          test.slug,
+          paper.mode,
+          paper.id,
           answersRef.current,
-          test.durationSeconds - remainingRef.current
+          paper.durationSeconds - remainingRef.current,
         );
         setResult(graded);
         setStatus("finished");
@@ -88,7 +94,7 @@ export function useReadingSession(test: ReadingTest): ReadingSession {
         submittingRef.current = false;
       }
     },
-    [test.slug, test.durationSeconds]
+    [paper.mode, paper.id, paper.durationSeconds],
   );
 
   const submit = useCallback(() => {
@@ -101,9 +107,9 @@ export function useReadingSession(test: ReadingTest): ReadingSession {
     setResult(null);
     setError(null);
     setTimedOut(false);
-    setRemainingSeconds(test.durationSeconds);
+    setRemainingSeconds(paper.durationSeconds);
     setStatus("running");
-  }, [test.durationSeconds]);
+  }, [paper.durationSeconds]);
 
   // Countdown. One interval for the lifetime of a "running" phase; hitting zero
   // submits whatever the student has so far, exactly like the real exam.
@@ -124,10 +130,7 @@ export function useReadingSession(test: ReadingTest): ReadingSession {
     return () => window.clearInterval(id);
   }, [status, runSubmit]);
 
-  const answeredCount = useMemo(
-    () => countAnswered(test.questions, answers),
-    [test.questions, answers]
-  );
+  const answeredCount = useMemo(() => countAnswered(questions, answers), [questions, answers]);
 
   return {
     answers,
@@ -139,7 +142,7 @@ export function useReadingSession(test: ReadingTest): ReadingSession {
     remainingSeconds,
     elapsedSeconds,
     answeredCount,
-    totalQuestions: test.questions.length,
+    totalQuestions: questions.length,
     timedOut,
     submit,
     restart,

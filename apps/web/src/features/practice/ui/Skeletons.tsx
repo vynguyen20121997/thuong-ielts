@@ -45,7 +45,7 @@ function CatalogHeader() {
   );
 }
 
-/** Grid of test cards, matching ReadingTestCard / ListeningTestCard. */
+/** Grid of test cards, matching ReadingTestGroupCard / ListeningBookCard. */
 export function CatalogSkeleton({ cards = 9 }: { cards?: number }) {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-[#FAF9F6] min-h-screen">
