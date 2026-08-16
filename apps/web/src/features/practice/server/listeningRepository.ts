@@ -62,11 +62,18 @@ function toSummary(row: SummaryRow): ListeningTestSummary {
   };
 }
 
+/*
+ * Luật lọc của trang học sinh: CHỈ kho chung — xem ghi chú dài ở
+ * `readingRepository.ts`. Hai bảng phải dùng cùng một luật, lệch một bên là
+ * đề riêng lọt ra trang công khai ở đúng bên đó.
+ */
+const CHI_KHO_CHUNG = `owner_id IS NULL`;
+
 export async function listListeningTests(): Promise<ListeningTestSummary[]> {
   const { rows } = await pool.query<SummaryRow>(
     `SELECT ${SUMMARY_COLUMNS}
        FROM listening_tests
-      WHERE status = 'published'
+      WHERE status = 'published' AND ${CHI_KHO_CHUNG}
       ORDER BY sort_order ASC, published_at DESC NULLS LAST`,
   );
   return rows.map(toSummary);
@@ -78,7 +85,7 @@ export async function getListeningTestBySlug(slug: string): Promise<ListeningTes
   >(
     `SELECT ${SUMMARY_COLUMNS}, audio, questions
        FROM listening_tests
-      WHERE slug = $1 AND status = 'published'
+      WHERE slug = $1 AND status = 'published' AND ${CHI_KHO_CHUNG}
       LIMIT 1`,
     [slug],
   );
@@ -91,13 +98,22 @@ export async function getListeningTestBySlug(slug: string): Promise<ListeningTes
 /** Server-only: the answers, for the submit route. */
 export async function getListeningAnswerKeyBySlug(
   slug: string,
-): Promise<{ questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {
-  const { rows } = await pool.query<{ questions: Question[]; answer_key: AnswerKeyEntry[] }>(
-    `SELECT questions, answer_key FROM listening_tests WHERE slug = $1 LIMIT 1`,
+): Promise<{ title: string; questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {
+  const { rows } = await pool.query<{
+    title: string;
+    questions: Question[];
+    answer_key: AnswerKeyEntry[];
+  }>(
+    // `title` đi kèm để route nộp bài ghi tên đề vào lượt làm, đỡ một truy vấn.
+    `SELECT title, questions, answer_key FROM listening_tests WHERE slug = $1 LIMIT 1`,
     [slug],
   );
   if (rows.length === 0) return null;
-  return { questions: rows[0].questions ?? [], answerKey: rows[0].answer_key ?? [] };
+  return {
+    title: rows[0].title,
+    questions: rows[0].questions ?? [],
+    answerKey: rows[0].answer_key ?? [],
+  };
 }
 
 /** Best-effort counter; never fails a graded attempt. */

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
+import { currentStudent } from "../../../../../../../features/account/server/guard";
 import { gradeReading } from "../../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../../features/practice/domain/types";
+import { saveAttempt } from "../../../../../../../features/practice/server/attemptRepository";
 import {
   getAnswerKeyByTestId,
   recordTestAttempt,
@@ -51,6 +53,25 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
   const result = gradeReading(record.questions, record.answerKey, answers, elapsed);
 
   await recordTestAttempt(testId);
+
+  // Ai đang làm thì lấy từ phiên đăng nhập, không lấy từ body: nếu tin vào id
+  // do trình duyệt gửi lên thì ai cũng ghi được vào lịch sử của người khác.
+  //
+  // Không có phiên thì bỏ qua, không phải lỗi — trang thi có chốt đăng nhập,
+  // nhưng route này vẫn gọi thẳng được và một lượt không rõ của ai thì lưu
+  // cũng chẳng để làm gì. Điểm vẫn trả về bình thường.
+  const student = await currentStudent();
+  if (student) {
+    await saveAttempt({
+      skill: "reading",
+      scope: "test",
+      target: testId,
+      title: record.title,
+      studentId: student.id,
+      answers,
+      result,
+    });
+  }
 
   return NextResponse.json(result);
 }

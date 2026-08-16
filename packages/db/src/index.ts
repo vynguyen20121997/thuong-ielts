@@ -53,3 +53,12 @@ export async function setSiteContent<T>(key: string, data: T): Promise<void> {
     [key, JSON.stringify(data)]
   );
 }
+
+/*
+  Hợp đồng realtime giữa hai tiến trình `web` và `admin` — xem ./live.ts.
+
+  Đặt ở CUỐI file, sau khi `pool` đã dựng xong: `live.ts` import ngược lại
+  chính file này, nên để ở đầu là một vòng lặp import mà thứ tự khởi tạo phụ
+  thuộc vào trình đóng gói. Ở cuối thì không phải nghĩ tới nữa.
+*/
+export * from "./live";

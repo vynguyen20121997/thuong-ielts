@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
+import { currentStudent } from "../../../../../../features/account/server/guard";
 import { gradeReading } from "../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../features/practice/domain/types";
+import { saveAttempt } from "../../../../../../features/practice/server/attemptRepository";
 import {
   getAnswerKeyBySlug,
   recordAttempt,
@@ -51,6 +53,20 @@ export async function POST(
   const result = gradeReading(record.questions, record.answerKey, answers, elapsed);
 
   await recordAttempt(slug);
+
+  // Xem ghi chú ở route chấm cả test: người làm lấy từ phiên, không lấy từ body.
+  const student = await currentStudent();
+  if (student) {
+    await saveAttempt({
+      skill: "reading",
+      scope: "paper",
+      target: slug,
+      title: record.title,
+      studentId: student.id,
+      answers,
+      result,
+    });
+  }
 
   return NextResponse.json(result);
 }

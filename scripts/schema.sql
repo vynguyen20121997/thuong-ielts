@@ -220,3 +220,160 @@ CREATE TABLE IF NOT EXISTS phone_otps (
 
 CREATE INDEX IF NOT EXISTS idx_student_identities_student ON student_identities (student_id);
 CREATE INDEX IF NOT EXISTS idx_students_last_seen ON students (last_seen_at DESC);
+
+/* ==================================================================
+   Giáo viên — mới có một người, nhưng đặt chỗ sẵn cho nhiều người
+
+   Hôm nay chỉ có cô Thương, và đăng nhập trang quản trị vẫn có thể chạy
+   bằng ADMIN_USERNAME/ADMIN_PASSWORD_HASH. Bảng này tồn tại để cái ngày
+   thầy cô thứ hai xuất hiện là một câu INSERT, chứ không phải một cuộc
+   di trú trên dữ liệu học sinh đang chạy thật.
+
+   Đây là lý do duy nhất bảng có mặt sớm như vậy. Chưa có màn tạo tài
+   khoản, chưa có mời, chưa có phân quyền nhiều vai — những thứ đó chỉ có
+   nghĩa khi đã có người thứ hai.
+   ================================================================== */
+
+CREATE TABLE IF NOT EXISTS teachers (
+  id             TEXT PRIMARY KEY,
+  username       TEXT NOT NULL UNIQUE,
+  password_hash  TEXT NOT NULL,
+  name           TEXT NOT NULL,
+  email          TEXT UNIQUE,
+  -- Người đầu tiên là chủ trang: sau này thấy được mọi lớp, không chỉ lớp
+  -- của mình. Cột này để sẵn cho lúc đó, hôm nay chưa chỗ nào đọc tới.
+  is_owner       BOOLEAN NOT NULL DEFAULT false,
+  is_active      BOOLEAN NOT NULL DEFAULT true,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_login_at  TIMESTAMPTZ
+);
+
+/*
+  Kho đề riêng, làm bằng một cột thay vì bằng cách nhân bản dữ liệu.
+
+    owner_id IS NULL      -> kho chung (Cam 10–18, không ai viết ra chúng)
+    owner_id = <giáo viên> -> đề riêng của người đó
+
+  Từ đó ra đúng hai luật hiển thị, và chúng phải được viết TRƯỚC dòng đề
+  riêng đầu tiên, không phải trước giáo viên thứ hai:
+
+    trang quản trị:  WHERE owner_id IS NULL OR owner_id = <tôi>
+    trang học sinh:  WHERE owner_id IS NULL
+
+  Quên luật thứ hai thì ngày ai đó thêm đề riêng, đề ấy nằm sẵn trên trang
+  công khai cho cả thiên hạ. Đó mới là chỗ rò rỉ thật, không phải giữa hai
+  giáo viên với nhau.
+*/
+ALTER TABLE reading_tests   ADD COLUMN IF NOT EXISTS owner_id TEXT REFERENCES teachers (id) ON DELETE SET NULL;
+ALTER TABLE listening_tests ADD COLUMN IF NOT EXISTS owner_id TEXT REFERENCES teachers (id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS idx_reading_tests_owner   ON reading_tests   (owner_id);
+CREATE INDEX IF NOT EXISTS idx_listening_tests_owner ON listening_tests (owner_id);
+
+/* ==================================================================
+   Lượt làm bài
+
+   Trước bảng này, chấm xong là quên: chỉ có `attempt_count` tăng thêm 1.
+   Học sinh không xem lại được, cô không thấy được tiến bộ, và không có gì
+   để màn theo dõi trực tiếp hiển thị.
+
+   Một lượt làm là một tài liệu, đọc và ghi trọn vẹn — nên `answers` và
+   `results` để JSONB, cùng lý do với `questions` của bảng đề.
+
+   CỐ Ý KHÔNG lưu đáp án đúng vào đây. `results` chỉ ghi đúng/sai đã chấm.
+   Muốn xem đáp án thì đọc `answer_key` của bảng đề, và chỉ trang quản trị
+   mới có đường đó — nhân bản đáp án sang bảng này là mở thêm một chỗ để lộ.
+   ================================================================== */
+
+CREATE TABLE IF NOT EXISTS attempts (
+  id               TEXT PRIMARY KEY,
+  skill            TEXT NOT NULL CHECK (skill IN ('reading', 'listening')),
+  -- 'paper' = một passage lẻ, 'test' = cả bài 40 câu.
+  -- Reading có cả hai; Listening hiện chỉ có 'test'.
+  scope            TEXT NOT NULL CHECK (scope IN ('paper', 'test')),
+  -- slug của đề, hoặc testId dạng "cam12-test3" khi làm cả bài.
+  target           TEXT NOT NULL,
+  title            TEXT NOT NULL,
+
+  -- Đúng một trong hai có giá trị. `guest_name` dành cho luồng cô gửi link:
+  -- khách gõ tên để vào làm và KHÔNG trở thành tài khoản — tên chỉ nằm ở
+  -- đây, bảng `students` vẫn chỉ chứa người đã đăng nhập thật.
+  student_id       TEXT REFERENCES students (id) ON DELETE CASCADE,
+  guest_name       TEXT,
+
+  -- Chưa dùng. Bảng `assignments` (cô giao bài qua link) là bước sau; cột
+  -- này để sẵn vì thêm cột nullable vào bảng đã có dữ liệu tuy rẻ, nhưng
+  -- sửa mọi truy vấn đang chạy thì không.
+  assignment_id    TEXT,
+
+  started_at       TIMESTAMPTZ,
+  submitted_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+  -- Hết giờ mà chưa bấm nộp thì server tự chốt. Cô cần phân biệt được em
+  -- chủ động nộp với em bị hết giờ.
+  auto_submitted   BOOLEAN NOT NULL DEFAULT false,
+  elapsed_seconds  INTEGER NOT NULL DEFAULT 0,
+
+  total            INTEGER NOT NULL,
+  correct          INTEGER NOT NULL,
+  band             NUMERIC(2,1),
+
+  -- { "cam12-t3-p1-q4": "glacier" } — đúng những gì học sinh gõ.
+  answers          JSONB NOT NULL DEFAULT '{}'::jsonb,
+  -- [{ "q": "...", "n": 4, "ok": true }] — đủ để dựng lại dải 40 ô mà
+  -- không phải chấm lại, và không mang theo đáp án.
+  results          JSONB NOT NULL DEFAULT '[]'::jsonb,
+
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+  CONSTRAINT attempts_co_nguoi_lam CHECK (student_id IS NOT NULL OR guest_name IS NOT NULL)
+);
+
+/*
+  Một lượt bắt đầu tồn tại từ lúc học sinh bấm vào bài, không phải lúc nộp.
+  Không có dòng "đang làm" thì cô không có gì để nhìn trong lúc cả lớp còn
+  đang làm — mà đó chính là điều tính năng này để làm.
+
+  `expires_at` do server đặt và server giữ. Đồng hồ trong trình duyệt vẫn chạy
+  cho học sinh nhìn, nhưng mọi con số thời gian mà cô thấy đều tính từ cột này:
+  học sinh tắt mạng thì đồng hồ máy em ấy đứng, còn giờ thi thì không.
+*/
+ALTER TABLE attempts ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'submitted'
+  CHECK (status IN ('in_progress', 'submitted', 'abandoned'));
+ALTER TABLE attempts ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ;
+-- Lượt đang làm thì chưa có giờ nộp. Cột này vốn NOT NULL DEFAULT now(), nên
+-- phải nới ra — những dòng đã có sẵn không đổi gì.
+ALTER TABLE attempts ALTER COLUMN submitted_at DROP NOT NULL;
+
+/*
+  Tiến độ của một lượt đang làm — một dòng hẹp, ghi đè mỗi vài giây.
+
+  Tách khỏi `attempts` chứ không nhét thêm cột: đây là thứ DUY NHẤT bị ghi
+  liên tục trong suốt 60 phút. Để chung thì mỗi nhịp lại viết lại cả dòng có
+  hai cột JSONB nặng vài KB nằm cạnh, mà chẳng cột nào trong đó thay đổi.
+
+  `marks` là mảng đúng bằng số câu: null = chưa làm, true/false = đã chấm.
+  Chấm ngay trong lúc học sinh còn đang làm — xem ghi chú ở route nhịp về việc
+  kết quả này chỉ được đi một chiều tới trang quản trị.
+*/
+CREATE TABLE IF NOT EXISTS attempt_progress (
+  attempt_id    TEXT PRIMARY KEY REFERENCES attempts (id) ON DELETE CASCADE,
+  answered      INTEGER NOT NULL DEFAULT 0,
+  correct       INTEGER NOT NULL DEFAULT 0,
+  current_part  TEXT,
+  marks         JSONB NOT NULL DEFAULT '[]'::jsonb,
+  -- Không có nhịp trong 20 giây -> "mất kết nối"; 60 giây -> coi như đã rời.
+  -- Suy ra lúc đọc chứ không lưu thành trạng thái: một cột "đang online" thì
+  -- phải có ai đó đi tắt nó, mà lúc mạng học sinh rớt thì không ai tắt cả.
+  last_beat_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- "Lịch sử của tôi": lượt mới nhất trước.
+CREATE INDEX IF NOT EXISTS idx_attempts_student ON attempts (student_id, submitted_at DESC);
+-- Bảng lớp chỉ quan tâm những lượt còn đang làm — index một phần thì nhỏ và
+-- không phình theo lịch sử làm bài của cả trang.
+CREATE INDEX IF NOT EXISTS idx_attempts_dang_lam ON attempts (target, started_at DESC)
+  WHERE status = 'in_progress';
+-- "Ai đã làm đề này": phục vụ bảng lớp và thống kê theo đề.
+CREATE INDEX IF NOT EXISTS idx_attempts_target  ON attempts (skill, target, submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_attempts_assignment ON attempts (assignment_id) WHERE assignment_id IS NOT NULL;

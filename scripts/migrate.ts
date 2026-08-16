@@ -13,6 +13,9 @@ import { Pool } from "pg";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, "..", "apps", "web", ".env.local") });
+// Tài khoản quản trị nằm ở env của apps/admin, không phải apps/web. `seedFirstTeacher`
+// cần đọc được nó. dotenv không ghi đè biến đã có, nên cấu hình DB ở trên vẫn thắng.
+dotenv.config({ path: path.join(__dirname, "..", "apps", "admin", ".env.local") });
 import { initialTestimonials } from "../apps/web/src/data/testimonialsData";
 import { feedbackItems } from "../apps/web/src/data/feedbackData";
 
@@ -112,16 +115,57 @@ async function migrateFeedbacks() {
   console.log(`Upserted ${count} feedbacks.`);
 }
 
+/**
+ * Chuyển tài khoản quản trị từ biến môi trường vào bảng `teachers`.
+ *
+ * Trang quản trị vốn đăng nhập bằng ADMIN_USERNAME + ADMIN_PASSWORD_HASH. Hàm
+ * này gieo đúng cặp đó thành dòng giáo viên đầu tiên, để phần đăng nhập chuyển
+ * sang đọc DB mà không ai phải đặt lại mật khẩu.
+ *
+ * Chỉ gieo khi bảng còn trống. Chạy lại sau khi cô đã đổi mật khẩu trong trang
+ * quản trị mà vẫn ghi đè từ biến môi trường thì hoá ra là khôi phục mật khẩu cũ
+ * — im lặng và rất khó hiểu chuyện gì vừa xảy ra.
+ */
+async function seedFirstTeacher() {
+  const username = process.env.ADMIN_USERNAME;
+  const passwordHash = process.env.ADMIN_PASSWORD_HASH;
+
+  const { rows } = await pool.query(`SELECT count(*)::int AS n FROM teachers`);
+  if (rows[0].n > 0) {
+    console.log(`Teachers: đã có ${rows[0].n} dòng, không gieo lại.`);
+    return;
+  }
+
+  if (!username || !passwordHash) {
+    console.warn(
+      "Teachers: bảng trống và chưa có ADMIN_USERNAME/ADMIN_PASSWORD_HASH — " +
+        "bỏ qua. Trang quản trị vẫn đăng nhập được bằng biến môi trường."
+    );
+    return;
+  }
+
+  await pool.query(
+    `INSERT INTO teachers (id, username, password_hash, name, is_owner)
+     VALUES ($1, $2, $3, $4, true)
+     ON CONFLICT (username) DO NOTHING`,
+    ["teacher-thuong", username, passwordHash, "Cô Hồ Ngọc Thương"]
+  );
+  console.log(`Teachers: đã gieo giáo viên đầu tiên (${username}).`);
+}
+
 async function main() {
   await migrateSchema();
   await migrateTestimonials();
   await migrateFeedbacks();
+  await seedFirstTeacher();
 
   const { rows } = await pool.query(
     `SELECT
        (SELECT count(*) FROM testimonials) AS testimonials,
        (SELECT count(*) FROM feedbacks) AS feedbacks,
-       (SELECT count(*) FROM blog_posts) AS blog_posts`
+       (SELECT count(*) FROM blog_posts) AS blog_posts,
+       (SELECT count(*) FROM teachers) AS teachers,
+       (SELECT count(*) FROM attempts) AS attempts`
   );
   console.log("Row counts:", rows[0]);
 

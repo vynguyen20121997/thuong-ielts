@@ -64,11 +64,28 @@ function toSummary(row: SummaryRow): ReadingTestSummary {
   };
 }
 
+/*
+ * Luật lọc của trang học sinh: CHỈ kho chung.
+ *
+ *   owner_id IS NULL       -> kho chung (Cam 10–18)
+ *   owner_id = <giáo viên> -> đề riêng của người đó
+ *
+ * Hôm nay chưa có dòng nào owner_id khác NULL, nên điều kiện này không đổi kết
+ * quả gì. Nó có mặt từ bây giờ chính vì thế: ngày ai đó thêm đề riêng đầu tiên,
+ * đề ấy không tự động nằm sẵn trên trang công khai. Thêm lọc sau nghĩa là phải
+ * đi soát lại từng truy vấn và nhớ không sót — viết trước thì không có ngày đó.
+ *
+ * Cố ý KHÔNG áp cho `getAnswerKeyBySlug`/`getAnswerKeyByTestId`: khi cô giao
+ * một đề riêng cho lớp, học sinh có quyền làm và có quyền được chấm. Chặn hiển
+ * thị trong danh mục là đúng; chặn chấm bài là hỏng.
+ */
+const CHI_KHO_CHUNG = `owner_id IS NULL`;
+
 export async function listReadingTests(): Promise<ReadingTestSummary[]> {
   const { rows } = await pool.query<SummaryRow>(
     `SELECT ${SUMMARY_COLUMNS}
        FROM reading_tests
-      WHERE status = 'published'
+      WHERE status = 'published' AND ${CHI_KHO_CHUNG}
       ORDER BY sort_order ASC, published_at DESC NULLS LAST`,
   );
   return rows.map(toSummary);
@@ -78,7 +95,7 @@ export async function getReadingTestBySlug(slug: string): Promise<ReadingTest | 
   const { rows } = await pool.query<SummaryRow & { passage: unknown; questions: Question[] }>(
     `SELECT ${SUMMARY_COLUMNS}, passage, questions
        FROM reading_tests
-      WHERE slug = $1 AND status = 'published'
+      WHERE slug = $1 AND status = 'published' AND ${CHI_KHO_CHUNG}
       LIMIT 1`,
     [slug],
   );
@@ -99,13 +116,23 @@ export async function getReadingTestBySlug(slug: string): Promise<ReadingTest | 
  */
 export async function getAnswerKeyBySlug(
   slug: string,
-): Promise<{ questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {
-  const { rows } = await pool.query<{ questions: Question[]; answer_key: AnswerKeyEntry[] }>(
-    `SELECT questions, answer_key FROM reading_tests WHERE slug = $1 LIMIT 1`,
+): Promise<{ title: string; questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {
+  const { rows } = await pool.query<{
+    title: string;
+    questions: Question[];
+    answer_key: AnswerKeyEntry[];
+  }>(
+    // `title` đi kèm để route nộp bài ghi được tên đề vào lượt làm mà không
+    // phải truy vấn thêm một lần nữa cho đúng một chuỗi.
+    `SELECT title, questions, answer_key FROM reading_tests WHERE slug = $1 LIMIT 1`,
     [slug],
   );
   if (rows.length === 0) return null;
-  return { questions: rows[0].questions ?? [], answerKey: rows[0].answer_key ?? [] };
+  return {
+    title: rows[0].title,
+    questions: rows[0].questions ?? [],
+    answerKey: rows[0].answer_key ?? [],
+  };
 }
 
 /**
@@ -154,7 +181,7 @@ export async function getReadingPaper(testId: string): Promise<ReadingPaper | nu
   const { rows } = await pool.query<SectionRow>(
     `SELECT ${SUMMARY_COLUMNS}, passage, questions
        FROM reading_tests
-      WHERE slug LIKE $1 AND status = 'published'
+      WHERE slug LIKE $1 AND status = 'published' AND ${CHI_KHO_CHUNG}
       ${SECTION_ORDER}`,
     [`${testId}-%`],
   );
@@ -192,7 +219,7 @@ export async function getExamOutline(
   const { rows } = await pool.query<SummaryRow>(
     `SELECT ${SUMMARY_COLUMNS}
        FROM reading_tests
-      WHERE ${isTest ? "slug LIKE $1" : "slug = $1"} AND status = 'published'
+      WHERE ${isTest ? "slug LIKE $1" : "slug = $1"} AND status = 'published' AND ${CHI_KHO_CHUNG}
       ORDER BY sort_order, slug`,
     [isTest ? `${id}-%` : id],
   );
@@ -227,11 +254,15 @@ export async function getExamOutline(
 /** Server-only, giống `getAnswerKeyBySlug` nhưng gộp cả ba passage. */
 export async function getAnswerKeyByTestId(
   testId: string,
-): Promise<{ questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {
+): Promise<{ title: string; questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {
   if (!isTestId(testId)) return null;
 
-  const { rows } = await pool.query<{ questions: Question[]; answer_key: AnswerKeyEntry[] }>(
-    `SELECT questions, answer_key
+  const { rows } = await pool.query<{
+    title: string;
+    questions: Question[];
+    answer_key: AnswerKeyEntry[];
+  }>(
+    `SELECT title, questions, answer_key
        FROM reading_tests
       WHERE slug LIKE $1
       ${SECTION_ORDER}`,
@@ -240,6 +271,8 @@ export async function getAnswerKeyByTestId(
   if (rows.length === 0) return null;
 
   return {
+    // Tên của cả bài ("Cam 12 · Reading Test 3"), không phải tên passage đầu.
+    title: testLabelFromTitle(rows[0].title),
     questions: rows.flatMap((row) => row.questions ?? []),
     answerKey: rows.flatMap((row) => row.answer_key ?? []),
   };
