@@ -10,7 +10,9 @@ import { questionRangeOf } from "../domain/paper";
 import { countAnswered } from "../domain/scoring";
 import type { ReadingPaper } from "../domain/types";
 import { useAnnotations } from "../application/useAnnotations";
+import { useExitGuard } from "../application/useExitGuard";
 import { highlightsFor } from "../domain/annotations";
+import ExitWarningDialog from "./ExitWarningDialog";
 import HighlightableText from "./HighlightableText";
 import PaperQuestion from "./PaperQuestion";
 import SelectionPopup from "./SelectionPopup";
@@ -26,16 +28,14 @@ import ReadingResultPanel from "./ReadingResultPanel";
  * trong `paper.sections`. Đồng hồ, phiếu trả lời và lần chấm là một, đúng như
  * phòng thi thật — chuyển passage không phải là bắt đầu bài mới.
  */
-export default function ReadingPlayer({ paper }: { paper: ReadingPaper }) {
-  const session = useReadingSession(paper);
+export default function ReadingPlayer({ paper, resume = false }: { paper: ReadingPaper; resume?: boolean }) {
+  const session = useReadingSession(paper, resume);
   // Mobile only: the two panes do not fit side by side under `md`.
   const [mobilePane, setMobilePane] = useState<"passage" | "questions">("passage");
   /** Which question the student is typing in, so it can be highlighted. */
   const [activeNumber, setActiveNumber] = useState<number | null>(null);
-  /** Passage đang mở. Chỉ có ý nghĩa khi thi cả test. */
-  const [sectionIndex, setSectionIndex] = useState(0);
 
-  const section = paper.sections[sectionIndex] ?? paper.sections[0];
+  const section = paper.sections[session.sectionIndex] ?? paper.sections[0];
   const multi = paper.sections.length > 1;
 
   // Tô màu và ghi chú lưu theo từng passage, nên khoá là slug của passage đang
@@ -62,8 +62,55 @@ export default function ReadingPlayer({ paper }: { paper: ReadingPaper }) {
     ? Math.round((session.answeredCount / session.totalQuestions) * 100)
     : 0;
 
+  // Chỉ chặn khi bài đang tính giờ. Nộp xong rồi thì trang này là màn xem đáp
+  // án — rời đi lúc đó không mất gì, hỏi lại chỉ tổ phiền.
+  const exit = useExitGuard(!isReview);
+
+  /**
+   * Hỏi lại khi còn câu bỏ trống — giống hệt bên Listening.
+   *
+   * Chạy thử với persona "làm vội": bấm nộp lúc mới điền 3/13 câu thì bài chấm
+   * ngay, không hỏi gì. Nộp là hết bài, nên một cú bấm nhầm là mất luôn lượt
+   * làm. Ai điền đủ thì không bị hỏi.
+   */
+  const confirmSubmit = () => {
+    const missing = session.totalQuestions - session.answeredCount;
+    if (missing > 0) {
+      const ok = window.confirm(
+        `Bạn còn ${missing} câu chưa trả lời. Nộp bây giờ là kết thúc bài và không làm tiếp được. Vẫn nộp?`
+      );
+      if (!ok) return;
+    }
+    session.submit();
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
+      {/*
+        Lối tắt cho người dùng bàn phím. Đo được: vào bài rồi phải Tab thêm 5
+        lần mới tới ô đáp án đầu tiên, mà mỗi lần chuyển passage lại phải đi
+        lại từ đầu.
+
+        Cố ý KHÔNG tự đặt con trỏ vào ô đầu tiên: trên điện thoại làm vậy là
+        bàn phím ảo bật lên che mất nửa màn hình ngay khi vừa vào bài. Nút này
+        chỉ hiện khi có người Tab tới nó, nên chuột và cảm ứng không thấy gì.
+      */}
+      <button
+        type="button"
+        onClick={() => {
+          const first = section.questions[0];
+          if (!first) return;
+          const target = document.getElementById(`question-${first.number}`);
+          const field =
+            target instanceof HTMLInputElement ? target : target?.querySelector("input");
+          target?.scrollIntoView({ behavior: "smooth", block: "center" });
+          field?.focus({ preventScroll: true });
+        }}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-24 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-full focus:bg-[#14532D] focus:px-5 focus:py-3 focus:text-xs focus:font-semibold focus:text-white"
+      >
+        Tới câu hỏi đầu tiên
+      </button>
+
       {/* Sticky exam bar */}
       <div className="sticky top-16 md:top-20 z-30 -mx-4 md:-mx-8 lg:-mx-12 px-4 md:px-8 lg:px-12 py-3 bg-[#FAF9F6]/90 backdrop-blur-md border-b border-black/5">
         <div className="flex items-center gap-3 md:gap-5">
@@ -108,7 +155,7 @@ export default function ReadingPlayer({ paper }: { paper: ReadingPaper }) {
             {!isReview && (
               <button
                 type="button"
-                onClick={session.submit}
+                onClick={confirmSubmit}
                 disabled={session.status === "submitting"}
                 className="px-4 md:px-6 py-2.5 bg-[#14532D] hover:bg-[#052E16] disabled:opacity-60 disabled:cursor-wait text-white font-bold text-2xs rounded-full transition-colors cursor-pointer tracking-wider uppercase whitespace-nowrap"
               >
@@ -126,13 +173,13 @@ export default function ReadingPlayer({ paper }: { paper: ReadingPaper }) {
           <div className="flex gap-2 mt-3 overflow-x-auto no-scrollbar -mx-1 px-1">
             {paper.sections.map((item, index) => {
               const done = countAnswered(item.questions, session.answers);
-              const active = index === sectionIndex;
+              const active = index === session.sectionIndex;
 
               return (
                 <button
                   key={item.slug}
                   type="button"
-                  onClick={() => setSectionIndex(index)}
+                  onClick={() => session.setSectionIndex(index)}
                   aria-current={active ? "true" : undefined}
                   className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-full border text-2xs font-medium transition-colors cursor-pointer ${active ? "bg-[#14532D] text-white border-[#14532D]" : "bg-white text-[#1A1A1A]/55 border-black/10 hover:border-[#14532D]/40 hover:text-[#14532D]"}`}
                 >
@@ -190,7 +237,7 @@ export default function ReadingPlayer({ paper }: { paper: ReadingPaper }) {
           >
             <span className="text-2xs text-[#14532D] font-medium flex items-center gap-1.5 mb-3">
               <BookOpen size={12} />
-              {multi ? `Reading Passage ${sectionIndex + 1}` : "Reading Passage"}
+              {multi ? `Reading Passage ${session.sectionIndex + 1}` : "Reading Passage"}
             </span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
               {section.passage.title}
@@ -279,23 +326,23 @@ export default function ReadingPlayer({ paper }: { paper: ReadingPaper }) {
             trên thanh trên cùng vẫn ở đó cho ai muốn nộp sớm thật.
           */}
           {!isReview &&
-            (multi && sectionIndex < paper.sections.length - 1 ? (
+            (multi && session.sectionIndex < paper.sections.length - 1 ? (
               <button
                 type="button"
                 onClick={() => {
-                  setSectionIndex(sectionIndex + 1);
+                  session.setSectionIndex(session.sectionIndex + 1);
                   setMobilePane("passage");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="w-full mt-8 py-4 bg-[#14532D] hover:bg-[#052E16] text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
               >
-                Sang passage {sectionIndex + 2} ({session.answeredCount}/{session.totalQuestions}{" "}
+                Sang passage {session.sectionIndex + 2} ({session.answeredCount}/{session.totalQuestions}{" "}
                 câu đã làm)
               </button>
             ) : (
               <button
                 type="button"
-                onClick={session.submit}
+                onClick={confirmSubmit}
                 disabled={session.status === "submitting"}
                 className="w-full mt-8 py-4 bg-[#9FE870] hover:bg-[#86D65A] disabled:opacity-60 disabled:cursor-wait text-[#14532D] font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
               >
@@ -323,6 +370,13 @@ export default function ReadingPlayer({ paper }: { paper: ReadingPaper }) {
         bookmarked={
           selectedQuestion ? marks.annotations.bookmarks.includes(selectedQuestion.number) : false
         }
+      />
+
+      <ExitWarningDialog
+        open={exit.pending !== null}
+        onStay={exit.stay}
+        onLeave={exit.leave}
+        detail={`Đồng hồ vẫn đang chạy. Thoát bây giờ thì ${session.answeredCount}/${session.totalQuestions} câu đã điền sẽ mất và bài không được chấm.`}
       />
     </div>
   );

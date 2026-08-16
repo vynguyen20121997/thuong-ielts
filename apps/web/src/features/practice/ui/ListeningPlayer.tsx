@@ -15,7 +15,9 @@ import {
   type Question,
 } from "../domain/types";
 import { useAnnotations } from "../application/useAnnotations";
+import { useExitGuard } from "../application/useExitGuard";
 import { highlightsFor } from "../domain/annotations";
+import ExitWarningDialog from "./ExitWarningDialog";
 import GapText, { GapInput, hasInlineGap, type GapField } from "./GapText";
 import HighlightableText from "./HighlightableText";
 import SelectionPopup from "./SelectionPopup";
@@ -37,9 +39,17 @@ type Block =
   | { kind: "choice"; key: string; question: ChoiceQuestion; review?: GradedQuestion }
   | { kind: "field"; key: string; question: Question; review?: GradedQuestion };
 
+/**
+ * Thời gian còn lại, tính theo phút như đề nghe trên máy thật.
+ *
+ * Trước đây câu này viết tiếng Anh ("30 minutes remaining") trong khi nút ngay
+ * cạnh là "Nộp bài" và màn hướng dẫn cũng tiếng Việt. Học sinh mất gốc — đúng
+ * đối tượng của trang — là người khó đọc nhất mà lại gặp chỗ tiếng Anh duy
+ * nhất ở ngay thanh trạng thái.
+ */
 function minutesRemaining(seconds: number): string {
   const mins = Math.ceil(seconds / 60);
-  return mins <= 1 ? "less than a minute remaining" : `${mins} minutes remaining`;
+  return mins <= 1 ? "Còn chưa đầy một phút" : `Còn ${mins} phút`;
 }
 
 export default function ListeningPlayer({ test }: { test: ListeningTest }) {
@@ -116,6 +126,15 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
   const isStarting = session.status === "starting";
   const isReview = session.status === "finished";
   const disabled = isReview || session.status === "submitting";
+
+  /*
+    Chỉ chặn khi bài đã bắt đầu và chưa nộp. Ở màn hướng dẫn thì chưa mất gì,
+    còn sau khi nộp thì đây là màn xem đáp án.
+
+    Thoát giữa chừng bên Listening đắt hơn Reading: băng chỉ phát một lần,
+    quay lại là phải nghe lại từ đầu.
+  */
+  const exit = useExitGuard(onExam && !isReview);
   const track = test.audio[session.activeTrack];
   const current = session.sections[session.activeSection];
 
@@ -324,7 +343,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                 <span className="flex items-center gap-1.5">
                   <Volume2 size={13} className={session.audioPlaying ? "text-[#14532D]" : "text-[#1A1A1A]/35"} />
                   {session.audioPlaying
-                    ? `Audio is playing${track?.label ? ` · ${track.label}` : ""}`
+                    ? `Đang phát${track?.label ? ` · ${track.label}` : ""}`
                     : isStarting
                       ? "Đang tải bài nghe — đồng hồ chưa chạy"
                       : "Audio chưa phát"}
@@ -680,6 +699,13 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         bookmarked={
           selectedQuestion ? marks.annotations.bookmarks.includes(selectedQuestion.number) : false
         }
+      />
+
+      <ExitWarningDialog
+        open={exit.pending !== null}
+        onStay={exit.stay}
+        onLeave={exit.leave}
+        detail="Băng đang chạy và chỉ phát một lần. Thoát bây giờ thì bài không được chấm, và muốn làm lại phải nghe lại từ đầu."
       />
     </div>
   );
