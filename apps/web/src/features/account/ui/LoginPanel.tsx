@@ -21,7 +21,7 @@ export default function LoginPanel({
   providers,
   next,
 }: {
-  providers: { google: boolean; facebook: boolean };
+  providers: { google: boolean; facebook: boolean; phone: boolean };
   next: string;
 }) {
   const [step, setStep] = useState<Step>("phone");
@@ -119,15 +119,17 @@ export default function LoginPanel({
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="h-px flex-1 bg-black/10" />
-            <span className="text-2xs font-medium text-[#1A1A1A]/40">hoặc</span>
-            <span className="h-px flex-1 bg-black/10" />
-          </div>
+          {providers.phone && (
+            <div className="flex items-center gap-3">
+              <span className="h-px flex-1 bg-black/10" />
+              <span className="text-2xs font-medium text-[#1A1A1A]/40">hoặc</span>
+              <span className="h-px flex-1 bg-black/10" />
+            </div>
+          )}
         </>
       )}
 
-      {step === "phone" ? (
+      {providers.phone && (step === "phone" ? (
         <div className="flex flex-col gap-3">
           <label htmlFor="phone" className="text-2xs font-medium text-[#1A1A1A]/50">
             Số điện thoại — mã xác thực gửi qua Zalo
@@ -224,9 +226,9 @@ export default function LoginPanel({
             </button>
           </div>
         </div>
-      )}
+      ))}
 
-      {notice && <p className="text-2xs text-[#1A1A1A]/55 leading-relaxed">{notice}</p>}
+      {providers.phone && notice && <p className="text-2xs text-[#1A1A1A]/55 leading-relaxed">{notice}</p>}
 
       {error && (
         <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700">

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
 
+import { phoneOtpEnabled } from "../../../auth";
 import { currentStudent } from "../../../features/account/server/guard";
 import { isProfileComplete } from "../../../features/account/domain/types";
 import LoginPanel from "../../../features/account/ui/LoginPanel";
@@ -36,6 +38,8 @@ export default async function LoginPage({
   const providers = {
     google: Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET),
     facebook: Boolean(process.env.AUTH_FACEBOOK_ID && process.env.AUTH_FACEBOOK_SECRET),
+    // Tạm tắt; bật lại bằng AUTH_PHONE_OTP_ENABLED="true".
+    phone: phoneOtpEnabled,
   };
 
   return (
@@ -56,6 +60,21 @@ export default async function LoginPage({
 
           <LoginPanel providers={providers} next={target} />
         </div>
+
+        {/*
+          Đường lùi. Chạy thử với persona lần đầu vào: bấm một đề rồi bị đẩy
+          sang đây, trong phần nội dung không có một link nào để quay lại xem
+          tiếp các đề khác — muốn thoát phải dùng menu ở đầu trang.
+        */}
+        <p className="text-center mt-6">
+          <Link
+            href="/kiem-tra-kien-thuc"
+            className="inline-flex items-center gap-1.5 text-2xs font-medium text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors"
+          >
+            <ArrowLeft size={13} />
+            Quay lại xem các đề
+          </Link>
+        </p>
 
         <p className="text-2xs text-[#1A1A1A]/40 text-center mt-5 leading-relaxed">
           Đăng nhập nghĩa là bạn đồng ý để HNT.IELTS lưu tên, ảnh đại diện và kết quả làm bài của

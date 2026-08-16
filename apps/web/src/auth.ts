@@ -53,41 +53,50 @@ if (process.env.AUTH_FACEBOOK_ID && process.env.AUTH_FACEBOOK_SECRET) {
 }
 
 /**
- * Đăng nhập bằng số điện thoại. Mã đã được gửi trước đó qua route
- * `/api/auth/otp`; ở đây chỉ đối chiếu.
+ * Đăng nhập bằng số điện thoại — TẠM TẮT.
+ *
+ * Bật lại bằng `AUTH_PHONE_OTP_ENABLED="true"`. Cố ý tắt bằng cờ chứ không xoá
+ * code: toàn bộ đường này đã chạy thử trọn vẹn, chỉ là chưa có khoá Zalo nên
+ * chưa gửi mã thật được. Xoá đi rồi viết lại là mất công hai lần.
+ *
+ * Mã gửi trước đó qua route `/api/auth/otp`; ở đây chỉ đối chiếu.
  */
-providers.push(
-  Credentials({
-    id: "phone",
-    name: "Số điện thoại",
-    credentials: { phone: {}, code: {} },
-    async authorize(raw) {
-      const phone = normalizePhone(String(raw?.phone ?? ""));
-      const code = String(raw?.code ?? "").trim();
-      if (!phone || !code) return null;
+export const phoneOtpEnabled = process.env.AUTH_PHONE_OTP_ENABLED === "true";
 
-      const record = await getOtp(phone);
-      const verdict = checkOtp(record, record ? codeMatches(record, code) : false, new Date());
+if (phoneOtpEnabled) {
+  providers.push(
+    Credentials({
+      id: "phone",
+      name: "Số điện thoại",
+      credentials: { phone: {}, code: {} },
+      async authorize(raw) {
+        const phone = normalizePhone(String(raw?.phone ?? ""));
+        const code = String(raw?.code ?? "").trim();
+        if (!phone || !code) return null;
 
-      if (!verdict.ok) {
-        // Đếm lần gõ sai để khoá dần; các lý do khác (hết hạn, chưa xin mã)
-        // không phải lỗi gõ nên không tính.
-        if (verdict.reason === "wrong-code") await countFailedAttempt(phone);
-        return null;
-      }
+        const record = await getOtp(phone);
+        const verdict = checkOtp(record, record ? codeMatches(record, code) : false, new Date());
 
-      await consumeOtp(phone);
+        if (!verdict.ok) {
+          // Đếm lần gõ sai để khoá dần; các lý do khác (hết hạn, chưa xin mã)
+          // không phải lỗi gõ nên không tính.
+          if (verdict.reason === "wrong-code") await countFailedAttempt(phone);
+          return null;
+        }
 
-      const student = await findOrCreateStudent({
-        provider: "phone",
-        providerAccountId: phone,
-        phone,
-      });
+        await consumeOtp(phone);
 
-      return { id: student.id, name: student.name ?? null, email: student.email ?? null };
-    },
-  })
-);
+        const student = await findOrCreateStudent({
+          provider: "phone",
+          providerAccountId: phone,
+          phone,
+        });
+
+        return { id: student.id, name: student.name ?? null, email: student.email ?? null };
+      },
+    })
+  );
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,

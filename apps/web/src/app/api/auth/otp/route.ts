@@ -10,6 +10,15 @@ import { sendOtpViaZalo, ZaloNotConfiguredError } from "../../../../features/acc
  * response chỉ nói "đã gửi" và bao giờ được gửi lại.
  */
 export async function POST(request: Request) {
+  // Đường OTP đang tắt. Chặn ngay ở đây chứ không chỉ giấu nút: giấu nút mà để
+  // route mở thì ai gọi thẳng API vẫn làm tốn tin nhắn và tạo mã trong DB.
+  if (process.env.AUTH_PHONE_OTP_ENABLED !== "true") {
+    return NextResponse.json(
+      { error: "Đăng nhập bằng số điện thoại đang tạm khoá. Vui lòng dùng Google." },
+      { status: 404 }
+    );
+  }
+
   let body: { phone?: unknown };
   try {
     body = (await request.json()) as { phone?: unknown };
