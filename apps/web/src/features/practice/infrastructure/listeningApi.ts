@@ -11,7 +11,7 @@ export async function fetchListeningTests(): Promise<ListeningTestSummary[]> {
 export async function submitListeningAttempt(
   slug: string,
   answers: ReadingAnswers,
-  elapsedSeconds: number
+  elapsedSeconds: number,
 ): Promise<AttemptResult> {
   const res = await fetch(`/api/practice/listening/${slug}/submit`, {
     method: "POST",

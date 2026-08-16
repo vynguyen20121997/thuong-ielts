@@ -4,7 +4,7 @@ import { ChevronRight, Headphones } from "lucide-react";
 
 import { formatAttempts } from "../../../../features/practice/domain/catalog";
 import { listListeningTests } from "../../../../features/practice/server/listeningRepository";
-import ListeningTestCard from "../../../../features/practice/ui/ListeningTestCard";
+import ListeningCatalog from "../../../../features/practice/ui/ListeningCatalog";
 
 export const metadata: Metadata = {
   title: "Luyện Listening IELTS | HNT.IELTS - Hồ Ngọc Thương",
@@ -21,7 +21,7 @@ export default async function ListeningCatalogPage() {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-[#FAF9F6] min-h-screen">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <nav className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest font-bold text-[#1A1A1A]/40 mb-6">
+        <nav className="flex items-center gap-1.5 text-2xs font-medium text-[#1A1A1A]/40 mb-6">
           <Link href="/kiem-tra-kien-thuc" className="hover:text-[#14532D] transition-colors">
             Kiểm tra kiến thức
           </Link>
@@ -31,11 +31,11 @@ export default async function ListeningCatalogPage() {
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <span className="font-mono text-xs tracking-[0.25em] text-[#14532D] uppercase mb-3 font-bold flex items-center gap-1.5">
+            <span className="text-xs text-[#14532D] mb-3 font-medium flex items-center gap-1.5">
               <Headphones size={15} />
               Kỹ năng Nghe
             </span>
-            <h1 className="font-serif text-4xl md:text-6xl font-black tracking-tight text-[#1A1A1A] leading-[1.05]">
+            <h1 className="font-serif text-4xl md:text-6xl font-bold tracking-tight text-[#1A1A1A] leading-[1.05]">
               Luyện Listening <br className="hidden md:block" />
               Có File Nghe Thật
             </h1>
@@ -47,18 +47,18 @@ export default async function ListeningCatalogPage() {
 
           <div className="flex gap-8 shrink-0">
             <div>
-              <span className="font-serif text-3xl font-black text-[#14532D] block leading-none">
+              <span className="font-serif text-3xl font-bold text-[#14532D] block leading-none">
                 {tests.length}
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/45 font-bold mt-1.5 block">
+              <span className="text-2xs text-[#1A1A1A]/45 font-medium mt-1.5 block">
                 Đề đang mở
               </span>
             </div>
             <div>
-              <span className="font-serif text-3xl font-black text-[#14532D] block leading-none">
+              <span className="font-serif text-3xl font-bold text-[#14532D] block leading-none">
                 {formatAttempts(totalAttempts)}
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-[#1A1A1A]/45 font-bold mt-1.5 block">
+              <span className="text-2xs text-[#1A1A1A]/45 font-medium mt-1.5 block">
                 Lượt làm bài
               </span>
             </div>
@@ -70,11 +70,7 @@ export default async function ListeningCatalogPage() {
             <p className="text-sm text-[#1A1A1A]/55">Chưa có đề nghe nào được mở.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tests.map((test, index) => (
-              <ListeningTestCard key={test.id} test={test} index={index} />
-            ))}
-          </div>
+          <ListeningCatalog tests={tests} />
         )}
       </div>
     </main>

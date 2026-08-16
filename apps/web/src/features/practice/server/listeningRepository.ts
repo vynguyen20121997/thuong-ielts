@@ -14,9 +14,18 @@ import type {
  * that never mention `answer_key`.
  */
 
+/**
+ * `sections` được tính ngay trong SQL từ cột `questions`. Không đọc cả JSONB
+ * về client — chỉ lấy ra danh sách số phần, vài chục byte mỗi dòng.
+ */
 const SUMMARY_COLUMNS = `
   id, slug, title, collection, topic, level, duration_seconds, question_count,
-  attempt_count, is_free, published_at, note
+  attempt_count, is_free, published_at, note,
+  (
+    SELECT array_agg(DISTINCT (q ->> 'section')::int ORDER BY (q ->> 'section')::int)
+      FROM jsonb_array_elements(questions) AS q
+     WHERE q ? 'section'
+  ) AS sections
 `;
 
 interface SummaryRow {
@@ -32,6 +41,7 @@ interface SummaryRow {
   is_free: boolean;
   published_at: string | null;
   note: string | null;
+  sections: number[] | null;
 }
 
 function toSummary(row: SummaryRow): ListeningTestSummary {
@@ -47,6 +57,7 @@ function toSummary(row: SummaryRow): ListeningTestSummary {
     attemptCount: row.attempt_count ?? 0,
     isFree: row.is_free ?? true,
     publishedAt: row.published_at ?? "",
+    sections: row.sections ?? [],
     ...(row.note ? { note: row.note } : {}),
   };
 }
@@ -56,7 +67,7 @@ export async function listListeningTests(): Promise<ListeningTestSummary[]> {
     `SELECT ${SUMMARY_COLUMNS}
        FROM listening_tests
       WHERE status = 'published'
-      ORDER BY sort_order ASC, published_at DESC NULLS LAST`
+      ORDER BY sort_order ASC, published_at DESC NULLS LAST`,
   );
   return rows.map(toSummary);
 }
@@ -69,7 +80,7 @@ export async function getListeningTestBySlug(slug: string): Promise<ListeningTes
        FROM listening_tests
       WHERE slug = $1 AND status = 'published'
       LIMIT 1`,
-    [slug]
+    [slug],
   );
   if (rows.length === 0) return null;
 
@@ -79,11 +90,11 @@ export async function getListeningTestBySlug(slug: string): Promise<ListeningTes
 
 /** Server-only: the answers, for the submit route. */
 export async function getListeningAnswerKeyBySlug(
-  slug: string
+  slug: string,
 ): Promise<{ questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {
   const { rows } = await pool.query<{ questions: Question[]; answer_key: AnswerKeyEntry[] }>(
     `SELECT questions, answer_key FROM listening_tests WHERE slug = $1 LIMIT 1`,
-    [slug]
+    [slug],
   );
   if (rows.length === 0) return null;
   return { questions: rows[0].questions ?? [], answerKey: rows[0].answer_key ?? [] };
@@ -94,7 +105,7 @@ export async function recordListeningAttempt(slug: string): Promise<void> {
   try {
     await pool.query(
       `UPDATE listening_tests SET attempt_count = attempt_count + 1 WHERE slug = $1`,
-      [slug]
+      [slug],
     );
   } catch (err) {
     console.error(`recordListeningAttempt(${slug}) failed (ignored):`, err);

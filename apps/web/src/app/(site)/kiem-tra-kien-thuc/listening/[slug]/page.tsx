@@ -17,18 +17,20 @@ export async function generateMetadata({
   return {
     title: `${test.title} | Luyện Listening IELTS`,
     description: `Bài luyện Listening IELTS: ${test.title} — ${test.questionCount} câu, ${Math.round(
-      test.durationSeconds / 60
+      test.durationSeconds / 60,
     )} phút, có file nghe và chấm điểm tự động.`,
   };
 }
 
-export default async function ListeningTestPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ListeningTestPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   // Public projection — the answer key stays in the database.
+  //
+  // Listening KHÔNG dùng màn chờ chung như Reading: `ListeningPlayer` đã có màn
+  // hướng dẫn riêng, và nút "Bắt đầu" của nó chính là cú bấm mà trình duyệt
+  // đòi để cho phép phát tiếng (`audio.play()` gọi ngay trong handler). Tách
+  // nút ấy ra một màn chờ dựng trước đó là tách `play()` khỏi cử chỉ người
+  // dùng — Safari chặn, và học sinh vào bài thì không nghe thấy gì.
   const test = await getListeningTestBySlug(slug);
   if (!test) notFound();
 

@@ -208,15 +208,15 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         {audioElement}
         <div className="min-h-[70vh] bg-[#F5F5F3] flex items-center justify-center px-4 py-14">
         <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-black/5 p-8 md:p-12">
-          <h1 className="font-serif text-3xl font-black text-center text-[#1A1A1A] mb-8">
+          <h1 className="font-serif text-3xl font-bold text-center text-[#1A1A1A] mb-8">
             Hướng dẫn làm bài kiểm tra
           </h1>
 
-          <h2 className="font-serif text-lg font-black text-[#1A1A1A] mb-3 uppercase">
+          <h2 className="font-serif text-lg font-semibold text-[#1A1A1A] mb-3">
             Lưu ý trước khi làm bài
           </h2>
-          <p className="text-[14px] font-bold text-[#1A1A1A] mb-2">Bài nghe sẽ chạy như thi thật:</p>
-          <ul className="list-disc pl-5 space-y-2 text-[14px] text-[#1A1A1A]/75 leading-relaxed">
+          <p className="text-sm font-bold text-[#1A1A1A] mb-2">Bài nghe sẽ chạy như thi thật:</p>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-[#1A1A1A]/75 leading-relaxed">
             <li>
               Audio <strong>tự phát một lần duy nhất</strong> và không tạm dừng, tua hay nghe lại
               được. Hãy chuẩn bị tai nghe trước khi bấm bắt đầu.
@@ -239,7 +239,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           </ul>
 
           {session.canResume && (
-            <div className="mt-6 flex items-start gap-2 bg-[#9FE870]/20 border border-[#14532D]/25 text-[#14532D] rounded-xl px-4 py-3 text-[13px]">
+            <div className="mt-6 flex items-start gap-2 bg-[#9FE870]/20 border border-[#14532D]/25 text-[#14532D] rounded-xl px-4 py-3 text-sm">
               <AlertTriangle size={16} className="shrink-0 mt-0.5" />
               <span>
                 Bạn có một bài đang làm dở. Bấm <strong>Tiếp tục</strong> để làm tiếp — đáp án,
@@ -249,7 +249,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           )}
 
           {test.note && (
-            <div className="mt-6 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-4 py-3 text-[13px]">
+            <div className="mt-6 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-4 py-3 text-sm">
               <AlertTriangle size={16} className="shrink-0 mt-0.5" />
               <span>{test.note}</span>
             </div>
@@ -260,7 +260,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
             connection wants to know before committing to a play-once test.
           */}
           <p
-            className={`mt-6 flex items-center gap-2 text-[13px] ${
+            className={`mt-6 flex items-center gap-2 text-sm ${
               session.audioReady ? "text-[#14532D]" : "text-[#1A1A1A]/50"
             }`}
           >
@@ -273,7 +273,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           <div className="border-t border-black/10 mt-8 pt-6 flex items-center justify-between">
             <Link
               href="/kiem-tra-kien-thuc/listening"
-              className="text-[13px] text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors"
+              className="text-sm text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors"
             >
               ← Chọn đề khác
             </Link>
@@ -282,7 +282,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                 <button
                   type="button"
                   onClick={session.resume}
-                  className="px-6 py-3 rounded-xl bg-[#14532D] text-white hover:bg-[#052E16] font-bold text-[14px] transition-colors cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-[#14532D] text-white hover:bg-[#052E16] font-bold text-sm transition-colors cursor-pointer"
                 >
                   Tiếp tục bài đang làm dở
                 </button>
@@ -293,7 +293,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                 // Focused on arrival so a keyboard user does not Tab through the
                 // whole marketing nav to reach the only button that matters.
                 autoFocus
-                className="px-8 py-3 rounded-xl border-2 border-[#14532D] text-[#14532D] hover:bg-[#14532D] hover:text-white font-bold text-[14px] transition-colors cursor-pointer"
+                className="px-8 py-3 rounded-xl border-2 border-[#14532D] text-[#14532D] hover:bg-[#14532D] hover:text-white font-bold text-sm transition-colors cursor-pointer"
               >
                 {session.canResume ? "Làm lại từ đầu" : "Bắt đầu"}
               </button>
@@ -311,12 +311,12 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
 
       <header className="sticky top-0 z-30 bg-white border-b border-black/10">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-2.5 flex items-center gap-3">
-          <span className="shrink-0 h-10 w-10 rounded-full bg-[#14532D] text-[#9FE870] flex items-center justify-center font-mono text-[9px] font-black tracking-tight">
+          <span className="shrink-0 h-10 w-10 rounded-full bg-[#14532D] text-[#9FE870] flex items-center justify-center font-mono text-2xs font-bold tracking-tight">
             IELTS
           </span>
           <div className="min-w-0">
-            <p className="font-bold text-[14px] text-[#1A1A1A] truncate">{test.title}</p>
-            <p className="flex items-center gap-3 text-[12px] text-[#1A1A1A]/60">
+            <p className="font-bold text-sm text-[#1A1A1A] truncate">{test.title}</p>
+            <p className="flex items-center gap-3 text-xs text-[#1A1A1A]/60">
               <span className={session.remainingSeconds <= 180 && !isReview ? "text-red-600 font-bold" : ""}>
                 {isReview ? `Đã nộp · ${formatClock(session.remainingSeconds)} còn lại` : minutesRemaining(session.remainingSeconds)}
               </span>
@@ -344,7 +344,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
 
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         {session.error && (
-          <div className="mt-5 flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-[13px]">
+          <div className="mt-5 flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
             <AlertTriangle size={16} className="shrink-0 mt-0.5" />
             <span>{session.error}</span>
           </div>
@@ -364,10 +364,10 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         {current && (
           <>
             <div className="mt-5 bg-[#EFEFEA] rounded px-5 py-4">
-              <h2 className="font-black text-[17px] text-[#1A1A1A] tracking-tight">
+              <h2 className="font-bold text-lg text-[#1A1A1A] tracking-tight">
                 SECTION {current.section}
               </h2>
-              <p className="text-[14px] text-[#1A1A1A]/70 mt-0.5">
+              <p className="text-sm text-[#1A1A1A]/70 mt-0.5">
                 Nghe và trả lời câu {current.questions[0].number}–
                 {current.questions[current.questions.length - 1].number}
               </p>
@@ -377,7 +377,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               {groups.map((group, gi) => (
                 <section key={gi}>
                   {group.heading && (
-                    <p className="text-[14px] text-[#1A1A1A]/80 leading-relaxed mb-4 font-medium border-l-2 border-[#14532D]/25 pl-3">
+                    <p className="text-sm text-[#1A1A1A]/80 leading-relaxed mb-4 font-medium border-l-2 border-[#14532D]/25 pl-3">
                       <HighlightableText
                         blockId={`g${gi}`}
                         text={group.heading}
@@ -406,7 +406,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                         const q = block.question;
                         const review = block.review;
                         return (
-                          <p key={block.key} className="text-[15px] leading-[2.4] text-[#1A1A1A]">
+                          <p key={block.key} className="text-base leading-[2.4] text-[#1A1A1A]">
                             <span className="font-bold mr-2">{q.number}</span>
                             {q.prompt}
                             <GapInput
@@ -438,7 +438,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               : ""
                           }`}
                         >
-                          <p className="text-[15px] text-[#1A1A1A] mb-2 flex items-start gap-2">
+                          <p className="text-base text-[#1A1A1A] mb-2 flex items-start gap-2">
                             <span className="font-bold">{q.number}</span>
                             <HighlightableText
                               blockId={q.id}
@@ -460,7 +460,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               return (
                                 <label
                                   key={option}
-                                  className={`flex items-start gap-2.5 text-[15px] rounded px-2 py-1 ${
+                                  className={`flex items-start gap-2.5 text-base rounded px-2 py-1 ${
                                     disabled ? "cursor-default" : "cursor-pointer hover:bg-[#FAF9F6]"
                                   } ${
                                     review && chosen
@@ -487,7 +487,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                             })}
                           </div>
                           {isAnswerShown(review) && (
-                            <p className="text-[12px] text-[#14532D] mt-1.5 pl-6 font-medium">
+                            <p className="text-xs text-[#14532D] mt-1.5 pl-6 font-medium">
                               Đáp án: {review!.expected}
                             </p>
                           )}
@@ -509,7 +509,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
       {!isReview && session.remainingSeconds <= 60 && session.remainingSeconds > 0 && (
         <div
           role="alert"
-          className="fixed bottom-16 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 bg-red-600 text-white rounded-full px-5 py-2 text-[13px] font-bold shadow-lg"
+          className="fixed bottom-16 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 bg-red-600 text-white rounded-full px-5 py-2 text-sm font-bold shadow-lg"
         >
           <AlertTriangle size={15} />
           Còn {session.remainingSeconds} giây — hết giờ bài sẽ tự nộp
@@ -556,7 +556,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                       style={{ width: `${percent}%` }}
                     />
                     <span
-                      className={`text-[12px] font-black transition-colors ${
+                      className={`text-xs font-bold transition-colors ${
                         isCurrent ? "text-[#1A1A1A]" : "text-[#1A1A1A]/55 group-hover:text-[#14532D]"
                       }`}
                     >
@@ -564,7 +564,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                     </span>
                     {/* The tally gives way to the numbers once the section is open. */}
                     {!isCurrent && (
-                      <span className="text-[12px] text-[#1A1A1A]/45">
+                      <span className="text-xs text-[#1A1A1A]/45">
                         {progress.answered} of {progress.total}
                       </span>
                     )}
@@ -606,7 +606,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                             )}
                             <span
                               data-exam-key
-                              className={`flex h-[30px] min-w-[30px] px-1 items-center justify-center rounded border text-[14px] bg-white transition-colors ${
+                              className={`flex h-[30px] min-w-[30px] px-1 items-center justify-center rounded border text-sm bg-white transition-colors ${
                                 activeNumber === q.number
                                   ? "border-[#D97706] border-2 text-[#1A1A1A]"
                                   : "border-[#D8DCE3] text-[#333] hover:border-[#14532D]"
@@ -656,7 +656,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               className="shrink-0 px-5 md:px-8 bg-[#EFEFEF] hover:bg-[#14532D] hover:text-white text-[#1A1A1A] flex items-center gap-2 disabled:opacity-60 disabled:cursor-wait cursor-pointer transition-colors"
             >
               <Check size={26} strokeWidth={2.5} />
-              <span className="hidden md:inline font-bold text-[12px]">
+              <span className="hidden md:inline font-bold text-xs">
                 {session.status === "submitting" ? "Đang chấm..." : "Nộp bài"}
               </span>
             </button>
