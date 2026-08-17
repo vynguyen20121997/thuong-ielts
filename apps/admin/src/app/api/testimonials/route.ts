@@ -5,7 +5,12 @@ export async function GET() {
   try {
     const { rows } = await pool.query(
       `SELECT id, student_name, score, before_score, after_score, school_or_job,
-              course_id, course_name, comment, avatar_url, proof_urls,
+              course_id, course_name, comment, avatar_url,
+              COALESCE(
+                (SELECT array_agg('/api/media/' || tma.media_id::text ORDER BY tma.position)
+                 FROM testimonial_media_assets tma WHERE tma.testimonial_id = testimonials.id),
+                proof_urls
+              ) AS proof_urls,
               listening, reading, writing, speaking, rating, helpful_count, date
        FROM testimonials
        ORDER BY date DESC NULLS LAST`

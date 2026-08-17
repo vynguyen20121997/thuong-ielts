@@ -154,6 +154,12 @@ async function main() {
     id UUID PRIMARY KEY, content_type TEXT NOT NULL, data BYTEA NOT NULL,
     byte_size INTEGER NOT NULL, source_url TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS testimonial_media_assets (
+    testimonial_id TEXT NOT NULL REFERENCES testimonials(id) ON DELETE CASCADE,
+    media_id UUID NOT NULL REFERENCES media_assets(id) ON DELETE CASCADE,
+    position INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (testimonial_id, media_id)
+  )`);
 
   const downloads: Array<
     (typeof matched)[number] & { assets: Array<{ data: Buffer; contentType: string }> }
@@ -211,6 +217,7 @@ async function main() {
     await client.query("BEGIN");
     for (const item of downloads) {
       const urls: string[] = [];
+      const mediaIds: string[] = [];
       for (const { data, contentType } of item.assets) {
         const digest = createHash("sha256").update(data).digest("hex");
         const existing = await client.query(
@@ -225,6 +232,16 @@ async function main() {
           );
         }
         urls.push(`/api/media/${id}`);
+        mediaIds.push(id);
+      }
+      await client.query("DELETE FROM testimonial_media_assets WHERE testimonial_id = $1", [
+        item.student.id,
+      ]);
+      for (let position = 0; position < mediaIds.length; position++) {
+        await client.query(
+          "INSERT INTO testimonial_media_assets (testimonial_id, media_id, position) VALUES ($1,$2,$3)",
+          [item.student.id, mediaIds[position], position]
+        );
       }
       await client.query("UPDATE testimonials SET proof_urls = $1 WHERE id = $2", [urls, item.student.id]);
       imported++;

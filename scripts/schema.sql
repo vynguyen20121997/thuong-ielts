@@ -34,6 +34,16 @@ CREATE TABLE IF NOT EXISTS media_assets (
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS testimonial_media_assets (
+  testimonial_id TEXT NOT NULL REFERENCES testimonials(id) ON DELETE CASCADE,
+  media_id       UUID NOT NULL REFERENCES media_assets(id) ON DELETE CASCADE,
+  position       INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (testimonial_id, media_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_testimonial_media_position
+  ON testimonial_media_assets (testimonial_id, position);
+
 CREATE TABLE IF NOT EXISTS feedbacks (
   id                TEXT PRIMARY KEY,
   subject           TEXT NOT NULL,
