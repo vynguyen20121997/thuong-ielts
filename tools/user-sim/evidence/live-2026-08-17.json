@@ -1,0 +1,79 @@
+{
+  "_comment": "Chỉ ghi thứ QUAN SÁT ĐƯỢC, không ghi ý kiến. Sáu học sinh ảo chạy ở tầng HTTP (mở lượt → nhịp → nộp), cô giáo ảo dùng trình duyệt thật xem bảng lớp qua socket. Mục đích: kiểm đường realtime, không phải kiểm giao diện làm bài.",
+  "ngay": "2026-08-17",
+  "moi_truong": {
+    "web": "http://localhost:2000 (dev)",
+    "admin": "http://localhost:2100 (dev, node server.js)",
+    "de": "cam12-test3",
+    "so_cau": 40,
+    "so_hoc_sinh_ao": 6
+  },
+
+  "duong_realtime_do_duoc": {
+    "notify_toi_man_hinh_co_ms": [235, 236, 242],
+    "lan_dau_ms": 2289,
+    "vi_sao_lan_dau_cham": "gồm cả bắt tay TLS tới RDS us-east-1",
+    "kich_thuoc_goi_tin_byte": 347,
+    "nguong_notify_byte": 8000
+  },
+
+  "kiem_bao_mat": {
+    "socket_chua_dang_nhap": "bị từ chối ngay lúc bắt tay — 'unauthorized'",
+    "socket_co_phien": "nối được, vào đúng phòng theo mã đề",
+    "nhip_lop_khac": "KHÔNG lọt sang phòng đang xem",
+    "ro_dap_an_trong_phan_hoi_nhip": "không phát hiện lần nào trong 26 nhịp — phản hồi chỉ có { ok: true }",
+    "start_va_beat_khi_chua_dang_nhap": "401 cả hai"
+  },
+
+  "loi_tim_ra_va_da_sua": [
+    {
+      "loi": "Tiêu đề trang nói 'Chưa có ai vào' trong khi bảng đang có 6 học sinh",
+      "vi_sao": "tiêu đề tính từ ảnh chụp lúc server dựng trang, còn học sinh vào sau qua socket",
+      "hau_qua": "cô mở trang trước giờ học rồi cả lớp vào, tiêu đề vẫn nói không có ai",
+      "da_sua": "tiêu đề cố định 'Bảng lớp trực tiếp'; chuyện có ai chưa để phần sống nói",
+      "da_xac_nhan_lai": true
+    },
+    {
+      "loi": "Học sinh ngừng gửi nhịp vẫn hiện 'Đang làm' vĩnh viễn trên màn hình sống",
+      "vi_sao": "trạng thái chỉ đặt từ sự kiện socket; server suy ra được lúc dựng trang nhưng màn hình sống thì không tự đếm",
+      "hau_qua": "cô tưởng em ấy đang làm bài trong khi đã đóng máy từ lâu",
+      "da_sua": "bộ đếm mỗi giây tự hạ trạng thái: im 20s → mất kết nối, 60s → đã rời",
+      "da_xac_nhan_lai": true,
+      "quan_sat_sau_khi_sua": [
+        "t+15s: Gia Huy = Mất kết nối",
+        "t+45s: Gia Huy = Mất kết nối",
+        "t+60s: Gia Huy = Đã rời"
+      ]
+    },
+    {
+      "loi": "Một cú ENOTFOUND của RDS đúng giây học sinh bấm bắt đầu khiến em ấy vô hình với cô suốt buổi",
+      "vi_sao": "mở lượt hỏng thì trả null và không có gì thử lại; bài thi vẫn chạy nên không ai biết đã mất một em",
+      "do_duoc": "lần chạy 2: 2/6 học sinh trượt vì đúng lỗi này",
+      "da_sua": "thử lại tối đa 3 lần, chỉ thử lại với 5xx; 4xx là câu trả lời dứt khoát",
+      "da_xac_nhan_lai": true,
+      "bang_chung": "lần chạy 4: đúng hai em đó lại trượt 500 lần đầu và THÀNH CÔNG ở lần thử lại — 6/6 lên bảng"
+    }
+  ],
+
+  "ket_qua_lan_chay_cuoi": {
+    "hoc_sinh": [
+      { "ten": "Ngọc Ánh", "kieu": "làm chậm, sai nhiều", "nhip": 5, "nhip_loi": 0, "da_lam": 10, "diem": "3/40", "band": 2.0, "mo_luot_phai_thu_lai": true },
+      { "ten": "Minh Khôi", "kieu": "làm nhanh, đúng nhiều", "nhip": 5, "nhip_loi": 0, "da_lam": 30, "diem": "26/40", "band": 6.0, "mo_luot_phai_thu_lai": true },
+      { "ten": "Thu Hà", "kieu": "làm đều tay", "nhip": 5, "nhip_loi": 0, "da_lam": 20, "diem": "10/40", "band": 4.0 },
+      { "ten": "Gia Huy", "kieu": "bỏ ngang giữa chừng", "nhip": 2, "nhip_loi": 0, "da_lam": 8, "diem": null, "ket_cuc": "đúng như mong đợi: Mất kết nối rồi Đã rời" },
+      { "ten": "Bảo Ngọc", "kieu": "làm xong sớm rồi nộp", "nhip": 4, "nhip_loi": 0, "da_lam": 32, "diem": "24/40", "band": 6.0 },
+      { "ten": "Khánh Linh", "kieu": "làm đều tay", "nhip": 5, "nhip_loi": 0, "da_lam": 20, "diem": "13/40", "band": 4.5 }
+    ],
+    "trang_thai_trong_db": { "in_progress": 1, "submitted": 5 },
+    "dai_o_khop_cot_diem": "có — số ô xanh luôn bằng cột Đúng, xanh + đỏ luôn bằng số câu đã làm"
+  },
+
+  "chua_kiem_duoc": [
+    "Listening: đã nối code nhưng chưa cho học sinh ảo chạy thử — bộ sim này mới chỉ làm Reading",
+    "Nhiều cô cùng xem một lớp",
+    "Hành vi khi admin có từ hai instance trở lên (mỗi instance giữ một kết nối LISTEN riêng)",
+    "Độ trễ thật trên Render: đo ở đây là máy dev tại Việt Nam gọi RDS us-east-1"
+  ],
+
+  "da_don_du_lieu_gia": true
+}

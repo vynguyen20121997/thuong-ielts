@@ -25,8 +25,17 @@ export default async function TrangLop({
       <Link href="/lop" className="text-xs font-bold text-[#1A1A1A]/50 hover:text-[#14532D]">
         ← Tất cả lớp
       </Link>
+      {/*
+        Tiêu đề KHÔNG đổi theo số học sinh.
+
+        Trước đây nó hiện "Chưa có ai vào" khi `banDau` rỗng — nhưng đó là ảnh
+        chụp lúc server dựng trang, còn học sinh thì vào sau qua socket. Cô mở
+        trang trước giờ học rồi cả lớp vào, tiêu đề vẫn nói không có ai trong
+        khi bên dưới là sáu em đang làm bài. Chuyện "có ai chưa" thuộc về phần
+        sống, nên để `BangLop` nói.
+      */}
       <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mt-2 mb-6">
-        {banDau[0] ? "Bảng lớp trực tiếp" : "Chưa có ai vào"}
+        Bảng lớp trực tiếp
         <span className="block text-sm font-sans font-medium text-[#1A1A1A]/45 mt-1">{target}</span>
       </h1>
 

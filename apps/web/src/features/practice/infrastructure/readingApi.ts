@@ -82,20 +82,44 @@ export async function submitReadingAttempt(
  * ấy trên bảng lớp, nhưng bài thi vẫn phải chạy. Chặn học sinh vào phòng thi vì
  * một tính năng theo dõi là đánh đổi sai hướng.
  */
+
+/*
+  Thử lại vài lần trước khi bỏ cuộc.
+
+  DNS của RDS chập chờn — một cú `ENOTFOUND` đúng vào giây học sinh bấm bắt đầu
+  là em ấy VÔ HÌNH với cô suốt cả buổi, vì không có gì thử lại. Bài thi vẫn chạy
+  bình thường (đó là lý do hàm này trả `null` chứ không ném), nhưng cô mất hẳn
+  một em mà không có gì trên màn hình nói rằng đã mất.
+
+  Đo được: 2/6 học sinh ảo trượt vì đúng lỗi này trong một lần chạy thử.
+*/
+const SO_LAN_THU = 3;
+
 export async function openReadingAttempt(
   mode: ReadingPaper["mode"],
   id: string,
 ): Promise<string | null> {
-  try {
-    const res = await fetch("/api/practice/attempt/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ skill: "reading", scope: mode === "test" ? "test" : "paper", target: id }),
-    });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { attemptId?: string };
-    return data.attemptId ?? null;
-  } catch {
-    return null;
+  for (let lan = 1; lan <= SO_LAN_THU; lan++) {
+    try {
+      const res = await fetch("/api/practice/attempt/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          skill: "reading",
+          scope: mode === "test" ? "test" : "paper",
+          target: id,
+        }),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { attemptId?: string };
+        return data.attemptId ?? null;
+      }
+      // 401/404 là câu trả lời dứt khoát, thử lại cũng thế. Chỉ 5xx mới đáng thử.
+      if (res.status < 500) return null;
+    } catch {
+      // Mạng hỏng — rơi xuống nhánh chờ rồi thử lại.
+    }
+    if (lan < SO_LAN_THU) await new Promise((r) => setTimeout(r, 400 * lan));
   }
+  return null;
 }

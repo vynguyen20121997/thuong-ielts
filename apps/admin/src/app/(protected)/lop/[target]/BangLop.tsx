@@ -41,6 +41,18 @@ const MAU: Record<HocSinhTrongLop["trangThai"], string> = {
   "da-roi": "text-[#1A1A1A]/40",
 };
 
+/*
+  Mất kết nối là thứ SUY RA, không phải thứ được báo.
+
+  Học sinh rớt mạng thì không có ai gửi lên "em vừa rớt mạng" — cái duy nhất
+  xảy ra là nhịp ngừng tới. Không đếm thì dòng của em ấy nằm mãi ở "Đang làm",
+  và cô tưởng em ấy vẫn đang làm bài trong khi đã đóng máy từ lâu. Server đã
+  suy ra đúng như vậy lúc dựng trang (`docLop`); màn hình sống phải tự làm lấy
+  giữa hai lần tải trang.
+*/
+const NGUONG_MAT_KET_NOI_MS = 20_000;
+const NGUONG_DA_ROI_MS = 60_000;
+
 const THU_TU: Record<HocSinhTrongLop["trangThai"], number> = {
   "mat-ket-noi": 0,
   "dang-lam": 1,
@@ -65,6 +77,15 @@ export default function BangLop({
   const [hienKQ, setHienKQ] = useState(true);
   const [chon, setChon] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
+
+  // attemptId -> lúc nhận nhịp gần nhất (ms). Khởi tạo từ ảnh chụp của server.
+  const nhipCuoiRef = useRef<Map<string, number>>(
+    new Map(
+      banDau
+        .filter((h) => h.lanCuoi)
+        .map((h) => [h.attemptId, new Date(h.lanCuoi as string).getTime()])
+    )
+  );
 
   useEffect(() => {
     const socket = io({ path: "/socket.io", withCredentials: true });
@@ -93,6 +114,8 @@ export default function BangLop({
           band: goi.band ?? null,
           lanCuoi: new Date().toISOString(),
         };
+        // Mốc nhịp cuối, để bộ đếm bên dưới biết em nào đã im lặng bao lâu.
+        nhipCuoiRef.current.set(goi.a, Date.now());
         const i = truoc.findIndex((h) => h.attemptId === goi.a);
         if (i < 0) return [...truoc, dong];
         const sau = [...truoc];
@@ -117,10 +140,23 @@ export default function BangLop({
   */
   useEffect(() => {
     const id = setInterval(() => {
+      const bayGio = Date.now();
       setLop((truoc) =>
-        truoc.map((h) =>
-          h.trangThai === "da-nop" || h.conLai <= 0 ? h : { ...h, conLai: h.conLai - 1 }
-        )
+        truoc.map((h) => {
+          if (h.trangThai === "da-nop") return h;
+
+          const imLang = bayGio - (nhipCuoiRef.current.get(h.attemptId) ?? bayGio);
+          const trangThai: HocSinhTrongLop["trangThai"] =
+            imLang >= NGUONG_DA_ROI_MS
+              ? "da-roi"
+              : imLang >= NGUONG_MAT_KET_NOI_MS
+                ? "mat-ket-noi"
+                : "dang-lam";
+
+          const conLai = h.conLai > 0 ? h.conLai - 1 : 0;
+          if (trangThai === h.trangThai && conLai === h.conLai) return h;
+          return { ...h, trangThai, conLai };
+        })
       );
     }, 1000);
     return () => clearInterval(id);

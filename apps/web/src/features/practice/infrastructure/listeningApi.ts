@@ -41,17 +41,26 @@ export async function submitListeningAttempt(
  *
  * Listening lưu cả bài một dòng nên luôn là `scope: "test"`, không có passage lẻ.
  */
+/** Xem ghi chú về việc thử lại ở `readingApi.ts` — cùng một lý do. */
+const SO_LAN_THU = 3;
+
 export async function openListeningAttempt(slug: string): Promise<string | null> {
-  try {
-    const res = await fetch("/api/practice/attempt/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ skill: "listening", scope: "test", target: slug }),
-    });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { attemptId?: string };
-    return data.attemptId ?? null;
-  } catch {
-    return null;
+  for (let lan = 1; lan <= SO_LAN_THU; lan++) {
+    try {
+      const res = await fetch("/api/practice/attempt/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ skill: "listening", scope: "test", target: slug }),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { attemptId?: string };
+        return data.attemptId ?? null;
+      }
+      if (res.status < 500) return null;
+    } catch {
+      // Mạng hỏng — chờ rồi thử lại.
+    }
+    if (lan < SO_LAN_THU) await new Promise((r) => setTimeout(r, 400 * lan));
   }
+  return null;
 }
