@@ -1,0 +1,51 @@
+{
+  "_comment": "Vòng hai: mở rộng bộ sim sang Listening, và cho cô giáo ảo BẤM THẬT vào một em để xem ngăn chi tiết. Chỉ ghi thứ quan sát được.",
+  "ngay": "2026-08-17",
+  "moi_truong": {
+    "de": "cam11-listening-test3",
+    "ky_nang": "listening",
+    "so_cau": 40,
+    "thoi_luong_giay": 1800,
+    "so_hoc_sinh_ao": 6
+  },
+
+  "listening_chay_duoc": {
+    "len_bang_lop": "6/6 em",
+    "tong_nhip": 26,
+    "nhip_loi": 0,
+    "mo_luot_phai_thu_lai": 0,
+    "trang_thai_cuoi": { "submitted": 5, "in_progress": 1 },
+    "ghi_chu": "lượt chỉ mở khi bài rời màn hướng dẫn — không em nào tạo dòng thừa khi mới vào trang"
+  },
+
+  "loi_tim_ra_va_da_sua": [
+    {
+      "loi": "Ngăn chi tiết gộp câu BỎ TRỐNG vào ô 'Sai'",
+      "phat_hien_bang": "cô giáo ảo bấm vào một em đã nộp",
+      "quan_sat_truoc_khi_sua": "Khánh Linh trả lời 20/40 câu, ngăn chi tiết hiện '16 ĐÚNG, 24 SAI, 0 CHƯA LÀM'",
+      "vi_sao": "hai chỗ cùng sai một kiểu — (a) lúc nộp, gói tin gửi `false` cho mọi câu không đúng kể cả câu bỏ trống; (b) ngăn chi tiết tính 'Sai' bằng hiệu số `đã làm − đúng`, mà bài đã nộp thì `đã làm` bằng tổng số câu",
+      "hau_qua": "cô mất đúng thông tin cần nhất để biết phải giúp em ấy chuyện gì — sai là hiểu nhầm, bỏ trống là không kịp giờ",
+      "da_sua": "gói tin gửi `null` cho câu bỏ trống; ngăn chi tiết đếm thẳng từ `marks` thay vì lấy hiệu số",
+      "da_xac_nhan_lai": true,
+      "quan_sat_sau_khi_sua": "Ngọc Ánh trả lời 10/40, được 1 câu đúng → ngăn chi tiết hiện '1 ĐÚNG, 9 SAI, 30 CHƯA LÀM'; đếm ô: 1 xanh + 9 đỏ + 30 trống = 40",
+      "ghi_chu_them": "lỗi này còn làm hai đường dữ liệu nói khác nhau: tải lại trang thì đọc `attempt_progress` (có null), còn nhận qua socket thì toàn `false`. Sửa xong hai đường khớp nhau."
+    }
+  ],
+
+  "co_giao_ao_bam_that": {
+    "thao_tac": "click vào một dòng trên bảng lớp",
+    "ngan_chi_tiet_mo": true,
+    "so_o_hien_ra": 40,
+    "o_khop_tong": "1 xanh + 9 đỏ + 30 trống = 40 = tổng số câu",
+    "khop_voi_diem_thuc_te": "có — sim ghi 'đã làm 10 | 1/40'"
+  },
+
+  "chua_kiem_duoc": [
+    "Nhiều cô cùng xem một lớp",
+    "Admin từ hai instance trở lên (mỗi instance giữ một kết nối LISTEN riêng)",
+    "Độ trễ thật trên Render — số đo ở đây là máy dev tại Việt Nam gọi RDS us-east-1",
+    "Học sinh ảo không nghe được audio: chỉ biết file tải về được hay không"
+  ],
+
+  "da_don_du_lieu_gia": true
+}

@@ -106,7 +106,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
         d: result.total,
         c: result.correct,
         t: result.total,
-        marks: result.items.map((i) => i.isCorrect),
+        // `null` cho câu BỎ TRỐNG, không phải `false`.
+        //
+        // Về điểm số thì bỏ trống cũng là không được điểm, nhưng trên màn hình
+        // của cô hai thứ đó khác hẳn nhau: sai là hiểu nhầm, bỏ trống là không
+        // kịp giờ. Gộp lại thành "sai" là giấu mất thông tin cô cần nhất để
+        // biết phải giúp em ấy chuyện gì.
+        marks: result.items.map((i) => (i.given.trim() ? i.isCorrect : null)),
         conLai: 0,
         band: result.band,
       });

@@ -11,8 +11,9 @@
  * không phải nút đăng nhập. Chỉ chạy trên máy dev — script này không đi kèm
  * bản build nào.
  *
- * Chạy:  npx tsx tools/user-sim/live-check.mts [--giu]
- *   --giu : giữ lại dữ liệu giả sau khi chạy (mặc định là dọn sạch)
+ * Chạy:  npx tsx tools/user-sim/live-check.mts [--nghe] [--giu]
+ *   --nghe : làm đề Listening thay vì Reading
+ *   --giu  : giữ lại dữ liệu giả sau khi chạy (mặc định là dọn sạch)
  */
 import path from "path";
 import { fileURLToPath } from "url";
@@ -24,8 +25,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, "..", "..", "apps", "web", ".env.local") });
 
 const WEB = process.env.SIM_WEB_URL ?? "http://localhost:2000";
-const TARGET = process.env.SIM_TARGET ?? "cam12-test3";
 const GIU_LAI = process.argv.includes("--giu");
+
+/*
+  Reading và Listening khác nhau ở ba chỗ, và cả ba đều nằm gọn ở đây:
+  bảng chứa đề, cách gọi "cả bài" (Reading gộp ba dòng theo `slug LIKE`,
+  Listening là một dòng), và endpoint nộp bài. Gom lại một chỗ để phần còn
+  lại của bộ sim không phải biết đang chạy kỹ năng nào.
+*/
+const NGHE = process.argv.includes("--nghe");
+const KY_NANG: "reading" | "listening" = NGHE ? "listening" : "reading";
+const TARGET =
+  process.env.SIM_TARGET ?? (NGHE ? "cam11-listening-test3" : "cam12-test3");
+const BANG = NGHE ? "listening_tests" : "reading_tests";
+const DIEU_KIEN = NGHE ? "slug = $1" : "slug LIKE $1";
+const THAM_SO = NGHE ? TARGET : `${TARGET}-%`;
+const URL_NOP = NGHE
+  ? `${WEB}/api/practice/listening/${TARGET}/submit`
+  : `${WEB}/api/practice/reading/test/${TARGET}/submit`;
 
 /** Sáu học sinh, mỗi em một kiểu làm bài khác nhau — không phải cho đông. */
 const HOC_SINH = [
@@ -71,9 +88,9 @@ async function taoHocSinh(ten: string, i: number) {
 
 async function layCauHoi(): Promise<string[]> {
   const { rows } = await pool.query(
-    `SELECT questions FROM reading_tests WHERE slug LIKE $1
+    `SELECT questions FROM ${BANG} WHERE ${DIEU_KIEN}
       ORDER BY COALESCE((questions -> 0 ->> 'number')::int, 999), slug`,
-    [`${TARGET}-%`]
+    [THAM_SO]
   );
   return rows.flatMap((r) => (r.questions ?? []).map((q: { id: string }) => q.id));
 }
@@ -81,8 +98,8 @@ async function layCauHoi(): Promise<string[]> {
 /** Đáp án đúng, để học sinh ảo "làm đúng" được thật chứ không đoán bừa. */
 async function layDapAn(): Promise<Map<string, string>> {
   const { rows } = await pool.query(
-    `SELECT answer_key FROM reading_tests WHERE slug LIKE $1`,
-    [`${TARGET}-%`]
+    `SELECT answer_key FROM ${BANG} WHERE ${DIEU_KIEN}`,
+    [THAM_SO]
   );
   const m = new Map<string, string>();
   for (const r of rows) {
@@ -117,7 +134,7 @@ async function chayMotEm(
     res = await fetch(`${WEB}/api/practice/attempt/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: em.cookie },
-      body: JSON.stringify({ skill: "reading", scope: "test", target: TARGET }),
+      body: JSON.stringify({ skill: KY_NANG, scope: "test", target: TARGET }),
     });
     if (res.ok) break;
     if (res.status < 500) break;
@@ -154,7 +171,10 @@ async function chayMotEm(
     const beat = await fetch(`${WEB}/api/practice/attempt/${attemptId}/beat`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: em.cookie },
-      body: JSON.stringify({ answers: traLoi, part: `Passage ${Math.min(3, vong + 1)}` }),
+      body: JSON.stringify({
+        answers: traLoi,
+        part: NGHE ? `Part ${Math.min(4, vong + 1)}` : `Passage ${Math.min(3, vong + 1)}`,
+      }),
     });
     if (beat.ok) {
       kq.soNhip++;
@@ -175,7 +195,7 @@ async function chayMotEm(
     return kq;
   }
 
-  const nop = await fetch(`${WEB}/api/practice/reading/test/${TARGET}/submit`, {
+  const nop = await fetch(URL_NOP, {
     method: "POST",
     headers: { "Content-Type": "application/json", Cookie: em.cookie },
     body: JSON.stringify({ answers: traLoi, elapsedSeconds: 1200, attemptId, autoSubmitted: false }),
@@ -190,7 +210,7 @@ async function chayMotEm(
 }
 
 async function main() {
-  console.log(`SIM đề: ${TARGET} — web: ${WEB}`);
+  console.log(`SIM kỹ năng: ${KY_NANG} — đề: ${TARGET} — web: ${WEB}`);
 
   const cauHoi = await layCauHoi();
   const dapAn = await layDapAn();

@@ -175,6 +175,25 @@ export default function BangLop({
 
   const emDangChon = chon ? lop.find((h) => h.attemptId === chon) : null;
 
+  /*
+    Đếm thẳng từ `marks`, KHÔNG lấy hiệu số.
+
+    "Sai = đã làm − đúng" nghe thì đúng, nhưng với bài đã nộp thì `daLam` bằng
+    tổng số câu (chấm cả bài), nên câu bỏ trống bị cộng vào ô "Sai" và ô "Chưa
+    làm" luôn bằng 0. Đo được: một em trả lời 20/40 câu hiện thành "16 đúng,
+    24 sai, 0 chưa làm".
+
+    Về điểm thì bỏ trống cũng không được điểm, nhưng trên màn hình của cô hai
+    thứ đó khác hẳn: sai là hiểu nhầm, bỏ trống là không kịp giờ.
+  */
+  const dem = useMemo(() => {
+    const marks = emDangChon?.marks ?? [];
+    const tong = emDangChon?.tong ?? 0;
+    const dung = marks.filter((m) => m === true).length;
+    const sai = marks.filter((m) => m === false).length;
+    return { dung, sai, trong: Math.max(0, tong - dung - sai) };
+  }, [emDangChon]);
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-5 items-start">
       <div className="bg-white border border-black/10 rounded-2xl overflow-hidden">
@@ -289,9 +308,9 @@ export default function BangLop({
               {emDangChon.khach ? "Khách vãng lai" : "Tài khoản"} · {NHAN[emDangChon.trangThai]}
             </p>
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <Stat so={String(emDangChon.dung)} nhan="Đúng" />
-              <Stat so={String(emDangChon.daLam - emDangChon.dung)} nhan="Sai" />
-              <Stat so={String(emDangChon.tong - emDangChon.daLam)} nhan="Chưa làm" />
+              <Stat so={String(dem.dung)} nhan="Đúng" />
+              <Stat so={String(dem.sai)} nhan="Sai" />
+              <Stat so={String(dem.trong)} nhan="Chưa làm" />
             </div>
             <div className="grid grid-cols-[repeat(8,1fr)] gap-1">
               {Array.from({ length: emDangChon.tong }, (_, i) => {
