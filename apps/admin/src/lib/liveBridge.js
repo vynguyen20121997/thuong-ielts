@@ -41,10 +41,33 @@ const KENH_NHIP = "nhip_lam_bai";
 const CHO_TOI_THIEU = 1000;
 const CHO_TOI_DA = 30000;
 
-export function moCauNoi(onNhip) {
+/*
+  Nhịp tim: cứ 30 giây hỏi Postgres một câu vô nghĩa để BIẾT kết nối còn sống.
+
+  Đây không phải phòng xa — đã đo được thật. Kết nối `LISTEN` có thể chết âm
+  thầm: tường lửa hoặc RDS bỏ rơi một kết nối ngồi im quá lâu mà không gửi gói
+  đóng nào, nên `pg` không nhận được sự kiện 'error' hay 'end'. Log vẫn nói
+  "đang nghe", không có lỗi nào, và nhịp thì không bao giờ tới nữa.
+
+  Đây là kiểu hỏng tệ nhất có thể có ở tính năng này: cô mở bảng lớp, thấy chữ
+  "Đang nhận trực tiếp" màu xanh, và bảng trống — rồi kết luận là chưa em nào
+  vào làm bài. Không có gì trên màn hình nói rằng đường truyền đã đứt.
+
+  Một câu `SELECT 1` mỗi 30 giây vừa giữ kết nối khỏi bị bỏ rơi, vừa biến cái
+  chết âm thầm thành một lỗi nghe được — và chỗ bắt lỗi bên dưới sẽ nối lại.
+*/
+const NHIP_TIM_MS = 30_000;
+
+/**
+ * @param onNhip     gọi mỗi khi có nhịp
+ * @param onTrangThai gọi khi cầu nối sống/chết đổi trạng thái — để màn hình của
+ *                    cô nói đúng sự thật thay vì cứ hiện "Đang nhận trực tiếp"
+ */
+export function moCauNoi(onNhip, onTrangThai = () => {}) {
   let client = null;
   let cho = CHO_TOI_THIEU;
   let daDong = false;
+  let nhipTim = null;
 
   async function noi() {
     if (daDong) return;
@@ -56,6 +79,10 @@ export function moCauNoi(onNhip) {
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
       ssl: { rejectUnauthorized: false },
+      // Bật keepalive ở tầng TCP: kết nối này ngồi im hàng phút giữa hai buổi
+      // học, đúng kiểu bị tường lửa dọn dẹp.
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 10_000,
     });
 
     // Kết nối này đứt là realtime chết, nên phải tự nối lại. Không có nó thì
@@ -74,6 +101,21 @@ export function moCauNoi(onNhip) {
       await client.query(`LISTEN ${KENH_NHIP}`);
       cho = CHO_TOI_THIEU;
       console.log(`[live] đang nghe kênh "${KENH_NHIP}"`);
+      onTrangThai(true);
+
+      // Nhịp tim — xem ghi chú ở đầu file về cái chết âm thầm.
+      clearInterval(nhipTim);
+      nhipTim = setInterval(() => {
+        const cua_toi = client;
+        cua_toi?.query("SELECT 1").catch((err) => {
+          // Chỉ xử lý nếu vẫn đang là kết nối hiện tại, kẻo một nhịp tim muộn
+          // của kết nối cũ lại đá đổ kết nối mới vừa dựng xong.
+          if (cua_toi !== client) return;
+          console.error("[live] nhịp tim hỏng — kết nối LISTEN đã chết:", err.message);
+          thuLaiSau();
+        });
+      }, NHIP_TIM_MS);
+      nhipTim.unref?.();
     } catch (err) {
       console.error("[live] không nối được để LISTEN:", err.message);
       thuLaiSau();
@@ -94,6 +136,9 @@ export function moCauNoi(onNhip) {
 
   function thuLaiSau() {
     if (daDong) return;
+    onTrangThai(false);
+    clearInterval(nhipTim);
+    nhipTim = null;
     const client_cu = client;
     client = null;
     if (client_cu) client_cu.end().catch(() => {});
@@ -108,6 +153,7 @@ export function moCauNoi(onNhip) {
   return {
     dong() {
       daDong = true;
+      clearInterval(nhipTim);
       if (client) client.end().catch(() => {});
     },
   };

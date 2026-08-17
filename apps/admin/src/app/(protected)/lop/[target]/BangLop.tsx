@@ -77,6 +77,9 @@ export default function BangLop({
 }) {
   const [lop, setLop] = useState<HocSinhTrongLop[]>(banDau);
   const [noi, setNoi] = useState(false);
+  // Socket nối được chỉ chứng minh tới được tiến trình admin. Cầu nối
+  // LISTEN phía sau còn sống hay không là chuyện khác, và server nói cho biết.
+  const [cauNoi, setCauNoi] = useState(true);
   const [hienKQ, setHienKQ] = useState(true);
   const [chon, setChon] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
@@ -100,6 +103,7 @@ export default function BangLop({
     });
     socket.on("disconnect", () => setNoi(false));
     socket.on("connect_error", () => setNoi(false));
+    socket.on("cau-noi", (song: boolean) => setCauNoi(song));
 
     socket.on("nhip", (goi: GoiNhip) => {
       // So theo MÃ LỚP, không theo `target`: em làm passage lẻ có `target`
@@ -206,11 +210,15 @@ export default function BangLop({
         <div className="flex flex-wrap items-end gap-6 px-5 py-4 border-b border-black/5">
           <div className="mr-auto flex items-center gap-2">
             <span
-              className={`h-2 w-2 rounded-full ${noi ? "bg-[#157F3D]" : "bg-[#B26A00]"}`}
+              className={`h-2 w-2 rounded-full ${noi && cauNoi ? "bg-[#157F3D]" : "bg-[#B26A00]"}`}
               aria-hidden
             />
             <span className="text-xs font-bold text-[#1A1A1A]/60">
-              {noi ? "Đang nhận trực tiếp" : "Mất kết nối — tải lại trang để xem số mới nhất"}
+              {!noi
+                ? "Mất kết nối — tải lại trang để xem số mới nhất"
+                : !cauNoi
+                  ? "Đường tới máy chủ dữ liệu đang đứt — số trên bảng có thể cũ"
+                  : "Đang nhận trực tiếp"}
             </span>
           </div>
           <Stat so={String(dangLam)} nhan="Đang làm" />

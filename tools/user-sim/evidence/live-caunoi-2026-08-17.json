@@ -1,0 +1,59 @@
+{
+  "_comment": "Vòng ba: chạy lại sau khi gộp lớp. Lòi ra lỗi nặng nhất từ đầu tới giờ — kết nối LISTEN chết âm thầm. Chỉ ghi thứ quan sát được.",
+  "ngay": "2026-08-17",
+
+  "loi_tim_ra_va_da_sua": [
+    {
+      "loi": "Kết nối LISTEN chết ÂM THẦM — realtime ngừng hẳn mà không có gì báo",
+      "phat_hien_bang": "chạy lại vòng đo sau ~13 phút để tiến trình admin ngồi im",
+      "quan_sat": [
+        "12:15 — sim chạy, bảng lớp nhận đủ 6/6 em",
+        "12:28 — sim chạy y hệt, 26 nhịp 0 lỗi, DB có đủ dữ liệu, bảng lớp TRỐNG TRƠN",
+        "bắn pg_notify thẳng tay: cũng không tới",
+        "log của admin: chỉ có đúng dòng 'đang nghe kênh' lúc khởi động, KHÔNG có lỗi nào"
+      ],
+      "vi_sao": "tường lửa hoặc RDS bỏ rơi một kết nối ngồi im quá lâu mà không gửi gói đóng nào, nên `pg` không nhận được sự kiện 'error' hay 'end'",
+      "vi_sao_nguy_hiem": "cô mở bảng lớp, thấy chữ 'Đang nhận trực tiếp' màu xanh và bảng trống, rồi kết luận là chưa em nào vào làm bài — trong khi cả lớp đang thi",
+      "da_sua": [
+        "nhịp tim `SELECT 1` mỗi 30 giây: vừa giữ kết nối khỏi bị bỏ rơi, vừa biến cái chết âm thầm thành lỗi nghe được rồi tự nối lại",
+        "bật keepAlive ở tầng TCP cho client LISTEN",
+        "server báo trạng thái cầu nối xuống trình duyệt; bảng lớp hiện 'Đường tới máy chủ dữ liệu đang đứt — số trên bảng có thể cũ' thay vì cứ xanh"
+      ],
+      "ghi_chu": "tự nối lại thôi chưa đủ. Điều quan trọng hơn là màn hình phải NÓI THẬT khi đường truyền đứt, vì mọi phương án realtime đều có lúc đứt."
+    }
+  ],
+
+  "vong_do_cuoi_cung": {
+    "che_do": "--tron (3 em thi cả bài, 3 em làm 3 passage khác nhau của cùng đề)",
+    "bang_lop": {
+      "so_dong": 6,
+      "so_lop": 1,
+      "bao_trang_thai": "Đang nhận trực tiếp",
+      "chi_tiet": [
+        "Gia Huy · Passage 2 · Mất kết nối · 2/8",
+        "Khánh Linh · Passage 3 · Đang làm · 8/14",
+        "Ngọc Ánh · Đã nộp · 4/40 · band 2.5",
+        "Minh Khôi · Đã nộp · 11/13 · band 7.5",
+        "Thu Hà · Đã nộp · 16/40 · band 5.0",
+        "Bảo Ngọc · Đã nộp · 21/40 · band 5.5"
+      ]
+    },
+    "sim": { "tong_nhip": 26, "nhip_loi": 0, "mo_luot_phai_thu_lai": 0 },
+    "trang_thai_trong_db": { "in_progress": 1, "submitted": 5 },
+    "khop_giua_sim_va_man_hinh": "có — từng em một"
+  },
+
+  "quan_sat_them": {
+    "hai_lan_lam_cung_mot_de_thi_hien_hai_dong": "đúng như thiết kế (mỗi lượt một dòng), nhưng nếu sau này thấy rối thì đây là chỗ cần gom",
+    "server_js_khong_nap_nong": "sửa file đó xong phải khởi động lại tiến trình admin; đã mất một vòng đo vì quên"
+  },
+
+  "chua_kiem_duoc": [
+    "Nhiều cô cùng xem một lớp",
+    "Admin từ hai instance trở lên (mỗi instance giữ một kết nối LISTEN riêng)",
+    "Độ trễ thật trên Render",
+    "Học sinh ảo không nghe được audio"
+  ],
+
+  "da_don_du_lieu_gia": true
+}

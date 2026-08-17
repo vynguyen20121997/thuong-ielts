@@ -53,7 +53,20 @@ io.use((socket, next) => {
   next();
 });
 
+/*
+  Cô phải biết khi đường truyền đứt.
+
+  Socket.IO nối được chỉ chứng minh trình duyệt tới được tiến trình này. Nếu
+  cầu nối LISTEN phía sau chết thì bảng lớp vẫn xanh chữ "Đang nhận trực tiếp"
+  và trống trơn — cô sẽ kết luận là chưa em nào vào làm bài. Đã đo được đúng
+  tình huống này một lần.
+*/
+let cauNoiSong = false;
+
 io.on("connection", (socket) => {
+  // Nói ngay tình trạng hiện tại, đừng để cô phải đợi lần đổi trạng thái sau.
+  socket.emit("cau-noi", cauNoiSong);
+
   // Mỗi đề là một phòng. Sau này khi có bảng `assignments`, phòng sẽ là mã bài
   // cô giao thay vì mã đề — đổi đúng chỗ này.
   socket.on("xem", (target) => {
@@ -81,6 +94,9 @@ const cauNoi = moCauNoi((goi) => {
   const phong = goi?.lop ?? goi?.target;
   if (typeof phong !== "string") return;
   io.to(phong).emit("nhip", goi);
+}, (song) => {
+  cauNoiSong = song;
+  io.emit("cau-noi", song);
 });
 
 server.listen(port, hostname, () => {
