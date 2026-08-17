@@ -24,6 +24,10 @@ export function proxy(req: NextRequest) {
 }
 
 // Protect every route in this app except /login and /api/login (checked above).
+//
+// `socket.io` cũng được loại ra: Socket.IO gắn thẳng vào HTTP server nên
+// `server.js` xử lý trước khi Next nhìn thấy, và nó tự xác thực phiên lúc bắt
+// tay. Ghi rõ ở đây để không ai đi tìm xem sao middleware không chạy cho nó.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|socket.io).*)"],
 };

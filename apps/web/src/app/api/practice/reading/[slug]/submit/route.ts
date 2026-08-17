@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { banNhip } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
 import { gradeReading } from "../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../features/practice/domain/types";
-import { saveAttempt } from "../../../../../../features/practice/server/attemptRepository";
+import {
+  closeAttempt,
+  saveAttempt,
+} from "../../../../../../features/practice/server/attemptRepository";
 import {
   getAnswerKeyBySlug,
   recordAttempt,
@@ -12,6 +16,8 @@ import {
 interface SubmitBody {
   answers?: unknown;
   elapsedSeconds?: unknown;
+  attemptId?: unknown;
+  autoSubmitted?: unknown;
 }
 
 /** Accepts only a flat { [questionId]: string } map; anything else is dropped. */
@@ -57,15 +63,42 @@ export async function POST(
   // Xem ghi chú ở route chấm cả test: người làm lấy từ phiên, không lấy từ body.
   const student = await currentStudent();
   if (student) {
-    await saveAttempt({
-      skill: "reading",
-      scope: "paper",
-      target: slug,
-      title: record.title,
-      studentId: student.id,
-      answers,
-      result,
-    });
+    const moTruoc = typeof body.attemptId === "string" ? body.attemptId : null;
+    const tuDong = body.autoSubmitted === true;
+    const daChot = moTruoc ? await closeAttempt(moTruoc, answers, result, tuDong) : false;
+
+    if (!moTruoc) {
+      await saveAttempt({
+        skill: "reading",
+        scope: "paper",
+        target: slug,
+        title: record.title,
+        studentId: student.id,
+        autoSubmitted: tuDong,
+        answers,
+        result,
+      });
+    } else if (!daChot) {
+      console.warn(`Lượt ${moTruoc} đã đóng từ trước — bỏ qua lần nộp này.`);
+    }
+
+    // Báo bảng lớp chuyển em này sang "đã nộp". Không chờ: học sinh xứng đáng
+    // thấy điểm ngay, không phải đợi một cái thông báo cho màn hình người khác.
+    if (daChot) {
+      void banNhip({
+        loai: "nop",
+        a: moTruoc as string,
+        target: slug,
+        ten: student.name ?? "Học viên",
+        khach: false,
+        d: result.total,
+        c: result.correct,
+        t: result.total,
+        marks: result.items.map((i) => i.isCorrect),
+        conLai: 0,
+        band: result.band,
+      });
+    }
   }
 
   return NextResponse.json(result);

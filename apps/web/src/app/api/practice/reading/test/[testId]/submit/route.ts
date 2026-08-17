@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { banNhip } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../../features/account/server/guard";
 import { gradeReading } from "../../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../../features/practice/domain/types";
-import { saveAttempt } from "../../../../../../../features/practice/server/attemptRepository";
+import {
+  closeAttempt,
+  saveAttempt,
+} from "../../../../../../../features/practice/server/attemptRepository";
 import {
   getAnswerKeyByTestId,
   recordTestAttempt,
@@ -12,6 +16,9 @@ import {
 interface SubmitBody {
   answers?: unknown;
   elapsedSeconds?: unknown;
+  /** Lượt đã mở lúc bấm bắt đầu. Có thì chốt đúng lượt ấy, không đẻ dòng mới. */
+  attemptId?: unknown;
+  autoSubmitted?: unknown;
 }
 
 /** Accepts only a flat { [questionId]: string } map; anything else is dropped. */
@@ -62,15 +69,48 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
   // cũng chẳng để làm gì. Điểm vẫn trả về bình thường.
   const student = await currentStudent();
   if (student) {
-    await saveAttempt({
-      skill: "reading",
-      scope: "test",
-      target: testId,
-      title: record.title,
-      studentId: student.id,
-      answers,
-      result,
-    });
+    const moTruoc = typeof body.attemptId === "string" ? body.attemptId : null;
+    const tuDong = body.autoSubmitted === true;
+
+    // Chốt lượt đã mở. Nếu không chốt được (nộp hai lần, hoặc server đã tự
+    // chốt vì hết giờ) thì KHÔNG ghi đè và cũng không tạo dòng mới — điểm lần
+    // chốt đầu mới là điểm thật.
+    const daChot = moTruoc ? await closeAttempt(moTruoc, answers, result, tuDong) : false;
+
+    // Không có lượt mở sẵn: học sinh vào từ phiên cũ trước khi có tính năng
+    // này, hoặc lúc mở lượt bị lỗi mạng. Vẫn lưu lại để lịch sử không thủng.
+    if (!moTruoc) {
+      await saveAttempt({
+        skill: "reading",
+        scope: "test",
+        target: testId,
+        title: record.title,
+        studentId: student.id,
+        autoSubmitted: tuDong,
+        answers,
+        result,
+      });
+    } else if (!daChot) {
+      console.warn(`Lượt ${moTruoc} đã đóng từ trước — bỏ qua lần nộp này.`);
+    }
+
+    // Báo bảng lớp chuyển em này sang "đã nộp". Không chờ: học sinh xứng đáng
+    // thấy điểm ngay, không phải đợi một cái thông báo cho màn hình người khác.
+    if (daChot) {
+      void banNhip({
+        loai: "nop",
+        a: moTruoc as string,
+        target: testId,
+        ten: student.name ?? "Học viên",
+        khach: false,
+        d: result.total,
+        c: result.correct,
+        t: result.total,
+        marks: result.items.map((i) => i.isCorrect),
+        conLai: 0,
+        band: result.band,
+      });
+    }
   }
 
   return NextResponse.json(result);

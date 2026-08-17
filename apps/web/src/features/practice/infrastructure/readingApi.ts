@@ -50,6 +50,8 @@ export async function submitReadingAttempt(
   id: string,
   answers: ReadingAnswers,
   elapsedSeconds: number,
+  attemptId?: string | null,
+  autoSubmitted = false,
 ): Promise<ReadingResult> {
   const path =
     mode === "test"
@@ -59,7 +61,10 @@ export async function submitReadingAttempt(
   const res = await fetch(path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ answers, elapsedSeconds }),
+    // `attemptId` là lượt đã mở lúc bấm bắt đầu. Có nó thì server chốt đúng
+    // lượt ấy thay vì đẻ ra một dòng mới, và bảng lớp của cô thấy em này
+    // chuyển sang "đã nộp" thay vì vẫn treo ở "đang làm" mãi mãi.
+    body: JSON.stringify({ answers, elapsedSeconds, attemptId, autoSubmitted }),
   });
 
   if (!res.ok) {
@@ -68,4 +73,29 @@ export async function submitReadingAttempt(
   }
 
   return (await res.json()) as ReadingResult;
+}
+
+/**
+ * Mở một lượt làm bài ở server, ngay khi học sinh bấm bắt đầu.
+ *
+ * Trả `null` khi hỏng, và đó là chủ ý: không mở được lượt thì cô không thấy em
+ * ấy trên bảng lớp, nhưng bài thi vẫn phải chạy. Chặn học sinh vào phòng thi vì
+ * một tính năng theo dõi là đánh đổi sai hướng.
+ */
+export async function openReadingAttempt(
+  mode: ReadingPaper["mode"],
+  id: string,
+): Promise<string | null> {
+  try {
+    const res = await fetch("/api/practice/attempt/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ skill: "reading", scope: mode === "test" ? "test" : "paper", target: id }),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { attemptId?: string };
+    return data.attemptId ?? null;
+  } catch {
+    return null;
+  }
 }

@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { allQuestionsOf } from "../domain/paper";
 import { countAnswered } from "../domain/scoring";
 import type { ReadingAnswers, ReadingPaper, ReadingResult } from "../domain/types";
-import { submitReadingAttempt } from "../infrastructure/readingApi";
+import { openReadingAttempt, submitReadingAttempt } from "../infrastructure/readingApi";
+import { useProgressBeat } from "./useProgressBeat";
 
 /**
  * Application layer: the whole behaviour of "sitting a reading test" — answers,
@@ -97,6 +98,27 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
   const [timedOut, setTimedOut] = useState(false);
   const [sectionIndex, setSectionIndex] = useState(saved?.sectionIndex ?? 0);
 
+  /*
+    Lượt làm bài ở server — mở ngay khi vào phòng thi, không phải lúc nộp.
+
+    Từ giây này cô đã thấy em ấy trên bảng lớp, kể cả khi em ấy chưa trả lời
+    câu nào. Mở hỏng thì `attemptId` là null: bài thi vẫn chạy bình thường,
+    chỉ là không có ai theo dõi được.
+  */
+  const [attemptId, setAttemptId] = useState<string | null>(null);
+  const attemptRef = useRef<string | null>(null);
+  attemptRef.current = attemptId;
+
+  useEffect(() => {
+    let con = true;
+    void openReadingAttempt(paper.mode, paper.id).then((id) => {
+      if (con) setAttemptId(id);
+    });
+    return () => {
+      con = false;
+    };
+  }, [paper.mode, paper.id]);
+
   // Một phiếu trả lời cho cả bài, kể cả khi bài gồm ba passage: id câu hỏi là
   // duy nhất toàn cục nên gộp lại không đụng nhau.
   const questions = useMemo(() => allQuestionsOf(paper), [paper]);
@@ -140,6 +162,8 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
           paper.id,
           answersRef.current,
           paper.durationSeconds - remainingRef.current,
+          attemptRef.current,
+          auto,
         );
         setResult(graded);
         setStatus("finished");
@@ -204,6 +228,10 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
 
     return () => window.clearInterval(id);
   }, [status, runSubmit, paper.id]);
+
+  // Nhịp tiến độ cho màn theo dõi của cô. Đặt sau `submit` để hook chạy trong
+  // suốt thời gian làm bài và tự ngừng khi server bảo lượt đã đóng.
+  useProgressBeat(attemptId, answers, paper.sections[sectionIndex]?.label ?? null);
 
   const answeredCount = useMemo(() => countAnswered(questions, answers), [questions, answers]);
 

@@ -51,6 +51,9 @@ services:
     region: singapore
     branch: main
     buildCommand: npm ci && npm run build:admin
+    # `node server.js`, không phải `next start`: Next không nhận được yêu cầu
+    # nâng cấp lên WebSocket trong route handler, nên Socket.IO cần một HTTP
+    # server tự cầm với Next chạy bên trong. Xem apps/admin/server.js.
     startCommand: npm run start --workspace=apps/admin
     healthCheckPath: /login
     buildFilter:

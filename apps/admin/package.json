@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev --port 2100 --hostname 0.0.0.0",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start --port ${PORT:-4174}",
+    "start": "node server.js",
     "clean": "rm -rf .next",
     "lint": "tsc --noEmit"
   },
@@ -16,7 +16,9 @@
     "bcryptjs": "^3.0.3",
     "next": "^16.2.10",
     "react": "^19.0.1",
-    "react-dom": "^19.0.1"
+    "react-dom": "^19.0.1",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
