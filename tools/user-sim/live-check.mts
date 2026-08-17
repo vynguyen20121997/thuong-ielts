@@ -13,6 +13,8 @@
  *
  * Chạy:  npx tsx tools/user-sim/live-check.mts [--nghe] [--giu]
  *   --nghe : làm đề Listening thay vì Reading
+ *   --tron : một nửa lớp thi cả bài, nửa kia làm passage lẻ — để kiểm rằng
+ *            cùng một đề thì tất cả vẫn nằm chung MỘT lớp trên màn hình cô
  *   --giu  : giữ lại dữ liệu giả sau khi chạy (mặc định là dọn sạch)
  */
 import path from "path";
@@ -34,6 +36,7 @@ const GIU_LAI = process.argv.includes("--giu");
   lại của bộ sim không phải biết đang chạy kỹ năng nào.
 */
 const NGHE = process.argv.includes("--nghe");
+const TRON = process.argv.includes("--tron") && !NGHE;
 const KY_NANG: "reading" | "listening" = NGHE ? "listening" : "reading";
 const TARGET =
   process.env.SIM_TARGET ?? (NGHE ? "cam11-listening-test3" : "cam12-test3");
@@ -86,6 +89,22 @@ async function taoHocSinh(ten: string, i: number) {
   return { id, ten, cookie: `authjs.session-token=${token}` };
 }
 
+/** Slug từng passage, để một nửa lớp làm lẻ. */
+async function layPassage(): Promise<string[]> {
+  if (!TRON) return [];
+  const { rows } = await pool.query(
+    `SELECT slug FROM reading_tests WHERE slug LIKE $1 AND status = 'published'
+      ORDER BY COALESCE((questions -> 0 ->> 'number')::int, 999), slug`,
+    [`${TARGET}-%`]
+  );
+  return rows.map((r) => r.slug as string);
+}
+
+async function layCauHoiCua(slug: string): Promise<string[]> {
+  const { rows } = await pool.query(`SELECT questions FROM reading_tests WHERE slug = $1`, [slug]);
+  return (rows[0]?.questions ?? []).map((q: { id: string }) => q.id);
+}
+
 async function layCauHoi(): Promise<string[]> {
   const { rows } = await pool.query(
     `SELECT questions FROM ${BANG} WHERE ${DIEU_KIEN}
@@ -123,9 +142,16 @@ async function chayMotEm(
   em: { id: string; ten: string; cookie: string },
   kieu: string,
   cauHoi: string[],
-  dapAn: Map<string, string>
+  dapAn: Map<string, string>,
+  rieng?: { target: string; cauHoi: string[] }
 ): Promise<KetQua> {
   const kq: KetQua = { ten: em.ten, kieu, attemptId: null, soNhip: 0, nhipLoi: 0, daLam: 0, diem: null, ghiChu: [] };
+
+  // Em làm passage lẻ có `target` riêng và bộ câu hỏi riêng.
+  const mucTieu = rieng?.target ?? TARGET;
+  const phamVi: "paper" | "test" = rieng ? "paper" : "test";
+  const danhSachCau = rieng?.cauHoi ?? cauHoi;
+  if (rieng) kq.ghiChu.push(`làm passage lẻ: ${rieng.target}`);
 
   // Thử lại y như client thật làm — DNS của RDS chập chờn, và một cú trượt
   // đúng giây bắt đầu là em này vô hình với cô suốt buổi.
@@ -134,7 +160,7 @@ async function chayMotEm(
     res = await fetch(`${WEB}/api/practice/attempt/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: em.cookie },
-      body: JSON.stringify({ skill: KY_NANG, scope: "test", target: TARGET }),
+      body: JSON.stringify({ skill: KY_NANG, scope: phamVi, target: mucTieu }),
     });
     if (res.ok) break;
     if (res.status < 500) break;
@@ -161,7 +187,7 @@ async function chayMotEm(
   const traLoi: Record<string, string> = {};
   for (let vong = 0; vong < kb.soVong; vong++) {
     for (let i = 0; i < kb.moiVong; i++) {
-      const q = cauHoi[kq.daLam];
+      const q = danhSachCau[kq.daLam];
       if (!q) break;
       const dung = Math.random() < kb.tiLeDung;
       traLoi[q] = dung ? (dapAn.get(q) ?? "x") : "sai-roi";
@@ -195,11 +221,14 @@ async function chayMotEm(
     return kq;
   }
 
-  const nop = await fetch(URL_NOP, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Cookie: em.cookie },
-    body: JSON.stringify({ answers: traLoi, elapsedSeconds: 1200, attemptId, autoSubmitted: false }),
-  });
+  const nop = await fetch(
+    rieng ? `${WEB}/api/practice/reading/${rieng.target}/submit` : URL_NOP,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: em.cookie },
+      body: JSON.stringify({ answers: traLoi, elapsedSeconds: 1200, attemptId, autoSubmitted: false }),
+    }
+  );
   if (!nop.ok) {
     kq.ghiChu.push(`nộp hỏng: HTTP ${nop.status}`);
     return kq;
@@ -214,6 +243,8 @@ async function main() {
 
   const cauHoi = await layCauHoi();
   const dapAn = await layDapAn();
+  const passage = await layPassage();
+  if (TRON) console.log(`SIM chế độ trộn: ${passage.length} passage lẻ`);
   console.log(`SIM đề có ${cauHoi.length} câu, ${dapAn.size} đáp án`);
   if (cauHoi.length === 0) {
     console.error("SIM không tìm thấy đề. Đặt SIM_TARGET cho đúng.");
@@ -231,6 +262,13 @@ async function main() {
   // Vào phòng lệch nhau vài giây, giống một lớp thật chứ không phải bấm đồng loạt.
   const chay = dsHocSinh.map(async (em, i) => {
     await cho(i * 1500);
+    // Trộn: em chẵn thi cả bài, em lẻ làm một passage. Cả hai kiểu phải hiện
+    // chung MỘT lớp trên màn hình cô, vì vẫn là cùng một đề.
+    if (TRON && i % 2 === 1 && passage.length) {
+      const slug = passage[Math.floor(i / 2) % passage.length];
+      const cauRieng = await layCauHoiCua(slug);
+      return chayMotEm(em, HOC_SINH[i].kieu, cauHoi, dapAn, { target: slug, cauHoi: cauRieng });
+    }
     return chayMotEm(em, HOC_SINH[i].kieu, cauHoi, dapAn);
   });
   const ketQua = await Promise.all(chay);

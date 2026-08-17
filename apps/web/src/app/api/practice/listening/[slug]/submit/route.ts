@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { banNhip } from "@thuong-ielts/db";
+import { banNhip, maLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
 import { gradeReading } from "../../../../../../features/practice/domain/scoring";
@@ -86,6 +86,7 @@ export async function POST(
         loai: "nop",
         a: moTruoc as string,
         target: slug,
+        lop: maLop(slug),
         ten: student.name ?? "Học viên",
         khach: false,
         d: result.total,

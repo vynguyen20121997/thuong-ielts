@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { banNhip } from "@thuong-ielts/db";
+import { banNhip, maLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../features/account/server/guard";
 import { openAttempt } from "../../../../../features/practice/server/attemptRepository";
@@ -54,6 +54,7 @@ export async function POST(request: Request) {
     loai: "vao",
     a: luot.id,
     target,
+    lop: maLop(target),
     ten: student.name ?? "Học viên",
     khach: false,
     d: 0,

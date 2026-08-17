@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { banNhip } from "@thuong-ielts/db";
+import { banNhip, maLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
 import { isAnswerCorrect } from "../../../../../../features/practice/domain/scoring";
@@ -86,6 +86,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     loai: "nhip",
     a: id,
     target: luot.target,
+    lop: maLop(luot.target),
+    phan: part,
     ten: luot.ten,
     khach: luot.khach,
     d: answered,

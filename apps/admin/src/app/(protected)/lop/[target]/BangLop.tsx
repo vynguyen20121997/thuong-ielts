@@ -17,6 +17,9 @@ interface GoiNhip {
   loai: "vao" | "nhip" | "nop";
   a: string;
   target: string;
+  /** Mã lớp — mọi em cùng đề đều mang cùng mã này. */
+  lop: string;
+  phan?: string | null;
   ten: string;
   khach: boolean;
   d: number;
@@ -99,7 +102,9 @@ export default function BangLop({
     socket.on("connect_error", () => setNoi(false));
 
     socket.on("nhip", (goi: GoiNhip) => {
-      if (goi.target !== target) return;
+      // So theo MÃ LỚP, không theo `target`: em làm passage lẻ có `target`
+      // riêng nhưng vẫn thuộc lớp này.
+      if ((goi.lop ?? goi.target) !== target) return;
       setLop((truoc) => {
         const dong: HocSinhTrongLop = {
           attemptId: goi.a,
@@ -112,6 +117,7 @@ export default function BangLop({
           marks: goi.marks ?? [],
           conLai: goi.conLai,
           band: goi.band ?? null,
+          phan: goi.phan ?? null,
           lanCuoi: new Date().toISOString(),
         };
         // Mốc nhịp cuối, để bộ đếm bên dưới biết em nào đã im lặng bao lâu.
@@ -247,11 +253,18 @@ export default function BangLop({
                 >
                   <td className="px-5 py-3">
                     <span className="block text-sm font-bold text-[#1A1A1A]">{h.ten}</span>
-                    {h.khach && (
-                      <span className="text-[10px] uppercase font-bold tracking-wide text-[#1A1A1A]/40">
-                        Khách
-                      </span>
-                    )}
+                    <span className="flex items-center gap-1.5">
+                      {h.khach && (
+                        <span className="text-[10px] uppercase font-bold tracking-wide text-[#1A1A1A]/40">
+                          Khách
+                        </span>
+                      )}
+                      {/* Em nào đang ở passage nào — chỗ này mới là thứ cô cần
+                          khi cả lớp làm chung một đề nhưng mỗi em một tốc độ. */}
+                      {h.phan && (
+                        <span className="text-[10px] text-[#1A1A1A]/45">{h.phan}</span>
+                      )}
+                    </span>
                   </td>
                   <td className={`px-5 py-3 text-xs font-bold ${MAU[h.trangThai]}`}>
                     {NHAN[h.trangThai]}

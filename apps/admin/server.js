@@ -76,8 +76,11 @@ io.on("connection", (socket) => {
   nhịp của lớp khác — vừa tốn đường truyền vừa lộ dữ liệu không cần thiết.
 */
 const cauNoi = moCauNoi((goi) => {
-  if (!goi || typeof goi.target !== "string") return;
-  io.to(goi.target).emit("nhip", goi);
+  // `lop` là mã lớp do `maLop()` bên packages/db tính ra — mọi em làm cùng một
+  // đề đều rơi vào cùng phòng, kể cả khi em thi cả bài còn em kia làm passage lẻ.
+  const phong = goi?.lop ?? goi?.target;
+  if (typeof phong !== "string") return;
+  io.to(phong).emit("nhip", goi);
 });
 
 server.listen(port, hostname, () => {

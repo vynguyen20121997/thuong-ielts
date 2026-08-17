@@ -29,13 +29,36 @@ export const KENH_NHIP = "nhip_lam_bai";
  * cần con số và đúng/sai; muốn xem chi tiết thì cô bấm vào một em, lúc đó mới
  * đọc thẳng DB qua đường riêng của trang quản trị.
  */
+/**
+ * Mã lớp: gom mọi em đang làm CÙNG MỘT ĐỀ vào một chỗ.
+ *
+ * Reading lưu mỗi passage một dòng, nên `target` có hai dạng — `cam12-test3`
+ * khi thi cả bài, và `cam12-test3-flying-tortoises` khi làm một passage lẻ.
+ * Lấy thẳng `target` làm tên phòng thì một lớp đang học Cam 12 Test 3 bị xé
+ * thành bốn phòng, và cô phải mở bốn tab mới thấy hết lớp mình.
+ *
+ * Listening lưu cả bài một dòng (`cam11-listening-test3`) nên giữ nguyên —
+ * chữ "listening" chen giữa khiến nó không khớp mẫu dưới đây, đúng như mong muốn.
+ *
+ * Để ở `packages/db` vì cả hai tiến trình đều phải tính ra CÙNG một mã: `web`
+ * dùng nó để gửi, `admin` dùng nó để chia phòng. Lệch nhau là nhịp bay vào
+ * phòng không ai ngồi, và im lặng.
+ */
+export function maLop(target: string): string {
+  return /^(cam\d+-test\d+)-/.exec(target)?.[1] ?? target;
+}
+
 export interface GoiNhip {
   /** Loại sự kiện: bắt đầu làm, đang làm, đã nộp. */
   loai: "vao" | "nhip" | "nop";
   /** id lượt làm. */
   a: string;
-  /** Đề đang làm — dùng làm tên phòng socket. */
+  /** Đề đang làm. Passage lẻ thì đây là slug của riêng passage đó. */
   target: string;
+  /** Tên phòng socket — `maLop(target)`. Cùng đề thì cùng phòng. */
+  lop: string;
+  /** Nhãn ngắn cho phần đang làm ("Passage 2"), để cô biết em ấy ở đâu. */
+  phan?: string | null;
   /** Tên hiển thị của học sinh. */
   ten: string;
   /** Có phải khách vãng lai không. */
