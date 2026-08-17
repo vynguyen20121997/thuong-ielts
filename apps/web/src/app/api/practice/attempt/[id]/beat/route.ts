@@ -80,7 +80,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const correct = marks.filter((m) => m === true).length;
   const part = typeof body.part === "string" ? body.part.slice(0, 40) : null;
 
-  await writeProgress(id, { answered, correct, marks, currentPart: part });
+  await writeProgress(id, { answered, correct, marks, answers, currentPart: part });
 
   void banNhip({
     loai: "nhip",

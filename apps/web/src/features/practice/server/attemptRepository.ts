@@ -222,15 +222,23 @@ export async function getOpenAttempt(
 /** Ghi đè tiến độ. Một dòng hẹp, mỗi vài giây một lần. */
 export async function writeProgress(
   attemptId: string,
-  progress: { answered: number; correct: number; marks: (boolean | null)[]; currentPart?: string | null }
+  progress: {
+    answered: number;
+    correct: number;
+    marks: (boolean | null)[];
+    answers: ReadingAnswers;
+    currentPart?: string | null;
+  }
 ): Promise<void> {
   await pool.query(
-    `INSERT INTO attempt_progress (attempt_id, answered, correct, marks, current_part, last_beat_at, updated_at)
-     VALUES ($1,$2,$3,$4,$5, now(), now())
+    `INSERT INTO attempt_progress
+       (attempt_id, answered, correct, marks, answers, current_part, last_beat_at, updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6, now(), now())
      ON CONFLICT (attempt_id) DO UPDATE SET
        answered     = EXCLUDED.answered,
        correct      = EXCLUDED.correct,
        marks        = EXCLUDED.marks,
+       answers      = EXCLUDED.answers,
        current_part = EXCLUDED.current_part,
        last_beat_at = now(),
        updated_at   = now()`,
@@ -239,6 +247,7 @@ export async function writeProgress(
       progress.answered,
       progress.correct,
       JSON.stringify(progress.marks),
+      JSON.stringify(progress.answers),
       progress.currentPart ?? null,
     ]
   );

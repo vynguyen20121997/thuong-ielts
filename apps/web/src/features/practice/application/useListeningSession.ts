@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { countAnswered } from "../domain/scoring";
 import type { AttemptResult, ListeningTest, ReadingAnswers } from "../domain/types";
-import { submitListeningAttempt } from "../infrastructure/listeningApi";
+import { openListeningAttempt, submitListeningAttempt } from "../infrastructure/listeningApi";
+import { useProgressBeat } from "./useProgressBeat";
 
 /**
  * Application layer for "sitting a listening test": answers, the clock, which
@@ -81,6 +82,17 @@ export function useListeningSession(test: ListeningTest) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const answersRef = useRef(answers);
   answersRef.current = answers;
+
+  /*
+    Lượt làm bài ở server.
+
+    Khác Reading: bài nghe có màn hướng dẫn ở trước, nên lượt chỉ mở khi bài
+    THẬT SỰ bắt đầu. Mở từ lúc vào trang thì mỗi em đọc hướng dẫn rồi bỏ đi
+    cũng thành một dòng "đang làm" nằm lại trên bảng lớp của cô.
+  */
+  const [attemptId, setAttemptId] = useState<string | null>(null);
+  const attemptRef = useRef<string | null>(null);
+  attemptRef.current = attemptId;
   const remainingRef = useRef(remainingSeconds);
   remainingRef.current = remainingSeconds;
   const submittingRef = useRef(false);
@@ -194,7 +206,9 @@ export function useListeningSession(test: ListeningTest) {
         const graded = await submitListeningAttempt(
           test.slug,
           answersRef.current,
-          test.durationSeconds - remainingRef.current
+          test.durationSeconds - remainingRef.current,
+          attemptRef.current,
+          auto
         );
         setResult(graded);
         setStatus("finished");
@@ -209,6 +223,20 @@ export function useListeningSession(test: ListeningTest) {
   );
 
   const submit = useCallback(() => void runSubmit(false), [runSubmit]);
+
+  // Bài rời khỏi màn hướng dẫn là lúc mở lượt — đúng một lần cho cả phiên.
+  useEffect(() => {
+    if (status === "instructions" || attemptRef.current) return;
+    let con = true;
+    void openListeningAttempt(test.slug).then((id) => {
+      if (con && id) setAttemptId(id);
+    });
+    return () => {
+      con = false;
+    };
+  }, [status, test.slug]);
+
+  useProgressBeat(attemptId, answers, `Part ${activeSection + 1}`);
 
   const restart = useCallback(() => {
     submittingRef.current = false;

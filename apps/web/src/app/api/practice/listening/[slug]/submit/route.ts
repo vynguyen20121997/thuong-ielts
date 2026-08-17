@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import { banNhip } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
 import { gradeReading } from "../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../features/practice/domain/types";
-import { saveAttempt } from "../../../../../../features/practice/server/attemptRepository";
+import {
+  closeAttempt,
+  saveAttempt,
+} from "../../../../../../features/practice/server/attemptRepository";
 import {
   getListeningAnswerKeyBySlug,
   recordListeningAttempt,
@@ -12,6 +16,9 @@ import {
 interface SubmitBody {
   answers?: unknown;
   elapsedSeconds?: unknown;
+  /** Lượt đã mở lúc bài bắt đầu. Có thì chốt đúng lượt ấy, không đẻ dòng mới. */
+  attemptId?: unknown;
+  autoSubmitted?: unknown;
 }
 
 function sanitizeAnswers(input: unknown): ReadingAnswers {
@@ -52,15 +59,43 @@ export async function POST(
   // Listening lưu cả bài một dòng nên luôn là 'test', không có 'paper'.
   const student = await currentStudent();
   if (student) {
-    await saveAttempt({
-      skill: "listening",
-      scope: "test",
-      target: slug,
-      title: record.title,
-      studentId: student.id,
-      answers,
-      result,
-    });
+    const moTruoc = typeof body.attemptId === "string" ? body.attemptId : null;
+    const tuDong = body.autoSubmitted === true;
+
+    // Chốt lượt đã mở. Không chốt được (nộp hai lần, hoặc server đã tự chốt vì
+    // hết giờ) thì KHÔNG ghi đè — điểm lần chốt đầu mới là điểm thật.
+    const daChot = moTruoc ? await closeAttempt(moTruoc, answers, result, tuDong) : false;
+
+    if (!moTruoc) {
+      await saveAttempt({
+        skill: "listening",
+        scope: "test",
+        target: slug,
+        title: record.title,
+        studentId: student.id,
+        autoSubmitted: tuDong,
+        answers,
+        result,
+      });
+    } else if (!daChot) {
+      console.warn(`Lượt ${moTruoc} đã đóng từ trước — bỏ qua lần nộp này.`);
+    }
+
+    if (daChot) {
+      void banNhip({
+        loai: "nop",
+        a: moTruoc as string,
+        target: slug,
+        ten: student.name ?? "Học viên",
+        khach: false,
+        d: result.total,
+        c: result.correct,
+        t: result.total,
+        marks: result.items.map((i) => i.isCorrect),
+        conLai: 0,
+        band: result.band,
+      });
+    }
   }
 
   return NextResponse.json(result);

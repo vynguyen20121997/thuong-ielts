@@ -17,7 +17,8 @@
     "check:reading": "tsx scripts/validate-reading.ts",
     "check:listening": "tsx scripts/validate-listening.ts",
     "check:coverage": "tsx scripts/coverage.ts",
-    "import:testimonial-images": "tsx --env-file=apps/web/.env.local scripts/import-testimonial-images.ts"
+    "import:testimonial-images": "tsx --env-file=apps/web/.env.local scripts/import-testimonial-images.ts",
+    "close:expired": "tsx scripts/close-expired-attempts.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

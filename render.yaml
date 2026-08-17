@@ -82,3 +82,39 @@ services:
         sync: false
       - key: ADMIN_SESSION_SECRET
         sync: false
+
+  # Chốt những lượt hết giờ mà không ai bấm nộp — học sinh đóng tab giữa chừng,
+  # máy sập nguồn, mạng rớt hẳn. Không có việc này thì bảng lớp của cô mang theo
+  # những em không còn ở đó, và lịch sử làm bài thiếu mất bài đã làm dở.
+  #
+  # 10 phút một lần là đủ: lượt quá hạn không gấp, và chạy dày hơn chỉ tốn thêm
+  # kết nối tới RDS mà không ai được lợi.
+  - type: cron
+    name: thuong-ielts-chot-luot
+    runtime: node
+    plan: starter
+    region: singapore
+    branch: main
+    schedule: "*/10 * * * *"
+    buildCommand: npm ci
+    startCommand: npm run close:expired
+    buildFilter:
+      paths:
+        - scripts/**
+        - apps/web/src/features/practice/domain/**
+        - package.json
+        - package-lock.json
+        - render.yaml
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: PGHOST
+        sync: false
+      - key: PGPORT
+        value: "5432"
+      - key: PGUSER
+        sync: false
+      - key: PGPASSWORD
+        sync: false
+      - key: PGDATABASE
+        sync: false

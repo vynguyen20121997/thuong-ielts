@@ -378,6 +378,18 @@ CREATE TABLE IF NOT EXISTS attempt_progress (
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+/*
+  Nội dung học sinh đã gõ, giữ cùng chỗ với tiến độ.
+
+  Hai lý do, và lý do thứ hai mới là lý do bắt buộc:
+
+  1. Ngăn chi tiết của cô cần thấy em ấy trả lời gì, không chỉ đúng hay sai.
+  2. Lượt hết giờ mà học sinh bỏ ngang thì server phải tự chốt — và chốt bằng
+     đúng những gì em ấy đã làm được. Không có cột này thì lượt bỏ ngang bị
+     chốt bằng phiếu trắng, tức là chấm 0 điểm cho một bài đã làm dở.
+*/
+ALTER TABLE attempt_progress ADD COLUMN IF NOT EXISTS answers JSONB NOT NULL DEFAULT '{}'::jsonb;
+
 -- "Lịch sử của tôi": lượt mới nhất trước.
 CREATE INDEX IF NOT EXISTS idx_attempts_student ON attempts (student_id, submitted_at DESC);
 -- Bảng lớp chỉ quan tâm những lượt còn đang làm — index một phần thì nhỏ và
