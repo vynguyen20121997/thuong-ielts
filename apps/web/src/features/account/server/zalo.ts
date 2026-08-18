@@ -35,12 +35,19 @@ export class ZaloNotConfiguredError extends Error {
   }
 }
 
+/**
+ * Đủ khoá để gọi Zalo chưa.
+ *
+ * KHÔNG đòi `ZALO_OA_REFRESH_TOKEN`: sau lần lấy token đầu tiên, refresh token
+ * sống trong bảng `site_content` và tự đổi mới sau mỗi lần làm mới. Biến môi
+ * trường chỉ là hạt giống ban đầu, và sau đó nó thành lỗi thời — đòi nó ở đây
+ * thì sẽ có ngày ai đó xoá biến "cho gọn" rồi tưởng đã hỏng.
+ */
 export function isZaloConfigured(): boolean {
   return Boolean(
     process.env.ZALO_OA_APP_ID &&
       process.env.ZALO_OA_SECRET_KEY &&
-      process.env.ZALO_ZNS_TEMPLATE_ID &&
-      (process.env.ZALO_OA_REFRESH_TOKEN || true)
+      process.env.ZALO_ZNS_TEMPLATE_ID
   );
 }
 

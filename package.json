@@ -19,7 +19,9 @@
     "check:coverage": "tsx scripts/coverage.ts",
     "import:testimonial-images": "tsx --env-file=apps/web/.env.local scripts/import-testimonial-images.ts",
     "close:expired": "tsx scripts/close-expired-attempts.ts",
-    "clean:guests": "tsx scripts/clean-guests.ts"
+    "clean:guests": "tsx scripts/clean-guests.ts",
+    "zalo:token": "tsx scripts/zalo-token.ts",
+    "zalo:test": "tsx scripts/zalo-test.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",
