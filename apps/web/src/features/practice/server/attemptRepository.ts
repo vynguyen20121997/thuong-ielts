@@ -385,8 +385,11 @@ export interface TomTatLuot {
   submittedAt: Date;
   elapsedSeconds: number;
   total: number;
-  correct: number;
+  /** `null` khi cô đang giấu điểm của buổi đó. */
+  correct: number | null;
   band: number | null;
+  /** Cô chưa mở kết quả buổi này. */
+  choCoMo: boolean;
 }
 
 /**
@@ -399,12 +402,30 @@ export async function listAttemptsByStudent(
   studentId: string,
   limit = 50
 ): Promise<TomTatLuot[]> {
+  /*
+    Lọc theo cài đặt của buổi học NGAY TRONG TRUY VẤN.
+
+    Không có bước này thì trang "Bài đã làm" thành cửa hậu: em nộp xong thấy
+    "chờ cô mở", rồi mở trang lịch sử là thấy điểm ngay. Cả tính năng giấu
+    điểm coi như không tồn tại.
+
+    Em tự luyện (`assignment_id` NULL) thì luôn thấy — luật này để cô điều
+    khiển buổi học của mình, không phải để giấu người tự học.
+  */
   const { rows } = await pool.query(
-    `SELECT id, skill, scope, target, title, submitted_at, elapsed_seconds,
-            total, correct, band
-       FROM attempts
-      WHERE student_id = $1
-      ORDER BY submitted_at DESC
+    `SELECT a.id, a.skill, a.scope, a.target, a.title, a.submitted_at, a.elapsed_seconds,
+            a.total,
+            CASE WHEN COALESCE(v.giau, false) THEN NULL ELSE a.correct END AS correct,
+            CASE WHEN COALESCE(v.giau, false) THEN NULL ELSE a.band    END AS band,
+            COALESCE(v.giau, false) AS cho_mo
+       FROM attempts a
+       LEFT JOIN LATERAL (
+         SELECT g.show_score <> 'ngay'
+                AND (g.show_score = 'khong' OR g.results_opened_at IS NULL) AS giau
+           FROM assignments g WHERE g.id = a.assignment_id
+       ) v ON true
+      WHERE a.student_id = $1
+      ORDER BY a.submitted_at DESC
       LIMIT $2`,
     [studentId, limit]
   );
@@ -418,9 +439,10 @@ export async function listAttemptsByStudent(
     submittedAt: row.submitted_at,
     elapsedSeconds: row.elapsed_seconds ?? 0,
     total: row.total,
-    correct: row.correct,
+    correct: row.correct === null ? null : Number(row.correct),
     // NUMERIC về từ `pg` là chuỗi, không phải số — quên ép kiểu thì
     // `band.toFixed(1)` ở giao diện sẽ nổ.
     band: row.band === null ? null : Number(row.band),
+    choCoMo: row.cho_mo === true,
   }));
 }

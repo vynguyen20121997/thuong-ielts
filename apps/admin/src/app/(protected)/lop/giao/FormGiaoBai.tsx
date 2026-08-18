@@ -31,6 +31,10 @@ export default function FormGiaoBai({
   // nhưng màn theo dõi tách chúng ra hai nhóm, và bảng điểm buổi học không
   // lẫn bài gửi riêng vào.
   const [choAi, setChoAi] = useState<"class" | "one">("class");
+  // Học sinh thấy điểm / đáp án khi nào. Mặc định "ngay" để giữ nếp cũ; cô
+  // nào muốn chữa chung cả lớp thì đổi sang "chờ cô mở".
+  const [hienDiem, setHienDiem] = useState<"ngay" | "khi_co_mo" | "khong">("ngay");
+  const [hienDapAn, setHienDapAn] = useState<"ngay" | "khi_co_mo" | "khong">("ngay");
   const [gio, setGio] = useState(12);
   const [dangGui, setDangGui] = useState(false);
   const [loi, setLoi] = useState<string | null>(null);
@@ -58,6 +62,8 @@ export default function FormGiaoBai({
           label: nhan.trim() || null,
           allowGuest: choKhach,
           audience: choAi,
+          showScore: hienDiem,
+          showAnswers: hienDapAn,
           dongSauGio: gio,
         }),
       });
@@ -140,6 +146,14 @@ export default function FormGiaoBai({
         className="w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm mb-4"
       />
 
+      <label className="block text-xs font-bold text-[#1A1A1A]/50 mb-1.5">
+        Sau khi nộp, học viên được xem
+      </label>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+        <ChonHien nhan="Điểm" giaTri={hienDiem} doi={setHienDiem} />
+        <ChonHien nhan="Đáp án đúng" giaTri={hienDapAn} doi={setHienDapAn} />
+      </div>
+
       <div className="flex flex-wrap items-center gap-6 mb-5">
         <label className="flex items-center gap-2 text-sm text-[#1A1A1A]/70 cursor-pointer">
           <input
@@ -176,5 +190,41 @@ export default function FormGiaoBai({
 
       {loi && <p className="mt-3 text-sm text-[#C62828]">{loi}</p>}
     </div>
+  );
+}
+
+/**
+ * Ba mức: hiện ngay / chờ cô mở / không cho xem.
+ *
+ * "Chờ cô mở" là mức đáng dùng nhất mà cũng dễ bỏ quên nhất, nên ghi rõ nó làm
+ * gì ngay dưới ô chọn thay vì để cô đoán.
+ */
+function ChonHien({
+  nhan,
+  giaTri,
+  doi,
+}: {
+  nhan: string;
+  giaTri: "ngay" | "khi_co_mo" | "khong";
+  doi: (v: "ngay" | "khi_co_mo" | "khong") => void;
+}) {
+  return (
+    <label className="block">
+      <span className="block text-xs text-[#1A1A1A]/60 mb-1">{nhan}</span>
+      <select
+        value={giaTri}
+        onChange={(e) => doi(e.target.value as "ngay" | "khi_co_mo" | "khong")}
+        className="w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm cursor-pointer"
+      >
+        <option value="ngay">Hiện ngay khi nộp</option>
+        <option value="khi_co_mo">Chờ cô mở</option>
+        <option value="khong">Không cho xem</option>
+      </select>
+      {giaTri === "khi_co_mo" && (
+        <span className="block text-[11px] text-[#1A1A1A]/45 mt-1">
+          Chữa chung cả lớp xong, cô bấm mở ở bảng lớp.
+        </span>
+      )}
+    </label>
   );
 }

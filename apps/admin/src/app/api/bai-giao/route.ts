@@ -10,6 +10,11 @@ import { teacherHienTai } from "../../../lib/phien";
  * thứ trình duyệt gửi lên thì sửa được. Bước tra này cũng chính là bước kiểm
  * đề có thật hay không.
  */
+/** Chỉ nhận đúng ba giá trị; thứ lạ thì về mặc định an toàn nhất là "ngay". */
+function mucHien(v: unknown): "ngay" | "khi_co_mo" | "khong" {
+  return v === "khi_co_mo" || v === "khong" ? v : "ngay";
+}
+
 export async function POST(request: Request) {
   const teacherId = await teacherHienTai();
 
@@ -56,6 +61,8 @@ export async function POST(request: Request) {
     label: typeof body.label === "string" ? body.label.slice(0, 120) : null,
     allowGuest: body.allowGuest !== false,
     audience: body.audience === "one" ? "one" : "class",
+    showScore: mucHien(body.showScore),
+    showAnswers: mucHien(body.showAnswers),
     dongSauGio: typeof body.dongSauGio === "number" ? body.dongSauGio : 12,
   });
 

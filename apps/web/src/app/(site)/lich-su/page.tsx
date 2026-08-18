@@ -25,10 +25,12 @@ export default async function TrangLichSu() {
   if (!student) redirect("/dang-nhap?next=/lich-su");
 
   const luot = await listAttemptsByStudent(student.id, 100);
-  const daNop = luot.filter((l) => l.total > 0);
+  // Chỉ tính trung bình trên những bài đã có điểm — bài cô chưa mở thì
+  // không có gì để cộng.
+  const daNop = luot.filter((l) => l.total > 0 && l.correct !== null);
 
   const tb = daNop.length
-    ? (daNop.reduce((t, l) => t + l.correct / Math.max(1, l.total), 0) / daNop.length) * 100
+    ? (daNop.reduce((t, l) => t + (l.correct ?? 0) / Math.max(1, l.total), 0) / daNop.length) * 100
     : 0;
 
   return (
@@ -82,10 +84,16 @@ export default async function TrangLichSu() {
                     </span>
                   </span>
 
-                  <span className="text-base font-black tabular-nums text-[#1A1A1A]">
-                    {l.correct}
-                    <span className="text-[#1A1A1A]/40 font-medium text-sm">/{l.total}</span>
-                  </span>
+                  {l.correct === null ? (
+                    <span className="rounded-lg bg-black/[0.05] px-2.5 py-1 text-xs font-semibold text-[#1A1A1A]/50">
+                      Chờ thầy cô trả điểm
+                    </span>
+                  ) : (
+                    <span className="text-base font-black tabular-nums text-[#1A1A1A]">
+                      {l.correct}
+                      <span className="text-[#1A1A1A]/40 font-medium text-sm">/{l.total}</span>
+                    </span>
+                  )}
 
                   {l.band !== null && (
                     <span className="rounded-lg bg-[#9FE870]/25 px-2.5 py-1 text-xs font-black text-[#14532D] tabular-nums">

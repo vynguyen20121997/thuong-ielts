@@ -25,16 +25,36 @@ export default function ReadingResultPanel({
 }) {
   const percent = Math.round(result.accuracy * 100);
 
+  /*
+    Cô đang giấu điểm của buổi này.
+
+    Server đã cắt số liệu trước khi trả về, nên ở đây `correct` là 0 — phải nói
+    rõ vì sao, kẻo em nhìn "0/40" rồi tưởng mình sai sạch bài. Đây là khoảnh
+    khắc em ấy vừa làm xong 60 phút; một con số 0 không lời giải thích là đủ
+    làm em ấy nản.
+  */
+  const giauDiem = result.daChe?.diem === true;
+
   return (
     <div className="bg-[#14532D] text-white rounded-2xl p-6 md:p-7 shadow-xl">
       <div className="flex items-center gap-2 mb-5">
         <Target size={15} className="text-[#9FE870]" />
         <span className="text-2xs font-medium text-[#9FE870]">
-          Kết quả bài làm
+          {giauDiem ? "Đã nộp bài" : "Kết quả bài làm"}
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      {giauDiem && (
+        <div className="rounded-xl bg-white/10 px-4 py-3.5 mb-6">
+          <p className="text-sm font-semibold">Bài của em đã nộp xong.</p>
+          <p className="text-xs text-white/65 mt-1 leading-relaxed">
+            Buổi này thầy cô chữa chung cả lớp trước rồi mới trả điểm. Quay lại trang này sau khi
+            thầy cô mở kết quả nhé.
+          </p>
+        </div>
+      )}
+
+      <div className={`grid grid-cols-3 gap-4 mb-6 ${giauDiem ? "hidden" : ""}`}>
         <div>
           <span className="font-serif text-4xl font-bold block leading-none">
             {result.correct}
@@ -55,7 +75,7 @@ export default function ReadingResultPanel({
       </div>
 
       {/* Accuracy bar */}
-      <div className="h-1.5 w-full bg-white/15 rounded-full overflow-hidden mb-5">
+      <div className={`h-1.5 w-full bg-white/15 rounded-full overflow-hidden mb-5 ${giauDiem ? "hidden" : ""}`}>
         <div
           className="h-full bg-[#9FE870] rounded-full transition-all duration-700"
           style={{ width: `${percent}%` }}

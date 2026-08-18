@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { biaLop, docLop } from "../../../../lib/lop";
 import BangLop from "./BangLop";
+import MoKetQua from "./MoKetQua";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,20 @@ export default async function TrangLop({
         >
           Bảng điểm cả lớp →
         </Link>
+        <Link
+          href={`/lop/${encodeURIComponent(target)}/kho`}
+          className="text-xs font-bold text-[#14532D] hover:underline"
+        >
+          Chữa câu nào trước →
+        </Link>
+        <span className="ml-auto">
+          <MoKetQua
+            khoa={target}
+            daMo={bia?.daMoKetQua ?? false}
+            hienDiem={bia?.hienDiem ?? null}
+            hienDapAn={bia?.hienDapAn ?? null}
+          />
+        </span>
       </div>
       {/*
         Tiêu đề KHÔNG đổi theo số học sinh.

@@ -230,6 +230,13 @@ export interface GradedQuestion {
 }
 
 export interface ReadingResult {
+  /**
+   * Cô đang giấu điểm và/hoặc đáp án của buổi này.
+   *
+   * Có mặt thì giao diện biết hiện lời giải thích thay vì một bảng điểm 0 —
+   * không có nó thì học sinh tưởng mình sai hết.
+   */
+  daChe?: { diem: boolean; dapAn: boolean };
   total: number;
   correct: number;
   /** 0..1 */

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { banNhip, khoaLop } from "@thuong-ielts/db";
+import { banNhip, cachHienCuaLuot, khoaLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
 import { khachHienTai } from "../../../../../../features/account/server/khach";
+import { cheKetQua } from "../../../../../../features/practice/domain/cheGiau";
 import { gradeReading } from "../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../features/practice/domain/types";
 import {
@@ -61,8 +62,10 @@ export async function POST(
   // Học sinh có tài khoản, hoặc khách vào bằng link cô gửi.
   const student = await currentStudent();
   const khach = student ? null : await khachHienTai();
+  let moTruocDeChe: string | null = null;
   if (student || khach) {
     const moTruoc = typeof body.attemptId === "string" ? body.attemptId : null;
+    moTruocDeChe = moTruoc;
     const tuDong = body.autoSubmitted === true;
 
     // Chốt lượt đã mở. Không chốt được (nộp hai lần, hoặc server đã tự chốt vì
@@ -112,5 +115,14 @@ export async function POST(
     }
   }
 
-  return NextResponse.json(result);
+  /*
+    Cắt điểm/đáp án theo cài đặt của buổi học — Ở SERVER.
+
+    Giấu bằng giao diện thì đáp án vẫn nằm trong phản hồi mạng, mở tab Network
+    là thấy. Cô bật "chờ cô mở" chính là để tránh chuyện đó.
+
+    Em tự luyện không có bài giao nào thì `cachHienCuaLuot` trả về cho xem hết.
+  */
+  const xem = moTruocDeChe ? await cachHienCuaLuot(moTruocDeChe) : { diem: true, dapAn: true };
+  return NextResponse.json(cheKetQua(result, xem));
 }

@@ -370,6 +370,10 @@ export async function biaLop(khoa: string): Promise<{
   kyNang: "reading" | "listening";
   loai: "bai-giao" | "tu-luyen";
   choAi: "class" | "one" | null;
+  /** Cài đặt hiển thị kết quả — chỉ có với bài cô giao. */
+  hienDiem: string | null;
+  hienDapAn: string | null;
+  daMoKetQua: boolean;
 } | null> {
   const k = docKhoaLop(khoa);
   if (!k) return null;
@@ -377,16 +381,23 @@ export async function biaLop(khoa: string): Promise<{
   let target: string;
   let nhan: string | null = null;
   let choAi: "class" | "one" | null = null;
+  let hienDiem: string | null = null;
+  let hienDapAn: string | null = null;
+  let daMoKetQua = false;
 
   if (k.loai === "bai-giao") {
     const { rows } = await pool.query(
-      `SELECT target, title, label, audience FROM assignments WHERE id = $1 LIMIT 1`,
+      `SELECT target, title, label, audience, show_score, show_answers, results_opened_at
+         FROM assignments WHERE id = $1 LIMIT 1`,
       [k.id]
     );
     if (!rows.length) return null;
     target = rows[0].target;
     nhan = rows[0].label || rows[0].title;
     choAi = rows[0].audience ?? "class";
+    hienDiem = rows[0].show_score ?? "ngay";
+    hienDapAn = rows[0].show_answers ?? "ngay";
+    daMoKetQua = rows[0].results_opened_at !== null;
   } else {
     target = maLop(k.target);
   }
@@ -417,5 +428,138 @@ export async function biaLop(khoa: string): Promise<{
     kyNang,
     loai: k.loai,
     choAi,
+    hienDiem,
+    hienDapAn,
+    daMoKetQua,
   };
+}
+
+export interface CauKho {
+  so: number;
+  daLam: number;
+  dung: number;
+  tiLe: number;
+  dapAn: string | null;
+  /** Những câu trả lời SAI hay gặp nhất, kèm số em mắc. */
+  saiHayGap: Array<{ chu: string; soEm: number }>;
+}
+
+/**
+ * Insights: cả lớp sai nhiều nhất ở câu nào.
+ *
+ * Đây là thứ biến bảng điểm thành công cụ dạy: bảng điểm nói AI cần giúp,
+ * cái này nói CHỮA CÂU NÀO TRƯỚC. Cô có 15 phút cuối buổi, chữa được ba câu —
+ * phải là ba câu cả lớp sai chứ không phải ba câu đầu tiên.
+ *
+ * Kèm luôn những đáp án sai hay gặp: mười em cùng viết "pleasure" thay vì
+ * "dopamine" là cả lớp hiểu sai cùng một chỗ, và đó mới là điều đáng giảng —
+ * khác hẳn với mười em sai mười kiểu khác nhau.
+ */
+export async function cauKhoNhat(khoa: string, gioiHan = 10): Promise<CauKho[]> {
+  const k = docKhoaLop(khoa);
+  if (!k) return [];
+
+  const dieuKien =
+    k.loai === "bai-giao"
+      ? "a.assignment_id = $1"
+      : "a.assignment_id IS NULL AND (a.target = $1 OR a.target LIKE $1 || '-%')";
+  const thamSo = k.loai === "bai-giao" ? k.id : maLop(k.target);
+
+  // Mở `results` (mảng { q, n, ok }) thành từng dòng rồi gom theo số câu.
+  const { rows } = await pool.query(
+    `SELECT (r ->> 'n')::int                              AS so,
+            min(r ->> 'q')                                AS qid,
+            count(*) FILTER (WHERE r ->> 'ok' <> 'null')  AS da_lam,
+            count(*) FILTER (WHERE (r ->> 'ok')::boolean) AS dung
+       FROM attempts a, jsonb_array_elements(a.results) r
+      WHERE ${dieuKien}
+        AND a.status = 'submitted'
+        AND a.started_at > now() - interval '30 days'
+      GROUP BY 1
+      HAVING count(*) FILTER (WHERE r ->> 'ok' <> 'null') > 0
+      ORDER BY (count(*) FILTER (WHERE (r ->> 'ok')::boolean))::numeric
+               / NULLIF(count(*) FILTER (WHERE r ->> 'ok' <> 'null'), 0) ASC,
+               1 ASC
+      LIMIT $2`,
+    [thamSo, gioiHan]
+  );
+  if (rows.length === 0) return [];
+
+  // Đáp án đúng + những câu trả lời sai hay gặp, cho đúng các câu vừa lọc.
+  const qids = rows.map((r) => r.qid as string).filter(Boolean);
+  const dapAn = await dapAnCua(qids);
+  const sai = await traLoiSaiHayGap(dieuKien, thamSo, qids);
+
+  return rows.map((r) => {
+    const daLam = Number(r.da_lam);
+    const dung = Number(r.dung);
+    return {
+      so: Number(r.so),
+      daLam,
+      dung,
+      tiLe: daLam > 0 ? Math.round((dung / daLam) * 100) : 0,
+      dapAn: dapAn.get(r.qid) ?? null,
+      saiHayGap: sai.get(r.qid) ?? [],
+    };
+  });
+}
+
+/**
+ * Đáp án đúng theo id câu hỏi.
+ *
+ * Đây là một trong hai chỗ `answer_key` đi ra khỏi server, và nó nằm trong app
+ * `admin` sau `proxy.ts` — xem ghi chú ở /api/luot/[id].
+ */
+async function dapAnCua(qids: string[]): Promise<Map<string, string>> {
+  const m = new Map<string, string>();
+  if (qids.length === 0) return m;
+
+  for (const bang of ["reading_tests", "listening_tests"]) {
+    const { rows } = await pool.query(
+      `SELECT e ->> 'questionId' AS qid, e ->> 'answer' AS dap
+         FROM ${bang}, jsonb_array_elements(answer_key) e
+        WHERE e ->> 'questionId' = ANY($1)`,
+      [qids]
+    );
+    for (const r of rows) if (r.qid && !m.has(r.qid)) m.set(r.qid, r.dap);
+  }
+  return m;
+}
+
+/** Những chữ học sinh gõ SAI hay gặp nhất, theo từng câu. */
+async function traLoiSaiHayGap(
+  dieuKien: string,
+  thamSo: string,
+  qids: string[]
+): Promise<Map<string, Array<{ chu: string; soEm: number }>>> {
+  const m = new Map<string, Array<{ chu: string; soEm: number }>>();
+  if (qids.length === 0) return m;
+
+  const { rows } = await pool.query(
+    `WITH cau AS (
+       SELECT r ->> 'q' AS qid,
+              (r ->> 'ok')::boolean AS ok,
+              btrim(a.answers ->> (r ->> 'q')) AS chu
+         FROM attempts a, jsonb_array_elements(a.results) r
+        WHERE ${dieuKien}
+          AND a.status = 'submitted'
+          AND a.started_at > now() - interval '30 days'
+     )
+     SELECT qid, chu, count(*)::int AS so_em
+       FROM cau
+      WHERE qid = ANY($2) AND ok IS FALSE AND chu IS NOT NULL AND chu <> ''
+      GROUP BY qid, chu
+      ORDER BY qid, count(*) DESC
+     `,
+    [thamSo, qids]
+  );
+
+  for (const r of rows) {
+    const ds = m.get(r.qid) ?? [];
+    // Chỉ giữ ba kiểu sai phổ biến nhất mỗi câu — dài hơn thì thành danh sách
+    // lỗi chính tả, không còn là thông tin để giảng.
+    if (ds.length < 3) ds.push({ chu: r.chu, soEm: Number(r.so_em) });
+    m.set(r.qid, ds);
+  }
+  return m;
 }

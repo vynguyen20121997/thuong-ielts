@@ -481,3 +481,25 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_attempt_dang_lam_khach
 */
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS audience TEXT NOT NULL DEFAULT 'class'
   CHECK (audience IN ('class', 'one'));
+
+/*
+  Cô quyết định học sinh được thấy gì sau khi nộp.
+
+  Trước đây cứng: nộp xong là hiện điểm và đáp án ngay. Nhưng cô muốn chữa
+  chung cả lớp thì phải GIẤU đáp án cho tới khi cô mở — em nào nộp sớm mà thấy
+  đáp án là cả lớp có đáp án trong hai phút.
+
+  Ba mức cho mỗi thứ:
+    'ngay'      — hiện ngay khi nộp (mặc định, giữ nguyên nếp cũ)
+    'khi_co_mo' — chờ cô bấm mở
+    'khong'     — không cho xem trong buổi này
+
+  `results_opened_at` là lúc cô bấm mở. Một cột thời gian chứ không phải cờ
+  đúng/sai: cô cần biết đã mở lúc nào, và mở rồi thì không đóng lại được —
+  đóng lại sau khi cả lớp đã nhìn thấy thì chẳng giấu được gì nữa.
+*/
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS show_score TEXT NOT NULL DEFAULT 'ngay'
+  CHECK (show_score IN ('ngay', 'khi_co_mo', 'khong'));
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS show_answers TEXT NOT NULL DEFAULT 'ngay'
+  CHECK (show_answers IN ('ngay', 'khi_co_mo', 'khong'));
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS results_opened_at TIMESTAMPTZ;

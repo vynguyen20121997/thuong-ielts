@@ -13,6 +13,15 @@ import { pool } from "./index";
  * `web` tra token khi học sinh bấm vào link.
  */
 
+/**
+ * Khi nào học sinh được xem.
+ *
+ *   'ngay'      — hiện ngay khi nộp
+ *   'khi_co_mo' — chờ cô bấm mở, để cô chữa chung cả lớp trước
+ *   'khong'     — không cho xem trong buổi này
+ */
+export type MucHien = "ngay" | "khi_co_mo" | "khong";
+
 export interface BaiGiao {
   id: string;
   teacherId: string;
@@ -26,6 +35,12 @@ export interface BaiGiao {
   oneAttempt: boolean;
   /** 'class' = giao cả lớp, 'one' = gửi riêng một bạn. */
   audience: "class" | "one";
+  /** Học sinh được thấy ĐIỂM khi nào. */
+  showScore: MucHien;
+  /** Học sinh được thấy ĐÁP ÁN ĐÚNG khi nào. */
+  showAnswers: MucHien;
+  /** Lúc cô bấm mở kết quả cho cả lớp. */
+  resultsOpenedAt: Date | null;
   isOpen: boolean;
   closesAt: Date | null;
   createdAt: Date;
@@ -44,6 +59,9 @@ function toBaiGiao(row: Record<string, unknown>): BaiGiao {
     allowGuest: row.allow_guest as boolean,
     oneAttempt: row.one_attempt as boolean,
     audience: ((row.audience as string) ?? "class") as "class" | "one",
+    showScore: ((row.show_score as string) ?? "ngay") as MucHien,
+    showAnswers: ((row.show_answers as string) ?? "ngay") as MucHien,
+    resultsOpenedAt: (row.results_opened_at as Date) ?? null,
     isOpen: row.is_open as boolean,
     closesAt: (row.closes_at as Date) ?? null,
     createdAt: row.created_at as Date,
@@ -71,6 +89,8 @@ export async function taoBaiGiao(input: {
   allowGuest?: boolean;
   oneAttempt?: boolean;
   audience?: "class" | "one";
+  showScore?: MucHien;
+  showAnswers?: MucHien;
   /** Số giờ nữa thì link tự đóng. Không truyền thì mặc định 12 tiếng. */
   dongSauGio?: number;
 }): Promise<BaiGiao> {
@@ -80,8 +100,8 @@ export async function taoBaiGiao(input: {
   const { rows } = await pool.query(
     `INSERT INTO assignments
        (id, teacher_id, skill, scope, target, title, label, share_token,
-        allow_guest, one_attempt, audience, closes_at)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, now() + make_interval(hours => $12::int))
+        allow_guest, one_attempt, audience, show_score, show_answers, closes_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13, now() + make_interval(hours => $14::int))
      RETURNING *`,
     [
       id,
@@ -95,6 +115,8 @@ export async function taoBaiGiao(input: {
       input.allowGuest ?? true,
       input.oneAttempt ?? true,
       input.audience ?? "class",
+      input.showScore ?? "ngay",
+      input.showAnswers ?? "ngay",
       gio,
     ]
   );
@@ -209,4 +231,46 @@ export async function luotDaLam(
     total: r.total,
     band: r.band === null ? null : Number(r.band),
   };
+}
+
+/**
+ * Học sinh có được xem điểm / đáp án lúc này không.
+ *
+ * Không có bài giao (em tự luyện) thì luôn được xem — luật này chỉ tồn tại để
+ * cô điều khiển buổi học của mình, không phải để giấu người tự học.
+ */
+export function duocXem(
+  bai: Pick<BaiGiao, "showScore" | "showAnswers" | "resultsOpenedAt"> | null
+): { diem: boolean; dapAn: boolean } {
+  if (!bai) return { diem: true, dapAn: true };
+  const daMo = bai.resultsOpenedAt !== null;
+  const xet = (muc: MucHien) => muc === "ngay" || (muc === "khi_co_mo" && daMo);
+  return { diem: xet(bai.showScore), dapAn: xet(bai.showAnswers) };
+}
+
+/** Cô bấm mở kết quả cho cả lớp. Mở rồi thì không đóng lại. */
+export async function moKetQua(assignmentId: string, teacherId: string): Promise<void> {
+  await pool.query(
+    `UPDATE assignments SET results_opened_at = now()
+      WHERE id = $1 AND teacher_id = $2 AND results_opened_at IS NULL`,
+    [assignmentId, teacherId]
+  );
+}
+
+/** Cài đặt hiển thị của lượt làm bài này, để route nộp bài biết cắt gì. */
+export async function cachHienCuaLuot(
+  attemptId: string
+): Promise<{ diem: boolean; dapAn: boolean }> {
+  const { rows } = await pool.query(
+    `SELECT g.show_score, g.show_answers, g.results_opened_at
+       FROM attempts a JOIN assignments g ON g.id = a.assignment_id
+      WHERE a.id = $1`,
+    [attemptId]
+  );
+  if (!rows.length) return { diem: true, dapAn: true };
+  return duocXem({
+    showScore: rows[0].show_score,
+    showAnswers: rows[0].show_answers,
+    resultsOpenedAt: rows[0].results_opened_at,
+  });
 }
