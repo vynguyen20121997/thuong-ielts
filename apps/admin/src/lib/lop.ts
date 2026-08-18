@@ -126,3 +126,62 @@ export async function danhSachLopDangMo(): Promise<
     daNop: Number(r.da_nop),
   }));
 }
+
+export interface DongBangDiem {
+  attemptId: string;
+  ten: string;
+  khach: boolean;
+  trangThai: string;
+  dung: number;
+  tong: number;
+  band: number | null;
+  phutLam: number;
+  tuDongNop: boolean;
+  nopLuc: string | null;
+  /** 0–100. Cách duy nhất so sánh được giữa bài 40 câu và bài 13 câu. */
+  tiLe: number;
+}
+
+/**
+ * Bảng điểm cả lớp — dùng sau buổi học, không phải trong lúc học.
+ *
+ * Khác `docLop`: chỉ những lượt đã xong, sắp theo điểm cao xuống thấp, và
+ * không mang theo `marks` (bảng điểm chỉ cần con số, mà `marks` mỗi dòng vài
+ * trăm byte).
+ */
+export async function bangDiemLop(target: string): Promise<DongBangDiem[]> {
+  const { rows } = await pool.query(
+    `SELECT a.id, a.status, a.total, a.correct, a.band, a.elapsed_seconds,
+            a.auto_submitted, a.submitted_at,
+            COALESCE(s.name, a.guest_name, 'Học viên') AS ten,
+            (a.student_id IS NULL) AS khach
+       FROM attempts a
+       LEFT JOIN students s ON s.id = a.student_id
+      WHERE (a.target = $1 OR a.target LIKE $1 || '-%')
+        AND a.started_at > now() - interval '30 days'
+      -- Xếp theo TỈ LỆ đúng, không theo số câu đúng thô.
+      --
+      -- Một lớp có thể vừa có em thi cả bài 40 câu vừa có em làm một passage
+      -- 13 câu. Xếp theo số câu thì em làm 11/13 (85%) đứng dưới em làm
+      -- 22/40 (55%) — hạng nhất trao nhầm người, mà cô đọc tên theo thứ tự
+      -- này trước cả lớp.
+      ORDER BY (a.status = 'submitted') DESC,
+               (a.correct::numeric / GREATEST(a.total, 1)) DESC,
+               a.submitted_at ASC`,
+    [maLop(target)]
+  );
+
+  return rows.map((r) => ({
+    attemptId: r.id,
+    ten: r.ten,
+    khach: r.khach,
+    trangThai: r.status,
+    dung: r.correct,
+    tong: r.total,
+    band: r.band === null ? null : Number(r.band),
+    phutLam: Math.round((r.elapsed_seconds ?? 0) / 60),
+    tuDongNop: r.auto_submitted,
+    nopLuc: r.submitted_at ? new Date(r.submitted_at).toISOString() : null,
+    tiLe: r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0,
+  }));
+}

@@ -22,9 +22,17 @@ export default async function TrangLop({
 
   return (
     <div>
-      <Link href="/lop" className="text-xs font-bold text-[#1A1A1A]/50 hover:text-[#14532D]">
-        ← Tất cả lớp
-      </Link>
+      <div className="flex items-center gap-4">
+        <Link href="/lop" className="text-xs font-bold text-[#1A1A1A]/50 hover:text-[#14532D]">
+          ← Tất cả lớp
+        </Link>
+        <Link
+          href={`/lop/${encodeURIComponent(target)}/diem`}
+          className="text-xs font-bold text-[#14532D] hover:underline"
+        >
+          Bảng điểm cả lớp →
+        </Link>
+      </div>
       {/*
         Tiêu đề KHÔNG đổi theo số học sinh.
 

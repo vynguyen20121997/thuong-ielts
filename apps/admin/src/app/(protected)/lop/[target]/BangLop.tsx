@@ -186,6 +186,40 @@ export default function BangLop({
   const emDangChon = chon ? lop.find((h) => h.attemptId === chon) : null;
 
   /*
+    Bài làm chi tiết — nạp RIÊNG khi cô bấm mở một em.
+
+    Không đi kèm dữ liệu bảng lớp vì hai lý do: bảng lớp cập nhật mỗi 5 giây
+    còn đáp án thì không đổi, và đây là đường duy nhất trong cả dự án mà
+    `answer_key` đi ra khỏi server — càng ít chỗ chạm vào nó càng tốt.
+  */
+  const [baiLam, setBaiLam] = useState<
+    { so: number; daGo: string | null; dapAn: string | null }[] | null
+  >(null);
+  const [dangTaiBai, setDangTaiBai] = useState(false);
+
+  useEffect(() => {
+    if (!chon) {
+      setBaiLam(null);
+      return;
+    }
+    let con = true;
+    setDangTaiBai(true);
+    setBaiLam(null);
+    fetch(`/api/luot/${chon}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (con && d) setBaiLam(d.cau);
+      })
+      .catch(() => {
+        /* xem chi tiết hỏng thì bảng lớp vẫn phải chạy */
+      })
+      .finally(() => con && setDangTaiBai(false));
+    return () => {
+      con = false;
+    };
+  }, [chon]);
+
+  /*
     Đếm thẳng từ `marks`, KHÔNG lấy hiệu số.
 
     "Sai = đã làm − đúng" nghe thì đúng, nhưng với bài đã nộp thì `daLam` bằng
@@ -333,26 +367,67 @@ export default function BangLop({
               <Stat so={String(dem.sai)} nhan="Sai" />
               <Stat so={String(dem.trong)} nhan="Chưa làm" />
             </div>
-            <div className="grid grid-cols-[repeat(8,1fr)] gap-1">
-              {Array.from({ length: emDangChon.tong }, (_, i) => {
-                const m = emDangChon.marks[i] ?? null;
-                return (
-                  <span
-                    key={i}
-                    title={`Câu ${i + 1}`}
-                    className={`flex h-7 items-center justify-center rounded text-[11px] font-bold ${
-                      m === null
-                        ? "bg-black/5 text-[#1A1A1A]/35"
-                        : m
-                          ? "bg-[#E3F4E8] text-[#157F3D]"
-                          : "bg-[#FBE6E6] text-[#C62828]"
-                    }`}
-                  >
-                    {i + 1}
-                  </span>
-                );
-              })}
-            </div>
+            {dangTaiBai && <p className="text-xs text-[#1A1A1A]/40">Đang tải bài làm...</p>}
+
+            {baiLam ? (
+              <div className="max-h-[420px] overflow-y-auto -mx-1">
+                {baiLam.map((c, i) => {
+                  const m = emDangChon.marks[i] ?? null;
+                  return (
+                    <div
+                      key={c.so}
+                      className="grid grid-cols-[26px_1fr_20px] gap-2 items-baseline px-1 py-1.5 border-b border-black/5 text-[13px]"
+                    >
+                      <span className="tabular-nums text-[11px] font-bold text-[#1A1A1A]/35">
+                        {c.so}
+                      </span>
+                      <span className="min-w-0 break-words">
+                        {c.daGo ?? <em className="not-italic text-[#1A1A1A]/35">chưa trả lời</em>}
+                        {/* Đáp án đúng chỉ hiện khi em ấy sai — em làm đúng rồi
+                            thì nhắc lại đáp án chỉ tổ chiếm chỗ. */}
+                        {m === false && c.dapAn && (
+                          <span className="block text-[11px] text-[#157F3D] mt-0.5">
+                            đáp án: {c.dapAn}
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className={`flex h-5 w-5 items-center justify-center rounded text-[11px] font-black ${
+                          m === null
+                            ? "bg-black/[0.04] text-[#1A1A1A]/30"
+                            : m
+                              ? "bg-[#E3F4E8] text-[#157F3D]"
+                              : "bg-[#FBE6E6] text-[#C62828]"
+                        }`}
+                      >
+                        {m === null ? "–" : m ? "✓" : "✕"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              // Chưa tải xong thì vẫn vẽ dải ô, để cô không nhìn vào khoảng trống.
+              <div className="grid grid-cols-[repeat(8,1fr)] gap-1">
+                {Array.from({ length: emDangChon.tong }, (_, i) => {
+                  const m = emDangChon.marks[i] ?? null;
+                  return (
+                    <span
+                      key={i}
+                      className={`flex h-7 items-center justify-center rounded text-[11px] font-bold ${
+                        m === null
+                          ? "bg-black/5 text-[#1A1A1A]/35"
+                          : m
+                            ? "bg-[#E3F4E8] text-[#157F3D]"
+                            : "bg-[#FBE6E6] text-[#C62828]"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
           </>
         )}
       </div>
