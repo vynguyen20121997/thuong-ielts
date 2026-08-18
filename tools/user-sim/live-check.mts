@@ -16,6 +16,9 @@
  *   --tron : một nửa lớp thi cả bài, nửa kia làm passage lẻ — để kiểm rằng
  *            cùng một đề thì tất cả vẫn nằm chung MỘT lớp trên màn hình cô
  *   --giu  : giữ lại dữ liệu giả sau khi chạy (mặc định là dọn sạch)
+ *   --token=X : vào bằng LINK cô gửi (bài giao X) thay vì tự luyện
+ *   --so=N    : chỉ cho N em đầu vào (mặc định cả 6)
+ *   --ten=X   : thêm tiền tố vào tên, để phân biệt các nhóm trên bảng lớp
  */
 import path from "path";
 import { fileURLToPath } from "url";
@@ -28,6 +31,16 @@ dotenv.config({ path: path.join(__dirname, "..", "..", "apps", "web", ".env.loca
 
 const WEB = process.env.SIM_WEB_URL ?? "http://localhost:2000";
 const GIU_LAI = process.argv.includes("--giu");
+
+/*
+  Vào bằng link cô gửi, hay tự luyện.
+
+  Đây chính là thứ phân biệt ba tình huống thật: có token thì lượt gắn vào bài
+  cô giao và hiện trong lớp của cô; không token thì rơi vào nhóm "tự luyện".
+*/
+const TOKEN = process.argv.find((a) => a.startsWith("--token="))?.slice(8) ?? null;
+const SO_EM = Number(process.argv.find((a) => a.startsWith("--so="))?.slice(5) ?? 0) || null;
+const TIEN_TO = process.argv.find((a) => a.startsWith("--ten="))?.slice(6) ?? "";
 
 /*
   Reading và Listening khác nhau ở ba chỗ, và cả ba đều nằm gọn ở đây:
@@ -160,7 +173,7 @@ async function chayMotEm(
     res = await fetch(`${WEB}/api/practice/attempt/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Cookie: em.cookie },
-      body: JSON.stringify({ skill: KY_NANG, scope: phamVi, target: mucTieu }),
+      body: JSON.stringify({ skill: KY_NANG, scope: phamVi, target: mucTieu, token: TOKEN }),
     });
     if (res.ok) break;
     if (res.status < 500) break;
@@ -252,14 +265,17 @@ async function main() {
     process.exit(1);
   }
 
+  const soLuong = SO_EM ?? HOC_SINH.length;
   const dsHocSinh = [];
-  for (let i = 0; i < HOC_SINH.length; i++) {
-    dsHocSinh.push(await taoHocSinh(HOC_SINH[i].ten, i));
+  for (let i = 0; i < soLuong; i++) {
+    dsHocSinh.push(await taoHocSinh(TIEN_TO + HOC_SINH[i].ten, i));
   }
   console.log(`SIM đã tạo ${dsHocSinh.length} học sinh ảo`);
   console.log(`SIM ==> MỞ NGAY bảng lớp của cô: http://localhost:2100/lop/${TARGET}`);
 
   // Vào phòng lệch nhau vài giây, giống một lớp thật chứ không phải bấm đồng loạt.
+  if (TOKEN) console.log(`SIM vào bằng link cô gửi: ${TOKEN.slice(0, 8)}...`);
+
   const chay = dsHocSinh.map(async (em, i) => {
     await cho(i * 1500);
     // Trộn: em chẵn thi cả bài, em lẻ làm một passage. Cả hai kiểu phải hiện

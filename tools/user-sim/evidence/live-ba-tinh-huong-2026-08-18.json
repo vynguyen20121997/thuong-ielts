@@ -1,0 +1,70 @@
+{
+  "_comment": "Buổi học giả trọn mạch trên mô hình 'lớp = bài cô giao'. Cô giáo ảo dùng trình duyệt thật và BẤM THẬT: tạo hai link, mở từng màn. Học sinh ảo chạy ở tầng HTTP. Chỉ ghi thứ quan sát được.",
+  "ngay": "2026-08-18",
+
+  "co_giao_ao_lam_gi": [
+    "mở màn theo dõi lúc chưa có ai (trống)",
+    "vào Giao bài -> chọn Cam 12 Test 3 -> đặt tên 'Lớp 10A · chiều thứ 4' -> Tạo link",
+    "chọn 'Một bạn' -> đặt tên 'Kèm riêng Gia Huy' -> Tạo link (CÙNG một đề)",
+    "quay lại màn theo dõi và ngồi xem"
+  ],
+
+  "hoc_sinh_ao": {
+    "vao_bang_link_lop": 4,
+    "vao_bang_link_gui_rieng": 1,
+    "tu_luyen_khong_qua_link": 2,
+    "tat_ca_cung_de": "cam12-test3"
+  },
+
+  "man_chinh": {
+    "cap_nhat_song": "có — cô mở lúc trống, 7 em hiện ra sau ~35 giây, không tải lại trang",
+    "tom_tat": "7 đang làm · 2 bài cô giao",
+    "ba_nhom_tach_dung": true,
+    "chi_tiet": [
+      "GIAO CHO CẢ LỚP -> 'Lớp 10A · chiều thứ 4' · 4 đang làm",
+      "GỬI RIÊNG CHO MỘT BẠN -> 'Kèm riêng Gia Huy' · 1 đang làm",
+      "HỌC VIÊN TỰ LUYỆN -> 'Cam 12 · Test 3' · 2 đang làm"
+    ]
+  },
+
+  "khong_lan_nguoi_giua_cac_lop": {
+    "bang_lop": {
+      "lop_10A": ["Gia Huy", "Minh Khôi", "Thu Hà", "Ngọc Ánh"],
+      "kem_rieng": ["Kèm Ngọc Ánh"],
+      "tu_luyen": ["Tự Minh Khôi", "Tự Ngọc Ánh"]
+    },
+    "bang_diem": {
+      "lop_10A": 4,
+      "kem_rieng": 1,
+      "tu_luyen": 2
+    },
+    "so_dong_csv": { "lop_10A": 4, "kem_rieng": 1, "tu_luyen": 2 },
+    "ket_luan": "Ba lớp cùng một đề nhưng không lớp nào thấy người của lớp khác, ở cả ba màn: bảng lớp, bảng điểm, file xuất."
+  },
+
+  "kiem_tra_trong_db": [
+    "Kèm riêng Gia Huy | one | 1 lượt, 1 đã nộp",
+    "Lớp 10A · chiều thứ 4 | class | 4 lượt, 3 đã nộp (1 em bỏ ngang)",
+    "(tự luyện) | - | 2 lượt, 2 đã nộp"
+  ],
+
+  "loi_tim_ra_va_da_sua_trong_vong_nay": [
+    {
+      "loi": "Cầu nối LISTEN đẻ ra HAI kết nối khi khởi động lúc RDS chập chờn",
+      "phat_hien_bang": "log in 'đang nghe kênh' hai lần sau một cú ENOTFOUND",
+      "vi_sao": "connect() trượt thì cả khối catch lẫn sự kiện 'error' cùng gọi thuLaiSau(), hai hẹn giờ cùng chạy",
+      "vi_sao_nguy_hiem": "mỗi lần chập chờn lại nhân đôi; kết nối thừa đều nhận notification nên cô nhận mỗi nhịp hai lần",
+      "da_sua": "thêm cờ chặn hẹn nối lại trùng",
+      "da_xac_nhan_lai": "khởi động lại: chỉ còn MỘT dòng 'đang nghe kênh'"
+    }
+  ],
+
+  "chua_kiem_duoc": [
+    "Nhiều cô cùng xem một lớp",
+    "Admin từ hai instance trở lên",
+    "Độ trễ thật trên Render",
+    "Học sinh ảo không nghe được audio"
+  ],
+
+  "da_don_du_lieu_gia": true
+}
