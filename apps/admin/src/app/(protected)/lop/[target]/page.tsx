@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { docLop } from "../../../../lib/lop";
+import { biaLop, docLop } from "../../../../lib/lop";
 import BangLop from "./BangLop";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +18,7 @@ export default async function TrangLop({
   params: Promise<{ target: string }>;
 }) {
   const { target } = await params;
-  const banDau = await docLop(target);
+  const [banDau, bia] = await Promise.all([docLop(target), biaLop(target)]);
 
   return (
     <div>
@@ -42,10 +42,28 @@ export default async function TrangLop({
         khi bên dưới là sáu em đang làm bài. Chuyện "có ai chưa" thuộc về phần
         sống, nên để `BangLop` nói.
       */}
-      <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mt-2 mb-6">
-        Bảng lớp trực tiếp
-        <span className="block text-sm font-sans font-medium text-[#1A1A1A]/45 mt-1">{target}</span>
-      </h1>
+      <div className="mt-2 mb-6">
+        {bia?.boDe && (
+          <span className="block text-[11px] uppercase tracking-[0.1em] font-bold text-[#1A1A1A]/40 mb-1">
+            {bia.boDe} · {bia.kyNang === "listening" ? "Nghe" : "Đọc"}
+          </span>
+        )}
+        <h1 className="font-serif text-3xl font-black text-[#1A1A1A]">
+          {bia?.title ?? "Bảng lớp trực tiếp"}
+        </h1>
+        {bia && bia.chuDe.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-2.5">
+            {bia.chuDe.map((c) => (
+              <span
+                key={c}
+                className="rounded-full bg-black/[0.04] px-2.5 py-1 text-[11px] font-semibold text-[#1A1A1A]/55"
+              >
+                {c}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
 
       <BangLop target={target} banDau={banDau} />
     </div>

@@ -63,16 +63,29 @@ io.use((socket, next) => {
 */
 let cauNoiSong = false;
 
+/** Tên phòng cho màn chính. Dấu gạch dưới để không đụng mã đề nào. */
+const PHONG_TONG_QUAN = "__tat_ca__";
+
 io.on("connection", (socket) => {
   // Nói ngay tình trạng hiện tại, đừng để cô phải đợi lần đổi trạng thái sau.
   socket.emit("cau-noi", cauNoiSong);
+
+  /*
+    Phòng TỔNG QUAN — cho màn chính, nơi cô nhìn tất cả các lớp cùng lúc.
+
+    Tách khỏi phòng theo đề vì hai màn hình cần hai thứ khác nhau: màn chính
+    chỉ cần biết "lớp nào vừa có động tĩnh" để đếm lại, còn màn chi tiết mới
+    cần từng ô đúng/sai. Nếu dùng chung một phòng thì màn chính phải nhận cả
+    dải 40 ô của mọi em trong mọi lớp — tốn đường truyền cho thứ nó không vẽ.
+  */
+  socket.on("xem-tat-ca", () => socket.join(PHONG_TONG_QUAN));
 
   // Mỗi đề là một phòng. Sau này khi có bảng `assignments`, phòng sẽ là mã bài
   // cô giao thay vì mã đề — đổi đúng chỗ này.
   socket.on("xem", (target) => {
     if (typeof target !== "string" || target.length > 120) return;
     for (const phong of socket.rooms) {
-      if (phong !== socket.id) socket.leave(phong);
+      if (phong !== socket.id && phong !== PHONG_TONG_QUAN) socket.leave(phong);
     }
     socket.join(target);
   });
@@ -94,6 +107,15 @@ const cauNoi = moCauNoi((goi) => {
   const phong = goi?.lop ?? goi?.target;
   if (typeof phong !== "string") return;
   io.to(phong).emit("nhip", goi);
+
+  // Màn chính chỉ cần biết lớp nào vừa động, và ai đang làm — không cần dải ô.
+  io.to(PHONG_TONG_QUAN).emit("tom-tat", {
+    lop: phong,
+    loai: goi.loai,
+    a: goi.a,
+    ten: goi.ten,
+    khach: goi.khach,
+  });
 }, (song) => {
   cauNoiSong = song;
   io.emit("cau-noi", song);

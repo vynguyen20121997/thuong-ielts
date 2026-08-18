@@ -1,54 +1,69 @@
 import Link from "next/link";
 
-import { danhSachLopDangMo } from "../../../lib/lop";
+import { danhSachLop } from "../../../lib/lop";
+import LuoiLop from "./LuoiLop";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Chọn lớp để xem. Chỉ hiện những đề có người làm trong 24 giờ qua — cô mở
- * trang này giữa buổi dạy, không phải để tra cứu lịch sử.
+ * Màn chính của phần theo dõi: tất cả các lớp đang mở.
+ *
+ * Gom theo BỘ ĐỀ chứ không đổ một danh sách phẳng. Cô dạy ba lớp trong ngày
+ * thì ba thẻ mang mã `cam12-test3`, `cam14-test1`, `cam16-test2` nhìn như
+ * nhau — phải bấm vào mới biết cái nào là lớp đang cần xem. Nhóm theo bộ, kèm
+ * chủ đề và tên vài em đang làm, thì nhận ra ngay từ ngoài.
  */
-export default async function DanhSachLop() {
-  const lop = await danhSachLopDangMo();
+export default async function TrangDanhSachLop() {
+  const lop = await danhSachLop();
+
+  const tongDangLam = lop.reduce((t, l) => t + l.dangLam, 0);
+  const tongMatKetNoi = lop.reduce((t, l) => t + l.matKetNoi, 0);
+
+  // Gom theo bộ đề, giữ nguyên thứ tự đã sắp ở SQL (lớp đông người trước).
+  const nhom = new Map<string, typeof lop>();
+  for (const l of lop) {
+    const khoa = l.boDe || "Khác";
+    nhom.set(khoa, [...(nhom.get(khoa) ?? []), l]);
+  }
 
   return (
     <div>
-      <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mb-2">Lớp đang làm bài</h1>
-      <p className="text-sm text-[#1A1A1A]/55 mb-8">
-        Những đề có học viên vào làm trong 24 giờ qua. Bấm vào một đề để xem từng em tới đâu.
-      </p>
+      <div className="flex flex-wrap items-end gap-5 mb-8">
+        <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mr-auto">
+          Lớp đang làm bài
+          <span className="block text-sm font-sans font-medium text-[#1A1A1A]/50 mt-1">
+            Những đề có học viên vào trong 24 giờ qua
+          </span>
+        </h1>
+        <Link
+          href="/lop/giao"
+          className="rounded-full bg-[#14532D] hover:bg-[#052E16] px-5 py-2.5 text-sm font-bold text-white transition-colors"
+        >
+          Giao bài mới
+        </Link>
+      </div>
 
-      {lop.length === 0 ? (
-        <div className="bg-white border border-black/10 rounded-2xl p-10 text-center">
-          <p className="text-sm font-bold text-[#1A1A1A]">Chưa có ai đang làm bài</p>
-          <p className="text-xs text-[#1A1A1A]/50 mt-1">
-            Khi học viên bắt đầu một đề, lớp sẽ hiện ở đây ngay.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {lop.map((l) => (
-            <Link
-              key={l.target}
-              href={`/lop/${encodeURIComponent(l.target)}`}
-              className="block bg-white border border-black/10 rounded-2xl p-5 hover:border-[#14532D]/40 hover:shadow-sm transition-all"
-            >
-              <span className="block font-serif text-lg font-black text-[#1A1A1A]">{l.title}</span>
-              <span className="block text-xs text-[#1A1A1A]/45 mt-0.5">{l.target}</span>
-              <div className="flex gap-5 mt-3">
-                <span className="text-sm">
-                  <b className="font-black text-[#14532D] tabular-nums">{l.dangLam}</b>
-                  <span className="text-xs text-[#1A1A1A]/50 ml-1">đang làm</span>
-                </span>
-                <span className="text-sm">
-                  <b className="font-black text-[#1A1A1A] tabular-nums">{l.daNop}</b>
-                  <span className="text-xs text-[#1A1A1A]/50 ml-1">đã nộp</span>
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      {/*
+        LUÔN dựng `LuoiLop`, kể cả khi chưa có lớp nào.
+
+        Trước đây chỗ này rẽ nhánh: chưa có lớp thì vẽ một khối tĩnh, có lớp
+        mới dựng phần sống. Nhưng cô mở màn theo dõi TRƯỚC giờ học mới là
+        trường hợp thường gặp — và lúc đó socket không bao giờ được nối, nên
+        cả lớp vào làm bài mà màn hình vẫn nói "chưa có ai", cho tới khi cô tự
+        bấm tải lại. Đúng cái bẫy đã sập ở tiêu đề màn chi tiết.
+
+        Khối "chưa có ai" giờ nằm bên trong `LuoiLop`, nơi nó biết khi nào
+        không còn đúng nữa.
+      */}
+      <LuoiLop
+        banDau={lop}
+        nhomBanDau={[...nhom.entries()].map(([bo, ds]) => ({
+          bo,
+          targets: ds.map((d) => d.target),
+        }))}
+        tongDangLam={tongDangLam}
+        tongMatKetNoi={tongMatKetNoi}
+      />
     </div>
   );
 }

@@ -185,3 +185,128 @@ export async function bangDiemLop(target: string): Promise<DongBangDiem[]> {
     tiLe: r.total > 0 ? Math.round((r.correct / r.total) * 100) : 0,
   }));
 }
+
+export interface TheLop {
+  target: string;
+  title: string;
+  boDe: string;
+  kyNang: "reading" | "listening";
+  chuDe: string[];
+  dangLam: number;
+  daNop: number;
+  matKetNoi: number;
+  /** Tên vài em đang làm — cô nhận ra lớp mình qua tên, không qua mã đề. */
+  tenDangLam: string[];
+  batDauLuc: string;
+}
+
+/**
+ * Màn chính của phần theo dõi: những lớp đang mở, gom theo bộ đề.
+ *
+ * Khác `danhSachLopDangMo` cũ ở chỗ mang theo đủ thứ để cô NHẬN RA lớp mình
+ * mà không phải bấm vào: tên đề thật, chủ đề, và tên vài em đang làm. Trước
+ * đây thẻ chỉ có mã đề dạng `cam12-test3` — cô dạy ba lớp trong ngày thì nhìn
+ * ba cái mã đó không biết cái nào là lớp đang cần xem.
+ */
+export async function danhSachLop(): Promise<TheLop[]> {
+  const { rows } = await pool.query(
+    `WITH lop AS (
+       SELECT ${MA_LOP_SQL} AS ma_lop,
+              min(a.skill) AS skill,
+              COALESCE(
+                min(a.title) FILTER (WHERE a.target = ${MA_LOP_SQL}),
+                min(a.title)
+              ) AS title,
+              max(a.started_at) AS moi_nhat,
+              count(*) FILTER (WHERE a.status = 'in_progress') AS dang_lam,
+              count(*) FILTER (WHERE a.status = 'submitted')   AS da_nop,
+              count(*) FILTER (
+                WHERE a.status = 'in_progress'
+                  AND (p.last_beat_at IS NULL OR p.last_beat_at < now() - interval '20 seconds')
+              ) AS mat_ket_noi,
+              (array_agg(
+                 COALESCE(s.name, a.guest_name, 'Học viên')
+                 ORDER BY a.started_at DESC
+               ) FILTER (WHERE a.status = 'in_progress'))[1:6] AS ten_dang_lam
+         FROM attempts a
+         LEFT JOIN students s          ON s.id = a.student_id
+         LEFT JOIN attempt_progress p  ON p.attempt_id = a.id
+        WHERE a.started_at > now() - interval '1 day'
+        GROUP BY ${MA_LOP_SQL}
+     )
+     SELECT l.*,
+            -- Bộ đề và chủ đề lấy từ bảng đề, không lấy từ lượt làm: lượt chỉ
+            -- lưu tên đề tại thời điểm làm, còn đây là thông tin của chính đề.
+            COALESCE(r.collection, li.collection, '') AS bo_de,
+            COALESCE(r.chu_de, ARRAY[li.topic], ARRAY[]::text[]) AS chu_de
+       FROM lop l
+       LEFT JOIN LATERAL (
+         SELECT min(collection) AS collection,
+                array_agg(DISTINCT topic) FILTER (WHERE topic IS NOT NULL AND topic <> '') AS chu_de
+           FROM reading_tests
+          WHERE slug = l.ma_lop OR slug LIKE l.ma_lop || '-%'
+       ) r ON l.skill = 'reading'
+       LEFT JOIN LATERAL (
+         SELECT collection, topic FROM listening_tests WHERE slug = l.ma_lop LIMIT 1
+       ) li ON l.skill = 'listening'
+      ORDER BY l.dang_lam DESC, l.moi_nhat DESC`
+  );
+
+  return rows.map((r) => ({
+    target: r.ma_lop,
+    title: r.title,
+    boDe: r.bo_de ?? "",
+    kyNang: r.skill,
+    chuDe: (r.chu_de ?? []).filter(Boolean).slice(0, 4),
+    dangLam: Number(r.dang_lam),
+    daNop: Number(r.da_nop),
+    matKetNoi: Number(r.mat_ket_noi),
+    tenDangLam: (r.ten_dang_lam ?? []).filter(Boolean),
+    batDauLuc: new Date(r.moi_nhat).toISOString(),
+  }));
+}
+
+/**
+ * Bìa của một lớp: tên đề thật, bộ, chủ đề.
+ *
+ * Màn chi tiết trước đây chỉ có mã đề trên tiêu đề (`cam12-test3`). Cô mở ba
+ * tab cho ba lớp thì ba tab giống hệt nhau — phải nhìn thanh địa chỉ mới biết
+ * đang xem lớp nào.
+ */
+export async function biaLop(
+  target: string
+): Promise<{ title: string; boDe: string; chuDe: string[]; kyNang: "reading" | "listening" } | null> {
+  const ma = maLop(target);
+
+  const r = await pool.query(
+    `SELECT min(collection) AS bo,
+            min(title) AS title,
+            array_agg(DISTINCT topic) FILTER (WHERE topic IS NOT NULL AND topic <> '') AS chu_de
+       FROM reading_tests
+      WHERE slug = $1 OR slug LIKE $1 || '-%'`,
+    [ma]
+  );
+  if (r.rows[0]?.title) {
+    return {
+      title: String(r.rows[0].title).replace(/ · Passage \d+.*$/, ""),
+      boDe: r.rows[0].bo ?? "",
+      chuDe: (r.rows[0].chu_de ?? []).filter(Boolean),
+      kyNang: "reading",
+    };
+  }
+
+  const l = await pool.query(
+    `SELECT title, collection, topic FROM listening_tests WHERE slug = $1 LIMIT 1`,
+    [ma]
+  );
+  if (l.rows.length) {
+    return {
+      title: l.rows[0].title,
+      boDe: l.rows[0].collection ?? "",
+      chuDe: l.rows[0].topic ? String(l.rows[0].topic).split(" · ") : [],
+      kyNang: "listening",
+    };
+  }
+
+  return null;
+}
