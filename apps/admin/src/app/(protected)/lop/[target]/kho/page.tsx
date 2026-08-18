@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { biaLop, cauKhoNhat } from "../../../../../lib/lop";
+import TabLop from "../TabLop";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +22,11 @@ export default async function TrangCauKho({
 
   return (
     <div>
-      <div className="flex items-center gap-4">
-        <Link href={`/lop/${target}`} className="text-xs font-bold text-[#1A1A1A]/50 hover:text-[#14532D]">
-          ← Bảng lớp trực tiếp
-        </Link>
-        <Link href={`/lop/${target}/diem`} className="text-xs font-bold text-[#14532D] hover:underline">
-          Bảng điểm cả lớp →
-        </Link>
+      <Link href="/lop" className="text-xs font-bold text-[#1A1A1A]/50 hover:text-[#14532D]">
+        ← Tất cả lớp
+      </Link>
+      <div className="mt-2">
+        <TabLop khoa={target} />
       </div>
 
       <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mt-2 mb-1">Chữa câu nào trước</h1>

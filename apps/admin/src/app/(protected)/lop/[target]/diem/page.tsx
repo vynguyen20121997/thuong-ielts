@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { bangDiemLop } from "../../../../../lib/lop";
+import TabLop from "../TabLop";
 
 export const dynamic = "force-dynamic";
 
@@ -30,9 +31,12 @@ export default async function TrangBangDiem({
 
   return (
     <div>
-      <Link href={`/lop/${encodeURIComponent(target)}`} className="text-xs font-bold text-[#1A1A1A]/50 hover:text-[#14532D]">
-        ← Bảng lớp trực tiếp
+      <Link href="/lop" className="text-xs font-bold text-[#1A1A1A]/50 hover:text-[#14532D]">
+        ← Tất cả lớp
       </Link>
+      <div className="mt-2">
+        <TabLop khoa={target} />
+      </div>
       <div className="flex flex-wrap items-end gap-4 mt-2 mb-6">
         <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mr-auto">
           Bảng điểm
