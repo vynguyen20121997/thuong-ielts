@@ -1,0 +1,68 @@
+{
+  "_comment": "Do hai tinh nang moi: co quyet dinh khi nao tra diem, va Insights. Co giao ao bam that tren trinh duyet; hoc sinh ao chay o tang HTTP va ghi lai DUNG nhung gi nhan duoc.",
+  "ngay": "2026-08-18",
+  "buoi_hoc": {
+    "nhan": "Lop 11B · chua chung",
+    "de": "cam12-test3",
+    "cai_dat": { "show_score": "khi_co_mo", "show_answers": "khi_co_mo" },
+    "so_hoc_sinh": 4
+  },
+
+  "hoc_sinh_nhan_duoc_gi_khi_bi_giau": {
+    "so_em_nop": 3,
+    "diem_hien_thi": "co chua tra diem",
+    "co_ro_dap_an_trong_phan_hoi": false,
+    "ghi_chu": "Kiem o TANG MANG chu khong nhin giao dien: doc mang items va tim chuoi expected khac rong. Ca ba em deu khong ro."
+  },
+
+  "trang_bai_da_lam": {
+    "truoc_khi_co_mo": "correct = null, cho co mo = true",
+    "sau_khi_co_mo": "Minh Khoi 23, Ngoc Anh 3, Thu Ha 11 — cho co mo = false",
+    "vi_sao_quan_trong": "Trang nay doc thang DB nen tung la cua hau: em nop xong thay 'cho co mo' roi mo lich su la thay diem ngay."
+  },
+
+  "insights": {
+    "duong_dan": "/lop/<khoa>/kho",
+    "xep_dung_tu_thap_len": true,
+    "vi_du": [
+      "cau 10 — 0/3 em dung — dap an: oil — hay sai thanh: sai-roi x3",
+      "cau 23 — 0/3 em dung — dap an: factories",
+      "cau 28 — 0/3 em dung — dap an: pleasure"
+    ],
+    "gia_tri": "Cau 10 co ca ba em sai GIONG HET nhau — do la tin hieu ca lop hieu sai cung mot cho, khac han ba em sai ba kieu."
+  },
+
+  "man_hinh_co": {
+    "nut_mo_ket_qua_chi_hien_khi_dat_cho_co_mo": true,
+    "hoi_lai_truoc_khi_mo": "Mo roi khong dong lai duoc.",
+    "sau_khi_mo": "Da mo ket qua cho ca lop",
+    "lien_ket": ["Bang diem ca lop", "Chua cau nao truoc"]
+  },
+
+  "loi_tim_ra_va_da_sua": [
+    {
+      "loi": "Trang 'Bai da lam' lo diem du co dang giau",
+      "phat_hien_bang": "nghi tiep mot buoc sau khi do duong nop bai",
+      "da_sua": "loc ngay trong truy van, khong phai o giao dien",
+      "da_xac_nhan_lai": true
+    },
+    {
+      "loi": "SQL 'column reference cho_mo is ambiguous' — trang lich su se no khi mo",
+      "phat_hien_bang": "chay that, khong nhin code",
+      "da_sua": "bo bi danh trung, dung COALESCE truc tiep",
+      "da_xac_nhan_lai": true
+    },
+    {
+      "loi": "Hai nhan thieu dau tieng Viet ('Thoi', 'Dang mo')",
+      "da_sua": true
+    }
+  ],
+
+  "chua_kiem_duoc": [
+    "Muc 'khong cho xem' (moi do 'cho co mo')",
+    "Nhieu co cung xem mot lop",
+    "Do tre that tren Render"
+  ],
+
+  "da_don_du_lieu_gia": true
+}

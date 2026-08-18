@@ -61,7 +61,7 @@ export default function MoKetQua({
           onClick={() => setHoi(false)}
           className="text-xs font-bold text-[#1A1A1A]/45 hover:text-[#1A1A1A] cursor-pointer"
         >
-          Thoi
+          Thôi
         </button>
       </span>
     );

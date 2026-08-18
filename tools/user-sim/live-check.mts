@@ -246,7 +246,28 @@ async function chayMotEm(
     kq.ghiChu.push(`nộp hỏng: HTTP ${nop.status}`);
     return kq;
   }
-  const graded = (await nop.json()) as { correct: number; total: number; band: number };
+  const graded = (await nop.json()) as {
+    correct: number;
+    total: number;
+    band: number;
+    daChe?: { diem: boolean; dapAn: boolean };
+    items?: Array<{ expected?: string }>;
+  };
+
+  // Cô có thể đang giấu điểm/đáp án của buổi này. Ghi lại ĐÚNG những gì học
+  // sinh nhận được, và kiểm luôn có rò đáp án trong phản hồi hay không —
+  // giấu ở giao diện thì vẫn rò ở đây.
+  if (graded.daChe?.diem || graded.daChe?.dapAn) {
+    const ro = (graded.items ?? []).some((i) => (i.expected ?? "") !== "");
+    kq.ghiChu.push(
+      `cô giấu: điểm=${graded.daChe?.diem ? "có" : "không"}, ` +
+        `đáp án=${graded.daChe?.dapAn ? "có" : "không"}` +
+        (ro ? " — RÒ ĐÁP ÁN trong phản hồi!" : " — không rò đáp án")
+    );
+    kq.diem = "cô chưa trả điểm";
+    return kq;
+  }
+
   kq.diem = `${graded.correct}/${graded.total} band ${graded.band}`;
   return kq;
 }
