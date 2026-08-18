@@ -62,3 +62,6 @@ export async function setSiteContent<T>(key: string, data: T): Promise<void> {
   thuộc vào trình đóng gói. Ở cuối thì không phải nghĩ tới nữa.
 */
 export * from "./live";
+
+// Bài cô giao qua link — cả `admin` (tạo, quản lý) và `web` (tra token) đều đọc.
+export * from "./baiGiao";

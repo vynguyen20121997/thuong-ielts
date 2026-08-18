@@ -5,6 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
   { label: "Tổng quan", href: "/" },
+  // Hai mục dạy học đứng trước các mục nội dung marketing: giữa buổi dạy thì
+  // đây là thứ cô mở, còn sửa trang chủ thì để lúc rảnh.
+  { label: "Giao bài", href: "/lop/giao" },
+  { label: "Lớp đang làm", href: "/lop" },
   { label: "Trang chủ (Hero)", href: "/hero" },
   { label: "Kết quả học viên", href: "/testimonials" },
   { label: "Cảm nhận học viên", href: "/feedbacks" },

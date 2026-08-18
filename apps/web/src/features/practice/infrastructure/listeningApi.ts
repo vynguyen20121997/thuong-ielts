@@ -44,13 +44,27 @@ export async function submitListeningAttempt(
 /** Xem ghi chú về việc thử lại ở `readingApi.ts` — cùng một lý do. */
 const SO_LAN_THU = 3;
 
+/**
+ * Token của bài cô giao, lấy từ `?bai=` trên URL.
+ *
+ * Đọc thẳng từ thanh địa chỉ thay vì truyền qua chục lớp component: token chỉ
+ * có nghĩa với đúng một lời gọi (mở lượt), và luồn nó qua từng props chỉ để
+ * tới đây thì mọi component ở giữa đều phải biết về một thứ không liên quan
+ * gì tới việc chúng làm.
+ */
+function tokenBaiGiao(): string | null {
+  if (typeof window === "undefined") return null;
+  return new URLSearchParams(window.location.search).get("bai");
+}
+
+
 export async function openListeningAttempt(slug: string): Promise<string | null> {
   for (let lan = 1; lan <= SO_LAN_THU; lan++) {
     try {
       const res = await fetch("/api/practice/attempt/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ skill: "listening", scope: "test", target: slug }),
+        body: JSON.stringify({ skill: "listening", scope: "test", target: slug, token: tokenBaiGiao() }),
       });
       if (res.ok) {
         const data = (await res.json()) as { attemptId?: string };

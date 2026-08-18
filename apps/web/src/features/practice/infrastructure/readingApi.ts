@@ -95,6 +95,20 @@ export async function submitReadingAttempt(
 */
 const SO_LAN_THU = 3;
 
+/**
+ * Token của bài cô giao, lấy từ `?bai=` trên URL.
+ *
+ * Đọc thẳng từ thanh địa chỉ thay vì truyền qua chục lớp component: token chỉ
+ * có nghĩa với đúng một lời gọi (mở lượt), và luồn nó qua từng props chỉ để
+ * tới đây thì mọi component ở giữa đều phải biết về một thứ không liên quan
+ * gì tới việc chúng làm.
+ */
+function tokenBaiGiao(): string | null {
+  if (typeof window === "undefined") return null;
+  return new URLSearchParams(window.location.search).get("bai");
+}
+
+
 export async function openReadingAttempt(
   mode: ReadingPaper["mode"],
   id: string,
@@ -108,6 +122,7 @@ export async function openReadingAttempt(
           skill: "reading",
           scope: mode === "test" ? "test" : "paper",
           target: id,
+          token: tokenBaiGiao(),
         }),
       });
       if (res.ok) {

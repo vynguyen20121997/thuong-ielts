@@ -399,3 +399,75 @@ CREATE INDEX IF NOT EXISTS idx_attempts_dang_lam ON attempts (target, started_at
 -- "Ai đã làm đề này": phục vụ bảng lớp và thống kê theo đề.
 CREATE INDEX IF NOT EXISTS idx_attempts_target  ON attempts (skill, target, submitted_at DESC);
 CREATE INDEX IF NOT EXISTS idx_attempts_assignment ON attempts (assignment_id) WHERE assignment_id IS NOT NULL;
+
+/* ==================================================================
+   Bài cô giao — luồng "cô gửi link cho lớp"
+
+   Trước bảng này, cô không giao được bài: phải nhắn cả lớp "vào Cam 12
+   Test 3 nhé" rồi mở bảng lớp lên xem ai vào. Có link thì cô gửi một
+   đường dẫn, học sinh bấm là vào thẳng đúng đề.
+
+   `share_token` là CHÌA KHOÁ: ai có link là vào được, không cần biết
+   mật khẩu gì. Vì thế phải đủ dài để không dò ra, và phải đóng được —
+   `closes_at` cùng `is_open` là hai cách đóng, một tự động một bằng tay.
+   Không có chúng thì link phát trong lớp hôm nay còn dùng được sang năm.
+   ================================================================== */
+
+CREATE TABLE IF NOT EXISTS assignments (
+  id            TEXT PRIMARY KEY,
+  teacher_id    TEXT NOT NULL REFERENCES teachers (id) ON DELETE CASCADE,
+  skill         TEXT NOT NULL CHECK (skill IN ('reading', 'listening')),
+  scope         TEXT NOT NULL CHECK (scope IN ('paper', 'test')),
+  target        TEXT NOT NULL,
+  title         TEXT NOT NULL,
+  -- Tên cô đặt cho buổi học ("Lớp 9A thứ 3"). Để trống thì lấy tên đề.
+  label         TEXT,
+  share_token   TEXT NOT NULL UNIQUE,
+  -- Cho phép học sinh chỉ gõ tên là vào, không cần tài khoản. Chỉ đúng cho
+  -- luồng này: cô gửi link giữa buổi dạy, bắt khai hồ sơ là chặn cả lớp.
+  allow_guest   BOOLEAN NOT NULL DEFAULT true,
+  -- Một link làm một lần. Vào lại thì thấy kết quả lần trước, không mở lại đề.
+  one_attempt   BOOLEAN NOT NULL DEFAULT true,
+  is_open       BOOLEAN NOT NULL DEFAULT true,
+  closes_at     TIMESTAMPTZ,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_assignments_teacher ON assignments (teacher_id, created_at DESC);
+
+-- `attempts.assignment_id` vốn để trống chờ bảng này. Giờ bảng đã có thì gắn
+-- khoá ngoại vào — cô xoá một bài giao thì lượt làm không trỏ vào hư không.
+-- ON DELETE SET NULL chứ không CASCADE: xoá bài giao không được xoá bài học
+-- sinh đã làm.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'attempts_assignment_fk'
+  ) THEN
+    ALTER TABLE attempts
+      ADD CONSTRAINT attempts_assignment_fk
+      FOREIGN KEY (assignment_id) REFERENCES assignments (id) ON DELETE SET NULL;
+  END IF;
+END $$;
+
+-- Khách vãng lai vào bằng link được nhận ra qua cookie mang mã này, để em ấy
+-- tải lại trang vẫn là chính mình chứ không thành người thứ hai.
+ALTER TABLE attempts ADD COLUMN IF NOT EXISTS guest_key TEXT;
+CREATE INDEX IF NOT EXISTS idx_attempts_guest_key ON attempts (guest_key) WHERE guest_key IS NOT NULL;
+
+/*
+  Mỗi người chỉ có MỘT lượt đang làm cho mỗi đề.
+
+  Kiểm bằng SELECT rồi mới INSERT là chưa đủ: trình duyệt gọi mở lượt hai lần
+  gần như cùng lúc (React ở chế độ dev gọi effect hai lần, và học sinh tải lại
+  trang cũng vậy), hai câu SELECT cùng chạy trước khi câu INSERT nào kịp ghi,
+  nên cả hai đều thấy trống và cả hai đều ghi. Kết quả: một em thành hai dòng
+  trên bảng lớp của cô, cùng một cái tên.
+
+  Ràng buộc ở đây thì cuộc đua đó thua ngay tại DB, không cần khoá gì thêm.
+  Chỉ áp cho lượt ĐANG LÀM — làm lại đề cũ sau khi đã nộp thì vẫn được.
+*/
+CREATE UNIQUE INDEX IF NOT EXISTS uq_attempt_dang_lam_hoc_sinh
+  ON attempts (student_id, target) WHERE status = 'in_progress' AND student_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS uq_attempt_dang_lam_khach
+  ON attempts (guest_key, target) WHERE status = 'in_progress' AND guest_key IS NOT NULL;

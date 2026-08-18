@@ -83,6 +83,10 @@ services:
       - key: ADMIN_SESSION_SECRET
         sync: false
 
+  # Hai việc dọn dẹp, chung một cron cho đỡ thêm một service:
+  #   1. chốt những lượt hết giờ mà không ai bấm nộp
+  #   2. dọn khách vãng lai quá 1 ngày
+  #
   # Chốt những lượt hết giờ mà không ai bấm nộp — học sinh đóng tab giữa chừng,
   # máy sập nguồn, mạng rớt hẳn. Không có việc này thì bảng lớp của cô mang theo
   # những em không còn ở đó, và lịch sử làm bài thiếu mất bài đã làm dở.
@@ -97,7 +101,7 @@ services:
     branch: main
     schedule: "*/10 * * * *"
     buildCommand: npm ci
-    startCommand: npm run close:expired
+    startCommand: npm run close:expired && npm run clean:guests
     buildFilter:
       paths:
         - scripts/**

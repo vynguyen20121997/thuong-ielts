@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { banNhip, maLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../../features/account/server/guard";
+import { khachHienTai } from "../../../../../../../features/account/server/khach";
 import { gradeReading } from "../../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../../features/practice/domain/types";
 import {
@@ -67,8 +68,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
   // Không có phiên thì bỏ qua, không phải lỗi — trang thi có chốt đăng nhập,
   // nhưng route này vẫn gọi thẳng được và một lượt không rõ của ai thì lưu
   // cũng chẳng để làm gì. Điểm vẫn trả về bình thường.
+  // Học sinh có tài khoản, hoặc khách vào bằng link cô gửi.
   const student = await currentStudent();
-  if (student) {
+  const khach = student ? null : await khachHienTai();
+  if (student || khach) {
     const moTruoc = typeof body.attemptId === "string" ? body.attemptId : null;
     const tuDong = body.autoSubmitted === true;
 
@@ -85,7 +88,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
         scope: "test",
         target: testId,
         title: record.title,
-        studentId: student.id,
+        studentId: student?.id ?? null,
+        guestName: khach?.ten ?? null,
         autoSubmitted: tuDong,
         answers,
         result,
@@ -102,8 +106,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
         a: moTruoc as string,
         target: testId,
         lop: maLop(testId),
-        ten: student.name ?? "Học viên",
-        khach: false,
+        ten: student?.name ?? khach?.ten ?? "Học viên",
+        khach: !student,
         d: result.total,
         c: result.correct,
         t: result.total,

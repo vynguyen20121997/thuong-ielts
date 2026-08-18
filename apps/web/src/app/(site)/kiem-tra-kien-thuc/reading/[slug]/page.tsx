@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { requireStudent } from "../../../../../features/account/server/guard";
+import { requireStudentOrGuest } from "../../../../../features/account/server/guard";
 import { getExamOutline } from "../../../../../features/practice/server/readingRepository";
 import ReadingExamGate from "../../../../../features/practice/ui/ReadingExamGate";
 
@@ -25,12 +25,21 @@ export async function generateMetadata({
   };
 }
 
-export default async function ReadingTestPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ReadingTestPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ bai?: string }>;
+}) {
   const { slug } = await params;
+  // `?bai=<token>` nghĩa là em vào bằng link cô gửi — luồng đó không đòi khai
+  // hồ sơ và cho phép khách gõ tên. Xem `requireStudentOrGuest`.
+  const { bai: token } = await searchParams;
 
   // Phải đăng nhập và khai xong hồ sơ mới vào được. Chặn ở đây chứ không ở
   // danh mục: danh sách đề vẫn để mở cho Google đọc và cho khách xem trước.
-  await requireStudent(`/kiem-tra-kien-thuc/reading/${slug}`);
+  await requireStudentOrGuest(`/kiem-tra-kien-thuc/reading/${slug}`, token);
 
   // Chỉ bìa đề: tên, số câu, thời gian. Bài đọc và câu hỏi tải khi bấm bắt đầu,
   // nên đồng hồ không chạy trong lúc học sinh còn đang đọc hướng dẫn.

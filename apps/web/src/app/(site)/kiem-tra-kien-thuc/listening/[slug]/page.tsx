@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { requireStudent } from "../../../../../features/account/server/guard";
+import { requireStudentOrGuest } from "../../../../../features/account/server/guard";
 import { getListeningTestBySlug } from "../../../../../features/practice/server/listeningRepository";
 import ListeningPlayer from "../../../../../features/practice/ui/ListeningPlayer";
 
@@ -23,10 +23,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function ListeningTestPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ListeningTestPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ bai?: string }>;
+}) {
   const { slug } = await params;
+  // `?bai=<token>` nghĩa là em vào bằng link cô gửi — luồng đó không đòi khai
+  // hồ sơ và cho phép khách gõ tên. Xem `requireStudentOrGuest`.
+  const { bai: token } = await searchParams;
 
-  await requireStudent(`/kiem-tra-kien-thuc/listening/${slug}`);
+  await requireStudentOrGuest(`/kiem-tra-kien-thuc/listening/${slug}`, token);
 
   // Public projection — the answer key stays in the database.
   //

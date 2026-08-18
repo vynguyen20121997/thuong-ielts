@@ -111,6 +111,10 @@ export interface MoLuot {
   title: string;
   studentId?: string | null;
   guestName?: string | null;
+  /** Mã nhận ra khách vãng lai giữa các lần tải trang (cookie). */
+  guestKey?: string | null;
+  /** Bài cô giao, khi em vào bằng link. */
+  assignmentId?: string | null;
   questionCount: number;
   durationSeconds: number;
 }
@@ -135,17 +139,54 @@ export interface LuotDangLam {
  * trong một lượt không tồn tại.
  */
 export async function openAttempt(input: MoLuot): Promise<LuotDangLam> {
-  const id = crypto.randomUUID();
   const duration = Math.max(60, Math.round(input.durationSeconds));
 
-  await pool.query(
+  /*
+    Đã có lượt đang mở cho đúng người, đúng đề thì DÙNG LẠI, không tạo lượt mới.
+
+    Không có bước này thì một em sinh ra hai dòng trên bảng lớp của cô, và cả
+    hai đều mang tên em ấy. Ba đường dẫn tới chuyện đó, cả ba đều bình thường:
+    React ở chế độ dev gọi effect hai lần, học sinh tải lại trang giữa giờ, và
+    em ấy mở bài trong hai tab.
+
+    Dùng lại cũng là cách duy nhất đúng về mặt thi cử: `expires_at` giữ nguyên
+    từ lần đầu, nên tải lại trang KHÔNG kéo dài thêm giờ làm bài.
+  */
+  const dangMo = await pool.query(
+    `SELECT id, GREATEST(0, EXTRACT(EPOCH FROM (expires_at - now()))::int) AS con_lai, total
+       FROM attempts
+      WHERE status = 'in_progress'
+        AND target = $1
+        AND expires_at > now()
+        AND (($2::text IS NOT NULL AND student_id = $2)
+          OR ($3::text IS NOT NULL AND guest_key = $3))
+      ORDER BY started_at DESC
+      LIMIT 1`,
+    [input.target, input.studentId ?? null, input.guestKey ?? null]
+  );
+  if (dangMo.rows.length) {
+    const r = dangMo.rows[0];
+    return { id: r.id, target: input.target, total: r.total, conLai: r.con_lai };
+  }
+
+  const id = crypto.randomUUID();
+
+  /*
+    `ON CONFLICT DO NOTHING` chứ không phải chỉ dựa vào lần kiểm ở trên.
+
+    Hai lời gọi chạy gần như cùng lúc thì cả hai đều SELECT trước khi có ai
+    kịp INSERT, nên cả hai đều thấy trống. Chỉ có ràng buộc duy nhất ở DB mới
+    phân xử được cuộc đua đó — xem `uq_attempt_dang_lam_*` trong schema.
+  */
+  const { rowCount } = await pool.query(
     `INSERT INTO attempts
-       (id, skill, scope, target, title, student_id, guest_name,
+       (id, skill, scope, target, title, student_id, guest_name, guest_key, assignment_id,
         status, started_at, expires_at, submitted_at,
         elapsed_seconds, total, correct)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,
-             'in_progress', now(), now() + make_interval(secs => $8::int), NULL,
-             0, $9, 0)`,
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,
+             'in_progress', now(), now() + make_interval(secs => $10::int), NULL,
+             0, $11, 0)
+     ON CONFLICT DO NOTHING`,
     [
       id,
       input.skill,
@@ -154,10 +195,37 @@ export async function openAttempt(input: MoLuot): Promise<LuotDangLam> {
       input.title,
       input.studentId ?? null,
       input.guestName ?? null,
+      input.guestKey ?? null,
+      input.assignmentId ?? null,
       duration,
       input.questionCount,
     ]
   );
+
+  // Thua cuộc đua: lượt của lần gọi kia đã ghi xong. Đọc lại và dùng lượt đó.
+  if ((rowCount ?? 0) === 0) {
+    const { rows } = await pool.query(
+      `SELECT id, GREATEST(0, EXTRACT(EPOCH FROM (expires_at - now()))::int) AS con_lai, total
+         FROM attempts
+        WHERE status = 'in_progress' AND target = $1
+          AND (($2::text IS NOT NULL AND student_id = $2)
+            OR ($3::text IS NOT NULL AND guest_key = $3))
+        ORDER BY started_at DESC
+        LIMIT 1`,
+      [input.target, input.studentId ?? null, input.guestKey ?? null]
+    );
+    if (rows.length) {
+      return {
+        id: rows[0].id,
+        target: input.target,
+        total: rows[0].total,
+        conLai: rows[0].con_lai,
+      };
+    }
+    // Không ghi được mà cũng không tìm thấy: chuyện không nên xảy ra, nhưng
+    // trả về một lượt không tồn tại thì còn tệ hơn.
+    throw new Error("Không mở được lượt làm bài.");
+  }
 
   await pool.query(
     `INSERT INTO attempt_progress (attempt_id, marks)
@@ -190,8 +258,9 @@ export interface ChuLuot {
  */
 export async function getOpenAttempt(
   attemptId: string,
-  studentId: string
+  ai: { studentId?: string | null; guestKey?: string | null }
 ): Promise<ChuLuot | null> {
+  if (!ai.studentId && !ai.guestKey) return null;
   const { rows } = await pool.query(
     `SELECT a.id, a.target, a.title, a.skill, a.scope, a.total,
             GREATEST(0, EXTRACT(EPOCH FROM (a.expires_at - now()))::int) AS con_lai,
@@ -199,9 +268,11 @@ export async function getOpenAttempt(
             (a.student_id IS NULL) AS khach
        FROM attempts a
        LEFT JOIN students s ON s.id = a.student_id
-      WHERE a.id = $1 AND a.student_id = $2 AND a.status = 'in_progress'
+      WHERE a.id = $1 AND a.status = 'in_progress'
+        AND (($2::text IS NOT NULL AND a.student_id = $2)
+          OR ($3::text IS NOT NULL AND a.guest_key = $3))
       LIMIT 1`,
-    [attemptId, studentId]
+    [attemptId, ai.studentId ?? null, ai.guestKey ?? null]
   );
   if (rows.length === 0) return null;
 

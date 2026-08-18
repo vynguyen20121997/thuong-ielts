@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { banNhip, maLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
+import { khachHienTai } from "../../../../../../features/account/server/khach";
 import { gradeReading } from "../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../features/practice/domain/types";
 import {
@@ -57,8 +58,10 @@ export async function POST(
 
   // Xem ghi chú ở route chấm Reading cả test: người làm lấy từ phiên đăng nhập.
   // Listening lưu cả bài một dòng nên luôn là 'test', không có 'paper'.
+  // Học sinh có tài khoản, hoặc khách vào bằng link cô gửi.
   const student = await currentStudent();
-  if (student) {
+  const khach = student ? null : await khachHienTai();
+  if (student || khach) {
     const moTruoc = typeof body.attemptId === "string" ? body.attemptId : null;
     const tuDong = body.autoSubmitted === true;
 
@@ -72,7 +75,8 @@ export async function POST(
         scope: "test",
         target: slug,
         title: record.title,
-        studentId: student.id,
+        studentId: student?.id ?? null,
+        guestName: khach?.ten ?? null,
         autoSubmitted: tuDong,
         answers,
         result,
@@ -87,8 +91,8 @@ export async function POST(
         a: moTruoc as string,
         target: slug,
         lop: maLop(slug),
-        ten: student.name ?? "Học viên",
-        khach: false,
+        ten: student?.name ?? khach?.ten ?? "Học viên",
+        khach: !student,
         d: result.total,
         c: result.correct,
         t: result.total,

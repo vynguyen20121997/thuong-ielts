@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { requireStudent } from "../../../../../../features/account/server/guard";
+import { requireStudentOrGuest } from "../../../../../../features/account/server/guard";
 import { getExamOutline } from "../../../../../../features/practice/server/readingRepository";
 import ReadingExamGate from "../../../../../../features/practice/ui/ReadingExamGate";
 
@@ -33,12 +33,17 @@ export async function generateMetadata({
 
 export default async function ReadingFullTestPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ testId: string }>;
+  searchParams: Promise<{ bai?: string }>;
 }) {
   const { testId } = await params;
+  // `?bai=<token>` nghĩa là em vào bằng link cô gửi — luồng đó không đòi khai
+  // hồ sơ và cho phép khách gõ tên. Xem `requireStudentOrGuest`.
+  const { bai: token } = await searchParams;
 
-  await requireStudent(`/kiem-tra-kien-thuc/reading/test/${testId}`);
+  await requireStudentOrGuest(`/kiem-tra-kien-thuc/reading/test/${testId}`, token);
 
   // Chỉ lấy bìa đề. Nội dung bài đọc tải sau, khi học sinh bấm bắt đầu.
   const outline = await getExamOutline("test", testId);

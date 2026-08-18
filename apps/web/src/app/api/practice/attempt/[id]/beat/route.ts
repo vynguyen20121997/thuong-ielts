@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { banNhip, maLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
+import { khachHienTai } from "../../../../../../features/account/server/khach";
 import { isAnswerCorrect } from "../../../../../../features/practice/domain/scoring";
 import type { ReadingAnswers } from "../../../../../../features/practice/domain/types";
 import {
@@ -39,12 +40,20 @@ function sanitizeAnswers(input: unknown): ReadingAnswers {
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
+  // Học sinh có tài khoản, hoặc khách vào bằng link cô gửi. Không ai trong hai
+  // thì không có gì để ghi.
   const student = await currentStudent();
-  if (!student) return NextResponse.json({ error: "Chưa đăng nhập." }, { status: 401 });
+  const khach = student ? null : await khachHienTai();
+  if (!student && !khach) {
+    return NextResponse.json({ error: "Chưa đăng nhập." }, { status: 401 });
+  }
 
   // Lấy lượt và kiểm chủ sở hữu trong một truy vấn — không lấy được lượt của
   // người khác, kể cả khi cố tình đổi id trên URL.
-  const luot = await getOpenAttempt(id, student.id);
+  const luot = await getOpenAttempt(id, {
+    studentId: student?.id ?? null,
+    guestKey: khach?.key ?? null,
+  });
   if (!luot) {
     // Đã nộp rồi, hết giờ rồi, hoặc không phải của em này. Cả ba đều không
     // phải lỗi đáng kêu lên: trả 204 để trình duyệt lặng lẽ ngừng gửi nhịp.

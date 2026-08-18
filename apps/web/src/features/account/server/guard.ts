@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
+import { conMo, timBaiGiaoTheoToken } from "@thuong-ielts/db";
 
 import { auth } from "../../../auth";
 import { isProfileComplete, type StudentWithProfile } from "../domain/types";
+import { khachHienTai } from "./khach";
 import { getStudentWithProfile } from "./studentRepository";
 
 /**
@@ -46,4 +48,42 @@ export async function currentStudent(): Promise<StudentWithProfile | null> {
   const id = session?.user?.id;
   if (!id) return null;
   return getStudentWithProfile(id);
+}
+
+/**
+ * Chốt chặn cho luồng "cô gửi link".
+ *
+ * Khác `requireStudent` ở hai chỗ, và cả hai đều cố ý:
+ *
+ * 1. **Không đòi khai hồ sơ.** Cô gửi link giữa buổi dạy; bắt cả lớp khai
+ *    tuổi/nghề/target trước khi vào là chặn đứng buổi học. Hồ sơ vẫn hỏi ở
+ *    luồng học sinh tự vào luyện.
+ * 2. **Chấp nhận khách gõ tên** — nhưng chỉ khi token có thật, còn mở, và cô
+ *    đã bật cho khách. Thiếu một trong ba thì đây thành cửa hậu bỏ qua đăng
+ *    nhập của cả trang.
+ *
+ * Không có token hợp lệ thì rơi về `requireStudent` như bình thường.
+ */
+export async function requireStudentOrGuest(
+  nextPath: string,
+  token: string | undefined
+): Promise<void> {
+  if (!token) {
+    await requireStudent(nextPath);
+    return;
+  }
+
+  const bai = await timBaiGiaoTheoToken(token);
+  if (!bai || !conMo(bai)) {
+    // Link hỏng hoặc đã đóng: đưa về trang link để đọc lời giải thích tử tế,
+    // thay vì im lặng đá sang màn đăng nhập.
+    redirect(`/vao/${encodeURIComponent(token)}`);
+  }
+
+  const session = await auth();
+  if (session?.user?.id) return;
+
+  if (bai.allowGuest && (await khachHienTai())) return;
+
+  redirect(`/vao/${encodeURIComponent(token)}`);
 }
