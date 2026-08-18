@@ -14,7 +14,8 @@ interface Item {
   motLan: boolean;
   daVao: number;
   daNop: number;
-  maLop: string;
+  /** Khoá lớp `bg-<id>` — bảng lớp của ĐÚNG buổi này, không phải của đề. */
+  khoaLop: string;
 }
 
 /**
@@ -80,7 +81,7 @@ export default function DanhSach({ items }: { items: Item[] }) {
             </span>
 
             <Link
-              href={`/lop/${encodeURIComponent(b.maLop)}`}
+              href={`/lop/${b.khoaLop}`}
               className="rounded-full border border-black/10 px-3 py-1 text-xs font-bold text-[#1A1A1A]/70 hover:border-[#14532D]/40"
             >
               Xem bảng lớp

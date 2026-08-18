@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { banNhip, conMo, maLop, timBaiGiaoTheoToken } from "@thuong-ielts/db";
+import { banNhip, conMo, khoaLop, timBaiGiaoTheoToken } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../features/account/server/guard";
 import { khachHienTai } from "../../../../../features/account/server/khach";
@@ -49,6 +49,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Không tìm thấy đề này." }, { status: 404 });
   }
 
+  const assignmentId = bai && baiConMo && bai.target === target ? bai.id : null;
+
   const luot = await openAttempt({
     skill,
     scope,
@@ -59,7 +61,7 @@ export async function POST(request: Request) {
     guestKey: khach?.key ?? null,
     // Chỉ gắn vào bài giao khi nó còn mở VÀ đúng đề — link của buổi khác thì
     // không được kéo lượt này vào bảng điểm buổi đó.
-    assignmentId: bai && baiConMo && bai.target === target ? bai.id : null,
+    assignmentId,
     questionCount: de.questionCount,
     durationSeconds: de.durationSeconds,
   });
@@ -70,7 +72,7 @@ export async function POST(request: Request) {
     loai: "vao",
     a: luot.id,
     target,
-    lop: maLop(target),
+    lop: khoaLop(assignmentId, target),
     pham: scope,
     ten: student?.name ?? khach?.ten ?? "Học viên",
     khach: !student,

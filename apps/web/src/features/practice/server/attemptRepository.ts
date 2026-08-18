@@ -240,6 +240,8 @@ export async function openAttempt(input: MoLuot): Promise<LuotDangLam> {
 export interface ChuLuot {
   id: string;
   target: string;
+  /** Bài cô giao, nếu em vào bằng link. `null` khi em tự luyện. */
+  assignmentId: string | null;
   title: string;
   skill: "reading" | "listening";
   scope: "paper" | "test";
@@ -262,7 +264,7 @@ export async function getOpenAttempt(
 ): Promise<ChuLuot | null> {
   if (!ai.studentId && !ai.guestKey) return null;
   const { rows } = await pool.query(
-    `SELECT a.id, a.target, a.title, a.skill, a.scope, a.total,
+    `SELECT a.id, a.target, a.title, a.skill, a.scope, a.total, a.assignment_id,
             GREATEST(0, EXTRACT(EPOCH FROM (a.expires_at - now()))::int) AS con_lai,
             COALESCE(s.name, a.guest_name, 'Học viên') AS ten,
             (a.student_id IS NULL) AS khach
@@ -280,6 +282,7 @@ export async function getOpenAttempt(
   return {
     id: row.id,
     target: row.target,
+    assignmentId: row.assignment_id ?? null,
     title: row.title,
     skill: row.skill,
     scope: row.scope,
@@ -336,14 +339,14 @@ export async function closeAttempt(
   answers: ReadingAnswers,
   result: ReadingResult,
   autoSubmitted = false
-): Promise<boolean> {
+): Promise<{ daChot: boolean; assignmentId: string | null }> {
   const results = result.items.map((item) => ({
     q: item.questionId,
     n: item.number,
     ok: item.isCorrect,
   }));
 
-  const { rowCount } = await pool.query(
+  const { rows } = await pool.query(
     `UPDATE attempts
         SET status = 'submitted',
             submitted_at = now(),
@@ -354,7 +357,8 @@ export async function closeAttempt(
             band = $6,
             answers = $7,
             results = $8
-      WHERE id = $1 AND status = 'in_progress'`,
+      WHERE id = $1 AND status = 'in_progress'
+      RETURNING assignment_id`,
     [
       attemptId,
       autoSubmitted,
@@ -367,7 +371,9 @@ export async function closeAttempt(
     ]
   );
 
-  return (rowCount ?? 0) > 0;
+  // Trả kèm bài giao để nơi gọi bắn nhịp vào ĐÚNG phòng. Không có nó thì lượt
+  // cô giao riêng cho một bạn lại bay vào phòng tự luyện.
+  return { daChot: rows.length > 0, assignmentId: rows[0]?.assignment_id ?? null };
 }
 
 export interface TomTatLuot {

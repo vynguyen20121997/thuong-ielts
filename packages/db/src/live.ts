@@ -48,6 +48,35 @@ export function maLop(target: string): string {
   return /^(cam\d+-test\d+)-/.exec(target)?.[1] ?? target;
 }
 
+/**
+ * Khoá lớp: LỚP LÀ BÀI CÔ GIAO, KHÔNG PHẢI ĐỀ.
+ *
+ * Ba tình huống thật, và chúng phải nằm ba chỗ khác nhau dù có thể trùng đề:
+ *
+ *   1. Cô giao cho cả lớp        -> `bg-<id bài giao>`
+ *   2. Học sinh tự luyện         -> `tl-<mã đề>`
+ *   3. Cô gửi riêng cho một bạn  -> `bg-<id bài giao>` (một bài giao khác)
+ *
+ * Gom theo ĐỀ như trước là dồn cả ba vào một chỗ: một em ở tỉnh khác tự luyện
+ * Cam 12 Test 3 sẽ hiện ngay trong lớp cô đang dạy, và bài cô gửi riêng cho
+ * Minh Khôi cũng lẫn vào đó. Cô đọc bảng điểm buổi học thì thấy người lạ.
+ *
+ * Dùng tiền tố hai chữ thay vì dấu hai chấm để khoá này đi thẳng vào đường dẫn
+ * mà không phải mã hoá.
+ */
+export function khoaLop(assignmentId: string | null | undefined, target: string): string {
+  return assignmentId ? `bg-${assignmentId}` : `tl-${maLop(target)}`;
+}
+
+/** Đọc ngược `khoaLop`. */
+export function docKhoaLop(
+  khoa: string
+): { loai: "bai-giao"; id: string } | { loai: "tu-luyen"; target: string } | null {
+  if (khoa.startsWith("bg-")) return { loai: "bai-giao", id: khoa.slice(3) };
+  if (khoa.startsWith("tl-")) return { loai: "tu-luyen", target: khoa.slice(3) };
+  return null;
+}
+
 export interface GoiNhip {
   /** Loại sự kiện: bắt đầu làm, đang làm, đã nộp. */
   loai: "vao" | "nhip" | "nop";
@@ -55,7 +84,13 @@ export interface GoiNhip {
   a: string;
   /** Đề đang làm. Passage lẻ thì đây là slug của riêng passage đó. */
   target: string;
-  /** Tên phòng socket — `maLop(target)`. Cùng đề thì cùng phòng. */
+  /**
+   * Tên phòng socket — `khoaLop(assignmentId, target)`.
+   *
+   * Cùng một BÀI GIAO thì cùng phòng. Không phải cùng đề: hai lớp học cùng đề
+   * Cam 12 Test 3 vẫn là hai phòng riêng, và em tự luyện đề đó thì ở phòng
+   * thứ ba.
+   */
   lop: string;
   /** Nhãn ngắn cho phần đang làm ("Passage 2"), để cô biết em ấy ở đâu. */
   phan?: string | null;

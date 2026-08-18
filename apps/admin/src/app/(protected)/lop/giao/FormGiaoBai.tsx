@@ -27,6 +27,10 @@ export default function FormGiaoBai({
   const [target, setTarget] = useState(reading[0]?.target ?? "");
   const [nhan, setNhan] = useState("");
   const [choKhach, setChoKhach] = useState(true);
+  // Cả lớp hay một bạn. Về kỹ thuật hai thứ giống nhau — đều là một link —
+  // nhưng màn theo dõi tách chúng ra hai nhóm, và bảng điểm buổi học không
+  // lẫn bài gửi riêng vào.
+  const [choAi, setChoAi] = useState<"class" | "one">("class");
   const [gio, setGio] = useState(12);
   const [dangGui, setDangGui] = useState(false);
   const [loi, setLoi] = useState<string | null>(null);
@@ -53,6 +57,7 @@ export default function FormGiaoBai({
           target,
           label: nhan.trim() || null,
           allowGuest: choKhach,
+          audience: choAi,
           dongSauGio: gio,
         }),
       });
@@ -85,6 +90,29 @@ export default function FormGiaoBai({
             }`}
           >
             {k === "reading" ? "Reading" : "Listening"}
+          </button>
+        ))}
+      </div>
+
+      <label className="block text-xs font-bold text-[#1A1A1A]/50 mb-1.5">Gửi cho ai</label>
+      <div className="flex gap-2 mb-4">
+        {(
+          [
+            ["class", "Cả lớp"],
+            ["one", "Một bạn"],
+          ] as const
+        ).map(([v, chu]) => (
+          <button
+            key={v}
+            type="button"
+            onClick={() => setChoAi(v)}
+            className={`rounded-full px-4 py-2 text-sm font-bold cursor-pointer transition-colors ${
+              choAi === v
+                ? "bg-[#14532D] text-white"
+                : "bg-black/[0.04] text-[#1A1A1A]/60 hover:bg-black/[0.07]"
+            }`}
+          >
+            {chu}
           </button>
         ))}
       </div>

@@ -68,9 +68,22 @@ export function moCauNoi(onNhip, onTrangThai = () => {}) {
   let cho = CHO_TOI_THIEU;
   let daDong = false;
   let nhipTim = null;
+  /*
+    Đã hẹn nối lại chưa.
+
+    Một lần connect() trượt thì CẢ HAI đường cùng gọi `thuLaiSau()`: khối catch
+    bắt lỗi, và sự kiện 'error' của client cũng nổ. Không có cờ này thì hai hẹn
+    giờ cùng chạy, đẻ ra hai kết nối LISTEN — và mỗi lần RDS chập chờn lại nhân
+    đôi tiếp. Đã đo được: log in "đang nghe kênh" hai lần sau một cú ENOTFOUND.
+
+    Kết nối thừa không chỉ tốn hạn mức của RDS: mỗi cái đều nhận notification,
+    nên cô nhận mỗi nhịp hai lần.
+  */
+  let dangHenNoiLai = false;
 
   async function noi() {
     if (daDong) return;
+    dangHenNoiLai = false;
 
     client = new pg.Client({
       host: process.env.PGHOST,
@@ -100,6 +113,7 @@ export function moCauNoi(onNhip, onTrangThai = () => {}) {
       await client.connect();
       await client.query(`LISTEN ${KENH_NHIP}`);
       cho = CHO_TOI_THIEU;
+      dangHenNoiLai = false;
       console.log(`[live] đang nghe kênh "${KENH_NHIP}"`);
       onTrangThai(true);
 
@@ -135,7 +149,8 @@ export function moCauNoi(onNhip, onTrangThai = () => {}) {
   }
 
   function thuLaiSau() {
-    if (daDong) return;
+    if (daDong || dangHenNoiLai) return;
+    dangHenNoiLai = true;
     onTrangThai(false);
     clearInterval(nhipTim);
     nhipTim = null;

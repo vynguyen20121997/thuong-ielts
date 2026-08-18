@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { banNhip, maLop } from "@thuong-ielts/db";
+import { banNhip, khoaLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../../features/account/server/guard";
 import { khachHienTai } from "../../../../../../../features/account/server/khach";
@@ -78,7 +78,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
     // Chốt lượt đã mở. Nếu không chốt được (nộp hai lần, hoặc server đã tự
     // chốt vì hết giờ) thì KHÔNG ghi đè và cũng không tạo dòng mới — điểm lần
     // chốt đầu mới là điểm thật.
-    const daChot = moTruoc ? await closeAttempt(moTruoc, answers, result, tuDong) : false;
+    const chot = moTruoc
+      ? await closeAttempt(moTruoc, answers, result, tuDong)
+      : { daChot: false, assignmentId: null };
 
     // Không có lượt mở sẵn: học sinh vào từ phiên cũ trước khi có tính năng
     // này, hoặc lúc mở lượt bị lỗi mạng. Vẫn lưu lại để lịch sử không thủng.
@@ -94,19 +96,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
         answers,
         result,
       });
-    } else if (!daChot) {
+    } else if (!chot.daChot) {
       console.warn(`Lượt ${moTruoc} đã đóng từ trước — bỏ qua lần nộp này.`);
     }
 
     // Báo bảng lớp chuyển em này sang "đã nộp". Không chờ: học sinh xứng đáng
     // thấy điểm ngay, không phải đợi một cái thông báo cho màn hình người khác.
-    if (daChot) {
+    if (chot.daChot) {
       void banNhip({
         loai: "nop",
         a: moTruoc as string,
         target: testId,
         pham: "test" as const,
-        lop: maLop(testId),
+        lop: khoaLop(chot.assignmentId, testId),
         ten: student?.name ?? khach?.ten ?? "Học viên",
         khach: !student,
         d: result.total,

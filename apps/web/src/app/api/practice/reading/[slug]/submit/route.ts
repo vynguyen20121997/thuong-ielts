@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { banNhip, maLop } from "@thuong-ielts/db";
+import { banNhip, khoaLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
 import { khachHienTai } from "../../../../../../features/account/server/khach";
@@ -68,7 +68,9 @@ export async function POST(
   if (student || khach) {
     const moTruoc = typeof body.attemptId === "string" ? body.attemptId : null;
     const tuDong = body.autoSubmitted === true;
-    const daChot = moTruoc ? await closeAttempt(moTruoc, answers, result, tuDong) : false;
+    const chot = moTruoc
+      ? await closeAttempt(moTruoc, answers, result, tuDong)
+      : { daChot: false, assignmentId: null };
 
     if (!moTruoc) {
       await saveAttempt({
@@ -82,19 +84,19 @@ export async function POST(
         answers,
         result,
       });
-    } else if (!daChot) {
+    } else if (!chot.daChot) {
       console.warn(`Lượt ${moTruoc} đã đóng từ trước — bỏ qua lần nộp này.`);
     }
 
     // Báo bảng lớp chuyển em này sang "đã nộp". Không chờ: học sinh xứng đáng
     // thấy điểm ngay, không phải đợi một cái thông báo cho màn hình người khác.
-    if (daChot) {
+    if (chot.daChot) {
       void banNhip({
         loai: "nop",
         a: moTruoc as string,
         target: slug,
         pham: "paper" as const,
-        lop: maLop(slug),
+        lop: khoaLop(chot.assignmentId, slug),
         ten: student?.name ?? khach?.ten ?? "Học viên",
         khach: !student,
         d: result.total,

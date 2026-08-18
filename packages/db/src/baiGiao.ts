@@ -24,6 +24,8 @@ export interface BaiGiao {
   shareToken: string;
   allowGuest: boolean;
   oneAttempt: boolean;
+  /** 'class' = giao cả lớp, 'one' = gửi riêng một bạn. */
+  audience: "class" | "one";
   isOpen: boolean;
   closesAt: Date | null;
   createdAt: Date;
@@ -41,6 +43,7 @@ function toBaiGiao(row: Record<string, unknown>): BaiGiao {
     shareToken: row.share_token as string,
     allowGuest: row.allow_guest as boolean,
     oneAttempt: row.one_attempt as boolean,
+    audience: ((row.audience as string) ?? "class") as "class" | "one",
     isOpen: row.is_open as boolean,
     closesAt: (row.closes_at as Date) ?? null,
     createdAt: row.created_at as Date,
@@ -67,6 +70,7 @@ export async function taoBaiGiao(input: {
   label?: string | null;
   allowGuest?: boolean;
   oneAttempt?: boolean;
+  audience?: "class" | "one";
   /** Số giờ nữa thì link tự đóng. Không truyền thì mặc định 12 tiếng. */
   dongSauGio?: number;
 }): Promise<BaiGiao> {
@@ -76,8 +80,8 @@ export async function taoBaiGiao(input: {
   const { rows } = await pool.query(
     `INSERT INTO assignments
        (id, teacher_id, skill, scope, target, title, label, share_token,
-        allow_guest, one_attempt, closes_at)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10, now() + make_interval(hours => $11::int))
+        allow_guest, one_attempt, audience, closes_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, now() + make_interval(hours => $12::int))
      RETURNING *`,
     [
       id,
@@ -90,6 +94,7 @@ export async function taoBaiGiao(input: {
       taoToken(),
       input.allowGuest ?? true,
       input.oneAttempt ?? true,
+      input.audience ?? "class",
       gio,
     ]
   );

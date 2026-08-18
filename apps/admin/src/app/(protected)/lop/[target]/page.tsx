@@ -43,14 +43,23 @@ export default async function TrangLop({
         sống, nên để `BangLop` nói.
       */}
       <div className="mt-2 mb-6">
-        {bia?.boDe && (
-          <span className="block text-[11px] uppercase tracking-[0.1em] font-bold text-[#1A1A1A]/40 mb-1">
-            {bia.boDe} · {bia.kyNang === "listening" ? "Nghe" : "Đọc"}
-          </span>
-        )}
+        <span className="block text-[11px] uppercase tracking-[0.1em] font-bold text-[#1A1A1A]/40 mb-1">
+          {bia?.loai === "tu-luyen"
+            ? "Học viên tự luyện"
+            : bia?.choAi === "one"
+              ? "Gửi riêng cho một bạn"
+              : "Giao cho cả lớp"}
+          {bia?.boDe ? ` · ${bia.boDe}` : ""} ·{" "}
+          {bia?.kyNang === "listening" ? "Nghe" : "Đọc"}
+        </span>
         <h1 className="font-serif text-3xl font-black text-[#1A1A1A]">
-          {bia?.title ?? "Bảng lớp trực tiếp"}
+          {bia?.nhan ?? "Bảng lớp trực tiếp"}
         </h1>
+        {/* Tên đề luôn hiện dưới tên buổi: cô giao cùng một đề cho ba lớp thì
+            tên buổi phân biệt được lớp, còn tên đề nói đang làm bài gì. */}
+        {bia && bia.nhan !== bia.title && (
+          <p className="text-sm text-[#1A1A1A]/55 mt-1">{bia.title}</p>
+        )}
         {bia && bia.chuDe.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2.5">
             {bia.chuDe.map((c) => (

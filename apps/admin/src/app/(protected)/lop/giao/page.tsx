@@ -65,7 +65,7 @@ export default async function TrangGiaoBai() {
           motLan: b.oneAttempt,
           daVao: b.daVao,
           daNop: b.daNop,
-          maLop: b.target,
+          khoaLop: `bg-${b.id}`,
         }))}
       />
     </div>

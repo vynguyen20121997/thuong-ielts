@@ -471,3 +471,13 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_attempt_dang_lam_hoc_sinh
   ON attempts (student_id, target) WHERE status = 'in_progress' AND student_id IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS uq_attempt_dang_lam_khach
   ON attempts (guest_key, target) WHERE status = 'in_progress' AND guest_key IS NOT NULL;
+
+/*
+  Bài giao cho CẢ LỚP hay cho MỘT BẠN.
+
+  Về mặt kỹ thuật hai thứ giống nhau — đều là một link. Cột này chỉ để màn hình
+  của cô đọc được: một thẻ "cả lớp" với một thẻ "gửi riêng Minh Khôi" phải nhìn
+  ra khác nhau ngay, chứ không phải đếm số học sinh mới đoán được.
+*/
+ALTER TABLE assignments ADD COLUMN IF NOT EXISTS audience TEXT NOT NULL DEFAULT 'class'
+  CHECK (audience IN ('class', 'one'));

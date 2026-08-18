@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { banNhip, maLop } from "@thuong-ielts/db";
+import { banNhip, khoaLop } from "@thuong-ielts/db";
 
 import { currentStudent } from "../../../../../../features/account/server/guard";
 import { khachHienTai } from "../../../../../../features/account/server/khach";
@@ -67,7 +67,9 @@ export async function POST(
 
     // Chốt lượt đã mở. Không chốt được (nộp hai lần, hoặc server đã tự chốt vì
     // hết giờ) thì KHÔNG ghi đè — điểm lần chốt đầu mới là điểm thật.
-    const daChot = moTruoc ? await closeAttempt(moTruoc, answers, result, tuDong) : false;
+    const chot = moTruoc
+      ? await closeAttempt(moTruoc, answers, result, tuDong)
+      : { daChot: false, assignmentId: null };
 
     if (!moTruoc) {
       await saveAttempt({
@@ -81,17 +83,17 @@ export async function POST(
         answers,
         result,
       });
-    } else if (!daChot) {
+    } else if (!chot.daChot) {
       console.warn(`Lượt ${moTruoc} đã đóng từ trước — bỏ qua lần nộp này.`);
     }
 
-    if (daChot) {
+    if (chot.daChot) {
       void banNhip({
         loai: "nop",
         a: moTruoc as string,
         target: slug,
         pham: "test" as const,
-        lop: maLop(slug),
+        lop: khoaLop(chot.assignmentId, slug),
         ten: student?.name ?? khach?.ten ?? "Học viên",
         khach: !student,
         d: result.total,

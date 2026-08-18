@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     title: String(title).replace(/ · Passage \d+.*$/, ""),
     label: typeof body.label === "string" ? body.label.slice(0, 120) : null,
     allowGuest: body.allowGuest !== false,
+    audience: body.audience === "one" ? "one" : "class",
     dongSauGio: typeof body.dongSauGio === "number" ? body.dongSauGio : 12,
   });
 
