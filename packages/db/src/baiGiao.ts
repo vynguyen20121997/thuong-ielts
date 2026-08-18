@@ -105,10 +105,33 @@ export async function taoBaiGiao(input: {
  */
 export async function timBaiGiaoTheoToken(token: string): Promise<BaiGiao | null> {
   if (!token || token.length > 64) return null;
-  const { rows } = await pool.query(`SELECT * FROM assignments WHERE share_token = $1 LIMIT 1`, [
-    token,
-  ]);
-  return rows.length ? toBaiGiao(rows[0]) : null;
+
+  /*
+    Thử lại tối đa ba lần.
+
+    DNS của RDS chập chờn — đã đo được nhiều lần. Câu tra này nằm ở CỬA ĐẦU
+    TIÊN học sinh chạm vào: mở link cô gửi, và gõ tên để vào. Một cú trượt ở
+    đây thì em ấy thấy "Không vào được, thử lại nhé", và nếu cả lớp ba mươi em
+    bấm cùng lúc thì vài em trượt cùng lúc — cô sẽ kết luận là link hỏng.
+
+    Đây là câu ĐỌC, không đổi gì, nên thử lại hoàn toàn an toàn.
+  */
+  let loiCuoi: unknown = null;
+  for (let lan = 1; lan <= 3; lan++) {
+    try {
+      const { rows } = await pool.query(
+        `SELECT * FROM assignments WHERE share_token = $1 LIMIT 1`,
+        [token]
+      );
+      return rows.length ? toBaiGiao(rows[0]) : null;
+    } catch (err) {
+      loiCuoi = err;
+      if (lan < 3) await new Promise((r) => setTimeout(r, 300 * lan));
+    }
+  }
+
+  console.error("timBaiGiaoTheoToken thất bại sau 3 lần thử:", loiCuoi);
+  throw loiCuoi;
 }
 
 /** Link còn nhận người vào không. */

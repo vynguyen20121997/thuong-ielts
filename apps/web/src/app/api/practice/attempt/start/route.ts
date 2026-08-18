@@ -71,6 +71,7 @@ export async function POST(request: Request) {
     a: luot.id,
     target,
     lop: maLop(target),
+    pham: scope,
     ten: student?.name ?? khach?.ten ?? "Học viên",
     khach: !student,
     d: 0,

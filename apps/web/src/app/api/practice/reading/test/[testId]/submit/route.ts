@@ -105,6 +105,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tes
         loai: "nop",
         a: moTruoc as string,
         target: testId,
+        pham: "test" as const,
         lop: maLop(testId),
         ten: student?.name ?? khach?.ten ?? "Học viên",
         khach: !student,

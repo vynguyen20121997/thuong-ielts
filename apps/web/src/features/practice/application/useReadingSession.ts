@@ -231,7 +231,13 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
 
   // Nhịp tiến độ cho màn theo dõi của cô. Đặt sau `submit` để hook chạy trong
   // suốt thời gian làm bài và tự ngừng khi server bảo lượt đã đóng.
-  useProgressBeat(attemptId, answers, paper.sections[sectionIndex]?.label ?? null);
+  // Rút gọn nhãn phần: "Passage 1: Flying Tortoises" -> "Passage 1". Bảng lớp
+  // hiện nhãn này ngay dưới tên học sinh, nơi chỉ vừa vài chữ.
+  useProgressBeat(
+    attemptId,
+    answers,
+    paper.sections[sectionIndex]?.label?.split(":")[0]?.trim() ?? null
+  );
 
   const answeredCount = useMemo(() => countAnswered(questions, answers), [questions, answers]);
 

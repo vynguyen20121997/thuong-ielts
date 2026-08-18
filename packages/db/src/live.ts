@@ -59,6 +59,13 @@ export interface GoiNhip {
   lop: string;
   /** Nhãn ngắn cho phần đang làm ("Passage 2"), để cô biết em ấy ở đâu. */
   phan?: string | null;
+  /**
+   * 'test' = thi cả bài, 'paper' = làm một passage lẻ.
+   *
+   * Cô cần phân biệt: cùng một lớp có thể có em làm 40 câu và em làm 13 câu,
+   * và nếu không nói ra thì hai dải ô trông như nhau mà con số thì lệch hẳn.
+   */
+  pham?: "paper" | "test";
   /** Tên hiển thị của học sinh. */
   ten: string;
   /** Có phải khách vãng lai không. */

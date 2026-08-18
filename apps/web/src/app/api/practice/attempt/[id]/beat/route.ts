@@ -96,6 +96,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     a: id,
     target: luot.target,
     lop: maLop(luot.target),
+    pham: luot.scope,
     phan: part,
     ten: luot.ten,
     khach: luot.khach,

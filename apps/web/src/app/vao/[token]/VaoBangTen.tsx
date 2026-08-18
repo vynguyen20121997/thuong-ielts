@@ -31,23 +31,37 @@ export default function VaoBangTen({
     }
     setDangGui(true);
     setLoi(null);
-    try {
-      const res = await fetch("/api/vao-bang-ten", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, ten: sach }),
-      });
-      if (!res.ok) {
-        const p = (await res.json().catch(() => null)) as { error?: string } | null;
-        setLoi(p?.error ?? "Không vào được. Thử lại nhé.");
-        return;
+
+    // Thử lại với lỗi máy chủ (5xx) — DNS của RDS chập chờn, và đây là cửa đầu
+    // tiên học sinh chạm vào. 4xx là câu trả lời dứt khoát (link đóng, buổi
+    // này không cho khách), thử lại cũng vậy thôi.
+    for (let lan = 1; lan <= 3; lan++) {
+      try {
+        const res = await fetch("/api/vao-bang-ten", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, ten: sach }),
+        });
+
+        if (res.ok) {
+          window.location.href = duongDenBai;
+          return;
+        }
+
+        if (res.status < 500) {
+          const p = (await res.json().catch(() => null)) as { error?: string } | null;
+          setLoi(p?.error ?? "Không vào được. Thử lại nhé.");
+          setDangGui(false);
+          return;
+        }
+      } catch {
+        // Mạng hỏng — rơi xuống nhánh chờ rồi thử lại.
       }
-      window.location.href = duongDenBai;
-    } catch {
-      setLoi("Không kết nối được. Kiểm tra mạng rồi thử lại.");
-    } finally {
-      setDangGui(false);
+      if (lan < 3) await new Promise((r) => setTimeout(r, 400 * lan));
     }
+
+    setLoi("Máy chủ đang bận. Đợi vài giây rồi bấm lại giúp cô nhé.");
+    setDangGui(false);
   };
 
   return (

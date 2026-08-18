@@ -90,6 +90,7 @@ export async function POST(
         loai: "nop",
         a: moTruoc as string,
         target: slug,
+        pham: "test" as const,
         lop: maLop(slug),
         ten: student?.name ?? khach?.ten ?? "Học viên",
         khach: !student,

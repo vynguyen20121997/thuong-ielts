@@ -20,6 +20,7 @@ interface GoiNhip {
   /** Mã lớp — mọi em cùng đề đều mang cùng mã này. */
   lop: string;
   phan?: string | null;
+  pham?: "paper" | "test";
   ten: string;
   khach: boolean;
   d: number;
@@ -48,12 +49,16 @@ const MAU: Record<HocSinhTrongLop["trangThai"], string> = {
   Mất kết nối là thứ SUY RA, không phải thứ được báo.
 
   Học sinh rớt mạng thì không có ai gửi lên "em vừa rớt mạng" — cái duy nhất
-  xảy ra là nhịp ngừng tới. Không đếm thì dòng của em ấy nằm mãi ở "Đang làm",
+  xảy ra là nhịp ngừng tới.
+
+  25 giây chứ không phải 20: học sinh gửi nhịp rỗng mỗi 10 giây, nên biên này
+  chịu được một nhịp lỡ. Đo với 20 giây thì một nhịp trượt là "Mất kết nối"
+  nháy lên rồi tắt trong khi em ấy vẫn ngồi đọc bài. Không đếm thì dòng của em ấy nằm mãi ở "Đang làm",
   và cô tưởng em ấy vẫn đang làm bài trong khi đã đóng máy từ lâu. Server đã
   suy ra đúng như vậy lúc dựng trang (`docLop`); màn hình sống phải tự làm lấy
   giữa hai lần tải trang.
 */
-const NGUONG_MAT_KET_NOI_MS = 20_000;
+const NGUONG_MAT_KET_NOI_MS = 25_000;
 const NGUONG_DA_ROI_MS = 60_000;
 
 const THU_TU: Record<HocSinhTrongLop["trangThai"], number> = {
@@ -122,6 +127,7 @@ export default function BangLop({
           conLai: goi.conLai,
           band: goi.band ?? null,
           phan: goi.phan ?? null,
+          phamVi: goi.pham ?? "test",
           lanCuoi: new Date().toISOString(),
         };
         // Mốc nhịp cuối, để bộ đếm bên dưới biết em nào đã im lặng bao lâu.
@@ -277,9 +283,9 @@ export default function BangLop({
           <table className="w-full">
             <thead>
               <tr className="text-[10px] uppercase tracking-wider text-[#1A1A1A]/40">
-                <th className="text-left font-bold px-5 py-2.5">Học viên</th>
-                <th className="text-left font-bold px-5 py-2.5">Trạng thái</th>
-                <th className="text-left font-bold px-5 py-2.5">Từng câu</th>
+                <th className="text-left font-bold px-5 py-2.5 w-[30%]">Học viên</th>
+                <th className="text-left font-bold px-5 py-2.5 whitespace-nowrap">Trạng thái</th>
+                <th className="text-left font-bold px-5 py-2.5 w-full">Từng câu</th>
                 <th className="text-right font-bold px-5 py-2.5">Đúng</th>
                 <th className="text-right font-bold px-5 py-2.5">Còn lại</th>
               </tr>
@@ -294,18 +300,31 @@ export default function BangLop({
                   }`}
                 >
                   <td className="px-5 py-3">
-                    <span className="block text-sm font-bold text-[#1A1A1A]">{h.ten}</span>
+                    <span className="block text-sm font-bold text-[#1A1A1A] whitespace-nowrap">
+                      {h.ten}
+                    </span>
                     <span className="flex items-center gap-1.5">
                       {h.khach && (
                         <span className="text-[10px] uppercase font-bold tracking-wide text-[#1A1A1A]/40">
                           Khách
                         </span>
                       )}
-                      {/* Em nào đang ở passage nào — chỗ này mới là thứ cô cần
-                          khi cả lớp làm chung một đề nhưng mỗi em một tốc độ. */}
-                      {h.phan && (
-                        <span className="text-[10px] text-[#1A1A1A]/45">{h.phan}</span>
-                      )}
+                      {/*
+                        Nói rõ em ấy làm CẢ BÀI hay một passage lẻ.
+
+                        Không có dòng này thì hai em cùng lớp, một em 40 câu một
+                        em 13 câu, nhìn giống hệt nhau — mà "11/14" với "27/40"
+                        thì không so được với nhau. Cô nhìn vào tưởng dữ liệu sai.
+                      */}
+                      <span className="text-[10px] text-[#1A1A1A]/45 whitespace-nowrap">
+                        {h.phamVi === "paper" ? `Chỉ ${h.phan ?? "1 phần"}` : "Cả bài"} ·{" "}
+                        {h.tong} câu
+                        {/* "Đang ở đâu" chỉ có nghĩa khi em ấy còn đang làm. Nộp
+                            rồi mà vẫn ghi "đang ở Passage 3" là nói sai. */}
+                        {h.trangThai !== "da-nop" && h.phamVi === "test" && h.phan
+                          ? ` · ${h.phan}`
+                          : ""}
+                      </span>
                     </span>
                   </td>
                   <td className={`px-5 py-3 text-xs font-bold ${MAU[h.trangThai]}`}>
@@ -314,7 +333,7 @@ export default function BangLop({
                   <td className="px-5 py-3">
                     <Dai marks={h.marks} tong={h.tong} hienKQ={hienKQ} mo={h.trangThai === "mat-ket-noi"} />
                   </td>
-                  <td className="px-5 py-3 text-right text-sm font-bold tabular-nums">
+                  <td className="px-5 py-3 text-right text-sm font-bold tabular-nums whitespace-nowrap">
                     {h.trangThai === "da-nop" ? (
                       <>
                         {h.dung}
@@ -337,7 +356,7 @@ export default function BangLop({
                       </>
                     )}
                   </td>
-                  <td className="px-5 py-3 text-right text-sm font-bold tabular-nums">
+                  <td className="px-5 py-3 text-right text-sm font-bold tabular-nums whitespace-nowrap">
                     {h.trangThai === "da-nop" ? (
                       <span className="text-[#1A1A1A]/35">—</span>
                     ) : (
@@ -460,10 +479,21 @@ function Dai({
   hienKQ: boolean;
   mo: boolean;
 }) {
+  /*
+    Ô có bề rộng CỐ ĐỊNH, không kéo giãn cho vừa cột.
+
+    Trước đây mỗi dải đều giãn ra bằng nhau, nên bài 13 câu và bài 40 câu dài
+    y hệt — chỉ khác độ mập của ô, mà mắt thì không đọc ra điều đó. Cô nhìn hai
+    dòng thấy giống nhau nhưng con số một bên là 11/14 còn bên kia 27/40, và
+    kết luận là màn hình hiển thị sai.
+
+    Cố định bề rộng thì độ dài dải CHÍNH LÀ số câu: nhìn một cái là biết em nào
+    làm cả bài, em nào làm một passage.
+  */
   return (
     <span
-      className={`grid gap-[2px] min-w-[180px] ${mo ? "opacity-40" : ""}`}
-      style={{ gridTemplateColumns: `repeat(${Math.max(1, tong)}, 1fr)` }}
+      className={`grid gap-[2px] ${mo ? "opacity-40" : ""}`}
+      style={{ gridTemplateColumns: `repeat(${Math.max(1, tong)}, 6px)` }}
     >
       {Array.from({ length: tong }, (_, i) => {
         const m = marks[i] ?? null;

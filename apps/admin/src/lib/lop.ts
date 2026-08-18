@@ -13,6 +13,8 @@ export interface HocSinhTrongLop {
   ten: string;
   /** Phần em ấy đang làm ("Passage 2"). Rỗng khi chưa có nhịp nào. */
   phan: string | null;
+  /** 'test' = thi cả bài, 'paper' = một passage lẻ. */
+  phamVi: "paper" | "test";
   khach: boolean;
   trangThai: "dang-lam" | "mat-ket-noi" | "da-nop" | "da-roi";
   daLam: number;
@@ -30,12 +32,14 @@ export interface HocSinhTrongLop {
  * Một cột "đang online" thì phải có ai đó đi tắt nó, mà đúng lúc mạng học sinh
  * rớt thì không còn ai để tắt — cột sẽ mãi mãi nói "đang làm".
  */
-const NGUONG_MAT_KET_NOI = 20; // giây
+// 25 giây, so với nhịp rỗng 10 giây của học sinh: chịu được một nhịp lỡ mà
+// không báo động giả. Xem ghi chú ở `useProgressBeat`.
+const NGUONG_MAT_KET_NOI = 25; // giây
 const NGUONG_DA_ROI = 60;
 
 export async function docLop(target: string): Promise<HocSinhTrongLop[]> {
   const { rows } = await pool.query(
-    `SELECT a.id, a.status, a.total, a.correct, a.band,
+    `SELECT a.id, a.status, a.scope, a.total, a.correct, a.band,
             COALESCE(s.name, a.guest_name, 'Học viên') AS ten,
             (a.student_id IS NULL) AS khach,
             GREATEST(0, EXTRACT(EPOCH FROM (a.expires_at - now()))::int) AS con_lai,
@@ -70,6 +74,7 @@ export async function docLop(target: string): Promise<HocSinhTrongLop[]> {
       attemptId: row.id,
       ten: row.ten,
       phan: row.current_part ?? null,
+      phamVi: row.scope,
       khach: row.khach,
       trangThai,
       // Đã nộp thì lấy con số cuối cùng ở `attempts`; đang làm thì lấy ở
@@ -222,7 +227,7 @@ export async function danhSachLop(): Promise<TheLop[]> {
               count(*) FILTER (WHERE a.status = 'submitted')   AS da_nop,
               count(*) FILTER (
                 WHERE a.status = 'in_progress'
-                  AND (p.last_beat_at IS NULL OR p.last_beat_at < now() - interval '20 seconds')
+                  AND (p.last_beat_at IS NULL OR p.last_beat_at < now() - interval '25 seconds')
               ) AS mat_ket_noi,
               (array_agg(
                  COALESCE(s.name, a.guest_name, 'Học viên')
