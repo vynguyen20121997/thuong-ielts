@@ -33,6 +33,38 @@ interface TestimonialsProps {
 const PREVIEW_COUNT = 6;
 const BATCH = 9;
 
+function LazyProofImage({ src, alt }: { src: string; alt: string }) {
+  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+
+  return (
+    <>
+      {status === "loading" && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 animate-pulse bg-gradient-to-br from-black/[0.04] via-black/[0.08] to-black/[0.04]"
+        />
+      )}
+      {status === "error" && (
+        <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-xs font-medium text-black/40">
+          Ảnh hiện chưa tải được
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        fetchPriority="low"
+        onLoad={() => setStatus("loaded")}
+        onError={() => setStatus("error")}
+        className={`h-full w-full object-contain transition-[opacity,transform] duration-500 group-hover/proof:scale-105 ${
+          status === "loaded" ? "opacity-100" : "opacity-0"
+        }`}
+      />
+    </>
+  );
+}
+
 // Parse "dd/mm/yyyy" -> sortable number; unknown formats sort last.
 function dateKey(date: string): number {
   const m = date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
@@ -186,11 +218,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 }}
                 className="mb-5 relative rounded-2xl overflow-hidden border border-black/5 group/proof cursor-zoom-in bg-black/[0.03] shadow-sm h-80"
               >
-                <img
+                <LazyProofImage
+                  key={images[safeIndex]}
                   src={images[safeIndex]}
                   alt={`Bảng điểm ${test.studentName}`}
-                  loading="lazy"
-                  className="w-full h-full object-contain group-hover/proof:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/proof:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-medium gap-1.5 ">
                   <Maximize2 size={14} />
