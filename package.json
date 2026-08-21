@@ -21,7 +21,8 @@
     "close:expired": "tsx scripts/close-expired-attempts.ts",
     "clean:guests": "tsx scripts/clean-guests.ts",
     "zalo:token": "tsx scripts/zalo-token.ts",
-    "zalo:test": "tsx scripts/zalo-test.ts"
+    "zalo:test": "tsx scripts/zalo-test.ts",
+    "import:feedback-images": "tsx --env-file=apps/web/.env.local scripts/import-feedback-images.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

@@ -53,6 +53,16 @@ CREATE TABLE IF NOT EXISTS feedbacks (
   created_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS feedback_media_assets (
+  feedback_id TEXT NOT NULL REFERENCES feedbacks(id) ON DELETE CASCADE,
+  media_id    UUID NOT NULL REFERENCES media_assets(id) ON DELETE CASCADE,
+  position    INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (feedback_id, media_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_feedback_media_position
+  ON feedback_media_assets (feedback_id, position);
+
 CREATE TABLE IF NOT EXISTS blog_posts (
   id                SERIAL PRIMARY KEY,
   title             TEXT NOT NULL,

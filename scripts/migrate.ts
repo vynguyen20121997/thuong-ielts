@@ -105,7 +105,8 @@ async function migrateFeedbacks() {
        VALUES ($1,$2,$3,$4,$5)
        ON CONFLICT (id) DO UPDATE SET
          subject = EXCLUDED.subject,
-         image_url = EXCLUDED.image_url,
+         -- image_url is managed by the admin/import workflow. Never restore
+         -- expiring Padlet seed URLs on an existing feedback row.
          date = EXCLUDED.date,
          is_class_summary = EXCLUDED.is_class_summary`,
       [f.id, f.subject, f.imageUrl, toIsoDate(f.date), f.isClassSummary ?? false]
