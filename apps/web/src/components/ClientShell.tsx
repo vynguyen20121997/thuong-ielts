@@ -22,6 +22,9 @@ export default function ClientShell({ children }: { children: ReactNode }) {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       touchMultiplier: 1.5,
       infinite: false,
+      // Để Lenis tự tiếp quản link neo (#...) — cú nhảy native của trình duyệt
+      // đánh nhau với trạng thái cuộn của Lenis và làm trang trôi quá đích.
+      anchors: true,
     });
 
     lenisRef.current = lenis;
