@@ -12,6 +12,7 @@ interface StudentPageHeaderProps {
   heading: string;
   description: string;
   avatars: HeaderAvatar[];
+  showAvatars?: boolean;
   maxAvatars?: number;
   overflow?: number;
 }
@@ -36,6 +37,7 @@ export default function StudentPageHeader({
   heading,
   description,
   avatars,
+  showAvatars = true,
   maxAvatars = 14,
   overflow = 0,
 }: StudentPageHeaderProps) {
@@ -69,8 +71,9 @@ export default function StudentPageHeader({
         </p>
 
         {/* Avatar row */}
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {shown.map((a, i) => (
+        {showAvatars && (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {shown.map((a, i) => (
             <div
               key={i}
               className="h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center overflow-hidden ring-2 ring-white shadow-sm shrink-0"
@@ -85,15 +88,16 @@ export default function StudentPageHeader({
                 </span>
               )}
             </div>
-          ))}
-          {overflow > 0 && (
+            ))}
+            {overflow > 0 && (
             <div className="h-9 w-9 md:h-10 md:w-10 rounded-full flex items-center justify-center bg-brand ring-2 ring-white shadow-sm shrink-0">
               <span className="text-white font-mono font-bold text-2xs md:text-xs leading-none">
                 +{overflow}
               </span>
             </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

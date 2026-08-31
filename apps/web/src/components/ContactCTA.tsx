@@ -30,9 +30,13 @@ export default function ContactCTA() {
           </Link>
           <Link
             href="/tu-van"
-            className="inline-flex items-center px-9 py-4 border-2 border-white/30 hover:border-white text-white font-bold text-sm rounded-full transition-colors duration-300"
+            className="group inline-flex items-center gap-2 px-9 py-4 border-2 border-white/30 hover:border-white text-white font-bold text-sm rounded-full transition-colors duration-300"
           >
             Liên Hệ Hợp Tác
+            <ArrowRight
+              size={16}
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
           </Link>
         </div>
       </Reveal>

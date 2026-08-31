@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 import {
   motion,
   useMotionValue,
@@ -66,6 +67,7 @@ export default function Hero() {
   // Parallax nhẹ theo chuột cho chân dung — spring của motion cho mượt
   const mx = useMotionValue(0);
   const parallaxX = useSpring(mx, { stiffness: 60, damping: 18 });
+  const [quoteBeforeDetail, ...quoteAfterDetail] = hero.quote.split("chi tiết");
 
   useEffect(() => {
     fetch("/api/hero")
@@ -125,21 +127,25 @@ export default function Hero() {
               variants={popIn}
               className="max-w-[35rem] text-pretty text-[15px] leading-[1.65] text-ink/65 md:text-[17px] mb-7"
             >
-              {hero.quote}
+              {quoteBeforeDetail}
+              <br />
+              chi tiết{quoteAfterDetail.join("chi tiết")}
             </motion.p>
 
             <motion.div variants={popIn} className="flex flex-wrap items-center gap-4">
               <a
                 href="#testimonials"
-                className="px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
+                className="group inline-flex items-center gap-2 px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
               >
                 Xem Thành Tích Học Viên
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </a>
               <a
                 href="#phuong-phap"
-                className="px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
+                className="group inline-flex items-center gap-2 px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
               >
                 Khám Phá Phương Pháp Giảng Dạy
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </motion.div>
           </motion.div>

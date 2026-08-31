@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { GraduationCap, QrCode, Mail, Globe, MessageSquare, Images } from "lucide-react";
+import { ArrowRight, GraduationCap, QrCode, Mail, Globe, MessageSquare, Images } from "lucide-react";
 
 /**
  * Footer theo Figma: nền xanh nhạt, 4 cột (thương hiệu / thông tin / khởi đầu
- * lộ trình / social), dòng dưới là copyright + hai link điều khoản.
+ * lộ trình / social), dòng dưới là copyright.
  * Server component — năm lấy lúc render server, đủ chính xác cho copyright.
  */
 export default function Footer() {
@@ -18,11 +18,11 @@ export default function Footer() {
               <span className="w-10 h-10 rounded-full bg-brand flex items-center justify-center shrink-0">
                 <GraduationCap size={20} className="text-leaf" />
               </span>
-              <span className="font-bold text-lg tracking-tight">HNT IELTS</span>
+              <span className="font-bold text-lg tracking-tight">Thương Hồ&apos;s Class</span>
             </Link>
             <p className="text-sm text-brand/60 leading-relaxed max-w-sm mb-6">
-              Chương trình luyện thi IELTS chất lượng cao, tập trung rèn luyện tư duy biện chứng
-              sâu sắc, giúp học viên Việt Nam chinh phục IELTS bền vững và thực tế.
+              Lớp học IELTS bài bản, có tâm và đi sâu vào bản chất, giúp học viên tiến bộ thông qua
+              lộ trình có hệ thống, nhận xét chi tiết và phương pháp học tập phù hợp.
             </p>
             <div className="flex items-center gap-4 text-brand">
               <QrCode size={20} />
@@ -36,12 +36,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-brand/70 font-medium">
               <li>
                 <Link href="/gioi-thieu" className="hover:text-brand transition-colors">
-                  Về cô Ngọc Thương
-                </Link>
-              </li>
-              <li>
-                <Link href="/thanh-tich" className="hover:text-brand transition-colors">
-                  Bảng điểm vàng
+                  Về cô Thương Hồ
                 </Link>
               </li>
               <li>
@@ -68,9 +63,10 @@ export default function Footer() {
             </p>
             <Link
               href="/tu-van"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-brand hover:text-brand-deep transition-colors"
+              className="group inline-flex items-center gap-1.5 text-sm font-bold text-brand hover:text-brand-deep transition-colors"
             >
-              Nhận lịch tư vấn miễn phí →
+              Nhận lịch tư vấn miễn phí
+              <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
 
@@ -94,18 +90,10 @@ export default function Footer() {
         </div>
 
         {/* Dòng dưới */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="pt-8">
           <p className="text-sm font-medium text-brand/80">
             © {new Date().getFullYear()} Hồ Ngọc Thương. All rights reserved.
           </p>
-          <div className="flex gap-8 text-sm font-medium text-brand/70">
-            <a href="#privacy" className="hover:text-brand transition-colors">
-              Điều khoản bảo mật
-            </a>
-            <a href="#terms" className="hover:text-brand transition-colors">
-              Cam kết hợp đồng đầu ra
-            </a>
-          </div>
         </div>
       </div>
     </footer>

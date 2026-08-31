@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Quote, X, Maximize2 } from "lucide-react";
+import { Quote, X, Maximize2, ArrowRight } from "lucide-react";
 import { FeedbackItem } from "../data/feedbackData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
 import Reveal from "./Reveal";
@@ -172,9 +172,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
             <div className="mt-12 text-center">
               <Link
                 href="/cam-nhan-hoc-vien"
-                className="inline-flex items-center px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
+                className="group inline-flex items-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
               >
                 Xem Thêm Cảm Nhận
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
           </>

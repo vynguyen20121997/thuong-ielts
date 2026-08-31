@@ -100,7 +100,7 @@ export default function TeachingMethod() {
               Phương pháp giảng dạy
             </span>
             <h2 className="font-serif text-3xl md:text-[46px] font-bold tracking-tight text-brand leading-[1.12] md:whitespace-nowrap">
-              Lộ trình học có trọng tâm
+              Học bài bản &amp; đi sâu vào bản chất
             </h2>
           </div>
         </Reveal>
@@ -109,7 +109,6 @@ export default function TeachingMethod() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 mb-14 md:mb-16">
           {STEPS.map((step, i) => {
             const Icon = step.icon;
-            const last = i === STEPS.length - 1;
             return (
               <Reveal
                 key={step.title}
@@ -118,9 +117,9 @@ export default function TeachingMethod() {
               >
                 <div className="flex items-center gap-3.5">
                   <span
-                    className={`h-13 w-13 rounded-full flex items-center justify-center shrink-0 ${last ? "bg-leaf" : "bg-sage-3"}`}
+                    className="h-13 w-13 rounded-full flex items-center justify-center shrink-0 bg-leaf"
                   >
-                    <Icon size={24} className={last ? "text-brand-deep" : "text-brand"} />
+                    <Icon size={24} className="text-brand-deep" />
                   </span>
                 </div>
                 <h3 className="font-serif text-xl md:text-[21px] font-bold text-brand leading-snug">

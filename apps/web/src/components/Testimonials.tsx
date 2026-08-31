@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   Quote,
   Award,
+  ArrowRight,
   X,
   ChevronDown,
   ChevronLeft,
@@ -16,13 +17,8 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { ExtendedTestimonialItem } from "../data/testimonialsData";
-import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
+import StudentPageHeader from "./StudentPageHeader";
 import Reveal from "./Reveal";
-
-function firstLetter(name: string): string {
-  const t = name.trim();
-  return t ? t[0].toUpperCase() : "?";
-}
 
 interface TestimonialsProps {
   variant?: "preview" | "full";
@@ -170,7 +166,15 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     previewPage * PREVIEW_PAGE_SIZE,
     (previewPage + 1) * PREVIEW_PAGE_SIZE,
   );
-  const shown = isPreview ? previewItems : filtered.slice(0, visibleCount);
+  const highAchievers = useMemo(
+    () => byScore.filter((item) => [8, 8.5].includes(scoreKey(item.score))),
+    [byScore],
+  );
+  const showHighAchievers = !isPreview && activeYear === "all";
+  const regularItems = showHighAchievers
+    ? filtered.filter((item) => ![8, 8.5].includes(scoreKey(item.score)))
+    : filtered;
+  const shown = isPreview ? previewItems : regularItems.slice(0, visibleCount);
 
   useEffect(() => {
     if (!isPreview || shouldReduceMotion || previewPageCount < 2) return;
@@ -180,7 +184,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     return () => window.clearInterval(interval);
   }, [isPreview, previewPageCount, shouldReduceMotion]);
 
-  const hasMore = !isPreview && filtered.length > visibleCount;
+  const hasMore = !isPreview && regularItems.length > visibleCount;
 
   // Lazy-load more cards as the sentinel scrolls into view, instead of a manual "load more" click
   const loadMore = useCallback(() => {
@@ -200,11 +204,6 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     observer.observe(node);
     return () => observer.disconnect();
   }, [isPreview, hasMore, loadMore]);
-
-  const headerAvatars: HeaderAvatar[] = useMemo(
-    () => sorted.slice(0, 14).map((t) => ({ label: firstLetter(t.studentName) })),
-    [sorted],
-  );
 
   const toggleExpand = (id: string) => setExpandedReviews((prev) => ({ ...prev, [id]: !prev[id] }));
 
@@ -363,8 +362,8 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           count={testimonials.length}
           heading="hành trình & mục tiêu được chinh phục"
           description="Mỗi điểm số là kết quả của một hành trình học tập nghiêm túc, từ việc xác định đúng vấn đề đến xây dựng lộ trình phù hợp và kiên trì cải thiện từng kỹ năng. Cùng nhìn lại những thành tích nổi bật của các học viên đã đồng hành cùng Thương Hồ's Class và đạt được mục tiêu IELTS của mình."
-          avatars={headerAvatars}
-          overflow={Math.max(0, testimonials.length - 14)}
+          avatars={[]}
+          showAvatars={false}
         />
       )}
 
@@ -382,9 +381,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             </div>
             <Link
               href="/ket-qua-hoc-vien"
-              className="shrink-0 inline-flex items-center px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
+              className="group shrink-0 inline-flex items-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
             >
               Xem tất cả thành tích học viên
+              <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </Reveal>
         )}
@@ -504,6 +504,24 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           </Reveal>
         ) : (
           <>
+            {showHighAchievers && highAchievers.length > 0 && (
+              <Reveal className="mb-8 md:mb-10">
+                <div className="mb-7 flex flex-col gap-2 border-l-4 border-leaf pl-5">
+                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-brand/60">
+                    High Achievers
+                  </span>
+                  <h2 className="font-serif text-3xl font-bold tracking-tight text-brand md:text-4xl">
+                    Học viên đạt 8.0 &amp; 8.5 IELTS
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {highAchievers.map((test) => renderCard(test))}
+                </div>
+              </Reveal>
+            )}
+            {showHighAchievers && highAchievers.length > 0 && (
+              <div aria-hidden="true" className="mb-14 h-0.5 rounded-full bg-brand/45 md:mb-16" />
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {shown.map((test) => renderCard(test))}
             </div>

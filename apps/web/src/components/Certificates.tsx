@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { X, ZoomIn, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { X, ZoomIn, ChevronLeft, ChevronRight, Check, ArrowRight } from "lucide-react";
 import Reveal from "./Reveal";
 
 /**
@@ -101,7 +102,7 @@ export default function Certificates() {
               Profile giáo viên
             </span>
             <h2 className="font-serif text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
-              Uy tín &amp; Thực lực
+              Thành tích &amp; Chuyên môn
             </h2>
             <ul className="space-y-3">
               {CREDENTIALS.map((c) => (
@@ -116,7 +117,13 @@ export default function Certificates() {
                 </li>
               ))}
             </ul>
-
+            <Link
+              href="/gioi-thieu"
+              className="group mt-1 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-md transition-colors hover:bg-brand-deep"
+            >
+              Tìm hiểu thêm về Giáo Viên
+              <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
           </Reveal>
 
           {/* Cột phải: sân khấu slideshow */}

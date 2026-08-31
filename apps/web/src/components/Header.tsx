@@ -29,7 +29,7 @@ export default function Header() {
       items: [
         { label: "Về giáo viên", to: "/gioi-thieu" },
         { label: "Kinh nghiệm giảng dạy", to: "/gioi-thieu#kinh-nghiem" },
-        { label: "Profile giáo viên", to: "/gioi-thieu#hoc-van" },
+        { label: "Học vấn & Chứng chỉ", to: "/gioi-thieu#hoc-van" },
       ],
     },
     {
@@ -90,12 +90,12 @@ export default function Header() {
               />
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
-              <div className="bg-white border border-black/5 rounded-2xl shadow-xl p-2 w-56">
+              <div className="w-64 rounded-2xl border border-black/5 bg-white p-2 shadow-xl">
                 {group.items.map((p) => (
                   <Link
                     key={p.to}
                     href={p.to}
-                    className="block px-4 py-3 rounded-xl text-sm font-semibold text-brand/80 hover:text-brand hover:bg-sage transition-colors whitespace-nowrap"
+                    className="block rounded-xl px-4 py-3 text-sm font-semibold leading-snug text-brand/80 transition-colors hover:bg-sage hover:text-brand whitespace-normal"
                   >
                     {p.label}
                   </Link>
