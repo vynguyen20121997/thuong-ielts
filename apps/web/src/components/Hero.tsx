@@ -185,7 +185,7 @@ export default function Hero() {
               animate={{ scaleY: 1 }}
               transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.1 }}
               style={{ transformOrigin: "bottom center" }}
-              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 rounded-t-[999px] bg-leaf"
+              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 rounded-t-[999px] bg-gradient-to-b from-brand via-brand to-brand-deep"
             />
             {/* Wrapper giữ căn giữa bằng Tailwind; motion animate ảnh bên trong
                 (transform của motion sẽ ghi đè nếu đặt thẳng lên phần tử có
