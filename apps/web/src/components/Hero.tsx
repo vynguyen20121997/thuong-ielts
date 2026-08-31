@@ -1,37 +1,38 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import {
-  Award,
-  ChevronRight,
-  MessageSquare,
-  Compass,
-  ShieldAlert,
-  Award as AwardIcon,
-} from "lucide-react";
-import PlexusCanvas from "./PlexusCanvas";
-import { initialTestimonials } from "../data/testimonialsData";
-import { feedbackItems } from "../data/feedbackData";
+import { ArrowRight, Check } from "lucide-react";
 import type { HeroContent } from "@thuong-ielts/db";
 
 const DEFAULT_HERO: HeroContent = {
-  portraitUrl: "/images/ho-ngoc-thuong-portrait.png",
+  portraitUrl: "/images/ho-ngoc-thuong-hero.webp",
   titleLine1: "Hồ Ngọc Thương",
-  titleLine2: "Chuyên Gia IELTS Master",
-  quote: "Chuyên gia Luyện thi IELTS và Phát triển Tư duy Biện chứng",
-  bio: "Cử nhân xuất sắc Đại học Ngoại Thương (FTU), chứng chỉ giảng dạy CELTA do Cambridge cấp, IELTS Overall 8.5 (Listening & Reading tuyệt đối 9.0). Hơn 4 năm trực tiếp đứng lớp, dẫn dắt nhiều học viên đạt điểm cao bằng phương pháp sơ đồ hóa tư duy logic.",
+  titleLine2: "Giáo Viên IELTS",
+  quote:
+    "Giúp học viên tiến bộ thông qua lộ trình có hệ thống, nhận xét chi tiết và phương pháp học tập phù hợp.",
+  bio: "IELTS Overall 8.5 (3 lần thi), Reading & Listening 9.0 (3 lần), Writing 8.5 (2026), Speaking 8.5 (2021). Chứng chỉ giảng dạy CELTA do Đại học Cambridge cấp và 6 năm kinh nghiệm luyện thi IELTS.",
   closingLine:
     "Theo đuổi IELTS vì đam mê, và sau khi chạm mốc 8.5 Overall thì chọn con đường giảng dạy để giúp người khác đi nhanh hơn con đường mình từng đi.",
 };
 
+// Hồ sơ năng lực — gạch đầu dòng theo sheet portfolio (khối "Requisitos" của poster)
+const CREDENTIALS = [
+  "IELTS Overall 8.5 — 3 lần thi",
+  "Reading & Listening 9.0 — 3 lần",
+  "Writing 8.5 (2026) · Speaking 8.5 (2021)",
+  "Chứng chỉ CELTA — Đại học Cambridge",
+  "6 năm kinh nghiệm luyện thi IELTS",
+] as const;
+
+const STATS = [
+  { value: "8.5", label: "Overall Band (×3)" },
+  { value: "9.0", label: "Reading & Listening (×3)" },
+  { value: "8.5", label: "Writing · 2026" },
+  { value: "8.5", label: "Speaking · 2021" },
+] as const;
+
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const portraitRef = useRef<HTMLDivElement>(null);
-  const titleWordsRef = useRef<HTMLSpanElement[]>([]);
-  const subRef = useRef<HTMLDivElement>(null);
-  const rightSideRef = useRef<HTMLDivElement>(null);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
 
   useEffect(() => {
@@ -50,308 +51,98 @@ export default function Hero() {
       .catch((err) => console.error("Failed to load hero content:", err));
   }, []);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // 1. Text Masking Reveal on Load
-      gsap.fromTo(
-        titleWordsRef.current,
-        { y: "115%", rotate: 3 },
-        {
-          y: "0%",
-          rotate: 0,
-          duration: 1.5,
-          ease: "power4.out",
-          stagger: 0.15,
-          delay: 0.1,
-        },
-      );
-
-      // 2. Sub-elements fade and slide
-      gsap.fromTo(
-        subRef.current,
-        { opacity: 0, y: 35 },
-        { opacity: 1, y: 0, duration: 1.3, ease: "power3.out", delay: 0.7 },
-      );
-
-      // 3. Right side reveal
-      gsap.fromTo(
-        rightSideRef.current,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 1.6, ease: "power4.out", delay: 0.4 },
-      );
-
-      // 4. Portrait Image Reveal
-      gsap.fromTo(
-        portraitRef.current,
-        { opacity: 0, scale: 1.05, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 2, ease: "power3.out", delay: 0.2 },
-      );
-    }, containerRef);
-
-    // 5. Mouse Move Parallax Movement Effect on the Background Portrait
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!portraitRef.current) return;
-      const { innerWidth, innerHeight } = window;
-      const x = (e.clientX - innerWidth / 2) / 45;
-      const y = (e.clientY - innerHeight / 2) / 45;
-
-      gsap.to(portraitRef.current, {
-        x: x,
-        y: y,
-        duration: 1.2,
-        ease: "power2.out",
-      });
-    };
-
-    const handleMouseLeave = () => {
-      if (!portraitRef.current) return;
-      gsap.to(portraitRef.current, {
-        x: 0,
-        y: 0,
-        duration: 1.5,
-        ease: "power3.out",
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      ctx.revert();
-      window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
-
-  const addTitleWord = (el: HTMLSpanElement | null) => {
-    if (el && !titleWordsRef.current.includes(el)) {
-      titleWordsRef.current.push(el);
-    }
-  };
-
   return (
     <section
-      ref={containerRef}
       id="hero"
-      className="relative min-h-[100dvh] pt-32 pb-32 md:py-16 flex items-center justify-center overflow-hidden bg-white"
+      className="relative pt-24 md:pt-28 overflow-hidden bg-gradient-to-br from-[#F3F4EF] via-[#FAF7F4] to-[#F6EFEC]"
     >
-      {/* Signature Bright Green Block on the right */}
-      <div className="absolute right-0 top-0 bottom-0 w-full md:w-[35%] lg:w-[30%] bg-[#9FE870] hidden md:block z-0" />
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-8 items-end">
+          {/* Cột chữ: headline → pill → hồ sơ năng lực → CTA (bố cục poster) */}
+          <div className="text-left pb-6 md:pb-14 order-1">
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.1] mb-5">
+              <span className="text-[#00210D]">{hero.titleLine1}. </span>
+              <span className="text-[#3E8E58]">{hero.titleLine2}.</span>
+            </h1>
 
-      {/* Decorative Glowing Light Leak Streaks - softened for clean look */}
-      <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-[#14532D]/[0.03] blur-[150px] pointer-events-none z-0" />
-
-      {/* Integrated Portrait of Cô Thương in the background */}
-      <div
-        ref={portraitRef}
-        className="absolute bottom-0 right-0 w-full md:w-[48%] lg:w-[42%] h-[55%] md:h-[95%] pointer-events-none select-none z-5"
-      >
-        <img
-          src={hero.portraitUrl}
-          alt="Cô Hồ Ngọc Thương"
-          className="absolute bottom-0 right-0 h-full w-auto max-w-none object-contain object-bottom"
-        />
-      </div>
-
-      {/* 3D Plexus Canvas Interactive Background (Overlays the portrait image) */}
-      <PlexusCanvas className="absolute inset-0 w-full h-full pointer-events-none z-10" />
-
-      {/* Grid Lines Overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02] select-none z-15">
-        <div className="w-full h-full grid grid-cols-4 md:grid-cols-12 h-screen max-w-7xl mx-auto px-6 md:px-12">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="border-r border-black h-full first:border-l" />
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-center relative z-20">
-        {/* Left Column: Bold Slogan & Intros */}
-        <div className="md:col-span-7 flex flex-col justify-center order-2 md:order-1 text-left relative py-12 md:py-0">
-          {/* Heading with Masking */}
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl xl:text-[4.5rem] font-bold tracking-tight text-[#1A1A1A] leading-[1.1] mb-6">
-            <span className="char-mask-wrapper block">
-              <span ref={addTitleWord} className="char-mask-inner">
-                {hero.titleLine1}
-              </span>
-            </span>{" "}
-            <span className="char-mask-wrapper block">
-              <span ref={addTitleWord} className="char-mask-inner text-[#14532D]">
-                {hero.titleLine2}
-              </span>
+            {/* Pill tag như "Secretário" của poster — nền xanh sáng cho nhẹ mắt */}
+            <span className="inline-flex items-center px-6 py-2.5 bg-[#9FE870] text-[#00230E] rounded-full text-sm font-bold mb-6">
+              IELTS 8.5 Overall (×3) · CELTA Cambridge
             </span>
-          </h1>
 
-          {/* Slogan & Introduction with Delay Animation */}
-          <div ref={subRef} className="max-w-xl">
-            <p className="font-sans italic text-base md:text-lg text-[#1A1A1A]/70 leading-relaxed mb-6 border-l-2 border-[#14532D] pl-4">
+            <p className="text-[#00230E]/75 text-sm md:text-base leading-relaxed mb-7 max-w-lg">
               {hero.quote}
             </p>
 
-            <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-4">
-              {hero.bio}
-            </p>
+            {/* Hồ sơ năng lực — như khối "Requisitos" */}
+            <h2 className="text-xl md:text-2xl font-bold text-[#3E8E58] mb-3">Hồ sơ năng lực</h2>
+            <ul className="space-y-2 mb-8">
+              {CREDENTIALS.map((c) => (
+                <li
+                  key={c}
+                  className="flex items-start gap-2.5 text-sm md:text-base text-[#00230E]/80"
+                >
+                  <Check size={16} className="text-[#3E8E58] mt-1 shrink-0" />
+                  {c}
+                </li>
+              ))}
+            </ul>
 
-            <p className="text-[#1A1A1A]/75 text-sm md:text-base leading-relaxed mb-8">
-              {hero.closingLine}
-            </p>
+            <Link
+              href="/thanh-tich"
+              className="group inline-flex items-center gap-1.5 text-sm font-bold text-[#2E7D42] hover:text-[#00230E] transition-colors mb-6"
+            >
+              Xem toàn bộ bằng cấp
+              <ArrowRight
+                size={15}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </Link>
 
-            {/* Achievement stat strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-5 sm:divide-x sm:divide-black/10 mb-10 max-w-md">
-              <div className="sm:pr-4">
-                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
-                  8.5
-                </span>
-                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">
-                  Overall band
-                </span>
-              </div>
-              <div className="sm:px-4">
-                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
-                  9.0
-                </span>
-                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">Listening</span>
-              </div>
-              <div className="sm:px-4">
-                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
-                  94%
-                </span>
-                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">
-                  Đạt target
-                </span>
-              </div>
-              <div className="sm:pl-4">
-                <span className="font-serif text-2xl md:text-3xl font-bold text-[#14532D] block leading-none">
-                  2.500+
-                </span>
-                <span className="text-2xs text-[#1A1A1A]/50 font-medium mt-1 block">
-                  Học viên
-                </span>
-              </div>
-            </div>
-
-            {/* CTA */}
-            <div className="flex flex-wrap items-center gap-4 mb-8">
-              <Link
-                href="/kiem-tra-kien-thuc"
-                className="group px-8 py-3.5 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase flex items-center gap-2"
+            <div className="flex flex-wrap items-center gap-4">
+              <a
+                href="#testimonials"
+                className="px-8 py-4 bg-[#9FE870] hover:bg-white text-[#00230E] font-bold text-sm rounded-full transition-all duration-300 shadow-[0_6px_20px_rgba(159,232,112,0.45)] hover:shadow-lg cursor-pointer"
               >
-                Kiểm Tra Kiến Thức IELTS
-                <ChevronRight
-                  size={14}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
-              </Link>
+                Xem Thành Tích Học Viên
+              </a>
+              <a
+                href="#phuong-phap"
+                className="px-8 py-4 bg-[#E4EDDE] hover:bg-white text-[#00230E] font-bold text-sm rounded-full transition-all duration-300 hover:shadow-lg cursor-pointer"
+              >
+                Khám Phá Phương Pháp Giảng Dạy
+              </a>
             </div>
           </div>
-        </div>
 
-        {/* Right Column: Floating credential cards over the green block.
-            Positions/sizes are percentage + clamp()-based (not fixed px) so the
-            cluster scales fluidly with the column and never overlaps at any
-            zoom level or intermediate viewport width. */}
-        <div
-          ref={rightSideRef}
-          className="md:col-span-5 order-1 md:order-2 w-full aspect-[4/3] sm:aspect-[3/2] md:aspect-[10/11] relative"
-        >
-          {/* Large overall band card */}
-          <div
-            className="absolute bg-white rounded-3xl shadow-xl p-[clamp(0.9rem,3vw,1.5rem)] rotate-[-3deg] border border-black/5"
-            style={{ top: "2%", left: "2%", width: "clamp(140px, 42%, 220px)" }}
-          >
-            <span className="text-2xs text-[#1A1A1A]/50 font-medium block mb-2">
-              Overall band
-            </span>
-            <span className="font-serif text-[clamp(1.75rem,5vw,3.75rem)] font-bold text-[#14532D] block leading-none">
-              8.5
-            </span>
-            <span className="font-mono text-2xs text-[#1A1A1A]/60 block mt-2">IELTS Academic</span>
-          </div>
-
-          {/* Small listening score card, overlapping */}
-          <div
-            className="absolute bg-[#14532D] text-white rounded-2xl shadow-xl p-[clamp(0.75rem,2.5vw,1.25rem)] rotate-[4deg]"
-            style={{ top: "42%", left: "34%", width: "clamp(110px, 32%, 170px)" }}
-          >
-            <span className="text-2xs text-white/60 font-medium block mb-1">
-              Listening
-            </span>
-            <span className="font-serif text-[clamp(1.25rem,3.5vw,2.25rem)] font-bold block leading-none">
-              9.0
-            </span>
-          </div>
-
-          {/* Trust pills, bottom-left: link straight into the results / feedback sections below.
-              Kept clear of the portrait's face and hands on the right side of the frame. */}
-          <div className="absolute bottom-[4%] left-0 flex flex-col gap-2 max-w-[85%]">
-            <Link
-              href="/ket-qua-hoc-vien"
-              className="group bg-white rounded-full shadow-xl pl-2 pr-4 py-2 flex items-center gap-3 border border-black/5 hover:border-[#14532D]/30 transition-colors"
-            >
-              <span className="h-8 w-8 rounded-full bg-[#9FE870] flex items-center justify-center shrink-0">
-                <Award size={16} className="text-[#14532D]" />
-              </span>
-              <span className="text-left">
-                <span className="font-serif text-sm font-bold text-[#1A1A1A] block leading-none">
-                  {initialTestimonials.length}+
-                </span>
-                <span className="text-2xs text-[#1A1A1A]/50 font-medium group-hover:text-[#14532D] transition-colors">
-                  Học viên đạt đích
-                </span>
-              </span>
-            </Link>
-            <Link
-              href="/cam-nhan-hoc-vien"
-              className="group bg-white rounded-full shadow-xl pl-2 pr-4 py-2 flex items-center gap-3 border border-black/5 hover:border-[#14532D]/30 transition-colors"
-            >
-              <span className="h-8 w-8 rounded-full bg-[#14532D] flex items-center justify-center shrink-0">
-                <MessageSquare size={16} className="text-white" />
-              </span>
-              <span className="text-left">
-                <span className="font-serif text-sm font-bold text-[#1A1A1A] block leading-none">
-                  {feedbackItems.length}+
-                </span>
-                <span className="text-2xs text-[#1A1A1A]/50 font-medium group-hover:text-[#14532D] transition-colors">
-                  Đánh giá tích cực
-                </span>
-              </span>
-            </Link>
+          {/* Chân dung zoom lớn tràn khỏi VIÊN NANG xanh phía sau (đúng hình khối poster) */}
+          <div className="relative h-[460px] sm:h-[560px] md:h-[640px] order-2">
+            {/* Viên nang bo tròn hẳn đầu trên, hẹp hơn người — người tràn ra hai bên và lên trên.
+                Màu xanh sáng #9FE870 đồng bộ với nút "Xem Thành Tích Học Viên". */}
+            <div className="absolute left-[14%] right-[14%] top-[13%] bottom-0 rounded-t-[999px] bg-[#9FE870]" />
+            <img
+              src={hero.portraitUrl}
+              alt="Cô Hồ Ngọc Thương"
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[95%] w-auto max-w-none object-contain object-bottom select-none pointer-events-none"
+            />
           </div>
         </div>
       </div>
 
-      {/* Floating Vertical Navigation Sidebar (Right-side, like reference image) */}
-      <div className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 bg-white/90 border border-black/5 p-3 rounded-full backdrop-blur-md shadow-lg">
-        <Link
-          href="/"
-          className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer"
-          id="side-nav-hero"
-        >
-          <Compass size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white text-2xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-            Trang Chủ
-          </span>
-        </Link>
-        <Link
-          href="/gioi-thieu"
-          className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer"
-          id="side-nav-about"
-        >
-          <AwardIcon size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white text-2xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-            Giới Thiệu
-          </span>
-        </Link>
-        <Link
-          href="/tu-van"
-          className="group relative p-2.5 rounded-full text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors cursor-pointer"
-          id="side-nav-contact"
-        >
-          <ShieldAlert size={18} />
-          <span className="absolute right-12 top-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white text-2xs font-medium px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-            Liên Hệ
-          </span>
-        </Link>
+      {/* Thanh điểm số sáng đè mép dưới — pill trắng, số xanh */}
+      <div className="relative z-20 max-w-6xl mx-auto px-6 md:px-12 -mt-2 pb-10">
+        <div className="bg-white rounded-[32px] shadow-[0_20px_60px_rgba(0,35,14,0.12)] border border-black/5 px-6 py-6 md:py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:divide-x md:divide-black/10">
+          {STATS.map((s) => (
+            <div key={s.label} className="text-center px-4">
+              <span className="text-2xl md:text-3xl font-bold text-[#2E7D42] block leading-none mb-1.5">
+                {s.value}
+              </span>
+              <span className="text-2xs md:text-xs font-semibold uppercase tracking-[0.08em] text-[#00230E]/55">
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -18,6 +18,15 @@ export default function Carousel({ children, ariaLabel = "Carousel", autoPlayInt
   const scroll = (dir: number) => {
     const el = trackRef.current;
     if (!el) return;
+    // Bấm next/prev ở mép thì quay vòng, cho cảm giác vô hạn như autoplay
+    if (dir > 0 && el.scrollLeft + el.clientWidth >= el.scrollWidth - 4) {
+      el.scrollTo({ left: 0, behavior: "smooth" });
+      return;
+    }
+    if (dir < 0 && el.scrollLeft <= 4) {
+      el.scrollTo({ left: el.scrollWidth, behavior: "smooth" });
+      return;
+    }
     el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: "smooth" });
   };
 

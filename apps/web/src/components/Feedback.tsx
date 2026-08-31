@@ -3,10 +3,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { Heart, Quote, X, Maximize2, ArrowRight } from "lucide-react";
+import { Quote, X, Maximize2 } from "lucide-react";
 import { FeedbackItem } from "../data/feedbackData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
-import Carousel from "./Carousel";
 
 function firstLetter(s: string): string {
   const t = s.trim();
@@ -17,7 +16,8 @@ interface FeedbackProps {
   variant?: "preview" | "full";
 }
 
-const PREVIEW_COUNT = 8;
+// Preview theo layout Figma: 4 thẻ masonry 2 cột, thẻ ôm theo kích thước ảnh
+const PREVIEW_COUNT = 4;
 const BATCH = 12;
 
 export default function Feedback({ variant = "full" }: FeedbackProps) {
@@ -81,11 +81,15 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
   return (
     <section
       id="feedback"
-      className={`${isPreview ? "py-24 md:py-28" : "pb-24"} bg-[#FAF9F6] relative overflow-hidden border-b border-black/5`}
+      className={`${isPreview ? "py-16 md:py-20 bg-[#F3F4EF]" : "pb-24 bg-[#FAF9F6]"} relative overflow-hidden border-b border-black/5`}
     >
-      {/* Soft green ambient glows */}
-      <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#9FE870]/20 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#14532D]/[0.04] blur-[120px] pointer-events-none" />
+      {/* Nền preview phẳng theo Figma; glow chỉ giữ cho trang đầy đủ */}
+      {!isPreview && (
+        <>
+          <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#9FE870]/20 blur-[130px] pointer-events-none" />
+          <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#14532D]/[0.04] blur-[120px] pointer-events-none" />
+        </>
+      )}
 
       {/* Full-page hero header */}
       {!isPreview && (
@@ -100,14 +104,13 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
       )}
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        {/* Preview header */}
+        {/* Preview header — căn giữa theo Figma, tiêu đề sans đậm thay vì serif */}
         {isPreview && (
-          <div className="max-w-2xl text-left mb-12">
-            <span className="text-xs text-[#14532D] mb-3 font-medium flex items-center gap-1.5">
-              <Heart size={14} className="fill-[#14532D] text-[#14532D]" />
+          <div className="text-center mb-12 flex flex-col items-center gap-4">
+            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-[#00230E]">
               Học Viên Nói Gì Về Cô Thương
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
+            <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-[#00210D] leading-[1.2]">
               150+ Đánh Giá Tích Cực <br />
               Từ Học Viên
             </h2>
@@ -126,31 +129,29 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
           </div>
         ) : isPreview ? (
           <>
-            <Carousel ariaLabel="Cảm nhận học viên">
+            {/* Masonry 2 cột theo Figma: bề rộng cột cố định, chiều cao thẻ ôm
+                theo ảnh (ảnh giữ nguyên tỉ lệ, không kéo giãn theo ô lưới);
+                ảnh quá dài thì cắt ở 560px — bấm vào lightbox xem đủ. */}
+            <div className="columns-1 md:columns-2 gap-6">
               {visible.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
-                  className="feedback-card group snap-start shrink-0 w-[320px] sm:w-[380px] flex flex-col text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
+                  className="feedback-card group mb-6 w-full break-inside-avoid flex flex-col gap-6 text-left bg-white rounded-[32px] p-8 shadow-sm hover:shadow-xl transition-all duration-300 cursor-zoom-in"
                 >
-                  <div className="px-5 pt-5 pb-3 shrink-0">
-                    <Quote size={18} className="text-[#9FE870] mb-2" />
-                    <p className="font-serif text-sm md:text-base font-bold text-[#1A1A1A] leading-snug">
+                  <span className="flex items-center gap-2">
+                    <Quote size={17} className="fill-[#003B1B] text-[#003B1B] shrink-0" />
+                    <span className="text-sm font-bold text-[#003B1B] tracking-wide leading-tight">
                       {item.subject}
-                    </p>
-                    {item.date && (
-                      <span className="text-2xs text-[#1A1A1A]/40 font-medium mt-2 block">
-                        {item.date}
-                      </span>
-                    )}
-                  </div>
-                  <div className="relative bg-black/[0.03] border-t border-black/5 flex-1 min-h-[340px]">
+                    </span>
+                  </span>
+                  <div className="relative rounded-2xl overflow-hidden max-h-[560px]">
                     <img
                       src={item.imageUrl}
                       alt={`Cảm nhận học viên: ${item.subject}`}
                       loading="lazy"
-                      className="absolute inset-0 w-full h-full object-contain"
+                      className="w-full h-auto"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-medium gap-1.5 ">
                       <Maximize2 size={14} />
@@ -159,18 +160,14 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                   </div>
                 </button>
               ))}
-            </Carousel>
+            </div>
 
-            <div className="mt-10 text-center">
+            <div className="mt-12 text-center">
               <Link
                 href="/cam-nhan-hoc-vien"
-                className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
+                className="inline-flex items-center px-10 py-5 bg-[#00230E] hover:bg-[#9FE870] text-white hover:text-[#14532D] text-sm font-semibold rounded-full transition-all duration-300 shadow-md"
               >
-                Xem toàn bộ
-                <ArrowRight
-                  size={14}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
+                Xem Thêm Cảm Nhận
               </Link>
             </div>
           </>

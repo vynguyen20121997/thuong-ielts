@@ -11,8 +11,6 @@ import {
   ChevronRight,
   ChevronUp,
   Calendar,
-  Sparkles,
-  ArrowRight,
   Maximize2,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -30,7 +28,8 @@ interface TestimonialsProps {
   variant?: "preview" | "full";
 }
 
-const PREVIEW_COUNT = 6;
+// Preview theo sheet portfolio: carousel 6–8 thành tích nổi bật, tự động chạy
+const PREVIEW_COUNT = 8;
 const BATCH = 9;
 
 function LazyProofImage({ src, alt }: { src: string; alt: string }) {
@@ -316,12 +315,14 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   return (
     <section
       id="testimonials"
-      className={`${isPreview ? "py-24" : "pb-24"} bg-white text-[#1A1A1A] relative overflow-hidden border-t border-b border-black/5`}
+      className={`${isPreview ? "py-16 md:py-20 bg-[#F3F4EF]" : "pb-24 bg-white"} text-[#1A1A1A] relative overflow-hidden border-t border-b border-black/5`}
     >
-      {/* Decorative Grid Lines */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(black_1px,transparent_1px)] [background-size:24px_24px]" />
-      </div>
+      {/* Decorative Grid Lines — chỉ trang đầy đủ; preview nền phẳng theo Figma */}
+      {!isPreview && (
+        <div className="absolute inset-0 pointer-events-none opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(black_1px,transparent_1px)] [background-size:24px_24px]" />
+        </div>
+      )}
 
       {/* Full-page hero header */}
       {!isPreview && (
@@ -336,17 +337,24 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
       )}
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        {/* Preview header */}
+        {/* Preview header — trái tiêu đề, phải nút outline theo Figma */}
         {isPreview && (
-          <div className="max-w-2xl text-left mb-12">
-            <span className="text-xs text-[#14532D] mb-3 font-medium flex items-center gap-1.5">
-              <Sparkles size={14} className="text-[#14532D]" />
-              Góc Vinh Danh Học Viên
-            </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
-              120+ Học Viên Thành Công <br />
-              Chinh Phục Mục Tiêu IELTS
-            </h2>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
+            <div className="text-left flex flex-col gap-4">
+              <span className="text-sm font-semibold uppercase tracking-[0.1em] text-[#00230E]">
+                Góc Vinh Danh Học Viên
+              </span>
+              <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-[#00210D] leading-[1.2]">
+                120+ Học Viên Thành Công <br />
+                Chinh Phục Mục Tiêu IELTS
+              </h2>
+            </div>
+            <Link
+              href="/ket-qua-hoc-vien"
+              className="shrink-0 inline-flex items-center px-8 py-3.5 border-2 border-[#00230E] text-[#00230E] hover:bg-[#00230E] hover:text-white text-sm font-semibold rounded-full transition-colors duration-300"
+            >
+              Xem tất cả thành tích học viên
+            </Link>
           </div>
         )}
 
@@ -388,24 +396,40 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             Chưa có dữ liệu học viên.
           </div>
         ) : isPreview ? (
-          <>
-            <Carousel ariaLabel="Kết quả học viên">
-              {shown.map((test) => renderCard(test))}
-            </Carousel>
-
-            <div className="mt-10 text-center">
-              <Link
-                href="/ket-qua-hoc-vien"
-                className="group inline-flex items-center gap-2 px-8 py-3.5 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 shadow-md"
-              >
-                Xem toàn bộ
-                <ArrowRight
-                  size={14}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
-              </Link>
-            </div>
-          </>
+          /* Carousel tự chạy theo sheet portfolio. Ảnh vinh danh trong DB đã là
+             thẻ thiết kế sẵn (khung đỏ, tên, band, LRWS) — hiển thị nguyên bản,
+             không vẽ lại khung/tên kẻo lặp thông tin. Bấm mở lightbox. */
+          <Carousel ariaLabel="Thành tích học viên">
+            {shown.map((test, i) => {
+              const images = test.proofUrl ?? [];
+              if (images.length === 0) return null;
+              return (
+                <button
+                  key={test.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedProofImages(images);
+                    setSelectedProofIndex(0);
+                    setSelectedProofName(test.studentName);
+                  }}
+                  className="testimonial-card group relative snap-start shrink-0 w-[280px] sm:w-[320px] rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-zoom-in"
+                  id={test.id}
+                >
+                  {i === 0 && (
+                    <span className="absolute top-4 left-4 z-10 px-3 py-1 bg-[#B3130B] text-white text-2xs font-bold uppercase tracking-wider rounded-full shadow">
+                      Hot
+                    </span>
+                  )}
+                  <img
+                    src={images[0]}
+                    alt={`Thành tích ${test.studentName}: ${test.score}`}
+                    loading="lazy"
+                    className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </button>
+              );
+            })}
+          </Carousel>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

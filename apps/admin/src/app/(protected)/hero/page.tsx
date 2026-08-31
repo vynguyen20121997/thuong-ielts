@@ -77,7 +77,7 @@ export default function AdminHeroPage() {
             <input
               value={content.portraitUrl}
               onChange={update("portraitUrl")}
-              placeholder="/images/ho-ngoc-thuong-portrait.png"
+              placeholder="/images/ho-ngoc-thuong-hero.webp"
               className="w-full px-3 py-2 rounded-lg border border-black/10 text-sm font-mono focus:border-[#14532D] focus:outline-none"
             />
             {content.portraitUrl && (

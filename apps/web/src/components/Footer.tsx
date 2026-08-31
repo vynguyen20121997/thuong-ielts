@@ -1,130 +1,111 @@
-"use client";
-
-import { ArrowUp } from "lucide-react";
 import Link from "next/link";
+import { GraduationCap, QrCode, Mail, Globe, MessageSquare, Images } from "lucide-react";
 
+/**
+ * Footer theo Figma: nền xanh nhạt, 4 cột (thương hiệu / thông tin / khởi đầu
+ * lộ trình / social), dòng dưới là copyright + hai link điều khoản.
+ * Server component — năm lấy lúc render server, đủ chính xác cho copyright.
+ */
 export default function Footer() {
-  const handleBackToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <footer className="bg-white text-[#1A1A1A] pt-20 pb-12 relative overflow-hidden border-t border-b border-black/5">
-      {/* Upper line */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
-
+    <footer className="bg-[#F3F4EF] text-[#00230E] pt-14 pb-10 relative overflow-hidden border-t border-black/5">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        {/* Upper footer grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 pb-16 border-b border-black/10 text-left">
-          {/* Brand Col */}
-          <div className="md:col-span-5 flex flex-col justify-between">
-            <div>
-              <Link href="/" className="inline-block">
-                <span className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#1A1A1A] block mb-1">
-                  HNT<span className="text-[#14532D]">.</span>IELTS
-                </span>
-                <span className="text-2xs text-[#1A1A1A]/40 block mb-6 font-medium">
-                  Hồ Ngọc Thương
-                </span>
-              </Link>
-              <p className="text-sm text-[#1A1A1A]/60 leading-relaxed max-w-sm mb-6">
-                Chương trình luyện thi IELTS chất lượng cao, tập trung rèn luyện tư duy biện chứng
-                sâu sắc, giúp học viên Việt Nam chinh phục IELTS bền vững và thực tế.
-              </p>
-            </div>
-
-            <p className="font-mono text-2xs text-[#1A1A1A]/30 hidden md:block">
-              © {new Date().getFullYear()} Hồ Ngọc Thương. All rights reserved.
+        {/* Lưới 4 cột */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 pb-14 border-b border-black/10 text-left">
+          {/* Thương hiệu */}
+          <div className="md:col-span-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 mb-6">
+              <span className="w-10 h-10 rounded-full bg-[#9FE870] flex items-center justify-center shrink-0">
+                <GraduationCap size={20} className="text-[#00230E]" />
+              </span>
+              <span className="font-bold text-lg tracking-tight">HNT IELTS</span>
+            </Link>
+            <p className="text-sm text-[#00230E]/60 leading-relaxed max-w-sm mb-6">
+              Chương trình luyện thi IELTS chất lượng cao, tập trung rèn luyện tư duy biện chứng
+              sâu sắc, giúp học viên Việt Nam chinh phục IELTS bền vững và thực tế.
             </p>
-          </div>
-
-          {/* Sitemaps */}
-          <div className="md:col-span-4 grid grid-cols-1 gap-8">
-            <div>
-              <h4 className="text-2xs font-medium text-[#14532D] mb-6">Thông tin</h4>
-              <ul className="space-y-3 text-sm text-[#1A1A1A]/70 font-bold">
-                <li>
-                  <Link
-                    href="/gioi-thieu"
-                    className="hover:text-[#14532D] transition-colors text-left"
-                  >
-                    Về cô Ngọc Thương
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/thanh-tich"
-                    className="hover:text-[#14532D] transition-colors text-left"
-                  >
-                    Bảng điểm vàng
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ket-qua-hoc-vien"
-                    className="hover:text-[#14532D] transition-colors text-left"
-                  >
-                    Kết quả học viên
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/cam-nhan-hoc-vien"
-                    className="hover:text-[#14532D] transition-colors text-left"
-                  >
-                    Cảm nhận học viên
-                  </Link>
-                </li>
-              </ul>
+            <div className="flex items-center gap-4 text-[#00230E]">
+              <QrCode size={20} />
+              <Mail size={20} />
             </div>
           </div>
 
-          {/* Action Col */}
-          <div className="md:col-span-3 flex flex-col justify-between items-start md:items-end">
-            <div className="text-left md:text-right">
-              <h4 className="text-2xs font-medium text-[#14532D] mb-6">Khởi đầu lộ trình</h4>
-              <p className="text-sm text-[#1A1A1A]/60 leading-relaxed mb-6">
-                Tham gia test thử năng lực và thảo luận lộ trình cùng giáo viên hoàn toàn miễn phí
-                ngay hôm nay.
-              </p>
-              <Link
-                href="/tu-van"
-                className="inline-block px-6 py-3 bg-[#1A1A1A] hover:bg-[#9FE870] text-[#FAF9F6] hover:text-[#14532D] text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-300 shadow-md cursor-pointer"
-              >
-                Nhận lịch tư vấn miễn phí
-              </Link>
+          {/* Thông tin */}
+          <div className="md:col-span-3">
+            <h4 className="text-xs font-semibold uppercase tracking-[0.1em] mb-6">Thông Tin</h4>
+            <ul className="space-y-4 text-sm text-[#00230E]/70 font-medium">
+              <li>
+                <Link href="/gioi-thieu" className="hover:text-[#00230E] transition-colors">
+                  Về cô Ngọc Thương
+                </Link>
+              </li>
+              <li>
+                <Link href="/thanh-tich" className="hover:text-[#00230E] transition-colors">
+                  Bảng điểm vàng
+                </Link>
+              </li>
+              <li>
+                <Link href="/ket-qua-hoc-vien" className="hover:text-[#00230E] transition-colors">
+                  Kết quả học viên
+                </Link>
+              </li>
+              <li>
+                <Link href="/cam-nhan-hoc-vien" className="hover:text-[#00230E] transition-colors">
+                  Cảm nhận học viên
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Khởi đầu lộ trình */}
+          <div className="md:col-span-3">
+            <h4 className="text-xs font-semibold uppercase tracking-[0.1em] mb-6">
+              Khởi Đầu Lộ Trình
+            </h4>
+            <p className="text-sm text-[#00230E]/60 leading-relaxed mb-5">
+              Tham gia test thử năng lực và thảo luận lộ trình cùng giáo viên hoàn toàn miễn phí
+              ngay hôm nay.
+            </p>
+            <Link
+              href="/tu-van"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2E7D42] hover:text-[#00230E] transition-colors"
+            >
+              Nhận lịch tư vấn miễn phí →
+            </Link>
+          </div>
+
+          {/* Social */}
+          <div className="md:col-span-2">
+            <h4 className="text-xs font-semibold uppercase tracking-[0.1em] mb-6">
+              Social Connect
+            </h4>
+            <div className="flex items-center gap-3">
+              <span className="h-11 w-11 rounded-full bg-[#DCE8D5] flex items-center justify-center text-[#00230E]">
+                <Globe size={18} />
+              </span>
+              <span className="h-11 w-11 rounded-full bg-[#DCE8D5] flex items-center justify-center text-[#00230E]">
+                <Images size={18} />
+              </span>
+              <span className="h-11 w-11 rounded-full bg-[#DCE8D5] flex items-center justify-center text-[#00230E]">
+                <MessageSquare size={18} />
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Lower footer */}
-        <div className="pt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <p className="font-mono text-2xs text-[#1A1A1A]/30 md:hidden">
+        {/* Dòng dưới */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm font-medium text-[#00230E]/80">
             © {new Date().getFullYear()} Hồ Ngọc Thương. All rights reserved.
           </p>
-          <div className="flex gap-4 font-mono text-2xs text-[#1A1A1A]/40 font-bold">
-            <a href="#privacy" className="hover:text-[#1A1A1A] transition-colors">
+          <div className="flex gap-8 text-sm font-medium text-[#00230E]/70">
+            <a href="#privacy" className="hover:text-[#00230E] transition-colors">
               Điều khoản bảo mật
             </a>
-            <span>|</span>
-            <a href="#terms" className="hover:text-[#1A1A1A] transition-colors">
+            <a href="#terms" className="hover:text-[#00230E] transition-colors">
               Cam kết hợp đồng đầu ra
             </a>
           </div>
-
-          {/* Back to top button */}
-          <button
-            onClick={handleBackToTop}
-            className="group flex items-center gap-2 p-3 bg-black/5 border border-black/10 text-[#1A1A1A] hover:bg-[#14532D] hover:text-white hover:border-[#14532D] transition-all duration-300 cursor-pointer text-xs"
-            aria-label="Back to Top"
-            id="back-to-top-button"
-          >
-            <span className="text-2xs px-1 hidden sm:inline font-medium">Về đầu trang</span>
-            <ArrowUp
-              size={14}
-              className="transition-transform duration-300 group-hover:-translate-y-0.5"
-            />
-          </button>
         </div>
       </div>
     </footer>

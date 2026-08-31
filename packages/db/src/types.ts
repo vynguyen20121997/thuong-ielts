@@ -43,7 +43,7 @@ export interface FeaturedContent {
 }
 
 export const DEFAULT_HERO_CONTENT: HeroContent = {
-  portraitUrl: "/images/ho-ngoc-thuong-portrait.png",
+  portraitUrl: "/images/ho-ngoc-thuong-hero.webp",
   titleLine1: "Hồ Ngọc Thương",
   titleLine2: "Chuyên Gia IELTS Master",
   quote:
