@@ -376,7 +376,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 Thành tích học viên
               </span>
               <h2 className="font-serif text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
-                120+ Học viên thành công đạt mục tiêu IELTS
+                100+ Học viên chinh phục thành công mục tiêu IELTS
               </h2>
             </div>
             <Link

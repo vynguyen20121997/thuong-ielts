@@ -35,7 +35,16 @@ export default function Header() {
     {
       label: "Giảng Dạy",
       items: [
-        { label: "Phương pháp giảng dạy", to: "/phuong-phap" },
+        {
+          label: "Phương pháp giảng dạy",
+          to: "/phuong-phap",
+          children: [
+            { label: "Dạy Reading", to: "/phuong-phap/reading" },
+            { label: "Dạy Listening", to: "/phuong-phap/listening" },
+            { label: "Dạy Writing", to: "/phuong-phap/writing" },
+            { label: "Dạy Speaking", to: "/phuong-phap/speaking" },
+          ],
+        },
         { label: "Hệ thống & Công cụ giảng dạy", to: "/he-thong-cong-cu" },
       ],
     },
@@ -77,7 +86,11 @@ export default function Header() {
           id="desktop-nav"
         >
           {navGroups.map((group) => {
-            const active = group.items.some((item) => pathname === item.to.split("#")[0]);
+            const active = group.items.some(
+              (item) =>
+                pathname === item.to.split("#")[0] ||
+                item.children?.some((child) => pathname === child.to)
+            );
             return (
           <div key={group.label} className="relative group py-2">
             <button
@@ -90,15 +103,29 @@ export default function Header() {
               />
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
-              <div className="w-64 rounded-2xl border border-black/5 bg-white p-2 shadow-xl">
+              <div className="w-72 rounded-2xl border border-black/5 bg-white p-2 shadow-xl">
                 {group.items.map((p) => (
-                  <Link
-                    key={p.to}
-                    href={p.to}
-                    className="block rounded-xl px-4 py-3 text-sm font-semibold leading-snug text-brand/80 transition-colors hover:bg-sage hover:text-brand whitespace-normal"
-                  >
-                    {p.label}
-                  </Link>
+                  <div key={p.to}>
+                    <Link
+                      href={p.to}
+                      className="block rounded-xl px-4 py-3 text-sm font-semibold leading-snug text-brand/80 transition-colors hover:bg-sage hover:text-brand whitespace-normal"
+                    >
+                      {p.label}
+                    </Link>
+                    {p.children && (
+                      <div className="mb-1 ml-3 border-l border-brand/15 pl-2">
+                        {p.children.map((child) => (
+                          <Link
+                            key={child.to}
+                            href={child.to}
+                            className="block rounded-lg px-3 py-2 text-sm font-medium text-brand/65 transition-colors hover:bg-sage hover:text-brand"
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -141,13 +168,23 @@ export default function Header() {
             <span className="text-2xs text-brand/40 font-medium block mb-3">{group.label}</span>
             <div className="flex flex-col gap-4 pl-1">
               {group.items.map((p) => (
-                <Link
-                  key={p.to}
-                  href={p.to}
-                  className="text-2xl font-bold text-left text-brand hover:text-brand-deep transition-colors"
-                >
-                  {p.label}
-                </Link>
+                <div key={p.to} className="space-y-3">
+                  <Link
+                    href={p.to}
+                    className="block text-2xl font-bold text-left text-brand hover:text-brand-deep transition-colors"
+                  >
+                    {p.label}
+                  </Link>
+                  {p.children && (
+                    <div className="ml-2 flex flex-col gap-3 border-l border-brand/20 pl-4">
+                      {p.children.map((child) => (
+                        <Link key={child.to} href={child.to} className="text-lg font-semibold text-brand/70 hover:text-brand">
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { BookOpen, Headphones, PenLine, Mic, ArrowDown, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, Headphones, PenLine, Mic, ArrowDown, ArrowRight } from "lucide-react";
+import type { ReactNode } from "react";
 
-import SkillJumpNav from "./SkillJumpNav";
 
 /**
  * Trang Phương pháp giảng dạy — nội dung nguyên văn theo Google Doc cấu trúc
@@ -16,9 +16,9 @@ export const metadata = {
 
 type MethodItem = {
   title: string;
-  paras?: string[];
-  bullets?: string[];
-  after?: string[];
+  paras?: ReactNode[];
+  bullets?: ReactNode[];
+  after?: ReactNode[];
 };
 
 type SkillSection = {
@@ -28,89 +28,107 @@ type SkillSection = {
   items: MethodItem[];
 };
 
-const SKILL_SECTIONS: SkillSection[] = [
+export const SKILL_SECTIONS: SkillSection[] = [
   {
     id: "reading",
     name: "Reading",
     icon: BookOpen,
     items: [
       {
-        title: "Hiểu rõ từng dạng bài trước khi luyện đề",
+        title: "Hiểu cấu trúc đề và làm quen với các dạng bài thường gặp",
         paras: [
-          "Reading không chỉ là “đọc bài rồi tìm đáp án”. Mỗi dạng câu hỏi yêu cầu một cách xử lý thông tin khác nhau. Vì vậy, học sinh trước tiên được hướng dẫn:",
+          <>Trước khi luyện đề, học sinh cần hiểu cấu trúc IELTS Reading và đặc điểm của từng dạng câu hỏi như True/False/Not Given, Matching Headings, Matching Information, Multiple Choice, Summary Completion...</>,
+          <>Với mỗi dạng, học sinh được hướng dẫn:</>,
         ],
         bullets: [
-          "đặc điểm của từng dạng bài;",
           "dạng bài đang kiểm tra kỹ năng gì;",
-          "thông tin thường xuất hiện ở đâu;",
-          "thứ tự câu hỏi có đi theo bài đọc hay không;",
-          "và cách tiếp cận phù hợp với từng dạng.",
-        ],
-        after: [
-          "Các dạng bài được sắp xếp theo mức độ từ dễ đến khó để học sinh có thời gian làm quen với từng kỹ năng trước khi kết hợp chúng trong một bài Reading hoàn chỉnh.",
-          "Mục tiêu: học sinh không nhìn một bài Reading như một khối văn bản dài, mà có thể nhanh chóng xác định — đây là dạng gì → mình cần tìm loại thông tin nào → mình nên đọc phần nào trước.",
+          "thông tin cần tìm nằm ở đâu;",
+          "paraphrase thường xuất hiện như thế nào;",
+          "những lỗi nào dễ mắc;",
+          "và cách xử lý dạng bài phù hợp.",
         ],
       },
       {
-        title: "Không học Reading bằng tips & tricks",
+        title: "Học chiến thuật làm bài nhanh, hiệu quả và phù hợp với từng level",
         paras: [
-          "Một số chiến thuật có thể giúp học sinh làm bài nhanh hơn, nhưng chiến thuật chỉ có ích khi người học thực sự hiểu nội dung đang đọc. Vì vậy, mình không khuyến khích cách học dựa hoàn toàn vào:",
-        ],
-        bullets: [
-          "bắt keyword;",
-          "đoán vị trí đáp án;",
-          "tìm từ giống hệt trong bài;",
-          "hoặc áp dụng một “mẹo” cố định cho mọi câu hỏi.",
+          <>Học sinh được hướng dẫn cách <strong>xác định nhanh vị trí thông tin, phân bổ thời gian, xử lý câu khó và kiểm soát tốc độ đọc</strong>.</>,
+          <>Chiến thuật không được áp dụng máy móc cho tất cả học sinh. Tùy trình độ, điểm mạnh và điểm yếu, thứ tự làm bài hoặc cách xử lý từng dạng có thể được điều chỉnh.</>,
         ],
         after: [
-          "Thay vào đó, học sinh được rèn khả năng xử lý câu hỏi theo một quy trình rõ ràng: Question → Location → Paraphrase → Evidence → Analyse options → Eliminate wrong answers → Answer.",
-          "Học sinh không chỉ cần xác định bằng chứng nào trong bài đọc hỗ trợ đáp án đúng, mà còn phải biết phân tích từng lựa chọn, nhận ra điểm không khớp và giải thích vì sao các đáp án còn lại sai. Mục tiêu là trả lời được hai câu hỏi: Vì sao đáp án này đúng? Vì sao những đáp án còn lại sai?",
-          "Nhờ đó, việc làm Reading không còn dựa vào cảm giác hay đoán đáp án, mà trở thành một quá trình đọc hiểu, đối chiếu thông tin, phân tích và loại trừ có căn cứ.",
+          <>Mục tiêu không phải học thuộc một “công thức Reading”, mà là xây dựng <strong>chiến thuật phù hợp với năng lực của chính mình</strong>.</>,
         ],
       },
       {
-        title: "Chữa bài để hiểu tại sao mình sai",
+        title: "Không học Reading bằng tips & tricks hay chỉ bắt keyword",
         paras: [
-          "Khi chữa Reading, mục tiêu không chỉ là đổi một đáp án sai thành đáp án đúng. Học sinh cần xác định nguyên nhân của lỗi sai, chẳng hạn:",
+          <>IELTS Reading thường sử dụng <strong>paraphrase, từ đồng nghĩa, phủ định, so sánh, cách diễn đạt gián tiếp và distractor</strong>, nên học sinh cần hiểu chính xác ý của câu thay vì chỉ tìm những từ giống nhau.</>,
+          <>Khi cần thiết, học sinh sẽ được hướng dẫn <strong>dịch câu khó, phân tích cấu trúc câu, vocabulary trong ngữ cảnh và mối quan hệ logic giữa các ý</strong>.</>,
         ],
-        bullets: [
-          "không hiểu câu hỏi;",
-          "xác định sai vị trí thông tin;",
-          "không nhận ra paraphrase;",
-          "hiểu sai một từ hoặc một cấu trúc ngữ pháp;",
-          "đọc thiếu chi tiết;",
-          "suy diễn quá mức;",
-          "hoặc sử dụng sai chiến thuật.",
-        ],
-        after: ["Việc hiểu nguyên nhân giúp học sinh tránh lặp lại cùng một lỗi ở bài tiếp theo."],
       },
       {
-        title: "Xây dựng vocabulary và background knowledge",
+        title: "Chọn đáp án bằng evidence và biết loại trừ đáp án sai",
         paras: [
-          "Vocabulary Reading không được học như những danh sách từ rời rạc. Trong quá trình học, học sinh được bổ sung:",
-        ],
-        bullets: [
-          "từ vựng theo những chủ đề thường gặp;",
-          "paraphrase thường xuất hiện trong bài đọc;",
-          "word family;",
-          "collocation;",
-          "và những kiến thức nền cần thiết để đọc nhanh hơn.",
+          <>Học sinh không chỉ cần biết đáp án nào đúng mà còn phải giải thích được <strong>vì sao đúng và vì sao những đáp án khác sai</strong>.</>,
+          <>Quy trình làm bài thường được hướng dẫn theo:</>,
+          <strong>Question → Location → Paraphrase → Evidence → Analyse options → Eliminate → Answer</strong>,
+          <>Học sinh được rèn cách tìm evidence trong passage và nhận diện các distractor như <strong>ý bị đảo ngược, sai đối tượng, thông tin chỉ đúng một phần hoặc dùng cùng keyword nhưng khác nghĩa</strong>.</>,
         ],
         after: [
-          "Mục tiêu là giúp học sinh vừa cải thiện điểm Reading, vừa phát triển năng lực đọc tiếng Anh thực tế.",
+          <>Nhờ đó, Reading trở thành quá trình <strong>đọc hiểu – đối chiếu – loại trừ có căn cứ</strong>, thay vì đoán đáp án.</>,
         ],
       },
       {
-        title: "Phát triển khả năng đọc độc lập",
-        paras: ["Ở giai đoạn sau, học sinh được yêu cầu:"],
-        bullets: [
-          "tự giải thích tại sao mình chọn đáp án;",
-          "chỉ ra evidence;",
-          "nhận diện paraphrase;",
-          "và tự sửa những câu sai trước khi xem lời giải.",
+        title: "Xây dựng Vocabulary và Background Knowledge",
+        paras: [
+          <strong>Vocabulary</strong>,
+          <>Trước mỗi passage, GV chỉ <strong>pre-teach những blocking vocabulary thực sự cần thiết</strong> để học sinh có thể theo được nội dung và thực hiện nhiệm vụ đọc.</>,
+          <>Từ vựng sau đó được củng cố qua các hoạt động ngắn như <strong>matching, guessing games, recall hoặc paraphrase games</strong>. Trong quá trình chữa bài, học sinh tiếp tục được bổ sung academic vocabulary, collocations và các cách paraphrase đáng học.</>,
+          <strong>Background Knowledge</strong>,
+          <>Kiến thức nền được xây dựng thông qua <strong>lead-in, câu hỏi gợi mở và discussion ngắn</strong> trước khi đọc.</>,
+          <>Học sinh được khuyến khích chia sẻ những gì đã biết, dự đoán nội dung và làm quen với các khái niệm quan trọng của chủ đề.</>,
         ],
         after: [
-          "Khi học sinh có thể tự làm được những bước này, việc luyện đề mới thực sự có giá trị.",
+          <>Nhờ đó, vocabulary và background knowledge được <strong>tích hợp trực tiếp vào bài Reading</strong>, giúp học sinh tiếp cận passage nhanh và tự tin hơn.</>,
+        ],
+      },
+      {
+        title: "Luyện tập từ dạng bài riêng lẻ đến Full Reading Test",
+        paras: [
+          <>Quá trình luyện tập đi theo:</>,
+          <strong>Dạng bài riêng lẻ → Passage hoàn chỉnh → Full Reading Test</strong>,
+          <strong>Ở level Beginner</strong>,
+          <>Mỗi unit Reading thường tập trung vào <strong>một dạng câu hỏi chính</strong> và được luyện lặp lại qua nhiều bài tập để học sinh hình thành quy trình làm bài và giảm các lỗi đặc trưng của dạng đó.</>,
+          <strong>Ở level Intermediate trở lên</strong>,
+          <>Khi đã quen với các dạng bài, học sinh được hướng dẫn xử lý <strong>một passage hoàn chỉnh gồm nhiều dạng câu hỏi</strong>, tập trung vào thứ tự làm bài, phân bổ thời gian và duy trì độ chính xác.</>,
+          <strong>Bài tập về nhà và tài liệu bổ sung</strong>,
+          <>Homework được giao thường xuyên xuyên suốt khóa học và đi cùng định hướng trên lớp: <strong>Beginner củng cố từng dạng bài; Intermediate trở lên luyện passage hoàn chỉnh và áp dụng chiến thuật độc lập</strong>.</>,
+          <>Tài liệu bổ sung cũng được điều chỉnh dựa trên tiến độ và lỗi sai của học sinh.</>,
+          <strong>Mock Test định kỳ</strong>,
+        ],
+        after: [
+          <>Mock Test được tổ chức định kỳ trong điều kiện <strong>mô phỏng gần với kỳ thi thật nhất có thể</strong>, giúp kiểm tra khả năng áp dụng toàn bộ kỹ năng và điều chỉnh phần luyện tập tiếp theo.</>,
+        ],
+      },
+      {
+        title: "Theo dõi tiến bộ bằng hệ thống track điểm và lỗi sai",
+        paras: [
+          <>Kết quả Reading được theo dõi xuyên suốt quá trình học, bao gồm <strong>số câu đúng, band score, dạng bài thường sai, loại lỗi lặp lại và xu hướng tiến bộ</strong>.</>,
+          <>Lỗi sai cũng được phân loại theo nguyên nhân như: <strong>Thiếu vocab, Hiểu sai Grammar, Tìm evidence sai chỗ, Không nhận ra paraphrase, Bị đề lừa, Quản lý thời gian không hiệu quả, Mất tập trung</strong></>,
+          <>Từ dữ liệu này, phần luyện tập tiếp theo có thể được điều chỉnh đúng vào vấn đề của từng học sinh.</>,
+          <>Ví dụ: thường sai <strong>Matching Headings</strong> → luyện thêm main idea; không nhận ra <strong>paraphrase</strong> → tăng bài tập paraphrase; đọc hiểu tốt nhưng thiếu thời gian → tập trung vào tốc độ và chiến thuật.</>,
+        ],
+        after: [
+          <>Nhờ đó, bài tập không chỉ đi theo syllabus cố định mà còn được <strong>cá nhân hóa dựa trên lỗi sai thực tế</strong>.</>,
+        ],
+      },
+      {
+        title: "Mục tiêu cuối cùng",
+        paras: [
+          <>Sau quá trình học, học sinh cần có khả năng:</>,
+          <strong>Hiểu đề → Chọn chiến thuật → Đọc hiểu → Tìm evidence → Phân tích & loại trừ → Kiểm soát thời gian → Tự nhận diện lỗi</strong>,
+        ],
+        after: [
+          <>Mục tiêu không chỉ là tăng số câu đúng trong bài luyện tập, mà là xây dựng khả năng làm Reading <strong>ổn định, có căn cứ và có thể áp dụng độc lập trong phòng thi thật</strong>.</>,
         ],
       },
     ],
@@ -431,64 +449,30 @@ export default function TeachingMethodPage() {
           </p>
         </div>
 
-        {/* Menu nhảy nhanh 4 kỹ năng — client component vì có trạng thái đang đọc */}
-        <SkillJumpNav items={SKILL_SECTIONS.map((s) => ({ id: s.id, name: s.name }))} />
-
-        {/* 4 kỹ năng */}
-        {SKILL_SECTIONS.map((section) => {
-          const Icon = section.icon;
-          return (
-            <section key={section.id} id={section.id} className="mb-16 scroll-mt-[190px]">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="h-12 w-12 rounded-full bg-leaf flex items-center justify-center shrink-0">
-                  <Icon size={22} className="text-brand" />
-                </span>
-                <h2 className="text-2xl md:text-3xl font-bold text-brand">{section.name}</h2>
-              </div>
-
-              <div className="space-y-6">
-                {section.items.map((item, i) => (
-                  <article key={item.title} className="bg-white rounded-[24px] p-7 md:p-8 shadow-sm">
-                    <h3 className="text-lg md:text-xl font-bold text-brand mb-4">
-                      <span className="text-brand mr-2">{i + 1}.</span>
-                      {item.title}
-                    </h3>
-                    {item.paras?.map((p) => (
-                      <p key={p} className="text-brand/75 text-sm md:text-base leading-relaxed mb-3">
-                        {p}
-                      </p>
-                    ))}
-                    {item.bullets && (
-                      <ul className="list-disc pl-5 space-y-1.5 mb-3 text-brand/75 text-sm md:text-base leading-relaxed marker:text-brand">
-                        {item.bullets.map((b) => (
-                          <li key={b}>{b}</li>
-                        ))}
-                      </ul>
-                    )}
-                    {item.after?.map((p) => (
-                      <p key={p} className="text-brand/75 text-sm md:text-base leading-relaxed mb-3 last:mb-0">
-                        {p}
-                      </p>
-                    ))}
-                  </article>
-                ))}
-              </div>
-            </section>
-          );
-        })}
-
-        {/* Hệ thống Speaking với AI */}
-        <div className="bg-brand rounded-[28px] p-8 md:p-10 mb-16">
-          <span className="inline-flex items-center gap-2 text-leaf text-sm font-bold mb-3">
-            <Sparkles size={16} />
-            Hệ thống Speaking với AI
-          </span>
-          <p className="text-white/80 text-sm md:text-base leading-relaxed">
-            Một hệ thống luyện tập Speaking hỗ trợ bởi AI đang được phát triển nhằm giúp học sinh
-            có thêm cơ hội luyện tập ngoài giờ học, nhận diện những điểm cần cải thiện và duy trì
-            tần suất speaking thường xuyên.
-          </p>
-        </div>
+        <section aria-label="Khám phá phương pháp theo kỹ năng" className="mb-16">
+          <div className="border-t-2 border-brand/15 pt-8">
+            <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Khám phá theo kỹ năng</p>
+            <h2 className="mt-2 text-2xl font-bold text-brand md:text-3xl">Chọn kỹ năng bạn muốn tìm hiểu</h2>
+            <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              {SKILL_SECTIONS.map((section) => {
+                const Icon = section.icon;
+                return (
+                  <Link
+                    key={section.id}
+                    href={`/phuong-phap/${section.id}`}
+                    className="group flex items-center justify-between rounded-2xl border border-brand/10 bg-mist px-5 py-5 text-brand transition-colors hover:border-brand/25 hover:bg-sage"
+                  >
+                    <span className="flex items-center gap-3 font-bold">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-leaf"><Icon size={19} /></span>
+                      Phương pháp Dạy {section.name}
+                    </span>
+                    <ArrowRight size={19} className="transition-transform group-hover:translate-x-1" />
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
 
         {/* CTA cuối trang */}
         <div className="text-center">
