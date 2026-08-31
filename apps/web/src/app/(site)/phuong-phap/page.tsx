@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Headphones, PenLine, Mic, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, Headphones, PenLine, Mic, ArrowDown, ArrowRight, Sparkles } from "lucide-react";
 
 import SkillJumpNav from "./SkillJumpNav";
 
@@ -357,11 +357,16 @@ const SKILL_SECTIONS: SkillSection[] = [
  * đây là một DANH SÁCH có thứ tự chứ không phải một câu — xem ghi chú chỗ dựng.
  */
 const PROCESS = [
-  "Hiểu",
-  "Làm có hướng dẫn",
-  "Phân tích lỗi",
-  "Luyện tập",
-  "Áp dụng độc lập",
+  { label: "Hiểu", color: "bg-[#e9f7ec]", numberColor: "text-[#5d9770]" },
+  { label: "Làm có hướng dẫn", color: "bg-[#d2f0d7]", numberColor: "text-[#438d58]" },
+  { label: "Phân tích lỗi", color: "bg-[#a9e3b5]", numberColor: "text-[#287542]" },
+  { label: "Luyện tập", color: "bg-[#6fcf82]", numberColor: "text-[#165e30]" },
+  {
+    label: "Áp dụng độc lập",
+    color: "bg-brand",
+    numberColor: "text-white/70",
+    isFinal: true,
+  },
 ] as const;
 
 export default function TeachingMethodPage() {
@@ -386,30 +391,36 @@ export default function TeachingMethodPage() {
             hay ghi nhớ càng nhiều tips càng tốt. Thay vào đó, mỗi kỹ năng đều đi theo một quá
             trình:
           </p>
-          {/*
-            Năm bước của quá trình. Trước đây là một viên thuốc `rounded-full`
-            + `bg-leaf` + `font-bold` — trùng khít kiểu nút CTA của cả site, nên
-            ai cũng tưởng bấm được. Nó là NỘI DUNG, không phải hành động: đổi
-            thành danh sách có thứ tự, bo góc vuông hơn, chữ không in đậm hết.
-          */}
-          <ol className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 mb-6">
-            {PROCESS.map((label, i) => {
+          {/* Năm bước là một flowchart: mũi tên giữ mắt đi từ bước 01 tới bước 05. */}
+          <ol className="mb-7 flex flex-col gap-2.5 md:flex-row md:items-stretch md:gap-2">
+            {PROCESS.map((step, i) => {
               const last = i === PROCESS.length - 1;
               return (
-                <li
-                  key={label}
-                  className={`rounded-2xl px-4 py-3.5 flex flex-col gap-1 ${last ? "bg-leaf" : "bg-sage"}`}
-                >
-                  <span
-                    className={`font-mono text-2xs font-bold tracking-[0.06em] ${last ? "text-brand-deep/55" : "text-brand/45"}`}
+                <li key={step.label} className="flex min-w-0 flex-1 flex-col items-center gap-2.5 md:flex-row md:gap-2">
+                  <div
+                    className={`flex min-h-[122px] w-full flex-1 flex-col justify-center rounded-[24px] px-6 py-5 ${step.color}`}
                   >
-                    0{i + 1}
-                  </span>
-                  <span
-                    className={`text-sm font-semibold leading-snug ${last ? "text-brand-deep" : "text-brand"}`}
-                  >
-                    {label}
-                  </span>
+                    <span className={`font-mono text-xs font-bold tracking-[0.08em] ${step.numberColor}`}>
+                      0{i + 1}
+                    </span>
+                    <span
+                      className={`mt-2 text-lg font-bold leading-tight ${last ? "text-white" : "text-brand"}`}
+                    >
+                      {step.label}
+                    </span>
+                  </div>
+                  {!last && (
+                    <span className="flex h-6 w-8 shrink-0 items-center justify-center text-brand/65 md:w-7">
+                      <ArrowRight
+                        aria-hidden="true"
+                        size={22}
+                        className="hidden motion-safe:animate-[flow-arrow_1.5s_ease-in-out_infinite] md:block"
+                        style={{ animationDelay: `${i * 0.14}s` }}
+                      />
+                      <ArrowDown aria-hidden="true" size={22} className="motion-safe:animate-[flow-arrow-down_1.5s_ease-in-out_infinite] md:hidden" style={{ animationDelay: `${i * 0.14}s` }} />
+                    </span>
+                  )}
+                  {last && <span aria-hidden="true" className="hidden h-6 w-7 shrink-0 md:block" />}
                 </li>
               );
             })}

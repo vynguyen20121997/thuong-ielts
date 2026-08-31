@@ -183,3 +183,26 @@ html {
   }
 }
 
+@keyframes flow-arrow {
+  0%,
+  100% {
+    transform: translateX(-3px);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateX(4px);
+    opacity: 1;
+  }
+}
+
+@keyframes flow-arrow-down {
+  0%,
+  100% {
+    transform: translateY(-3px);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}

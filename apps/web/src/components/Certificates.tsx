@@ -13,9 +13,8 @@ import Reveal from "./Reveal";
  * cấp bên phải — chữ là lời khẳng định, ảnh bằng ngay cạnh là bằng chứng.
  * Slideshow tự chạy 5s, dừng khi rê chuột / mở lightbox.
  *
- * LƯU Ý: doc nhắc "1 bằng CELTA" nhưng KHÔNG nhúng ảnh CELTA — ảnh thứ tư trong
- * doc là chứng chỉ IELTS Teacher Training của IDP, nên ở đây ghi đúng tên đó.
- * Có ảnh CELTA thật thì thêm vào CERTS, đừng đổi nhãn ảnh IDP thành CELTA.
+ * Slideshow đi theo thứ tự: ba bằng IELTS, CELTA Cambridge, rồi chương trình
+ * IELTS Teacher Training của IDP.
  */
 
 // Hồ sơ năng lực — gạch đầu dòng theo sheet portfolio (trước đây nằm ở hero)
@@ -51,9 +50,14 @@ const CERTS: Cert[] = [
     detail: "09/2019 · Listening 9.0 · Reading 9.0 · Writing 7.5 · Speaking 8.0",
   },
   {
+    url: "/images/certificates/celta-cambridge.webp",
+    title: "Chứng chỉ giảng dạy tiếng Anh quốc tế CELTA - ĐH Cambridge",
+    detail: "Pass - Tháng 09/2022",
+  },
+  {
     url: "/images/certificates/idp-teacher-training.webp",
-    title: "IELTS Teacher Training Program",
-    detail: "Certificate of Training · IDP Education Vietnam · 11/2021",
+    title: "Chứng chỉ Giảng dạy IELTS (Writing & Speaking)",
+    detail: "IDP Education Vietnam · Tháng 11/2021",
   },
 ];
 
@@ -112,14 +116,6 @@ export default function Certificates() {
               ))}
             </ul>
 
-            {/* Chú thích bằng đang hiện bên slideshow */}
-            <div className="mt-2 pt-5 border-t border-black/10 w-full">
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-brand/45 mb-1.5">
-                Đang xem
-              </p>
-              <p className="font-serif font-bold text-brand text-lg leading-snug">{cert.title}</p>
-              <p className="text-sm text-brand/60 mt-1">{cert.detail}</p>
-            </div>
           </Reveal>
 
           {/* Cột phải: sân khấu slideshow */}
@@ -158,25 +154,40 @@ export default function Certificates() {
                     </span>
                   </motion.button>
                 </AnimatePresence>
+
+                {/* Nút chuyển trái/phải: neo theo khung ảnh, không chạy theo caption. */}
+                <button
+                  type="button"
+                  onClick={() => go(-1)}
+                  aria-label="Bằng trước"
+                  className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => go(1)}
+                  aria-label="Bằng kế tiếp"
+                  className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
+                >
+                  <ChevronRight size={20} />
+                </button>
               </div>
 
-              {/* Nút chuyển trái/phải */}
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                aria-label="Bằng trước"
-                className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                aria-label="Bằng kế tiếp"
-                className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
-              >
-                <ChevronRight size={20} />
-              </button>
+              {/* Caption thuộc chính slideshow, thay đổi đồng thời với ảnh đang xem. */}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={cert.url}
+                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduce ? undefined : { opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22 }}
+                  className="mt-5 border-t border-brand/10 pt-5"
+                >
+                  <p className="font-serif text-xl font-bold leading-snug text-brand">{cert.title}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-brand/60">{cert.detail}</p>
+                </motion.div>
+              </AnimatePresence>
             </div>
 
             {/* Chấm điều hướng */}
