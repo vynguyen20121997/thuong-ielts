@@ -102,13 +102,13 @@ export default function Hero() {
             <div className="flex flex-wrap items-center gap-4">
               <a
                 href="#testimonials"
-                className="px-8 py-4 bg-leaf hover:bg-white text-brand font-bold text-sm rounded-full transition-all duration-300 shadow-[0_6px_20px_rgba(159,232,112,0.45)] hover:shadow-lg cursor-pointer"
+                className="px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
               >
                 Xem Thành Tích Học Viên
               </a>
               <a
                 href="#phuong-phap"
-                className="px-8 py-4 bg-sage-2 hover:bg-white text-brand font-bold text-sm rounded-full transition-all duration-300 hover:shadow-lg cursor-pointer"
+                className="px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
               >
                 Khám Phá Phương Pháp Giảng Dạy
               </a>

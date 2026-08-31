@@ -458,7 +458,7 @@ export default function TeachingMethodPage() {
         <div className="text-center">
           <Link
             href="/tu-van"
-            className="group inline-flex items-center gap-2 px-9 py-4 bg-leaf hover:bg-white text-brand font-bold text-sm rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+            className="group inline-flex items-center gap-2 px-9 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md"
           >
             Đăng Ký Học
             <ArrowRight
