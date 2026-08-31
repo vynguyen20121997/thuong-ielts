@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { BookOpen, Headphones, PenLine, Mic, ArrowRight, Sparkles } from "lucide-react";
 
+import SkillJumpNav from "./SkillJumpNav";
+
 /**
  * Trang Phương pháp giảng dạy — nội dung nguyên văn theo Google Doc cấu trúc
  * website (phần "Giảng dạy > Phương pháp giảng dạy"). Server component tĩnh.
@@ -350,6 +352,18 @@ const SKILL_SECTIONS: SkillSection[] = [
   },
 ];
 
+/**
+ * Năm bước của quá trình học, nguyên văn theo Google Doc. Tách thành mảng vì
+ * đây là một DANH SÁCH có thứ tự chứ không phải một câu — xem ghi chú chỗ dựng.
+ */
+const PROCESS = [
+  "Hiểu",
+  "Làm có hướng dẫn",
+  "Phân tích lỗi",
+  "Luyện tập",
+  "Áp dụng độc lập",
+] as const;
+
 export default function TeachingMethodPage() {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white">
@@ -372,37 +386,48 @@ export default function TeachingMethodPage() {
             hay ghi nhớ càng nhiều tips càng tốt. Thay vào đó, mỗi kỹ năng đều đi theo một quá
             trình:
           </p>
-          <p className="inline-block bg-leaf text-brand font-bold text-sm md:text-base px-6 py-3 rounded-full mb-6">
-            Hiểu → Làm có hướng dẫn → Phân tích lỗi → Luyện tập → Áp dụng độc lập
-          </p>
+          {/*
+            Năm bước của quá trình. Trước đây là một viên thuốc `rounded-full`
+            + `bg-leaf` + `font-bold` — trùng khít kiểu nút CTA của cả site, nên
+            ai cũng tưởng bấm được. Nó là NỘI DUNG, không phải hành động: đổi
+            thành danh sách có thứ tự, bo góc vuông hơn, chữ không in đậm hết.
+          */}
+          <ol className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 mb-6">
+            {PROCESS.map((label, i) => {
+              const last = i === PROCESS.length - 1;
+              return (
+                <li
+                  key={label}
+                  className={`rounded-2xl px-4 py-3.5 flex flex-col gap-1 ${last ? "bg-leaf" : "bg-sage"}`}
+                >
+                  <span
+                    className={`font-mono text-2xs font-bold tracking-[0.06em] ${last ? "text-brand-deep/55" : "text-brand/45"}`}
+                  >
+                    0{i + 1}
+                  </span>
+                  <span
+                    className={`text-sm font-semibold leading-snug ${last ? "text-brand-deep" : "text-brand"}`}
+                  >
+                    {label}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
           <p className="text-brand/75 text-base leading-relaxed">
             Mục tiêu cuối cùng là để học sinh hiểu mình đang làm gì, tại sao mình làm như vậy và
             phải điều chỉnh như thế nào khi gặp một bài mới.
           </p>
         </div>
 
-        {/* Menu nhảy nhanh 4 kỹ năng */}
-        <div className="flex flex-wrap gap-3 mb-16">
-          {SKILL_SECTIONS.map((s) => {
-            const Icon = s.icon;
-            return (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-black/10 hover:border-brand text-brand font-semibold text-sm rounded-full transition-colors"
-              >
-                <Icon size={16} className="text-brand" />
-                {s.name}
-              </a>
-            );
-          })}
-        </div>
+        {/* Menu nhảy nhanh 4 kỹ năng — client component vì có trạng thái đang đọc */}
+        <SkillJumpNav items={SKILL_SECTIONS.map((s) => ({ id: s.id, name: s.name }))} />
 
         {/* 4 kỹ năng */}
         {SKILL_SECTIONS.map((section) => {
           const Icon = section.icon;
           return (
-            <section key={section.id} id={section.id} className="mb-16 scroll-mt-28">
+            <section key={section.id} id={section.id} className="mb-16 scroll-mt-[190px]">
               <div className="flex items-center gap-3 mb-8">
                 <span className="h-12 w-12 rounded-full bg-leaf flex items-center justify-center shrink-0">
                   <Icon size={22} className="text-brand" />
