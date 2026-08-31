@@ -127,7 +127,7 @@ export default function Stats() {
     <section
       ref={containerRef}
       id="stats"
-      className="py-24 bg-white text-[#1A1A1A] relative overflow-hidden border-t border-b border-black/5"
+      className="py-24 bg-white text-ink relative overflow-hidden border-t border-b border-black/5"
     >
       {/* Decorative Grid Lines */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
@@ -137,16 +137,16 @@ export default function Stats() {
         {/* Editorial Subtitle & Title */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16 items-end">
           <div className="lg:col-span-6">
-            <span className="text-xs text-[#14532D] block mb-3 font-medium">
+            <span className="text-xs text-brand block mb-3 font-medium">
               Thực Chứng Đẳng Cấp
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A]">
+            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-ink">
               Điểm Số Thật, <br />
               Thành Quả Rực Rỡ
             </h2>
           </div>
           <div className="lg:col-span-6">
-            <p className="text-[#1A1A1A]/70 text-sm md:text-base leading-relaxed">
+            <p className="text-ink/70 text-sm md:text-base leading-relaxed">
               Không chỉ sở hữu bảng điểm cá nhân xuất sắc với điểm số tối đa ở kỹ năng Nghe, cô Ngọc
               Thương đã giúp hơn hàng nghìn học viên đạt mục tiêu IELTS mong muốn để đi du học, định
               cư hoặc thăng tiến sự nghiệp.
@@ -161,7 +161,7 @@ export default function Stats() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           {/* Featured Stat - Overall Band (dark card, larger presence) */}
           <div
-            className="stat-block lg:col-span-5 bg-[#14532D] text-white rounded-3xl p-8 md:p-10 flex flex-col justify-between text-left relative overflow-hidden"
+            className="stat-block lg:col-span-5 bg-brand text-white rounded-3xl p-8 md:p-10 flex flex-col justify-between text-left relative overflow-hidden"
             id="stat-overall"
           >
             <div className="absolute -right-8 -bottom-8 opacity-10">
@@ -169,7 +169,7 @@ export default function Stats() {
             </div>
             <div className="relative z-10">
               <div className="h-10 w-10 bg-white/15 rounded-lg flex items-center justify-center mb-8">
-                <Award className="text-[#9FE870]" size={20} />
+                <Award className="text-leaf" size={20} />
               </div>
               <p className="font-serif text-7xl md:text-8xl font-bold tracking-tight mb-3">
                 <span ref={overallRef}>0.0</span>
@@ -196,8 +196,8 @@ export default function Stats() {
                 <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#15803D]">
                   <span ref={listeningRef}>0.0</span>
                 </p>
-                <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Listening Score</h3>
-                <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
+                <h3 className="text-sm font-bold text-ink mb-2">Listening Score</h3>
+                <p className="text-ink/70 text-xs leading-relaxed">
                   Điểm số 9.0 tuyệt đối nhờ phương pháp chép chính tả và bóc tách sơ đồ hội thoại.
                 </p>
               </div>
@@ -209,15 +209,15 @@ export default function Stats() {
               id="stat-students"
             >
               <div>
-                <div className="h-9 w-9 bg-[#14532D]/10 border border-[#14532D]/20 rounded-lg flex items-center justify-center mb-5">
-                  <Users className="text-[#14532D]" size={18} />
+                <div className="h-9 w-9 bg-brand/10 border border-brand/20 rounded-lg flex items-center justify-center mb-5">
+                  <Users className="text-brand" size={18} />
                 </div>
-                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#1A1A1A]">
+                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-ink">
                   <span ref={studentsRef}>0</span>
-                  <span className="text-[#14532D]">+</span>
+                  <span className="text-brand">+</span>
                 </p>
-                <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Học Viên Đạt Đích</h3>
-                <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
+                <h3 className="text-sm font-bold text-ink mb-2">Học Viên Đạt Đích</h3>
+                <p className="text-ink/70 text-xs leading-relaxed">
                   Đồng hành cùng hàng nghìn học viên tại Việt Nam và hải ngoại chinh phục mục tiêu.
                 </p>
               </div>
@@ -232,12 +232,12 @@ export default function Stats() {
                 <div className="h-9 w-9 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-5">
                   <CheckCircle2 className="text-[#15803D]" size={18} />
                 </div>
-                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#1A1A1A]">
+                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-ink">
                   <span ref={passRef}>0</span>
                   <span className="text-[#15803D]">%</span>
                 </p>
-                <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Đạt Target Đầu Ra</h3>
-                <p className="text-[#1A1A1A]/70 text-xs leading-relaxed">
+                <h3 className="text-sm font-bold text-ink mb-2">Đạt Target Đầu Ra</h3>
+                <p className="text-ink/70 text-xs leading-relaxed">
                   Tỉ lệ đạt hoặc vượt điểm target cam kết nhờ phương pháp tập trung cốt lõi.
                 </p>
               </div>
@@ -247,7 +247,7 @@ export default function Stats() {
 
         {/* Small quote inside stats */}
         <div className="divider-line h-px bg-black/10 w-full mt-16 mb-8" />
-        <p className="text-2xs text-[#1A1A1A]/40 text-center font-medium">
+        <p className="text-2xs text-ink/40 text-center font-medium">
           * Điểm số được kiểm chứng thực tế và cập nhật định kỳ hàng năm.
         </p>
       </div>

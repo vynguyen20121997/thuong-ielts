@@ -43,17 +43,17 @@ export default async function LoginPage({
   };
 
   return (
-    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-[#FAF9F6] min-h-screen">
+    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <div className="max-w-md mx-auto px-6">
         <div className="bg-white border border-black/5 rounded-2xl shadow-sm p-7 md:p-9">
-          <span className="flex items-center gap-1.5 text-2xs font-medium text-[#14532D]">
+          <span className="flex items-center gap-1.5 text-2xs font-medium text-brand">
             <BookOpen size={14} />
             Kiểm tra kiến thức
           </span>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#1A1A1A] leading-tight mt-2">
+          <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight mt-2">
             Đăng nhập để làm bài
           </h1>
-          <p className="text-sm text-[#1A1A1A]/65 leading-relaxed mt-2 mb-7">
+          <p className="text-sm text-ink/65 leading-relaxed mt-2 mb-7">
             Có tài khoản thì điểm và lịch sử làm bài mới lưu lại được, để lần sau còn biết mình
             tiến tới đâu.
           </p>
@@ -69,14 +69,14 @@ export default async function LoginPage({
         <p className="text-center mt-6">
           <Link
             href="/kiem-tra-kien-thuc"
-            className="inline-flex items-center gap-1.5 text-2xs font-medium text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors"
+            className="inline-flex items-center gap-1.5 text-2xs font-medium text-ink/50 hover:text-brand transition-colors"
           >
             <ArrowLeft size={13} />
             Quay lại xem các đề
           </Link>
         </p>
 
-        <p className="text-2xs text-[#1A1A1A]/40 text-center mt-5 leading-relaxed">
+        <p className="text-2xs text-ink/40 text-center mt-5 leading-relaxed">
           Đăng nhập nghĩa là bạn đồng ý để HNT.IELTS lưu tên, ảnh đại diện và kết quả làm bài của
           mình.
         </p>

@@ -101,7 +101,7 @@ export default function LoginPanel({
               <button
                 type="button"
                 onClick={() => signIn("google", { redirectTo: next })}
-                className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-[#1A1A1A] hover:border-[#14532D]/40 hover:bg-[#14532D]/[0.03] cursor-pointer transition-colors"
+                className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-ink hover:border-brand/40 hover:bg-brand/[0.03] cursor-pointer transition-colors"
               >
                 <GoogleMark />
                 Tiếp tục với Google
@@ -111,7 +111,7 @@ export default function LoginPanel({
               <button
                 type="button"
                 onClick={() => signIn("facebook", { redirectTo: next })}
-                className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-[#1A1A1A] hover:border-[#14532D]/40 hover:bg-[#14532D]/[0.03] cursor-pointer transition-colors"
+                className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-ink hover:border-brand/40 hover:bg-brand/[0.03] cursor-pointer transition-colors"
               >
                 <FacebookMark />
                 Tiếp tục với Facebook
@@ -122,7 +122,7 @@ export default function LoginPanel({
           {providers.phone && (
             <div className="flex items-center gap-3">
               <span className="h-px flex-1 bg-black/10" />
-              <span className="text-2xs font-medium text-[#1A1A1A]/40">hoặc</span>
+              <span className="text-2xs font-medium text-ink/40">hoặc</span>
               <span className="h-px flex-1 bg-black/10" />
             </div>
           )}
@@ -131,13 +131,13 @@ export default function LoginPanel({
 
       {providers.phone && (step === "phone" ? (
         <div className="flex flex-col gap-3">
-          <label htmlFor="phone" className="text-2xs font-medium text-[#1A1A1A]/50">
+          <label htmlFor="phone" className="text-2xs font-medium text-ink/50">
             Số điện thoại — mã xác thực gửi qua Zalo
           </label>
           <div className="relative">
             <Phone
               size={15}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1A1A]/35 pointer-events-none"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/35 pointer-events-none"
             />
             <input
               id="phone"
@@ -148,7 +148,7 @@ export default function LoginPanel({
               onChange={(e) => setPhone(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && requestCode()}
               placeholder="0912 345 678"
-              className="w-full rounded-full border border-black/10 bg-white pl-11 pr-4 py-3.5 text-sm text-[#1A1A1A] placeholder:text-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D]/50 transition-colors"
+              className="w-full rounded-full border border-black/10 bg-white pl-11 pr-4 py-3.5 text-sm text-ink placeholder:text-ink/30 focus:outline-none focus:border-brand/50 transition-colors"
             />
           </div>
 
@@ -156,7 +156,7 @@ export default function LoginPanel({
             type="button"
             onClick={requestCode}
             disabled={busy}
-            className="flex items-center justify-center gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
+            className="flex items-center justify-center gap-2 w-full rounded-full bg-brand hover:bg-brand-deep disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
           >
             {busy ? (
               <>
@@ -173,7 +173,7 @@ export default function LoginPanel({
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          <label htmlFor="code" className="text-2xs font-medium text-[#1A1A1A]/50">
+          <label htmlFor="code" className="text-2xs font-medium text-ink/50">
             Nhập {OTP_LENGTH} số vừa nhận
           </label>
           <input
@@ -186,14 +186,14 @@ export default function LoginPanel({
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             onKeyDown={(e) => e.key === "Enter" && submitCode()}
             placeholder="000000"
-            className="w-full rounded-full border border-black/10 bg-white px-5 py-3.5 font-mono text-lg tracking-[0.4em] text-center text-[#1A1A1A] placeholder:text-[#1A1A1A]/25 focus:outline-none focus:border-[#14532D]/50 transition-colors"
+            className="w-full rounded-full border border-black/10 bg-white px-5 py-3.5 font-mono text-lg tracking-[0.4em] text-center text-ink placeholder:text-ink/25 focus:outline-none focus:border-brand/50 transition-colors"
           />
 
           <button
             type="button"
             onClick={submitCode}
             disabled={busy}
-            className="flex items-center justify-center gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
+            className="flex items-center justify-center gap-2 w-full rounded-full bg-brand hover:bg-brand-deep disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
           >
             {busy ? (
               <Loader2 size={16} className="animate-spin motion-reduce:animate-none" />
@@ -212,7 +212,7 @@ export default function LoginPanel({
                 setError(null);
                 setNotice(null);
               }}
-              className="text-2xs font-medium text-[#1A1A1A]/50 hover:text-[#14532D] cursor-pointer"
+              className="text-2xs font-medium text-ink/50 hover:text-brand cursor-pointer"
             >
               Đổi số khác
             </button>
@@ -220,7 +220,7 @@ export default function LoginPanel({
               type="button"
               onClick={requestCode}
               disabled={busy}
-              className="text-2xs font-medium text-[#14532D] hover:underline cursor-pointer"
+              className="text-2xs font-medium text-brand hover:underline cursor-pointer"
             >
               Gửi lại mã
             </button>
@@ -228,7 +228,7 @@ export default function LoginPanel({
         </div>
       ))}
 
-      {providers.phone && notice && <p className="text-2xs text-[#1A1A1A]/55 leading-relaxed">{notice}</p>}
+      {providers.phone && notice && <p className="text-2xs text-ink/55 leading-relaxed">{notice}</p>}
 
       {error && (
         <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700">

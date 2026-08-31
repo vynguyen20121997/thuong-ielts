@@ -75,12 +75,12 @@ export function GapInput({
           <span
             className={`font-bold text-sm ${
               state === "correct"
-                ? "text-[#14532D]"
+                ? "text-brand"
                 : state === "wrong"
                   ? "text-red-600"
                   : field.active
                     ? "text-[#D97706]"
-                    : "text-[#1A1A1A]/70"
+                    : "text-ink/70"
             }`}
           >
             {field.number}
@@ -97,17 +97,17 @@ export function GapInput({
             title={`Tối đa ${field.maxWords} từ`}
             className={`w-28 bg-transparent px-1 text-base text-center border-0 border-b-2 rounded-none focus:outline-none disabled:cursor-default ${
               state === "correct"
-                ? "border-[#14532D] text-[#14532D] font-medium"
+                ? "border-brand text-brand font-medium"
                 : state === "wrong"
                   ? "border-red-400 text-red-700 font-medium"
                   : field.active
                     ? "border-[#D97706] border-solid"
-                    : "border-dotted border-[#1A1A1A]/45 focus:border-solid focus:border-[#14532D]"
+                    : "border-dotted border-ink/45 focus:border-solid focus:border-brand"
             }`}
           />
         </span>
         {review && !review.isCorrect && (
-          <span className="text-2xs text-[#14532D] mt-0.5 font-medium text-center">
+          <span className="text-2xs text-brand mt-0.5 font-medium text-center">
             {review.expected}
           </span>
         )}
@@ -121,12 +121,12 @@ export function GapInput({
         <span
           className={`inline-flex items-center px-2 font-mono text-2xs font-bold border border-r-0 rounded-l ${
             state === "correct"
-              ? "bg-[#9FE870] text-[#14532D] border-[#14532D]/30"
+              ? "bg-leaf text-brand border-brand/30"
               : state === "wrong"
                 ? "bg-red-100 text-red-700 border-red-300"
                 : field.active
                   ? "bg-[#FEF3C7] text-[#92400E] border-[#D97706]"
-                  : "bg-[#F3F2EE] text-[#1A1A1A]/60 border-black/25"
+                  : "bg-[#F3F2EE] text-ink/60 border-black/25"
           }`}
         >
           {field.number}
@@ -143,19 +143,19 @@ export function GapInput({
           title={`Tối đa ${field.maxWords} từ`}
           // No `bg-white` in the base: it and the active tint are the same kind
           // of utility, so whichever Tailwind happens to emit last would win.
-          className={`w-40 border rounded-r px-2 py-1 text-base leading-normal scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-[#14532D]/25 disabled:bg-[#FAF9F6] disabled:cursor-default ${
+          className={`w-40 border rounded-r px-2 py-1 text-base leading-normal scroll-mt-32 focus:outline-none focus:ring-2 focus:ring-brand/25 disabled:bg-cream disabled:cursor-default ${
             state === "correct"
-              ? "bg-white border-[#14532D]/30"
+              ? "bg-white border-brand/30"
               : state === "wrong"
                 ? "bg-white border-red-300 text-red-700"
                 : field.active
                   ? "bg-[#FFFBEB] border-[#D97706]"
-                  : "bg-white border-black/25 focus:border-[#14532D]"
+                  : "bg-white border-black/25 focus:border-brand"
           }`}
         />
       </span>
       {review && !review.isCorrect && (
-        <span className="text-2xs text-[#14532D] mt-1 font-medium">
+        <span className="text-2xs text-brand mt-1 font-medium">
           Đáp án: {review.expected}
         </span>
       )}
@@ -210,7 +210,7 @@ export default function GapText({
   parts.push(<Fragment key={key++}>{text.slice(cursor)}</Fragment>);
 
   return (
-    <p className={`text-base text-[#1A1A1A] ${variant === "line" ? "leading-[2.1]" : "leading-[2.4]"}`}>
+    <p className={`text-base text-ink ${variant === "line" ? "leading-[2.1]" : "leading-[2.4]"}`}>
       {parts}
     </p>
   );

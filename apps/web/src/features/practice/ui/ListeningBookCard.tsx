@@ -21,8 +21,8 @@ import {
  */
 
 const COVER_TONES = [
-  "from-[#14532D] to-[#052E16]",
-  "from-[#1A3A2A] to-[#14532D]",
+  "from-brand to-brand-deep",
+  "from-[#1A3A2A] to-brand",
   "from-[#245C3A] to-[#0B3D22]",
 ];
 
@@ -39,7 +39,7 @@ export default function ListeningBookCard({
   const minutes = Math.round(group.durationSeconds / 60);
 
   return (
-    <div className="group flex flex-col bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300">
+    <div className="group flex flex-col bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-brand/30 transition-all duration-300">
       {/* Bìa */}
       <div
         className={`relative h-40 bg-gradient-to-br ${
@@ -51,7 +51,7 @@ export default function ListeningBookCard({
         </span>
 
         <div className="relative z-10 h-full p-5 flex flex-col justify-between">
-          <span className="text-2xs font-medium text-[#9FE870]">{group.collection}</span>
+          <span className="text-2xs font-medium text-leaf">{group.collection}</span>
           <span className="inline-flex items-center gap-1.5 self-start bg-white/10 backdrop-blur-sm text-white text-2xs font-medium px-2.5 py-1 rounded-full">
             <Headphones size={11} />
             {group.tests.length} test
@@ -61,11 +61,11 @@ export default function ListeningBookCard({
 
       {/* Thân */}
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-serif text-lg font-bold tracking-tight text-[#1A1A1A] leading-snug group-hover:text-[#14532D] transition-colors">
+        <h3 className="font-serif text-lg font-bold tracking-tight text-ink leading-snug group-hover:text-brand transition-colors">
           {group.label}
         </h3>
 
-        <div className="mt-3 flex items-center gap-3 text-[#1A1A1A]/50">
+        <div className="mt-3 flex items-center gap-3 text-ink/50">
           <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap">
             <ListChecks size={13} />
             {group.questionCount} câu
@@ -96,7 +96,7 @@ export default function ListeningBookCard({
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls={panelId}
-          className="mt-4 flex items-center justify-between gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] px-4 py-3.5 text-2xs font-semibold text-white cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#14532D]/40"
+          className="mt-4 flex items-center justify-between gap-2 w-full rounded-full bg-brand hover:bg-brand-deep px-4 py-3.5 text-2xs font-semibold text-white cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
         >
           {open ? "Thu gọn" : `Chọn 1 trong ${group.tests.length} test`}
           <ChevronDown
@@ -110,13 +110,13 @@ export default function ListeningBookCard({
             <li key={test.id}>
               <Link
                 href={`/kiem-tra-kien-thuc/listening/${test.slug}`}
-                className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FAFAF8] px-3 py-2.5 hover:border-[#14532D]/30 hover:bg-white transition-colors"
+                className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FAFAF8] px-3 py-2.5 hover:border-brand/30 hover:bg-white transition-colors"
               >
-                <span className="font-mono text-2xs font-bold text-[#14532D]/40 tabular-nums">
+                <span className="font-mono text-2xs font-bold text-brand/40 tabular-nums">
                   {order + 1}
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block text-xs font-semibold text-[#1A1A1A] truncate">
+                  <span className="block text-xs font-semibold text-ink truncate">
                     {testLabelFromTitle(test.title)}
                   </span>
                   {!isFullTest(test) && (
@@ -125,7 +125,7 @@ export default function ListeningBookCard({
                     </span>
                   )}
                 </span>
-                <span className="text-2xs font-medium text-[#1A1A1A]/50 whitespace-nowrap tabular-nums">
+                <span className="text-2xs font-medium text-ink/50 whitespace-nowrap tabular-nums">
                   {test.questionCount} câu · {Math.round(test.durationSeconds / 60)}′
                 </span>
               </Link>

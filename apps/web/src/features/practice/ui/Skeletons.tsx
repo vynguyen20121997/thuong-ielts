@@ -48,7 +48,7 @@ function CatalogHeader() {
 /** Grid of test cards, matching ReadingTestGroupCard / ListeningBookCard. */
 export function CatalogSkeleton({ cards = 9 }: { cards?: number }) {
   return (
-    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-[#FAF9F6] min-h-screen">
+    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <CatalogHeader />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -83,7 +83,7 @@ export function CatalogSkeleton({ cards = 9 }: { cards?: number }) {
  */
 export function ListeningTestSkeleton() {
   return (
-    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-[#FAF9F6] min-h-screen">
+    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-black/5 p-8 md:p-12">
           <Bar className="h-8 w-72 mx-auto mb-8" />
@@ -107,7 +107,7 @@ export function ListeningTestSkeleton() {
 /** The reading paper: passage on one side, questions on the other. */
 export function ReadingTestSkeleton() {
   return (
-    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-[#FAF9F6] min-h-screen">
+    <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="bg-white border border-black/5 rounded-2xl p-4 mb-6 flex items-center gap-4">
           <Bar className="h-9 w-9 rounded-full" />

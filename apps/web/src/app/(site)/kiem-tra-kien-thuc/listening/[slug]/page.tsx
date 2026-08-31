@@ -48,7 +48,7 @@ export default async function ListeningTestPage({
   if (!test) notFound();
 
   return (
-    <main className="relative z-10 pt-20 pb-16 bg-[#FAF9F6] min-h-screen">
+    <main className="relative z-10 pt-20 pb-16 bg-white min-h-screen">
       <ListeningPlayer test={test} />
     </main>
   );

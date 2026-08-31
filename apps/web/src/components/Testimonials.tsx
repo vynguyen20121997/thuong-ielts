@@ -194,10 +194,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     return (
       <div
         key={test.id}
-        className={`testimonial-card bg-white border border-black/5 hover:border-[#14532D]/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left ${isPreview ? "snap-start shrink-0 w-[300px] sm:w-[340px]" : ""}`}
+        className={`testimonial-card bg-white border border-black/5 hover:border-brand/35 p-6 lg:p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:shadow-xl relative group text-left ${isPreview ? "snap-start shrink-0 w-[300px] sm:w-[340px]" : ""}`}
         id={test.id}
       >
-        <div className="absolute top-6 right-6 text-black/5 group-hover:text-[#14532D]/10 transition-colors pointer-events-none">
+        <div className="absolute top-6 right-6 text-black/5 group-hover:text-brand/10 transition-colors pointer-events-none">
           <Quote size={40} />
         </div>
 
@@ -230,13 +230,13 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                   <>
                     <button
                       onClick={(e) => changeCardImage(e, test.id, -1, images.length)}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-ink rounded-full shadow-sm transition-colors cursor-pointer"
                     >
                       <ChevronLeft size={16} />
                     </button>
                     <button
                       onClick={(e) => changeCardImage(e, test.id, 1, images.length)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-[#1A1A1A] rounded-full shadow-sm transition-colors cursor-pointer"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-ink rounded-full shadow-sm transition-colors cursor-pointer"
                     >
                       <ChevronRight size={16} />
                     </button>
@@ -257,15 +257,15 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
         <div>
           <div className="flex items-start justify-between gap-3 mb-5">
             <div>
-              <h4 className="font-serif font-bold text-sm text-[#1A1A1A] leading-tight">
+              <h4 className="font-serif font-bold text-sm text-ink leading-tight">
                 {test.studentName}
               </h4>
-              <p className="text-2xs text-[#1A1A1A]/50 mt-0.5 font-extrabold leading-none">
+              <p className="text-2xs text-ink/50 mt-0.5 font-extrabold leading-none">
                 {test.schoolOrJob}
               </p>
             </div>
 
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-[#14532D]/10 border border-[#14532D]/20 text-[#14532D] text-2xs rounded-full font-medium shadow-sm shrink-0">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-brand/10 border border-brand/20 text-brand text-2xs rounded-full font-medium shadow-sm shrink-0">
               <Award size={10} />
               {test.score}
             </span>
@@ -282,7 +282,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           {test.comment && (
             <div className="relative mb-5">
               <p
-                className={`text-xs md:text-sm text-[#1A1A1A]/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}
+                className={`text-xs md:text-sm text-ink/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}
               >
                 "{test.comment}"
               </p>
@@ -292,7 +292,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
               {isLongComment && (
                 <button
                   onClick={() => toggleExpand(test.id)}
-                  className="mt-2 text-2xs font-medium text-[#14532D] hover:text-[#052E16] inline-flex items-center gap-1 cursor-pointer"
+                  className="mt-2 text-2xs font-medium text-brand hover:text-brand-deep inline-flex items-center gap-1 cursor-pointer"
                 >
                   {isExpanded ? (
                     <>
@@ -315,7 +315,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   return (
     <section
       id="testimonials"
-      className={`${isPreview ? "py-16 md:py-20 bg-[#F3F4EF]" : "pb-24 bg-white"} text-[#1A1A1A] relative overflow-hidden border-t border-b border-black/5`}
+      className={`${isPreview ? "py-16 md:py-20 bg-mist" : "pb-24 bg-white"} text-ink relative overflow-hidden border-t border-b border-black/5`}
     >
       {/* Decorative Grid Lines — chỉ trang đầy đủ; preview nền phẳng theo Figma */}
       {!isPreview && (
@@ -341,17 +341,17 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
         {isPreview && (
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
             <div className="text-left flex flex-col gap-4">
-              <span className="text-sm font-semibold uppercase tracking-[0.1em] text-[#00230E]">
+              <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
                 Góc Vinh Danh Học Viên
               </span>
-              <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-[#00210D] leading-[1.2]">
+              <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
                 120+ Học Viên Thành Công <br />
                 Chinh Phục Mục Tiêu IELTS
               </h2>
             </div>
             <Link
               href="/ket-qua-hoc-vien"
-              className="shrink-0 inline-flex items-center px-8 py-3.5 border-2 border-[#00230E] text-[#00230E] hover:bg-[#00230E] hover:text-white text-sm font-semibold rounded-full transition-colors duration-300"
+              className="shrink-0 inline-flex items-center px-8 py-3.5 border-2 border-brand text-brand hover:bg-brand hover:text-white text-sm font-semibold rounded-full transition-colors duration-300"
             >
               Xem tất cả thành tích học viên
             </Link>
@@ -366,7 +366,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 setActiveYear("all");
                 setVisibleCount(BATCH);
               }}
-              className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${activeYear === "all" ? "bg-[#14532D] text-white border-[#14532D] shadow-sm" : "bg-white border-black/10 text-[#1A1A1A]/70 hover:bg-black/5"}`}
+              className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${activeYear === "all" ? "bg-brand text-white border-brand shadow-sm" : "bg-white border-black/10 text-ink/70 hover:bg-black/5"}`}
             >
               Tất cả
             </button>
@@ -377,7 +377,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                   setActiveYear(y);
                   setVisibleCount(BATCH);
                 }}
-                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${activeYear === y ? "bg-[#14532D] text-white border-[#14532D] shadow-sm" : "bg-white border-black/10 text-[#1A1A1A]/70 hover:bg-black/5"}`}
+                className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer border ${activeYear === y ? "bg-brand text-white border-brand shadow-sm" : "bg-white border-black/10 text-ink/70 hover:bg-black/5"}`}
               >
                 {y}
               </button>
@@ -387,12 +387,12 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
 
         {/* Cards: carousel on homepage preview, grid on full page */}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2 py-16 text-xs text-[#1A1A1A]/40 font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+          <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/40 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
             Đang tải dữ liệu...
           </div>
         ) : testimonials.length === 0 ? (
-          <div className="text-center py-16 text-sm text-[#1A1A1A]/50">
+          <div className="text-center py-16 text-sm text-ink/50">
             Chưa có dữ liệu học viên.
           </div>
         ) : isPreview ? (
@@ -439,9 +439,9 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             {hasMore && (
               <div
                 ref={loadMoreRef}
-                className="mt-12 flex items-center justify-center gap-2 text-xs text-[#1A1A1A]/40 font-medium"
+                className="mt-12 flex items-center justify-center gap-2 text-xs text-ink/40 font-medium"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
                 Đang tải thêm...
               </div>
             )}

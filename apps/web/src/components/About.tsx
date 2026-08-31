@@ -56,7 +56,7 @@ export default function About() {
     >
       {/* Decorative background visual elements */}
       <div className="absolute top-1/4 right-0 w-96 h-96 rounded-full bg-[#15803D]/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#14532D]/3 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-brand/3 blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
         {/* Left Side: Parallax Image Column */}
@@ -76,10 +76,10 @@ export default function About() {
 
             {/* Float Label */}
             <div className="absolute bottom-8 left-8 right-8 z-20 bg-white/95 border border-black/5 p-5 rounded-2xl shadow-xl">
-              <span className="text-2xs text-[#14532D] block mb-1 font-medium">
+              <span className="text-2xs text-brand block mb-1 font-medium">
                 Triết lý hàng đầu
               </span>
-              <p className="font-sans italic text-sm text-[#1A1A1A]/90 leading-relaxed">
+              <p className="font-sans italic text-sm text-ink/90 leading-relaxed">
                 "Đừng áp lực điểm số quá. Chỉ cần đạt đúng target của mình, rồi tiếp tục thực hiện
                 những dự định lớn hơn."
               </p>
@@ -90,21 +90,21 @@ export default function About() {
         {/* Right Side: Informative & Philosophy Content */}
         <div className="lg:col-span-7 order-1 lg:order-2 text-left">
           <div className="reveal-element">
-            <span className="text-xs text-[#14532D] block mb-3 font-medium">
+            <span className="text-xs text-brand block mb-3 font-medium">
               Giảng Viên & Người Truyền Cảm Hứng
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-[#1A1A1A] mb-4 leading-[1.15]">
+            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-ink mb-4 leading-[1.15]">
               Học IELTS Bằng Tư Duy <br />
               Thay Vì Ghi Nhớ Máy Móc
             </h2>
             <div className="flex flex-wrap gap-2 mb-8">
-              <span className="text-2xs bg-[#14532D]/10 text-[#14532D] px-3 py-1.5 rounded-full font-medium">
+              <span className="text-2xs bg-brand/10 text-brand px-3 py-1.5 rounded-full font-medium">
                 8.5 IELTS Overall
               </span>
-              <span className="text-2xs bg-[#14532D]/10 text-[#14532D] px-3 py-1.5 rounded-full font-medium">
+              <span className="text-2xs bg-brand/10 text-brand px-3 py-1.5 rounded-full font-medium">
                 CELTA Certified
               </span>
-              <span className="text-2xs bg-[#14532D]/10 text-[#14532D] px-3 py-1.5 rounded-full font-medium">
+              <span className="text-2xs bg-brand/10 text-brand px-3 py-1.5 rounded-full font-medium">
                 4+ Năm Kinh Nghiệm
               </span>
             </div>
@@ -113,27 +113,27 @@ export default function About() {
           {/* Education & Certification Block */}
           <div className="reveal-element grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <div className="flex gap-4 p-6 bg-white border border-black/5 rounded-2xl shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#14532D]/10 flex items-center justify-center shrink-0">
-                <GraduationCap className="text-[#14532D]" size={24} />
+              <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
+                <GraduationCap className="text-brand" size={24} />
               </div>
               <div>
-                <h3 className="font-serif font-bold text-base text-[#1A1A1A] mb-1">
+                <h3 className="font-serif font-bold text-base text-ink mb-1">
                   Cử Nhân Kinh Tế Đối Ngoại
                 </h3>
-                <p className="text-sm text-[#1A1A1A]/70 leading-relaxed">
+                <p className="text-sm text-ink/70 leading-relaxed">
                   Tốt nghiệp Đại học Ngoại Thương (FTU).
                 </p>
               </div>
             </div>
             <div className="flex gap-4 p-6 bg-white border border-black/5 rounded-2xl shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#14532D]/10 flex items-center justify-center shrink-0">
-                <Bookmark className="text-[#14532D]" size={24} />
+              <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
+                <Bookmark className="text-brand" size={24} />
               </div>
               <div>
-                <h3 className="font-serif font-bold text-base text-[#1A1A1A] mb-1">
+                <h3 className="font-serif font-bold text-base text-ink mb-1">
                   Chứng Chỉ Giảng Dạy CELTA
                 </h3>
-                <p className="text-sm text-[#1A1A1A]/70 leading-relaxed">
+                <p className="text-sm text-ink/70 leading-relaxed">
                   Chứng chỉ sư phạm quốc tế do Đại học Cambridge cấp.
                 </p>
               </div>
@@ -141,7 +141,7 @@ export default function About() {
           </div>
 
           {/* Narrative description */}
-          <div className="reveal-element mb-10 text-[#1A1A1A]/85 space-y-4">
+          <div className="reveal-element mb-10 text-ink/85 space-y-4">
             <p className="text-base md:text-lg leading-relaxed">
               Xin chào, tôi là <strong>Hồ Ngọc Thương</strong>. Sau khi tốt nghiệp, tôi từng đi làm
               văn phòng nhưng không tìm thấy cảm hứng trong công việc, nên quyết định học IELTS vì
@@ -160,16 +160,16 @@ export default function About() {
           {/* The Core Principles - featured flagship + supporting trio */}
           <div className="reveal-element">
             {/* Featured Principle: the "Logic" methodology, full width */}
-            <div className="flex gap-4 items-start p-5 bg-[#14532D]/5 border border-[#14532D]/15 rounded-2xl mb-5">
-              <div className="h-11 w-11 rounded-xl bg-[#14532D] flex items-center justify-center shrink-0">
+            <div className="flex gap-4 items-start p-5 bg-brand/5 border border-brand/15 rounded-2xl mb-5">
+              <div className="h-11 w-11 rounded-xl bg-brand flex items-center justify-center shrink-0">
                 <Brain className="text-white" size={20} />
               </div>
               <div>
-                <span className="text-2xs text-[#14532D]/70 font-medium block mb-1">
+                <span className="text-2xs text-brand/70 font-medium block mb-1">
                   Phương pháp cốt lõi
                 </span>
-                <h4 className="font-bold text-base text-[#1A1A1A] mb-1">Sơ Đồ Tư Duy Logic</h4>
-                <p className="text-sm text-[#1A1A1A]/70 leading-relaxed">
+                <h4 className="font-bold text-base text-ink mb-1">Sơ Đồ Tư Duy Logic</h4>
+                <p className="text-sm text-ink/70 leading-relaxed">
                   Bản đồ hóa từ vựng đồng nghĩa, tối giản hóa cấu trúc câu giúp hiểu nhanh 100% văn
                   bản học thuật.
                 </p>
@@ -183,32 +183,32 @@ export default function About() {
                   <Compass className="text-[#15803D]" size={16} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">Nghe Chủ Động</h4>
-                  <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
+                  <h4 className="font-bold text-sm text-ink mb-1">Nghe Chủ Động</h4>
+                  <p className="text-xs text-ink/70 leading-relaxed">
                     Phát hiện bẫy thông tin, paraphrase trong hội thoại thực tế của Listening.
                   </p>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
-                  <Bookmark className="text-[#14532D]" size={16} />
+                <div className="h-8 w-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0 border border-brand/20">
+                  <Bookmark className="text-brand" size={16} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">Nói & Viết Sắc Bén</h4>
-                  <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
+                  <h4 className="font-bold text-sm text-ink mb-1">Nói & Viết Sắc Bén</h4>
+                  <p className="text-xs text-ink/70 leading-relaxed">
                     Lập luận mạch lạc, thuyết phục tối đa các giám khảo khó tính nhất.
                   </p>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-lg bg-[#14532D]/10 flex items-center justify-center shrink-0 border border-[#14532D]/20">
-                  <GraduationCap className="text-[#14532D]" size={16} />
+                <div className="h-8 w-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0 border border-brand/20">
+                  <GraduationCap className="text-brand" size={16} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-[#1A1A1A] mb-1">Chăm Sóc 1-Kèm-1</h4>
-                  <p className="text-xs text-[#1A1A1A]/70 leading-relaxed">
+                  <h4 className="font-bold text-sm text-ink mb-1">Chăm Sóc 1-Kèm-1</h4>
+                  <p className="text-xs text-ink/70 leading-relaxed">
                     Sửa chi tiết bài viết, ghi âm nói hàng tuần để tối ưu tiến bộ.
                   </p>
                 </div>

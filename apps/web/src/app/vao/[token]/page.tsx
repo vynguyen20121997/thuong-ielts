@@ -54,7 +54,7 @@ export default async function TrangVaoBangLink({
         <Khung tieuDe="Em đã làm bài này rồi">
           <p className="text-lg">
             Kết quả: <b className="tabular-nums">{cu.correct}</b>
-            <span className="text-[#1A1A1A]/45">/{cu.total} câu</span>
+            <span className="text-ink/45">/{cu.total} câu</span>
             {cu.band !== null && (
               <>
                 {" "}
@@ -62,13 +62,13 @@ export default async function TrangVaoBangLink({
               </>
             )}
           </p>
-          <p className="text-sm text-[#1A1A1A]/55">
+          <p className="text-sm text-ink/55">
             Buổi này thầy cô đặt mỗi bạn làm một lần. Muốn luyện thêm thì vào mục Kiểm tra kiến
             thức chọn đề khác.
           </p>
           <Link
             href="/kiem-tra-kien-thuc"
-            className="inline-block rounded-full bg-[#14532D] hover:bg-[#052E16] px-5 py-2.5 text-sm font-bold text-white transition-colors"
+            className="inline-block rounded-full bg-brand hover:bg-brand-deep px-5 py-2.5 text-sm font-bold text-white transition-colors"
           >
             Luyện đề khác
           </Link>
@@ -84,7 +84,7 @@ export default async function TrangVaoBangLink({
         <p>Thầy cô đã đóng link. Nếu em vào muộn, nhắn thầy cô mở lại giúp nhé.</p>
         <Link
           href="/kiem-tra-kien-thuc"
-          className="inline-block rounded-full bg-[#14532D] hover:bg-[#052E16] px-5 py-2.5 text-sm font-bold text-white transition-colors"
+          className="inline-block rounded-full bg-brand hover:bg-brand-deep px-5 py-2.5 text-sm font-bold text-white transition-colors"
         >
           Tự luyện đề khác
         </Link>
@@ -102,7 +102,7 @@ export default async function TrangVaoBangLink({
 
   return (
     <Khung tieuDe={bai.label || bai.title}>
-      <p className="text-sm text-[#1A1A1A]/60">
+      <p className="text-sm text-ink/60">
         {bai.title} · {bai.skill === "listening" ? "Nghe" : "Đọc"}
       </p>
       <VaoBangTen token={token} choKhach={bai.allowGuest} duongDenBai={duongDenBai} />
@@ -114,7 +114,7 @@ function Khung({ tieuDe, children }: { tieuDe: string; children: React.ReactNode
   return (
     <main className="mx-auto max-w-lg px-5 py-20">
       <div className="rounded-3xl border border-black/10 bg-white p-8 flex flex-col gap-4">
-        <h1 className="font-serif text-2xl font-black text-[#1A1A1A]">{tieuDe}</h1>
+        <h1 className="font-serif text-2xl font-black text-ink">{tieuDe}</h1>
         {children}
       </div>
     </main>

@@ -106,47 +106,47 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
           target?.scrollIntoView({ behavior: "smooth", block: "center" });
           field?.focus({ preventScroll: true });
         }}
-        className="sr-only focus:not-sr-only focus:fixed focus:top-24 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-full focus:bg-[#14532D] focus:px-5 focus:py-3 focus:text-xs focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-24 focus:left-1/2 focus:-translate-x-1/2 focus:z-50 focus:rounded-full focus:bg-brand focus:px-5 focus:py-3 focus:text-xs focus:font-semibold focus:text-white"
       >
         Tới câu hỏi đầu tiên
       </button>
 
       {/* Sticky exam bar */}
-      <div className="sticky top-16 md:top-20 z-30 -mx-4 md:-mx-8 lg:-mx-12 px-4 md:px-8 lg:px-12 py-3 bg-[#FAF9F6]/90 backdrop-blur-md border-b border-black/5">
+      <div className="sticky top-16 md:top-20 z-30 -mx-4 md:-mx-8 lg:-mx-12 px-4 md:px-8 lg:px-12 py-3 bg-cream/90 backdrop-blur-md border-b border-black/5">
         <div className="flex items-center gap-3 md:gap-5">
           <Link
             href="/kiem-tra-kien-thuc/reading"
-            className="shrink-0 h-9 w-9 rounded-full border border-black/10 bg-white flex items-center justify-center text-[#1A1A1A]/60 hover:text-[#14532D] hover:border-[#14532D]/40 transition-colors"
+            className="shrink-0 h-9 w-9 rounded-full border border-black/10 bg-white flex items-center justify-center text-ink/60 hover:text-brand hover:border-brand/40 transition-colors"
             aria-label="Quay lại danh sách đề"
           >
             <ArrowLeft size={16} />
           </Link>
 
           <div className="min-w-0 hidden sm:block">
-            <span className="text-2xs text-[#14532D] font-medium block">
+            <span className="text-2xs text-brand font-medium block">
               {paper.collection} · {LEVEL_LABELS[paper.level]}
               {multi && ` · ${paper.sections.length} passage`}
             </span>
-            <h1 className="font-serif text-sm md:text-base font-bold text-[#1A1A1A] truncate">
+            <h1 className="font-serif text-sm md:text-base font-bold text-ink truncate">
               {paper.title}
             </h1>
           </div>
 
           <div className="ml-auto flex items-center gap-3 md:gap-4">
             <div className="hidden md:flex flex-col items-end">
-              <span className="text-2xs text-[#1A1A1A]/45 font-medium">
+              <span className="text-2xs text-ink/45 font-medium">
                 Đã làm {session.answeredCount}/{session.totalQuestions}
               </span>
               <div className="h-1 w-28 bg-black/[0.08] rounded-full overflow-hidden mt-1.5">
                 <div
-                  className="h-full bg-[#14532D] rounded-full transition-all duration-300"
+                  className="h-full bg-brand rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
             </div>
 
             <span
-              className={`flex items-center gap-1.5 font-mono text-sm font-bold px-3 py-1.5 rounded-full tabular-nums ${isReview ? "bg-black/[0.05] text-[#1A1A1A]/50" : lowTime ? "bg-red-50 text-red-600 border border-red-200" : "bg-white border border-black/10 text-[#14532D]"}`}
+              className={`flex items-center gap-1.5 font-mono text-sm font-bold px-3 py-1.5 rounded-full tabular-nums ${isReview ? "bg-black/[0.05] text-ink/50" : lowTime ? "bg-red-50 text-red-600 border border-red-200" : "bg-white border border-black/10 text-brand"}`}
             >
               <Timer size={14} />
               {formatClock(session.remainingSeconds)}
@@ -157,7 +157,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
                 type="button"
                 onClick={confirmSubmit}
                 disabled={session.status === "submitting"}
-                className="px-4 md:px-6 py-2.5 bg-[#14532D] hover:bg-[#052E16] disabled:opacity-60 disabled:cursor-wait text-white font-bold text-2xs rounded-full transition-colors cursor-pointer tracking-wider uppercase whitespace-nowrap"
+                className="px-4 md:px-6 py-2.5 bg-brand hover:bg-brand-deep disabled:opacity-60 disabled:cursor-wait text-white font-bold text-2xs rounded-full transition-colors cursor-pointer tracking-wider uppercase whitespace-nowrap"
               >
                 {session.status === "submitting" ? "Đang chấm..." : "Nộp bài"}
               </button>
@@ -181,7 +181,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
                   type="button"
                   onClick={() => session.setSectionIndex(index)}
                   aria-current={active ? "true" : undefined}
-                  className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-full border text-2xs font-medium transition-colors cursor-pointer ${active ? "bg-[#14532D] text-white border-[#14532D]" : "bg-white text-[#1A1A1A]/55 border-black/10 hover:border-[#14532D]/40 hover:text-[#14532D]"}`}
+                  className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-full border text-2xs font-medium transition-colors cursor-pointer ${active ? "bg-brand text-white border-brand" : "bg-white text-ink/55 border-black/10 hover:border-brand/40 hover:text-brand"}`}
                 >
                   Passage {index + 1}
                   <span
@@ -189,8 +189,8 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
                       active
                         ? "text-white/70"
                         : done === item.questions.length
-                          ? "text-[#14532D]"
-                          : "text-[#1A1A1A]/35"
+                          ? "text-brand"
+                          : "text-ink/35"
                     }`}
                   >
                     {done}/{item.questions.length}
@@ -208,7 +208,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
               key={pane}
               type="button"
               onClick={() => setMobilePane(pane)}
-              className={`flex-1 py-2 rounded-full text-2xs font-medium border transition-colors ${mobilePane === pane ? "bg-[#14532D] text-white border-[#14532D]" : "bg-white text-[#1A1A1A]/55 border-black/10"}`}
+              className={`flex-1 py-2 rounded-full text-2xs font-medium border transition-colors ${mobilePane === pane ? "bg-brand text-white border-brand" : "bg-white text-ink/55 border-black/10"}`}
             >
               {pane === "passage" ? "Bài đọc" : `Câu hỏi (${section.questions.length})`}
             </button>
@@ -231,19 +231,16 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
       <div className="grid md:grid-cols-2 gap-6 lg:gap-10 py-8" onMouseUp={marks.captureSelection}>
         {/* Passage */}
         <div className={`${mobilePane === "passage" ? "block" : "hidden"} md:block`}>
-          <div
-            data-lenis-prevent
-            className="md:sticky md:top-40 bg-white border border-black/5 rounded-2xl p-6 md:p-8 shadow-sm md:max-h-[calc(100vh-12rem)] md:overflow-y-auto"
-          >
-            <span className="text-2xs text-[#14532D] font-medium flex items-center gap-1.5 mb-3">
+          <div className="bg-white border border-black/5 rounded-2xl p-6 md:p-8 shadow-sm">
+            <span className="text-2xs text-brand font-medium flex items-center gap-1.5 mb-3">
               <BookOpen size={12} />
               {multi ? `Reading Passage ${session.sectionIndex + 1}` : "Reading Passage"}
             </span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#1A1A1A] leading-tight">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight">
               {section.passage.title}
             </h2>
             {section.passage.intro && (
-              <p className="font-sans italic text-sm text-[#1A1A1A]/55 mt-3 border-l-2 border-[#9FE870] pl-3">
+              <p className="font-sans italic text-sm text-ink/55 mt-3 border-l-2 border-leaf pl-3">
                 {section.passage.intro}
               </p>
             )}
@@ -253,9 +250,9 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
                 // Bài đọc để ở serif: Literata vẽ để đọc dài, và đề Cambridge
                 // trên giấy cũng là serif. Câu hỏi bên cạnh vẫn sans, nên hai
                 // cột phân biệt được bằng chữ chứ không cần thêm đường kẻ.
-                <p key={index} className="font-serif text-base leading-[1.8] text-[#1A1A1A]/85">
+                <p key={index} className="font-serif text-base leading-[1.8] text-ink/85">
                   {paragraph.label && (
-                    <span className="font-serif font-bold text-[#14532D] mr-2">
+                    <span className="font-serif font-bold text-brand mr-2">
                       {paragraph.label}
                     </span>
                   )}
@@ -284,8 +281,8 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
           )}
 
           <div className="flex items-center gap-1.5 mb-4">
-            <ListChecks size={13} className="text-[#14532D]" />
-            <span className="text-2xs text-[#14532D] font-medium">
+            <ListChecks size={13} className="text-brand" />
+            <span className="text-2xs text-brand font-medium">
               {isReview ? `Đáp án & giải thích · câu ${questionRange}` : `Câu hỏi ${questionRange}`}
             </span>
           </div>
@@ -299,7 +296,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
             {section.questions.map((question) => (
               <div key={question.id}>
                 {question.group && (
-                  <p className="text-sm leading-relaxed text-[#1A1A1A]/80 font-medium border-l-2 border-[#14532D]/25 pl-3 mt-7 first:mt-0 mb-4 whitespace-pre-line">
+                  <p className="text-sm leading-relaxed text-ink/80 font-medium border-l-2 border-brand/25 pl-3 mt-7 first:mt-0 mb-4 whitespace-pre-line">
                     {question.group}
                   </p>
                 )}
@@ -334,7 +331,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
                   setMobilePane("passage");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className="w-full mt-8 py-4 bg-[#14532D] hover:bg-[#052E16] text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
+                className="w-full mt-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
               >
                 Sang passage {session.sectionIndex + 2} ({session.answeredCount}/{session.totalQuestions}{" "}
                 câu đã làm)
@@ -344,7 +341,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
                 type="button"
                 onClick={confirmSubmit}
                 disabled={session.status === "submitting"}
-                className="w-full mt-8 py-4 bg-[#9FE870] hover:bg-[#86D65A] disabled:opacity-60 disabled:cursor-wait text-[#14532D] font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
+                className="w-full mt-8 py-4 bg-leaf hover:bg-leaf-dark disabled:opacity-60 disabled:cursor-wait text-brand font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
               >
                 {session.status === "submitting"
                   ? "Đang chấm bài..."

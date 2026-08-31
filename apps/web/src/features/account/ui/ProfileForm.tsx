@@ -68,7 +68,7 @@ export default function ProfileForm({
     }
   };
 
-  const fieldLabel = "text-2xs font-medium text-[#1A1A1A]/50";
+  const fieldLabel = "text-2xs font-medium text-ink/50";
 
   return (
     <div className="flex flex-col gap-7">
@@ -86,7 +86,7 @@ export default function ProfileForm({
           value={age}
           onChange={(e) => setAge(e.target.value)}
           placeholder="18"
-          className="w-32 rounded-full border border-black/10 bg-white px-5 py-3 text-sm tabular-nums text-[#1A1A1A] placeholder:text-[#1A1A1A]/30 focus:outline-none focus:border-[#14532D]/50 transition-colors"
+          className="w-32 rounded-full border border-black/10 bg-white px-5 py-3 text-sm tabular-nums text-ink placeholder:text-ink/30 focus:outline-none focus:border-brand/50 transition-colors"
         />
         {errors.age && <FieldError message={errors.age} />}
       </div>
@@ -106,8 +106,8 @@ export default function ProfileForm({
                 aria-pressed={active}
                 className={`flex items-center gap-2.5 rounded-xl border px-4 py-3 text-left text-xs font-semibold transition-colors cursor-pointer ${
                   active
-                    ? "border-[#14532D] bg-[#14532D] text-white"
-                    : "border-black/10 bg-white text-[#1A1A1A]/70 hover:border-[#14532D]/40 hover:text-[#14532D]"
+                    ? "border-brand bg-brand text-white"
+                    : "border-black/10 bg-white text-ink/70 hover:border-brand/40 hover:text-brand"
                 }`}
               >
                 <Icon size={15} className="shrink-0" />
@@ -133,8 +133,8 @@ export default function ProfileForm({
                 aria-pressed={active}
                 className={`min-w-14 rounded-full border px-4 py-2.5 text-sm font-semibold tabular-nums transition-colors cursor-pointer ${
                   active
-                    ? "border-[#14532D] bg-[#14532D] text-white"
-                    : "border-black/10 bg-white text-[#1A1A1A]/70 hover:border-[#14532D]/40 hover:text-[#14532D]"
+                    ? "border-brand bg-brand text-white"
+                    : "border-black/10 bg-white text-ink/70 hover:border-brand/40 hover:text-brand"
                 }`}
               >
                 {band.toFixed(1)}
@@ -156,7 +156,7 @@ export default function ProfileForm({
         type="button"
         onClick={submit}
         disabled={busy}
-        className="flex items-center justify-center gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] disabled:cursor-wait px-4 py-4 text-sm font-semibold text-white cursor-pointer transition-colors"
+        className="flex items-center justify-center gap-2 w-full rounded-full bg-brand hover:bg-brand-deep disabled:cursor-wait px-4 py-4 text-sm font-semibold text-white cursor-pointer transition-colors"
       >
         {busy ? (
           <Loader2 size={16} className="animate-spin motion-reduce:animate-none" />

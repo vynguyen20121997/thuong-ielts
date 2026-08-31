@@ -36,10 +36,10 @@ export default function ReadingResultPanel({
   const giauDiem = result.daChe?.diem === true;
 
   return (
-    <div className="bg-[#14532D] text-white rounded-2xl p-6 md:p-7 shadow-xl">
+    <div className="bg-brand text-white rounded-2xl p-6 md:p-7 shadow-xl">
       <div className="flex items-center gap-2 mb-5">
-        <Target size={15} className="text-[#9FE870]" />
-        <span className="text-2xs font-medium text-[#9FE870]">
+        <Target size={15} className="text-leaf" />
+        <span className="text-2xs font-medium text-leaf">
           {giauDiem ? "Đã nộp bài" : "Kết quả bài làm"}
         </span>
       </div>
@@ -63,7 +63,7 @@ export default function ReadingResultPanel({
           <span className="text-2xs text-white/50 font-medium mt-2 block">Câu đúng</span>
         </div>
         <div>
-          <span className="font-serif text-4xl font-bold block leading-none text-[#9FE870]">
+          <span className="font-serif text-4xl font-bold block leading-none text-leaf">
             {formatBand(result.band)}
           </span>
           <span className="text-2xs text-white/50 font-medium mt-2 block">Band ước lượng</span>
@@ -77,7 +77,7 @@ export default function ReadingResultPanel({
       {/* Accuracy bar */}
       <div className={`h-1.5 w-full bg-white/15 rounded-full overflow-hidden mb-5 ${giauDiem ? "hidden" : ""}`}>
         <div
-          className="h-full bg-[#9FE870] rounded-full transition-all duration-700"
+          className="h-full bg-leaf rounded-full transition-all duration-700"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -88,7 +88,7 @@ export default function ReadingResultPanel({
           Thời gian làm: {formatClock(result.elapsedSeconds)}
         </span>
         {timedOut && (
-          <span className="flex items-center gap-1.5 font-mono text-2xs font-bold text-[#9FE870]">
+          <span className="flex items-center gap-1.5 font-mono text-2xs font-bold text-leaf">
             <AlarmClock size={13} />
             Hết giờ — bài được nộp tự động
           </span>
@@ -105,7 +105,7 @@ export default function ReadingResultPanel({
         <button
           type="button"
           onClick={onRestart}
-          className="group px-6 py-3 bg-[#9FE870] hover:bg-[#86D65A] text-[#14532D] font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase inline-flex items-center gap-2"
+          className="group px-6 py-3 bg-leaf hover:bg-leaf-dark text-brand font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase inline-flex items-center gap-2"
         >
           <RotateCcw
             size={14}

@@ -34,22 +34,22 @@ export default async function TrangLichSu() {
     : 0;
 
   return (
-    <main className="relative z-10 pt-28 pb-20 bg-[#FAF9F6] min-h-screen">
+    <main className="relative z-10 pt-28 pb-20 bg-white min-h-screen">
       <div className="mx-auto max-w-3xl px-5">
-        <h1 className="font-serif text-4xl font-black text-[#1A1A1A] mb-2">Bài đã làm</h1>
-        <p className="text-sm text-[#1A1A1A]/55 mb-8">
+        <h1 className="font-serif text-4xl font-black text-ink mb-2">Bài đã làm</h1>
+        <p className="text-sm text-ink/55 mb-8">
           Toàn bộ bài Reading và Listening em đã làm trên trang này.
         </p>
 
         {luot.length === 0 ? (
           <div className="rounded-3xl border border-black/10 bg-white p-10 text-center">
-            <p className="font-bold text-[#1A1A1A] mb-1">Chưa có bài nào</p>
-            <p className="text-sm text-[#1A1A1A]/50 mb-5">
+            <p className="font-bold text-ink mb-1">Chưa có bài nào</p>
+            <p className="text-sm text-ink/50 mb-5">
               Làm một đề rồi quay lại đây xem tiến bộ của mình nhé.
             </p>
             <Link
               href="/kiem-tra-kien-thuc"
-              className="inline-block rounded-full bg-[#14532D] hover:bg-[#052E16] px-5 py-2.5 text-sm font-bold text-white transition-colors"
+              className="inline-block rounded-full bg-brand hover:bg-brand-deep px-5 py-2.5 text-sm font-bold text-white transition-colors"
             >
               Chọn đề để làm
             </Link>
@@ -76,8 +76,8 @@ export default async function TrangLichSu() {
                   className="flex flex-wrap items-center gap-4 rounded-2xl border border-black/10 bg-white px-5 py-4"
                 >
                   <span className="min-w-0 mr-auto">
-                    <span className="block text-sm font-bold text-[#1A1A1A]">{l.title}</span>
-                    <span className="block text-xs text-[#1A1A1A]/45 mt-0.5">
+                    <span className="block text-sm font-bold text-ink">{l.title}</span>
+                    <span className="block text-xs text-ink/45 mt-0.5">
                       {l.skill === "listening" ? "Nghe" : "Đọc"} ·{" "}
                       {new Date(l.submittedAt).toLocaleDateString("vi-VN")} ·{" "}
                       {Math.round(l.elapsedSeconds / 60)} phút
@@ -85,18 +85,18 @@ export default async function TrangLichSu() {
                   </span>
 
                   {l.correct === null ? (
-                    <span className="rounded-lg bg-black/[0.05] px-2.5 py-1 text-xs font-semibold text-[#1A1A1A]/50">
+                    <span className="rounded-lg bg-black/[0.05] px-2.5 py-1 text-xs font-semibold text-ink/50">
                       Chờ thầy cô trả điểm
                     </span>
                   ) : (
-                    <span className="text-base font-black tabular-nums text-[#1A1A1A]">
+                    <span className="text-base font-black tabular-nums text-ink">
                       {l.correct}
-                      <span className="text-[#1A1A1A]/40 font-medium text-sm">/{l.total}</span>
+                      <span className="text-ink/40 font-medium text-sm">/{l.total}</span>
                     </span>
                   )}
 
                   {l.band !== null && (
-                    <span className="rounded-lg bg-[#9FE870]/25 px-2.5 py-1 text-xs font-black text-[#14532D] tabular-nums">
+                    <span className="rounded-lg bg-leaf/25 px-2.5 py-1 text-xs font-black text-brand tabular-nums">
                       {l.band.toFixed(1)}
                     </span>
                   )}
@@ -104,7 +104,7 @@ export default async function TrangLichSu() {
               ))}
             </div>
 
-            <p className="text-xs text-[#1A1A1A]/40 mt-5">
+            <p className="text-xs text-ink/40 mt-5">
               Band là ước tính quy đổi từ số câu đúng, không phải điểm thi thật.
             </p>
           </>
@@ -117,10 +117,10 @@ export default async function TrangLichSu() {
 function Stat({ so, nhan }: { so: string; nhan: string }) {
   return (
     <span className="block">
-      <b className="block font-serif text-2xl font-black text-[#14532D] tabular-nums leading-tight">
+      <b className="block font-serif text-2xl font-black text-brand tabular-nums leading-tight">
         {so}
       </b>
-      <span className="block text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A]/40">
+      <span className="block text-[10px] uppercase tracking-wider font-bold text-ink/40">
         {nhan}
       </span>
     </span>

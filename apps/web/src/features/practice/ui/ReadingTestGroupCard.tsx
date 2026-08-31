@@ -16,15 +16,15 @@ import type { ReadingLevel } from "../domain/types";
  */
 
 const LEVEL_STYLES: Record<ReadingLevel, string> = {
-  easy: "bg-[#9FE870]/30 text-[#14532D]",
-  medium: "bg-[#14532D]/10 text-[#14532D]",
-  hard: "bg-[#1A1A1A]/[0.07] text-[#1A1A1A]/70",
+  easy: "bg-leaf/30 text-brand",
+  medium: "bg-brand/10 text-brand",
+  hard: "bg-ink/[0.07] text-ink/70",
 };
 
 /** No stock photography in this project, so covers are generated from the data. */
 const COVER_TONES = [
-  "from-[#14532D] to-[#052E16]",
-  "from-[#1A3A2A] to-[#14532D]",
+  "from-brand to-brand-deep",
+  "from-[#1A3A2A] to-brand",
   "from-[#245C3A] to-[#0B3D22]",
 ];
 
@@ -52,7 +52,7 @@ export default function ReadingTestGroupCard({
       </span>
 
       <div className="relative z-10 h-full p-5 flex flex-col justify-between">
-        <span className="text-2xs font-medium text-[#9FE870]">
+        <span className="text-2xs font-medium text-leaf">
           {group.collection}
         </span>
         <span className="inline-flex items-center gap-1.5 self-start bg-white/10 backdrop-blur-sm text-white text-2xs font-medium px-2.5 py-1 rounded-full">
@@ -62,7 +62,7 @@ export default function ReadingTestGroupCard({
       </div>
 
       {group.isFree && (
-        <span className="absolute top-4 right-4 z-10 bg-[#9FE870] text-[#14532D] text-2xs font-medium px-2.5 py-1 rounded-full">
+        <span className="absolute top-4 right-4 z-10 bg-leaf text-brand text-2xs font-medium px-2.5 py-1 rounded-full">
           Free
         </span>
       )}
@@ -70,7 +70,7 @@ export default function ReadingTestGroupCard({
   );
 
   const stats = (
-    <div className="flex items-center gap-3 text-[#1A1A1A]/50">
+    <div className="flex items-center gap-3 text-ink/50">
       <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap">
         <ListChecks size={13} />
         {group.questionCount} câu
@@ -99,14 +99,14 @@ export default function ReadingTestGroupCard({
         ))}
       </div>
 
-      <h3 className="font-serif text-lg font-bold tracking-tight text-[#1A1A1A] leading-snug group-hover:text-[#14532D] transition-colors">
+      <h3 className="font-serif text-lg font-bold tracking-tight text-ink leading-snug group-hover:text-brand transition-colors">
         {group.label}
       </h3>
     </>
   );
 
   const shell =
-    "group flex flex-col bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300";
+    "group flex flex-col bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-brand/30 transition-all duration-300";
 
   // Một passage: không có gì để chọn, cả thẻ là link như trước.
   if (single) {
@@ -118,7 +118,7 @@ export default function ReadingTestGroupCard({
         {cover}
         <div className="p-5 flex flex-col flex-1">
           {heading}
-          <p className="mt-1 text-2xs text-[#1A1A1A]/40 font-medium">{passageLabelOf(single)}</p>
+          <p className="mt-1 text-2xs text-ink/40 font-medium">{passageLabelOf(single)}</p>
           <div className="mt-auto pt-4">{stats}</div>
         </div>
       </Link>
@@ -141,7 +141,7 @@ export default function ReadingTestGroupCard({
         {full && (
           <Link
             href={`/kiem-tra-kien-thuc/reading/test/${group.id}`}
-            className="mt-4 flex items-center justify-center gap-2 w-full rounded-full bg-[#14532D] hover:bg-[#052E16] px-4 py-3.5 text-2xs font-medium text-white transition-colors"
+            className="mt-4 flex items-center justify-center gap-2 w-full rounded-full bg-brand hover:bg-brand-deep px-4 py-3.5 text-2xs font-medium text-white transition-colors"
           >
             <Timer size={13} />
             Làm cả test · {minutes} phút
@@ -153,7 +153,7 @@ export default function ReadingTestGroupCard({
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls={panelId}
-          className={`${full ? "mt-2" : "mt-4"} flex items-center justify-between gap-2 w-full rounded-full border border-black/10 px-4 py-3 text-2xs font-medium text-[#14532D] hover:border-[#14532D]/40 hover:bg-[#14532D]/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#14532D]/40 cursor-pointer transition-colors`}
+          className={`${full ? "mt-2" : "mt-4"} flex items-center justify-between gap-2 w-full rounded-full border border-black/10 px-4 py-3 text-2xs font-medium text-brand hover:border-brand/40 hover:bg-brand/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 cursor-pointer transition-colors`}
         >
           {open ? "Thu gọn" : "Hoặc làm từng passage"}
           <ChevronDown
@@ -167,20 +167,20 @@ export default function ReadingTestGroupCard({
             <li key={passage.id}>
               <Link
                 href={`/kiem-tra-kien-thuc/reading/${passage.slug}`}
-                className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FAFAF8] px-3 py-2.5 hover:border-[#14532D]/30 hover:bg-white transition-colors"
+                className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FAFAF8] px-3 py-2.5 hover:border-brand/30 hover:bg-white transition-colors"
               >
-                <span className="font-mono text-2xs font-bold text-[#14532D]/40 tabular-nums">
+                <span className="font-mono text-2xs font-bold text-brand/40 tabular-nums">
                   {order + 1}
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block text-xs font-bold text-[#1A1A1A] truncate">
+                  <span className="block text-xs font-bold text-ink truncate">
                     {passageLabelOf(passage)}
                   </span>
-                  <span className="block text-2xs text-[#1A1A1A]/40 font-medium">
+                  <span className="block text-2xs text-ink/40 font-medium">
                     {passage.topic}
                   </span>
                 </span>
-                <span className="font-mono text-2xs font-bold text-[#1A1A1A]/50 whitespace-nowrap">
+                <span className="font-mono text-2xs font-bold text-ink/50 whitespace-nowrap">
                   {passage.questionCount} câu
                 </span>
               </Link>

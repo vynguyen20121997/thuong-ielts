@@ -88,7 +88,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
       referrerPolicy="no-referrer"
     />
   ) : (
-    <span className="h-7 w-7 rounded-full bg-[#14532D] text-[#9FE870] flex items-center justify-center text-2xs font-bold">
+    <span className="h-7 w-7 rounded-full bg-brand text-leaf flex items-center justify-center text-2xs font-bold">
       {chuCaiDau}
     </span>
   );
@@ -100,9 +100,9 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
         <div className="flex items-center gap-2.5 px-4 py-2">
           {avatar}
           <span className="min-w-0">
-            <span className="block text-sm font-semibold text-[#1A1A1A] truncate">{ten}</span>
+            <span className="block text-sm font-semibold text-ink truncate">{ten}</span>
             {account.targetBand && (
-              <span className="block text-2xs text-[#1A1A1A]/50">
+              <span className="block text-2xs text-ink/50">
                 Mục tiêu {account.targetBand.toFixed(1)}
               </span>
             )}
@@ -110,14 +110,14 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
         </div>
         <Link
           href="/lich-su"
-          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A]/80 hover:text-[#14532D] hover:bg-[#9FE870]/15 transition-colors"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-ink/80 hover:text-brand hover:bg-leaf/15 transition-colors"
         >
           <History size={15} />
           Bài đã làm
         </Link>
         <Link
           href="/ho-so"
-          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A]/80 hover:text-[#14532D] hover:bg-[#9FE870]/15 transition-colors"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-ink/80 hover:text-brand hover:bg-leaf/15 transition-colors"
         >
           <UserRound size={15} />
           Hồ sơ của tôi
@@ -125,7 +125,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
         <button
           type="button"
           onClick={() => signOut({ redirectTo: "/" })}
-          className="flex items-center gap-2 px-4 py-3 rounded-xl text-left text-sm font-semibold text-[#1A1A1A]/60 hover:text-red-600 hover:bg-red-50 cursor-pointer transition-colors"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-left text-sm font-semibold text-ink/60 hover:text-red-600 hover:bg-red-50 cursor-pointer transition-colors"
         >
           <LogOut size={15} />
           Đăng xuất
@@ -141,21 +141,21 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex items-center gap-2 rounded-full border border-black/10 bg-white pl-1.5 pr-3 py-1.5 hover:border-[#14532D]/40 cursor-pointer transition-colors"
+        className="flex items-center gap-2 rounded-full border border-black/10 bg-white pl-1.5 pr-3 py-1.5 hover:border-brand/40 cursor-pointer transition-colors"
       >
         {avatar}
-        <span className="hidden lg:block text-xs font-semibold text-[#1A1A1A] max-w-24 truncate">
+        <span className="hidden lg:block text-xs font-semibold text-ink max-w-24 truncate">
           {ten}
         </span>
         {account.targetBand && (
-          <span className="hidden lg:flex items-center gap-1 rounded-full bg-[#9FE870]/25 px-2 py-0.5 text-2xs font-bold text-[#14532D] tabular-nums">
+          <span className="hidden lg:flex items-center gap-1 rounded-full bg-leaf/25 px-2 py-0.5 text-2xs font-bold text-brand tabular-nums">
             <Target size={10} />
             {account.targetBand.toFixed(1)}
           </span>
         )}
         <ChevronDown
           size={13}
-          className={`text-[#1A1A1A]/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`text-ink/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -165,9 +165,9 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
           className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-black/5 bg-white p-1.5 shadow-xl"
         >
           <div className="px-3 py-2.5 border-b border-black/5 mb-1">
-            <p className="text-sm font-semibold text-[#1A1A1A] truncate">{account.name ?? ten}</p>
+            <p className="text-sm font-semibold text-ink truncate">{account.name ?? ten}</p>
             {account.targetBand && (
-              <p className="text-2xs text-[#1A1A1A]/50 mt-0.5">
+              <p className="text-2xs text-ink/50 mt-0.5">
                 Mục tiêu Overall {account.targetBand.toFixed(1)}
               </p>
             )}
@@ -177,7 +177,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             href="/lich-su"
             role="menuitem"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-[#1A1A1A]/80 hover:bg-[#9FE870]/15 hover:text-[#14532D] transition-colors"
+            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-ink/80 hover:bg-leaf/15 hover:text-brand transition-colors"
           >
             <History size={15} />
             Bài đã làm
@@ -186,7 +186,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             href="/ho-so"
             role="menuitem"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-[#1A1A1A]/80 hover:bg-[#9FE870]/15 hover:text-[#14532D] transition-colors"
+            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-ink/80 hover:bg-leaf/15 hover:text-brand transition-colors"
           >
             <UserRound size={15} />
             Hồ sơ của tôi
@@ -195,7 +195,7 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
             type="button"
             role="menuitem"
             onClick={() => signOut({ redirectTo: "/" })}
-            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-xs font-semibold text-[#1A1A1A]/60 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors"
+            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-xs font-semibold text-ink/60 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors"
           >
             <LogOut size={15} />
             Đăng xuất

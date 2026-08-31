@@ -69,7 +69,7 @@ export default function VaoBangTen({
       <button
         type="button"
         onClick={() => signIn("google", { redirectTo: `/vao/${token}` })}
-        className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-[#1A1A1A] hover:border-[#14532D]/40 cursor-pointer transition-colors"
+        className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-ink hover:border-brand/40 cursor-pointer transition-colors"
       >
         Vào bằng tài khoản Google
       </button>
@@ -78,12 +78,12 @@ export default function VaoBangTen({
         <>
           <div className="flex items-center gap-3">
             <span className="h-px flex-1 bg-black/10" />
-            <span className="text-2xs font-medium text-[#1A1A1A]/40">hoặc</span>
+            <span className="text-2xs font-medium text-ink/40">hoặc</span>
             <span className="h-px flex-1 bg-black/10" />
           </div>
 
           <div className="flex flex-col gap-2.5">
-            <label htmlFor="ten" className="text-2xs font-medium text-[#1A1A1A]/50">
+            <label htmlFor="ten" className="text-2xs font-medium text-ink/50">
               Gõ tên để vào ngay — kết quả buổi này chỉ giữ trong 1 ngày
             </label>
             <input
@@ -93,13 +93,13 @@ export default function VaoBangTen({
               onKeyDown={(e) => e.key === "Enter" && vao()}
               placeholder="Nguyễn Thu Hà"
               maxLength={60}
-              className="w-full rounded-full border border-black/10 bg-white px-5 py-3.5 text-sm focus:outline-none focus:border-[#14532D]/50 transition-colors"
+              className="w-full rounded-full border border-black/10 bg-white px-5 py-3.5 text-sm focus:outline-none focus:border-brand/50 transition-colors"
             />
             <button
               type="button"
               onClick={vao}
               disabled={dangGui}
-              className="w-full rounded-full bg-[#14532D] hover:bg-[#052E16] disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
+              className="w-full rounded-full bg-brand hover:bg-brand-deep disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
             >
               {dangGui ? "Đang vào..." : "Vào làm bài"}
             </button>

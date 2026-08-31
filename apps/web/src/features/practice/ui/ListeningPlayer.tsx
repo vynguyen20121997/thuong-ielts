@@ -227,15 +227,15 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         {audioElement}
         <div className="min-h-[70vh] bg-[#F5F5F3] flex items-center justify-center px-4 py-14">
         <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-black/5 p-8 md:p-12">
-          <h1 className="font-serif text-3xl font-bold text-center text-[#1A1A1A] mb-8">
+          <h1 className="font-serif text-3xl font-bold text-center text-ink mb-8">
             Hướng dẫn làm bài kiểm tra
           </h1>
 
-          <h2 className="font-serif text-lg font-semibold text-[#1A1A1A] mb-3">
+          <h2 className="font-serif text-lg font-semibold text-ink mb-3">
             Lưu ý trước khi làm bài
           </h2>
-          <p className="text-sm font-bold text-[#1A1A1A] mb-2">Bài nghe sẽ chạy như thi thật:</p>
-          <ul className="list-disc pl-5 space-y-2 text-sm text-[#1A1A1A]/75 leading-relaxed">
+          <p className="text-sm font-bold text-ink mb-2">Bài nghe sẽ chạy như thi thật:</p>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-ink/75 leading-relaxed">
             <li>
               Audio <strong>tự phát một lần duy nhất</strong> và không tạm dừng, tua hay nghe lại
               được. Hãy chuẩn bị tai nghe trước khi bấm bắt đầu.
@@ -258,7 +258,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           </ul>
 
           {session.canResume && (
-            <div className="mt-6 flex items-start gap-2 bg-[#9FE870]/20 border border-[#14532D]/25 text-[#14532D] rounded-xl px-4 py-3 text-sm">
+            <div className="mt-6 flex items-start gap-2 bg-leaf/20 border border-brand/25 text-brand rounded-xl px-4 py-3 text-sm">
               <AlertTriangle size={16} className="shrink-0 mt-0.5" />
               <span>
                 Bạn có một bài đang làm dở. Bấm <strong>Tiếp tục</strong> để làm tiếp — đáp án,
@@ -280,7 +280,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           */}
           <p
             className={`mt-6 flex items-center gap-2 text-sm ${
-              session.audioReady ? "text-[#14532D]" : "text-[#1A1A1A]/50"
+              session.audioReady ? "text-brand" : "text-ink/50"
             }`}
           >
             <Volume2 size={15} />
@@ -292,7 +292,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           <div className="border-t border-black/10 mt-8 pt-6 flex items-center justify-between">
             <Link
               href="/kiem-tra-kien-thuc/listening"
-              className="text-sm text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors"
+              className="text-sm text-ink/50 hover:text-brand transition-colors"
             >
               ← Chọn đề khác
             </Link>
@@ -301,7 +301,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                 <button
                   type="button"
                   onClick={session.resume}
-                  className="px-6 py-3 rounded-xl bg-[#14532D] text-white hover:bg-[#052E16] font-bold text-sm transition-colors cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-brand text-white hover:bg-brand-deep font-bold text-sm transition-colors cursor-pointer"
                 >
                   Tiếp tục bài đang làm dở
                 </button>
@@ -312,7 +312,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                 // Focused on arrival so a keyboard user does not Tab through the
                 // whole marketing nav to reach the only button that matters.
                 autoFocus
-                className="px-8 py-3 rounded-xl border-2 border-[#14532D] text-[#14532D] hover:bg-[#14532D] hover:text-white font-bold text-sm transition-colors cursor-pointer"
+                className="px-8 py-3 rounded-xl border-2 border-brand text-brand hover:bg-brand hover:text-white font-bold text-sm transition-colors cursor-pointer"
               >
                 {session.canResume ? "Làm lại từ đầu" : "Bắt đầu"}
               </button>
@@ -330,18 +330,18 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
 
       <header className="sticky top-0 z-30 bg-white border-b border-black/10">
         <div className="max-w-6xl mx-auto px-4 md:px-6 py-2.5 flex items-center gap-3">
-          <span className="shrink-0 h-10 w-10 rounded-full bg-[#14532D] text-[#9FE870] flex items-center justify-center font-mono text-2xs font-bold tracking-tight">
+          <span className="shrink-0 h-10 w-10 rounded-full bg-brand text-leaf flex items-center justify-center font-mono text-2xs font-bold tracking-tight">
             IELTS
           </span>
           <div className="min-w-0">
-            <p className="font-bold text-sm text-[#1A1A1A] truncate">{test.title}</p>
-            <p className="flex items-center gap-3 text-xs text-[#1A1A1A]/60">
+            <p className="font-bold text-sm text-ink truncate">{test.title}</p>
+            <p className="flex items-center gap-3 text-xs text-ink/60">
               <span className={session.remainingSeconds <= 180 && !isReview ? "text-red-600 font-bold" : ""}>
                 {isReview ? `Đã nộp · ${formatClock(session.remainingSeconds)} còn lại` : minutesRemaining(session.remainingSeconds)}
               </span>
               {!isReview && (
                 <span className="flex items-center gap-1.5">
-                  <Volume2 size={13} className={session.audioPlaying ? "text-[#14532D]" : "text-[#1A1A1A]/35"} />
+                  <Volume2 size={13} className={session.audioPlaying ? "text-brand" : "text-ink/35"} />
                   {session.audioPlaying
                     ? `Đang phát${track?.label ? ` · ${track.label}` : ""}`
                     : isStarting
@@ -353,7 +353,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           </div>
           <Link
             href="/kiem-tra-kien-thuc/listening"
-            className="ml-auto shrink-0 h-9 w-9 rounded-full border border-black/10 flex items-center justify-center text-[#1A1A1A]/50 hover:text-[#14532D] transition-colors"
+            className="ml-auto shrink-0 h-9 w-9 rounded-full border border-black/10 flex items-center justify-center text-ink/50 hover:text-brand transition-colors"
             aria-label="Thoát về danh sách đề"
           >
             <ArrowLeft size={16} />
@@ -383,10 +383,10 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         {current && (
           <>
             <div className="mt-5 bg-[#EFEFEA] rounded px-5 py-4">
-              <h2 className="font-bold text-lg text-[#1A1A1A] tracking-tight">
+              <h2 className="font-bold text-lg text-ink tracking-tight">
                 SECTION {current.section}
               </h2>
-              <p className="text-sm text-[#1A1A1A]/70 mt-0.5">
+              <p className="text-sm text-ink/70 mt-0.5">
                 Nghe và trả lời câu {current.questions[0].number}–
                 {current.questions[current.questions.length - 1].number}
               </p>
@@ -396,7 +396,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               {groups.map((group, gi) => (
                 <section key={gi}>
                   {group.heading && (
-                    <p className="text-sm text-[#1A1A1A]/80 leading-relaxed mb-4 font-medium border-l-2 border-[#14532D]/25 pl-3">
+                    <p className="text-sm text-ink/80 leading-relaxed mb-4 font-medium border-l-2 border-brand/25 pl-3">
                       <HighlightableText
                         blockId={`g${gi}`}
                         text={group.heading}
@@ -425,7 +425,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                         const q = block.question;
                         const review = block.review;
                         return (
-                          <p key={block.key} className="text-base leading-[2.4] text-[#1A1A1A]">
+                          <p key={block.key} className="text-base leading-[2.4] text-ink">
                             <span className="font-bold mr-2">{q.number}</span>
                             {q.prompt}
                             <GapInput
@@ -457,7 +457,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               : ""
                           }`}
                         >
-                          <p className="text-base text-[#1A1A1A] mb-2 flex items-start gap-2">
+                          <p className="text-base text-ink mb-2 flex items-start gap-2">
                             <span className="font-bold">{q.number}</span>
                             <HighlightableText
                               blockId={q.id}
@@ -480,14 +480,14 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                                 <label
                                   key={option}
                                   className={`flex items-start gap-2.5 text-base rounded px-2 py-1 ${
-                                    disabled ? "cursor-default" : "cursor-pointer hover:bg-[#FAF9F6]"
+                                    disabled ? "cursor-default" : "cursor-pointer hover:bg-cream"
                                   } ${
                                     review && chosen
                                       ? review.isCorrect
-                                        ? "bg-[#9FE870]/25"
+                                        ? "bg-leaf/25"
                                         : "bg-red-50 text-red-700"
                                       : isAnswer
-                                        ? "bg-[#9FE870]/20"
+                                        ? "bg-leaf/20"
                                         : ""
                                   }`}
                                 >
@@ -498,7 +498,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                                     onChange={() => session.setAnswer(q.id, option)}
                                     onFocus={() => setActiveNumber(q.number)}
                                     disabled={disabled}
-                                    className="mt-1.5 accent-[#14532D]"
+                                    className="mt-1.5 accent-brand"
                                   />
                                   <span>{option}</span>
                                 </label>
@@ -506,7 +506,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                             })}
                           </div>
                           {isAnswerShown(review) && (
-                            <p className="text-xs text-[#14532D] mt-1.5 pl-6 font-medium">
+                            <p className="text-xs text-brand mt-1.5 pl-6 font-medium">
                               Đáp án: {review!.expected}
                             </p>
                           )}
@@ -542,7 +542,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         is marked. The number itself stays an outlined box throughout, so
         "answered" and "currently editing" remain two separate signals.
       */}
-      <nav className="fixed bottom-0 inset-x-0 z-[70] bg-[#FAF9F6] border-t border-black/10">
+      <nav className="fixed bottom-0 inset-x-0 z-[70] bg-cream border-t border-black/10">
         {/*
           Full width, not the content column: the exam pins its submit panel to
           the very edge of the screen, and the section list centres itself in
@@ -571,19 +571,19 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                   >
                     <span className="absolute top-0 left-0 right-0 h-[3px] rounded bg-[#D7D7D7]" />
                     <span
-                      className="absolute top-0 left-0 h-[3px] rounded bg-[#14532D] transition-all duration-300"
+                      className="absolute top-0 left-0 h-[3px] rounded bg-brand transition-all duration-300"
                       style={{ width: `${percent}%` }}
                     />
                     <span
                       className={`text-xs font-bold transition-colors ${
-                        isCurrent ? "text-[#1A1A1A]" : "text-[#1A1A1A]/55 group-hover:text-[#14532D]"
+                        isCurrent ? "text-ink" : "text-ink/55 group-hover:text-brand"
                       }`}
                     >
                       SECTION {progress.section}
                     </span>
                     {/* The tally gives way to the numbers once the section is open. */}
                     {!isCurrent && (
-                      <span className="text-xs text-[#1A1A1A]/45">
+                      <span className="text-xs text-ink/45">
                         {progress.answered} of {progress.total}
                       </span>
                     )}
@@ -596,11 +596,11 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                         const review = reviewByQuestion?.get(q.id);
                         const trackFill = review
                           ? review.isCorrect
-                            ? "bg-[#14532D]"
+                            ? "bg-brand"
                             : done
                               ? "bg-[#DC2626]"
                               : "bg-[#9CA3AF]"
-                          : "bg-[#14532D]";
+                          : "bg-brand";
                         const filled = review ? true : done;
 
                         return (
@@ -627,8 +627,8 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                               data-exam-key
                               className={`flex h-[30px] min-w-[30px] px-1 items-center justify-center rounded border text-sm bg-white transition-colors ${
                                 activeNumber === q.number
-                                  ? "border-[#D97706] border-2 text-[#1A1A1A]"
-                                  : "border-[#D8DCE3] text-[#333] hover:border-[#14532D]"
+                                  ? "border-[#D97706] border-2 text-ink"
+                                  : "border-[#D8DCE3] text-[#333] hover:border-brand"
                               }`}
                             >
                               {q.number}
@@ -648,7 +648,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               type="button"
               onClick={() => session.goToSection(session.activeSection - 1)}
               disabled={session.activeSection === 0}
-              className="hidden sm:flex h-9 w-9 rounded bg-[#1A1A1A]/10 text-[#1A1A1A]/70 items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
+              className="hidden sm:flex h-9 w-9 rounded bg-ink/10 text-ink/70 items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
               aria-label="Phần trước"
             >
               <ArrowLeft size={16} />
@@ -657,7 +657,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               type="button"
               onClick={() => session.goToSection(session.activeSection + 1)}
               disabled={session.activeSection >= session.sections.length - 1}
-              className="hidden sm:flex h-9 w-9 rounded bg-[#1A1A1A] text-white items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
+              className="hidden sm:flex h-9 w-9 rounded bg-ink text-white items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
               aria-label="Phần sau"
             >
               <ArrowRight size={16} />
@@ -672,7 +672,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               disabled={session.status === "submitting"}
               title="Nộp bài"
               aria-label="Nộp bài"
-              className="shrink-0 px-5 md:px-8 bg-[#EFEFEF] hover:bg-[#14532D] hover:text-white text-[#1A1A1A] flex items-center gap-2 disabled:opacity-60 disabled:cursor-wait cursor-pointer transition-colors"
+              className="shrink-0 px-5 md:px-8 bg-[#EFEFEF] hover:bg-brand hover:text-white text-ink flex items-center gap-2 disabled:opacity-60 disabled:cursor-wait cursor-pointer transition-colors"
             >
               <Check size={26} strokeWidth={2.5} />
               <span className="hidden md:inline font-bold text-xs">
@@ -750,7 +750,7 @@ function BookmarkToggle({
     >
       <Bookmark
         size={14}
-        className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-[#1A1A1A]/50"}
+        className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-ink/50"}
       />
     </button>
   );

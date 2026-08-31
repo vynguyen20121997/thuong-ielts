@@ -26,7 +26,7 @@ export default function Header() {
   const navItems = [
     { label: "Trang Chủ", to: "/" },
     { label: "Giới Thiệu", to: "/gioi-thieu" },
-    { label: "Giảng Dạy", to: "/#phuong-phap" },
+    { label: "Giảng Dạy", to: "/phuong-phap" },
     { label: "Thành Tích", to: "/thanh-tich" },
   ];
 
@@ -38,12 +38,12 @@ export default function Header() {
   const isStudentActive = studentPages.some((p) => p.to === pathname);
 
   const linkClass = (isActive: boolean) =>
-    `relative py-2 text-xs lg:text-sm transition-colors cursor-pointer group whitespace-nowrap ${isActive ? "text-[#00230E] font-bold" : "text-[#00230E]/70 font-semibold hover:text-[#00230E]"}`;
+    `relative py-2 text-xs lg:text-sm transition-colors cursor-pointer group whitespace-nowrap ${isActive ? "text-brand font-bold" : "text-brand/70 font-semibold hover:text-brand"}`;
 
   return (
     <header
       id="header-nav"
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${isScrolled ? "py-3 bg-[#F3F4EF]/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_30px_rgba(0,35,14,0.04)]" : "py-5 bg-transparent"}`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${isScrolled ? "py-3 bg-mist/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_30px_rgba(20,83,45,0.04)]" : "py-5 bg-transparent"}`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 flex items-center justify-between gap-3">
         {/* Logo: vòng tròn xanh + wordmark theo Figma */}
@@ -52,10 +52,10 @@ export default function Header() {
           className="group flex items-center gap-2.5 cursor-pointer shrink-0"
           id="logo-button"
         >
-          <span className="w-10 h-10 rounded-full bg-[#9FE870] flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-[#86D65A]">
-            <GraduationCap size={20} className="text-[#00230E]" />
+          <span className="w-10 h-10 rounded-full bg-leaf flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-leaf-dark">
+            <GraduationCap size={20} className="text-brand" />
           </span>
-          <span className="font-bold text-lg tracking-tight text-[#00230E] whitespace-nowrap">
+          <span className="font-bold text-lg tracking-tight text-brand whitespace-nowrap">
             HNT IELTS
           </span>
         </Link>
@@ -74,7 +74,7 @@ export default function Header() {
           {/* Học Viên dropdown */}
           <div className="relative group py-2" id="nav-hocvien">
             <button
-              className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${isStudentActive ? "text-[#00230E] font-bold" : "text-[#00230E]/70 font-semibold group-hover:text-[#00230E]"}`}
+              className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${isStudentActive ? "text-brand font-bold" : "text-brand/70 font-semibold group-hover:text-brand"}`}
             >
               Học Viên
               <ChevronDown
@@ -88,7 +88,7 @@ export default function Header() {
                   <Link
                     key={p.to}
                     href={p.to}
-                    className="block px-4 py-3 rounded-xl text-sm font-semibold text-[#00230E]/80 hover:text-[#00230E] hover:bg-[#EDEFE8] transition-colors whitespace-nowrap"
+                    className="block px-4 py-3 rounded-xl text-sm font-semibold text-brand/80 hover:text-brand hover:bg-sage transition-colors whitespace-nowrap"
                   >
                     {p.label}
                   </Link>
@@ -110,7 +110,7 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden p-2 text-[#00230E] hover:text-[#003B1B] transition-colors cursor-pointer shrink-0"
+          className="md:hidden p-2 text-brand hover:text-brand-deep transition-colors cursor-pointer shrink-0"
           aria-label="Toggle Menu"
           id="mobile-menu-toggle"
         >
@@ -120,7 +120,7 @@ export default function Header() {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 top-[64px] bg-[#F3F4EF] z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}
+        className={`fixed inset-0 top-[64px] bg-mist z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}
         id="mobile-menu-drawer"
       >
         <div className="flex flex-col gap-7">
@@ -128,7 +128,7 @@ export default function Header() {
             <Link
               key={item.to}
               href={item.to}
-              className="text-3xl font-bold text-left text-[#00230E] hover:text-[#003B1B] transition-colors cursor-pointer"
+              className="text-3xl font-bold text-left text-brand hover:text-brand-deep transition-colors cursor-pointer"
             >
               {item.label}
             </Link>
@@ -136,13 +136,13 @@ export default function Header() {
 
           {/* Học Viên group */}
           <div>
-            <span className="text-2xs text-[#00230E]/40 font-medium block mb-3">Học Viên</span>
+            <span className="text-2xs text-brand/40 font-medium block mb-3">Học Viên</span>
             <div className="flex flex-col gap-4 pl-1">
               {studentPages.map((p) => (
                 <Link
                   key={p.to}
                   href={p.to}
-                  className="text-2xl font-bold text-left text-[#00230E] hover:text-[#003B1B] transition-colors"
+                  className="text-2xl font-bold text-left text-brand hover:text-brand-deep transition-colors"
                 >
                   {p.label}
                 </Link>
@@ -152,7 +152,7 @@ export default function Header() {
 
           <Link
             href="/tu-van"
-            className="text-3xl font-bold text-left text-[#00230E] hover:text-[#003B1B] transition-colors cursor-pointer"
+            className="text-3xl font-bold text-left text-brand hover:text-brand-deep transition-colors cursor-pointer"
           >
             Liên Hệ
           </Link>
@@ -162,7 +162,7 @@ export default function Header() {
           <AccountMenu compact />
 
           <div className="text-center">
-            <p className="font-mono text-xs text-[#00230E]/40">
+            <p className="font-mono text-xs text-brand/40">
               © 2026 Hồ Ngọc Thương. All rights reserved.
             </p>
           </div>

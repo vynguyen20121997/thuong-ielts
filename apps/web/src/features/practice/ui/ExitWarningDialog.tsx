@@ -57,11 +57,11 @@ export default function ExitWarningDialog({
           <div>
             <h2
               id="exit-warning-title"
-              className="font-serif text-lg font-bold text-[#1A1A1A] leading-snug"
+              className="font-serif text-lg font-bold text-ink leading-snug"
             >
               Thoát khỏi bài đang làm?
             </h2>
-            <p className="mt-2 text-sm text-[#1A1A1A]/70 leading-relaxed">{detail}</p>
+            <p className="mt-2 text-sm text-ink/70 leading-relaxed">{detail}</p>
           </div>
         </div>
 
@@ -69,7 +69,7 @@ export default function ExitWarningDialog({
           <button
             type="button"
             onClick={onLeave}
-            className="rounded-full border border-black/10 px-5 py-2.5 text-xs font-semibold text-[#1A1A1A]/60 hover:border-red-300 hover:text-red-600 cursor-pointer transition-colors"
+            className="rounded-full border border-black/10 px-5 py-2.5 text-xs font-semibold text-ink/60 hover:border-red-300 hover:text-red-600 cursor-pointer transition-colors"
           >
             Thoát, bỏ bài này
           </button>
@@ -77,7 +77,7 @@ export default function ExitWarningDialog({
             ref={stayRef}
             type="button"
             onClick={onStay}
-            className="rounded-full bg-[#14532D] hover:bg-[#052E16] px-5 py-2.5 text-xs font-semibold text-white cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#14532D]/40"
+            className="rounded-full bg-brand hover:bg-brand-deep px-5 py-2.5 text-xs font-semibold text-white cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
           >
             Ở lại làm tiếp
           </button>

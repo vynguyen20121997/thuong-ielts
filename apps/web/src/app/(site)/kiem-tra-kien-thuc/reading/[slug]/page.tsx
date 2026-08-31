@@ -47,7 +47,7 @@ export default async function ReadingTestPage({
   if (!outline) notFound();
 
   return (
-    <main className="relative z-10 pt-20 pb-16 bg-[#FAF9F6] min-h-screen">
+    <main className="relative z-10 pt-20 pb-16 bg-white min-h-screen">
       <ReadingExamGate outline={outline} />
     </main>
   );

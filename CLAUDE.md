@@ -42,6 +42,11 @@ Trình duyệt không phát được file Google Drive: Google trả trang HTML 
 có CORS. Server gọi server thì lấy được byte thật. Route này forward cả `Range` header,
 nếu không thì không tua được và Safari từ chối phát.
 
+**Màu sắc dùng token trong `@theme` (`apps/web/src/app/globals.css`), không viết hex
+rời.** `bg-brand`, `text-leaf`, `bg-mist`... — đổi tông cả site chỉ sửa một chỗ. Đã
+từng có 798 chỗ hex rải trong 43 file, gộp về 12 token; đừng để mọc lại. Màu trạng
+thái (đúng/sai/cảnh báo) chưa token hoá, thấy tiện thì gộp nốt.
+
 **Kiến trúc phân lớp** trong `features/practice`: `domain/` thuần (không React, không
 fetch, không `pg`) ← `application/` (hook, không JSX) ← `infrastructure/` (fetch) /
 `server/` (SQL) / `ui/` (chỉ vẽ). Giữ hướng phụ thuộc một chiều này.
@@ -54,10 +59,14 @@ hai kiểu: `7……………` (số rồi dấu chấm) và `10 £ ……` (có
 nhận cùng một tập ký hiệu. Đã hai lần sửa một bên quên bên kia. `PaperQuestion` gọi
 thẳng `GapText` thay vì tự so khớp, chính là để khỏi lệch lần nữa.
 
-**Lenis phá vùng cuộn lồng nhau.** Thư viện cuộn mượt có luật
-`.lenis.lenis-smooth [data-lenis-prevent] { overflow: clip }`, làm cột bài đọc mất tư
-cách vùng cuộn mỗi khi trang đang trôi, kéo theo mất vị trí cuộn. `globals.css` ghi đè
-lại thành `overflow: auto`. Đừng gỡ.
+**Không dùng vùng cuộn lồng nhau nữa.** Cột bài đọc, cột lọc đề và bảng bài làm bên
+admin từng tự cuộn trong `div` (`max-h-*` + `overflow-y-auto` + `data-lenis-prevent`).
+Đã gỡ hết: chỉ trang cuộn, phần tử con dài bao nhiêu thì cao bấy nhiêu. Lý do gỡ là
+Lenis có luật `.lenis.lenis-smooth [data-lenis-prevent] { overflow: clip }` làm vùng
+cuộn con mất tư cách vùng cuộn mỗi khi trang đang trôi, phải ghi đè `overflow: auto`
+trong `globals.css` mới hết giật — một lớp vá chỉ tồn tại vì có cuộn lồng nhau. Thêm
+vùng cuộn mới là mời lại đúng lỗi đó. Ngoại lệ hợp lệ: lớp phủ `fixed` (modal, menu
+mobile) — nội dung tràn ra ngoài màn hình thì không với tới được.
 
 **Trang thi Listening không dùng lớp phủ có thanh cuộn riêng.** Đã thử và hỏng: trang
 nền vẫn cuộn theo con lăn, và bàn phím không cuộn nổi container lồng nhau (PageDown trơ

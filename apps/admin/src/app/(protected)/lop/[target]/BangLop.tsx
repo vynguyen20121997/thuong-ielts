@@ -389,7 +389,7 @@ export default function BangLop({
             {dangTaiBai && <p className="text-xs text-[#1A1A1A]/40">Đang tải bài làm...</p>}
 
             {baiLam ? (
-              <div className="max-h-[420px] overflow-y-auto -mx-1">
+              <div className="-mx-1">
                 {baiLam.map((c, i) => {
                   const m = emDangChon.marks[i] ?? null;
                   return (

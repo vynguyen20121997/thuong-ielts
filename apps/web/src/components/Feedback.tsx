@@ -81,13 +81,13 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
   return (
     <section
       id="feedback"
-      className={`${isPreview ? "py-16 md:py-20 bg-[#F3F4EF]" : "pb-24 bg-[#FAF9F6]"} relative overflow-hidden border-b border-black/5`}
+      className={`${isPreview ? "py-16 md:py-20 bg-mist" : "pb-24 bg-white"} relative overflow-hidden border-b border-black/5`}
     >
       {/* Nền preview phẳng theo Figma; glow chỉ giữ cho trang đầy đủ */}
       {!isPreview && (
         <>
-          <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-[#9FE870]/20 blur-[130px] pointer-events-none" />
-          <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-[#14532D]/[0.04] blur-[120px] pointer-events-none" />
+          <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-leaf/20 blur-[130px] pointer-events-none" />
+          <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-brand/[0.04] blur-[120px] pointer-events-none" />
         </>
       )}
 
@@ -107,10 +107,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
         {/* Preview header — căn giữa theo Figma, tiêu đề sans đậm thay vì serif */}
         {isPreview && (
           <div className="text-center mb-12 flex flex-col items-center gap-4">
-            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-[#00230E]">
+            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
               Học Viên Nói Gì Về Cô Thương
             </span>
-            <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-[#00210D] leading-[1.2]">
+            <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
               150+ Đánh Giá Tích Cực <br />
               Từ Học Viên
             </h2>
@@ -119,12 +119,12 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
 
         {/* Cards: carousel on homepage preview, masonry on full page */}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2 py-16 text-xs text-[#1A1A1A]/40 font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+          <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/40 font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
             Đang tải dữ liệu...
           </div>
         ) : feedbackItems.length === 0 ? (
-          <div className="text-center py-16 text-sm text-[#1A1A1A]/50">
+          <div className="text-center py-16 text-sm text-ink/50">
             Chưa có dữ liệu cảm nhận.
           </div>
         ) : isPreview ? (
@@ -141,8 +141,8 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                   className="feedback-card group mb-6 w-full break-inside-avoid flex flex-col gap-6 text-left bg-white rounded-[32px] p-8 shadow-sm hover:shadow-xl transition-all duration-300 cursor-zoom-in"
                 >
                   <span className="flex items-center gap-2">
-                    <Quote size={17} className="fill-[#003B1B] text-[#003B1B] shrink-0" />
-                    <span className="text-sm font-bold text-[#003B1B] tracking-wide leading-tight">
+                    <Quote size={17} className="fill-brand-deep text-brand-deep shrink-0" />
+                    <span className="text-sm font-bold text-brand-deep tracking-wide leading-tight">
                       {item.subject}
                     </span>
                   </span>
@@ -165,7 +165,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
             <div className="mt-12 text-center">
               <Link
                 href="/cam-nhan-hoc-vien"
-                className="inline-flex items-center px-10 py-5 bg-[#00230E] hover:bg-[#9FE870] text-white hover:text-[#14532D] text-sm font-semibold rounded-full transition-all duration-300 shadow-md"
+                className="inline-flex items-center px-10 py-5 bg-brand hover:bg-leaf text-white hover:text-brand text-sm font-semibold rounded-full transition-all duration-300 shadow-md"
               >
                 Xem Thêm Cảm Nhận
               </Link>
@@ -184,15 +184,15 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.15 }}
                   transition={{ duration: 0.5, delay: (i % BATCH) * 0.03, ease: [0.16, 1, 0.3, 1] }}
-                  className="feedback-card group mb-5 block w-full break-inside-avoid text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#14532D]/30 transition-all duration-300 cursor-zoom-in"
+                  className="feedback-card group mb-5 block w-full break-inside-avoid text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-brand/30 transition-all duration-300 cursor-zoom-in"
                 >
                   <div className="px-5 pt-5 pb-3">
-                    <Quote size={18} className="text-[#9FE870] mb-2" />
-                    <p className="font-serif text-sm md:text-base font-bold text-[#1A1A1A] leading-snug">
+                    <Quote size={18} className="text-leaf mb-2" />
+                    <p className="font-serif text-sm md:text-base font-bold text-ink leading-snug">
                       {item.subject}
                     </p>
                     {item.date && (
-                      <span className="text-2xs text-[#1A1A1A]/40 font-medium mt-2 block">
+                      <span className="text-2xs text-ink/40 font-medium mt-2 block">
                         {item.date}
                       </span>
                     )}
@@ -216,10 +216,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
             {hasMore && (
               <div
                 ref={loadMoreRef}
-                className="mt-12 flex items-center justify-center gap-2 text-xs text-[#1A1A1A]/40 font-medium"
+                className="mt-12 flex items-center justify-center gap-2 text-xs text-ink/40 font-medium"
                 id="feedback-load-more"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]/40 animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
                 Đang tải thêm...
               </div>
             )}

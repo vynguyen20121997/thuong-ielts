@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
  */
 export default function ContactCTA() {
   return (
-    <section id="lien-he" className="py-16 md:py-20 bg-[#00230E] relative overflow-hidden">
+    <section id="lien-he" className="py-16 md:py-20 bg-brand relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-10">
         <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-white leading-snug mb-4">
           Bạn muốn học IELTS cùng mình <br className="hidden md:block" />
@@ -19,7 +19,7 @@ export default function ContactCTA() {
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/tu-van"
-            className="group inline-flex items-center gap-2 px-9 py-4 bg-[#9FE870] hover:bg-white text-[#00230E] font-bold text-sm rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
+            className="group inline-flex items-center gap-2 px-9 py-4 bg-leaf hover:bg-white text-brand font-bold text-sm rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
           >
             Đăng Ký Học
             <ArrowRight

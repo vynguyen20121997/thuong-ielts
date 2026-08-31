@@ -8,10 +8,9 @@ import ContactCTA from "../../components/ContactCTA";
 export default function HomePage() {
   return (
     <main className="relative z-10">
-      {/* Thứ tự theo bản Figma: hero → phương pháp → vinh danh → cảm nhận → công cụ */}
+      {/* Thứ tự theo Google Doc cấu trúc website:
+          hero → thành tích → cảm nhận → phương pháp → công cụ → liên hệ */}
       <Hero />
-
-      <TeachingMethod />
 
       <div id="testimonials-container">
         <Testimonials variant="preview" />
@@ -20,6 +19,8 @@ export default function HomePage() {
       <div id="feedback-container">
         <Feedback variant="preview" />
       </div>
+
+      <TeachingMethod />
 
       {/* Hệ thống & công cụ giảng dạy — bộ đề luyện tập (Kiểm Tra Kiến Thức)
           là một thẻ công cụ bên trong lưới này, không còn là khối riêng. */}

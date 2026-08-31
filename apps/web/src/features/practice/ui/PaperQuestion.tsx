@@ -75,7 +75,7 @@ function AnswerLine({
   if (!match || match.index === undefined) {
     // No blank in the sentence: the answer goes after the question, as on paper.
     return (
-      <p className="text-base leading-[2.1] text-[#1A1A1A]">
+      <p className="text-base leading-[2.1] text-ink">
         {question.prompt}
         {input}
       </p>
@@ -83,7 +83,7 @@ function AnswerLine({
   }
 
   return (
-    <p className="text-base leading-[2.1] text-[#1A1A1A]">
+    <p className="text-base leading-[2.1] text-ink">
       <Fragment>{question.prompt.slice(0, match.index)}</Fragment>
       {input}
       <Fragment>{question.prompt.slice(match.index + match[0].length)}</Fragment>
@@ -128,7 +128,7 @@ export default function PaperQuestion({
     >
       <div className="flex gap-3">
         <span className="shrink-0 flex items-start gap-1 pt-1">
-          <span className="font-bold text-base text-[#1A1A1A] w-6">{question.number}</span>
+          <span className="font-bold text-base text-ink w-6">{question.number}</span>
           {onToggleBookmark && (
             <button
               type="button"
@@ -148,7 +148,7 @@ export default function PaperQuestion({
             >
               <Bookmark
                 size={14}
-                className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-[#1A1A1A]/50"}
+                className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-ink/50"}
               />
             </button>
           )}
@@ -157,7 +157,7 @@ export default function PaperQuestion({
         <div className="min-w-0 flex-1">
           {isChoiceQuestion(question) ? (
             <>
-              <p className="text-base leading-relaxed text-[#1A1A1A]">
+              <p className="text-base leading-relaxed text-ink">
                 <HighlightableText
                   blockId={question.id}
                   text={question.prompt}
@@ -172,7 +172,7 @@ export default function PaperQuestion({
                   return (
                     <label
                       key={option}
-                      className={`flex items-start gap-2.5 text-base rounded px-2 py-0.5 ${disabled ? "cursor-default" : "cursor-pointer hover:bg-[#FAF9F6]"} ${review && chosen ? (review.isCorrect ? "bg-[#9FE870]/25" : "bg-red-50 text-red-700") : isAnswer ? "bg-[#9FE870]/20" : ""}`}
+                      className={`flex items-start gap-2.5 text-base rounded px-2 py-0.5 ${disabled ? "cursor-default" : "cursor-pointer hover:bg-cream"} ${review && chosen ? (review.isCorrect ? "bg-leaf/25" : "bg-red-50 text-red-700") : isAnswer ? "bg-leaf/20" : ""}`}
                     >
                       <input
                         type="radio"
@@ -181,7 +181,7 @@ export default function PaperQuestion({
                         onChange={() => onChange(option)}
                         onFocus={() => onFocus?.(question.number)}
                         disabled={disabled}
-                        className="mt-1.5 accent-[#14532D]"
+                        className="mt-1.5 accent-brand"
                       />
                       <span>{option}</span>
                     </label>
@@ -189,7 +189,7 @@ export default function PaperQuestion({
                 })}
               </div>
               {wrong && (
-                <p className="text-xs text-[#14532D] mt-1 font-medium">
+                <p className="text-xs text-brand mt-1 font-medium">
                   Đáp án: {review!.expected}
                 </p>
               )}
@@ -206,7 +206,7 @@ export default function PaperQuestion({
           )}
 
           {review?.explanation && (
-            <p className="mt-2 text-sm leading-relaxed text-[#1A1A1A]/65 bg-[#FAF9F6] border-l-2 border-[#9FE870] pl-3 py-2 rounded-r-lg whitespace-pre-line">
+            <p className="mt-2 text-sm leading-relaxed text-ink/65 bg-cream border-l-2 border-leaf pl-3 py-2 rounded-r-lg whitespace-pre-line">
               {review.explanation}
             </p>
           )}

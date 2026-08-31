@@ -23,6 +23,34 @@
   */
   --text-2xs: 0.6875rem; /* 11px */
   --text-2xs--line-height: 1.45;
+
+  /*
+    Bảng màu thương hiệu — nguồn sự thật duy nhất. Component dùng token
+    (bg-brand, text-leaf, bg-mist...) thay vì mã hex rời; muốn đổi tông cả
+    site thì sửa đúng chỗ này.
+
+    Hai màu chủ đạo (hệ hai tông xanh kiểu Wise):
+    - brand / brand-deep : xanh rêu đậm cho chữ, nút đậm, nền khối tối + hover
+    - leaf / leaf-dark   : xanh non cho CTA sáng, badge, khối trang trí + hover
+
+    Trung tính & nền:
+    - ink   : chữ than
+    - cream : nền kem (accent hover, khối giải thích trong luyện đề)
+    - mist / mist-2 / mist-3 : nền section (vinh danh–cảm nhận / phương pháp / công cụ)
+    - sage / sage-2 / sage-3 : nền thẻ, nút phụ, vòng icon nhạt dần theo số
+  */
+  --color-brand: #14532D;
+  --color-brand-deep: #052E16;
+  --color-leaf: #9FE870;
+  --color-leaf-dark: #86D65A;
+  --color-ink: #1A1A1A;
+  --color-cream: #FAF9F6;
+  --color-mist: #F3F4EF;
+  --color-mist-2: #F0F2EC;
+  --color-mist-3: #F7F8F1;
+  --color-sage: #EDEFE8;
+  --color-sage-2: #E4EDDE;
+  --color-sage-3: #DCE8D5;
 }
 
 /*
@@ -35,15 +63,6 @@
   3. `font-mono` chỉ cho số liệu: đồng hồ, số câu, điểm, slug.
 
   In hoa + `tracking-wider` chỉ còn ở nút bấm, và chỉ một kiểu duy nhất.
-*/
-
-/*
-  Brand accent palette (Wise-inspired two-tone green system).
-  Components use these as literal Tailwind arbitrary values, e.g. text-[#14532D].
-  - #9FE870  GREEN_BRIGHT        solid CTA fills, badge highlights, decorative blocks
-  - #86D65A  GREEN_BRIGHT_HOVER  hover state for bright-fill buttons
-  - #14532D  GREEN_DARK          text, icons, borders, small accents on light backgrounds
-  - #052E16  GREEN_DARKER        hover/darken state for dark-green text and fills
 */
 
 /* Base Editorial Styling */
@@ -143,25 +162,6 @@ html {
   [data-exam-field] {
     min-height: 42px;
   }
-}
-
-/*
- * Lenis ships this rule:
- *
- *   .lenis.lenis-smooth [data-lenis-prevent] { overflow: clip; }
- *
- * `lenis-smooth` is on <html> for as long as the page is gliding, so every time
- * the student scrolls the question column, the reading passage next to it stops
- * being a scroll container. Losing `overflow: auto` throws away its scroll
- * offset, so the passage snaps to the top; when the glide ends the class goes,
- * `auto` returns, the browser restores the offset and it snaps back down. That
- * round trip is the judder.
- *
- * `data-lenis-prevent` exists precisely to say "this element does its own
- * scrolling", so keeping it scrollable throughout is what the attribute means.
- */
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overflow: auto;
 }
 
 /*

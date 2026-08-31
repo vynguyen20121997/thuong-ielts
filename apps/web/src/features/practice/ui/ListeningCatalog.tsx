@@ -48,9 +48,9 @@ export default function ListeningCatalog({ tests }: { tests: ListeningTestSummar
   const filtered = Boolean(query.collection || query.coverage !== "all" || query.search);
 
   const rowClass = (active: boolean) =>
-    `w-full flex items-center gap-2 px-3 py-2 rounded-lg text-2xs font-medium text-left transition-colors cursor-pointer ${active ? "bg-[#14532D] text-white" : "text-[#1A1A1A]/60 hover:bg-[#14532D]/[0.06] hover:text-[#14532D]"}`;
+    `w-full flex items-center gap-2 px-3 py-2 rounded-lg text-2xs font-medium text-left transition-colors cursor-pointer ${active ? "bg-brand text-white" : "text-ink/60 hover:bg-brand/[0.06] hover:text-brand"}`;
 
-  const sectionLabel = "text-2xs text-[#1A1A1A]/35 font-medium";
+  const sectionLabel = "text-2xs text-ink/35 font-medium";
 
   return (
     <div className="grid lg:grid-cols-[248px_1fr] gap-6 lg:gap-8 items-start">
@@ -61,13 +61,13 @@ export default function ListeningCatalog({ tests }: { tests: ListeningTestSummar
             onClick={() => setOpenOnMobile((value) => !value)}
             aria-expanded={openOnMobile}
             aria-controls="listening-filters"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-black/10 bg-white text-2xs font-medium text-[#1A1A1A]/70 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-black/10 bg-white text-2xs font-medium text-ink/70 cursor-pointer"
           >
             <SlidersHorizontal size={13} />
             Bộ lọc
-            {filtered && <span className="h-1.5 w-1.5 rounded-full bg-[#14532D]" />}
+            {filtered && <span className="h-1.5 w-1.5 rounded-full bg-brand" />}
           </button>
-          <span className="text-2xs text-[#1A1A1A]/40 font-medium">
+          <span className="text-2xs text-ink/40 font-medium">
             {groups.length}/{totalBooks} bộ
           </span>
         </div>
@@ -78,25 +78,18 @@ export default function ListeningCatalog({ tests }: { tests: ListeningTestSummar
           lọc và mép trên của thẻ đầu tiên nằm trên một đường.
         */}
         <div className="hidden lg:flex items-center gap-2 h-5 mb-4">
-          <SlidersHorizontal size={13} className="text-[#1A1A1A]/35" />
-          <span className="text-2xs font-medium text-[#1A1A1A]/40">Bộ lọc</span>
+          <SlidersHorizontal size={13} className="text-ink/35" />
+          <span className="text-2xs font-medium text-ink/40">Bộ lọc</span>
         </div>
 
-        {/*
-          `data-lenis-prevent`: con lăn khi đang trỏ vào cột lọc phải cuộn cột
-          lọc, không phải cuộn trang. Không có nó thì Lenis nuốt sự kiện wheel
-          và cuộn trang, còn cột lọc dài hơn màn hình thì không xuống được.
-          Xem thêm luật ghi đè `overflow` trong globals.css.
-        */}
         <div
-          data-lenis-prevent
           id="listening-filters"
-          className={`${openOnMobile ? "block" : "hidden"} lg:block bg-white border border-black/5 rounded-2xl shadow-sm p-4 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto`}
+          className={`${openOnMobile ? "block" : "hidden"} lg:block bg-white border border-black/5 rounded-2xl shadow-sm p-4`}
         >
           <div className="relative">
             <Search
               size={14}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1A1A1A]/35 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/35 pointer-events-none"
             />
             <input
               type="search"
@@ -104,7 +97,7 @@ export default function ListeningCatalog({ tests }: { tests: ListeningTestSummar
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Tìm tên đề, nội dung..."
               aria-label="Tìm đề nghe"
-              className="w-full bg-[#FAFAF8] border border-black/10 rounded-full pl-9 pr-3 py-2.5 text-xs text-[#1A1A1A] placeholder:text-[#1A1A1A]/35 focus:outline-none focus:border-[#14532D]/50 transition-colors"
+              className="w-full bg-[#FAFAF8] border border-black/10 rounded-full pl-9 pr-3 py-2.5 text-xs text-ink placeholder:text-ink/35 focus:outline-none focus:border-brand/50 transition-colors"
             />
           </div>
 
@@ -175,7 +168,7 @@ export default function ListeningCatalog({ tests }: { tests: ListeningTestSummar
             <button
               type="button"
               onClick={reset}
-              className="mt-5 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-full border border-black/10 text-2xs font-medium text-[#1A1A1A]/55 hover:border-[#14532D]/40 hover:text-[#14532D] cursor-pointer transition-colors"
+              className="mt-5 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-full border border-black/10 text-2xs font-medium text-ink/55 hover:border-brand/40 hover:text-brand cursor-pointer transition-colors"
             >
               <X size={12} />
               Xoá bộ lọc
@@ -186,18 +179,18 @@ export default function ListeningCatalog({ tests }: { tests: ListeningTestSummar
 
       <div>
         <div className="hidden lg:flex items-center gap-2 h-5 mb-4">
-          <span className="text-2xs text-[#1A1A1A]/40 font-medium">
+          <span className="text-2xs text-ink/40 font-medium">
             {groups.length}/{totalBooks} bộ đề · {visibleCount}/{total} đề nghe
           </span>
         </div>
 
         {groups.length === 0 ? (
           <div className="text-center py-20 border border-dashed border-black/10 rounded-2xl">
-            <p className="text-sm text-[#1A1A1A]/55">Không tìm thấy đề nào khớp bộ lọc.</p>
+            <p className="text-sm text-ink/55">Không tìm thấy đề nào khớp bộ lọc.</p>
             <button
               type="button"
               onClick={reset}
-              className="mt-4 text-2xs font-medium text-[#14532D] hover:underline cursor-pointer"
+              className="mt-4 text-2xs font-medium text-brand hover:underline cursor-pointer"
             >
               Xoá bộ lọc
             </button>
