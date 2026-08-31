@@ -100,7 +100,7 @@ export default function TeachingTools() {
   return (
     <section id="he-thong-giang-day" className="py-16 md:py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-start">
           {/* Cột trái: giới thiệu hệ thống + ba công cụ */}
           <Reveal className="flex flex-col items-start gap-5">
             <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
@@ -145,7 +145,7 @@ export default function TeachingTools() {
           {/* Cột phải: sân khấu slideshow */}
           <Reveal delay={0.1}>
             <div
-              className="relative bg-mist border border-black/5 rounded-[32px] px-4 py-6 md:px-16 md:py-8"
+              className="relative bg-mist border border-black/5 rounded-[32px] px-3 py-4 md:px-10 md:py-5"
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
             >
