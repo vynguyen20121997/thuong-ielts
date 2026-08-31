@@ -351,7 +351,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             </div>
             <Link
               href="/ket-qua-hoc-vien"
-              className="shrink-0 inline-flex items-center px-8 py-3.5 border-2 border-brand text-brand hover:bg-brand hover:text-white text-sm font-semibold rounded-full transition-colors duration-300"
+              className="shrink-0 inline-flex items-center px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
             >
               Xem tất cả thành tích học viên
             </Link>

@@ -165,7 +165,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
             <div className="mt-12 text-center">
               <Link
                 href="/cam-nhan-hoc-vien"
-                className="inline-flex items-center px-10 py-5 bg-brand hover:bg-leaf text-white hover:text-brand text-sm font-semibold rounded-full transition-all duration-300 shadow-md"
+                className="inline-flex items-center px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
               >
                 Xem Thêm Cảm Nhận
               </Link>
