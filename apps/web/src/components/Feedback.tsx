@@ -17,8 +17,8 @@ interface FeedbackProps {
   variant?: "preview" | "full";
 }
 
-// Preview theo layout Figma: 4 thẻ masonry 2 cột, thẻ ôm theo kích thước ảnh
-const PREVIEW_COUNT = 4;
+// Preview: masonry 10 thẻ, thẻ ôm theo kích thước ảnh
+const PREVIEW_COUNT = 10;
 const BATCH = 12;
 
 export default function Feedback({ variant = "full" }: FeedbackProps) {
@@ -130,25 +130,25 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
           </div>
         ) : isPreview ? (
           <>
-            {/* Masonry 2 cột theo Figma: bề rộng cột cố định, chiều cao thẻ ôm
+            {/* Masonry 3 cột (10 thẻ): bề rộng cột cố định, chiều cao thẻ ôm
                 theo ảnh (ảnh giữ nguyên tỉ lệ, không kéo giãn theo ô lưới);
-                ảnh quá dài thì cắt ở 560px — bấm vào lightbox xem đủ. */}
+                ảnh quá dài thì cắt ở 420px — bấm vào lightbox xem đủ. */}
             <Reveal delay={0.1}>
-            <div className="columns-1 md:columns-2 gap-6">
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5">
               {visible.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
-                  className="feedback-card group mb-6 w-full break-inside-avoid flex flex-col gap-6 text-left bg-white border border-black/5 rounded-[32px] p-8 shadow-sm hover:shadow-xl transition-all duration-300 cursor-zoom-in"
+                  className="feedback-card group mb-5 w-full break-inside-avoid flex flex-col gap-4 text-left bg-white border border-black/5 rounded-[24px] p-5 shadow-sm hover:shadow-xl transition-all duration-300 cursor-zoom-in"
                 >
                   <span className="flex items-center gap-2">
-                    <Quote size={17} className="fill-brand-deep text-brand-deep shrink-0" />
-                    <span className="text-sm font-bold text-brand-deep tracking-wide leading-tight">
+                    <Quote size={15} className="fill-brand-deep text-brand-deep shrink-0" />
+                    <span className="text-xs font-bold text-brand-deep tracking-wide leading-tight">
                       {item.subject}
                     </span>
                   </span>
-                  <div className="relative rounded-2xl overflow-hidden max-h-[560px]">
+                  <div className="relative rounded-xl overflow-hidden max-h-[420px]">
                     <img
                       src={item.imageUrl}
                       alt={`Cảm nhận học viên: ${item.subject}`}
