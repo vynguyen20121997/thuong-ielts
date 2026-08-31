@@ -113,7 +113,7 @@ export default function Hero() {
               variants={popIn}
               className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.1] mb-5"
             >
-              <span className="text-brand">{hero.titleLine1} </span>
+              <span className="text-ink">{hero.titleLine1} </span>
               {/* Dòng 2 gạch chân bằng border của chính span: vệt kẻ luôn dài
                   đúng bằng chữ, không phải canh tay một khối trang trí rời. */}
               <span className="text-brand-soft inline-block border-b-4 border-leaf pb-1">
@@ -123,7 +123,7 @@ export default function Hero() {
 
             <motion.p
               variants={popIn}
-              className="text-brand/75 text-sm md:text-base leading-relaxed mb-7 max-w-lg"
+              className="text-ink/65 text-sm md:text-base leading-relaxed mb-7 max-w-lg"
             >
               {hero.quote}
             </motion.p>
@@ -176,7 +176,7 @@ export default function Hero() {
                   <span className="text-[34px] font-bold leading-none tracking-tight text-brand-soft">
                     {h.value}
                   </span>
-                  <span className="text-xs font-semibold leading-snug text-brand/60">
+                  <span className="text-xs font-semibold leading-snug text-ink/55">
                     {h.label}
                   </span>
                 </div>
@@ -226,7 +226,7 @@ export default function Hero() {
                 <span className="text-2xl font-bold leading-none tracking-tight text-brand-soft">
                   {h.value}
                 </span>
-                <span className="text-2xs font-semibold leading-snug text-brand/60">
+                <span className="text-2xs font-semibold leading-snug text-ink/55">
                   {h.label}
                 </span>
               </div>
