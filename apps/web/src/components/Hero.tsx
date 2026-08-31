@@ -98,7 +98,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative pt-24 md:pt-28 overflow-hidden bg-gradient-to-br from-mist via-[#FAF7F4] to-[#F6EFEC]"
+      className="relative pt-24 md:pt-28 overflow-hidden bg-white"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-8 items-end">
@@ -185,7 +185,7 @@ export default function Hero() {
               animate={{ scaleY: 1 }}
               transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.1 }}
               style={{ transformOrigin: "bottom center" }}
-              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 rounded-t-[999px] bg-[radial-gradient(circle_at_50%_38%,white_0%,var(--color-leaf)_42%,var(--color-brand)_100%)]"
+              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 rounded-t-[999px] bg-leaf"
             />
             {/* Wrapper giữ căn giữa bằng Tailwind; motion animate ảnh bên trong
                 (transform của motion sẽ ghi đè nếu đặt thẳng lên phần tử có
@@ -199,6 +199,14 @@ export default function Hero() {
                 src={hero.portraitUrl}
                 alt="Cô Hồ Ngọc Thương"
                 className="h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none"
+              />
+              {/* Bóng silhouette lệch kiểu sticker (như mẫu): chính ảnh đó,
+                  brightness(0)+invert(1) thành mảng trắng phẳng, đẩy lệch phải */}
+              <img
+                aria-hidden="true"
+                src={hero.portraitUrl}
+                alt=""
+                className="absolute inset-0 h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none -z-10 translate-x-7 [filter:brightness(0)invert(1)] opacity-70"
               />
             </div>
           </div>
