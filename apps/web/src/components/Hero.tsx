@@ -12,7 +12,7 @@ import type { HeroContent } from "@thuong-ielts/db";
 
 const DEFAULT_HERO: HeroContent = {
   portraitUrl: "/images/ho-ngoc-thuong-hero.webp",
-  titleLine1: "Hồ Ngọc Thương",
+  titleLine1: "HỒ NGỌC THƯƠNG",
   titleLine2: "Giáo viên IELTS",
   quote:
     "Giúp học viên tiến bộ thông qua lộ trình có hệ thống, nhận xét chi tiết và phương pháp học tập phù hợp.",
@@ -113,17 +113,17 @@ export default function Hero() {
               variants={popIn}
               className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.1] mb-5"
             >
-              <span className="text-ink">{hero.titleLine1} </span>
+              <span className="block text-ink">{hero.titleLine1}</span>
               {/* Dòng 2 gạch chân bằng border của chính span: vệt kẻ luôn dài
                   đúng bằng chữ, không phải canh tay một khối trang trí rời. */}
-              <span className="text-brand-soft inline-block border-b-4 border-leaf pb-1">
+              <span className="mt-2 inline-block border-b-4 border-leaf pb-1 text-brand-soft">
                 {hero.titleLine2.replace(/\.$/, "")}
               </span>
             </motion.h1>
 
             <motion.p
               variants={popIn}
-              className="text-ink/65 text-sm md:text-base leading-relaxed mb-7 max-w-lg"
+              className="max-w-[35rem] text-pretty text-[15px] leading-[1.65] text-ink/65 md:text-[17px] mb-7"
             >
               {hero.quote}
             </motion.p>

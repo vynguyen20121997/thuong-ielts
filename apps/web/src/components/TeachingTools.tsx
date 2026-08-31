@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import { X, ZoomIn, ChevronLeft, ChevronRight, Check, ArrowRight, GraduationCap } from "lucide-react";
+import { X, ZoomIn, ChevronLeft, ChevronRight, ArrowRight, GraduationCap } from "lucide-react";
 import Reveal from "./Reveal";
 
 /**
@@ -22,13 +22,6 @@ import Reveal from "./Reveal";
  * Students, và dải tab cuối bảng). Ảnh đưa lên đây đã cắt bỏ những phần đó.
  * Thay ảnh mới thì phải cắt lại, đừng dán thẳng ảnh từ doc.
  */
-
-// Ba công cụ — nguyên văn doc
-const TOOLS = [
-  "Hệ thống tạo feedback Mock Test tự động",
-  "Reading & Listening Tracker — Hệ thống theo dõi tiến bộ Reading & Listening và lỗi sai",
-  "Speaking in-class monitor — Hệ thống theo dõi lỗi Speaking tại lớp",
-] as const;
 
 type Shot = {
   url: string;
@@ -101,7 +94,7 @@ export default function TeachingTools() {
     <section id="he-thong-giang-day" className="py-16 md:py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-start">
-          {/* Cột trái: giới thiệu hệ thống + ba công cụ */}
+          {/* Cột trái: giới thiệu hệ thống */}
           <Reveal className="flex flex-col items-start gap-5">
             <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
               Hệ thống &amp; Công cụ giảng dạy
@@ -118,28 +111,16 @@ export default function TeachingTools() {
               Nhờ đó, học sinh nhìn thấy rõ mình đang sai ở đâu, lỗi nào lặp lại nhiều lần và kỹ
               năng nào đang thực sự tiến bộ — bấm vào ảnh bên cạnh để xem rõ từng hệ thống.
             </p>
-            <ul className="space-y-3">
-              {TOOLS.map((t) => (
-                <li
-                  key={t}
-                  className="flex items-start gap-2.5 text-sm md:text-base text-brand/80"
-                >
-                  <span className="h-6 w-6 rounded-full bg-leaf flex items-center justify-center shrink-0 mt-0.5">
-                    <Check size={14} className="text-brand-deep" />
-                  </span>
-                  {t}
-                </li>
-              ))}
-            </ul>
-
-            {/* Chú thích ảnh đang hiện bên slideshow */}
-            <div className="mt-2 pt-5 border-t border-black/10 w-full">
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-brand/45 mb-1.5">
-                Đang xem
-              </p>
-              <p className="font-serif font-bold text-brand text-lg leading-snug">{shot.title}</p>
-              <p className="text-sm text-brand/60 mt-1">{shot.detail}</p>
-            </div>
+            <Link
+              href="/he-thong-cong-cu"
+              className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md"
+            >
+              Khám phá hệ thống giảng dạy
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </Link>
           </Reveal>
 
           {/* Cột phải: sân khấu slideshow */}
@@ -178,25 +159,40 @@ export default function TeachingTools() {
                     </span>
                   </motion.button>
                 </AnimatePresence>
+
+                {/* Nút chuyển neo theo ảnh để caption không làm lệch trục điều hướng. */}
+                <button
+                  type="button"
+                  onClick={() => go(-1)}
+                  aria-label="Ảnh trước"
+                  className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => go(1)}
+                  aria-label="Ảnh kế tiếp"
+                  className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
+                >
+                  <ChevronRight size={20} />
+                </button>
               </div>
 
-              {/* Nút chuyển trái/phải */}
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                aria-label="Ảnh trước"
-                className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                aria-label="Ảnh kế tiếp"
-                className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 p-2.5 md:p-3 bg-white hover:bg-brand hover:text-white text-brand rounded-full shadow-md transition-colors cursor-pointer"
-              >
-                <ChevronRight size={20} />
-              </button>
+              {/* Caption nằm trong slideshow và đổi cùng ảnh hiện tại. */}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={shot.url}
+                  initial={reduce ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduce ? undefined : { opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22 }}
+                  className="mt-5 border-t border-brand/10 pt-5"
+                >
+                  <p className="font-serif text-xl font-bold leading-snug text-brand">{shot.title}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-brand/60">{shot.detail}</p>
+                </motion.div>
+              </AnimatePresence>
             </div>
 
             {/* Chấm điều hướng */}

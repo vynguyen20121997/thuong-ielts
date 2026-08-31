@@ -17,9 +17,14 @@ interface FeedbackProps {
   variant?: "preview" | "full";
 }
 
-// Preview: masonry 10 thẻ, thẻ ôm theo kích thước ảnh
-const PREVIEW_COUNT = 10;
+// Preview: 11 thẻ để masonry ba cột kín hơn ở trang chủ.
+const PREVIEW_COUNT = 11;
 const BATCH = 12;
+const PREVIEW_EXCLUDED_IDS = new Set([
+  "fb-sr487-2024-3",
+  "fb-di-hoc-me-chiu-sao-noi-4",
+  "fb-ke-chien-thang-ielts-reading-9-0-97",
+]);
 
 export default function Feedback({ variant = "full" }: FeedbackProps) {
   const isPreview = variant === "preview";
@@ -50,9 +55,8 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
     };
   }, []);
 
-  const visible = isPreview
-    ? feedbackItems.slice(0, PREVIEW_COUNT)
-    : feedbackItems.slice(0, visibleCount);
+  const previewItems = feedbackItems.filter((item) => !PREVIEW_EXCLUDED_IDS.has(item.id));
+  const visible = isPreview ? previewItems.slice(0, PREVIEW_COUNT) : feedbackItems.slice(0, visibleCount);
 
   const hasMore = !isPreview && visibleCount < feedbackItems.length;
 
@@ -111,7 +115,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
             <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
               Học Viên Nói Gì Về Cô Thương
             </span>
-            <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
+            <h2 className="font-serif text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
               150+ Đánh Giá Tích Cực <br />
               Từ Học Viên
             </h2>

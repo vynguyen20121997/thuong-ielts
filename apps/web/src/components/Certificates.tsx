@@ -6,7 +6,7 @@ import { X, ZoomIn, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import Reveal from "./Reveal";
 
 /**
- * Khối "Học vấn & Chứng chỉ" trên trang chủ, ngay dưới hero — theo Google Doc
+ * Khối profile giáo viên trên trang chủ, ngay dưới hero — theo Google Doc
  * cấu trúc website (note [a]: 3 bằng IELTS + bằng giảng dạy).
  *
  * Layout 2 cột: HỒ SƠ NĂNG LỰC (chuyển từ hero xuống) bên trái, SLIDESHOW bằng
@@ -22,9 +22,10 @@ const CREDENTIALS = [
   "IELTS Overall 8.5 - 3 lần",
   "Reading & Listening 9.0 - 3 lần",
   "Writing 8.5 (2026) & Speaking 8.5 (2021)",
-  "Chứng chỉ giảng dạy tiếng Anh quốc tế CELTA (ĐH Cambridge)",
   "6 năm kinh nghiệm giảng dạy IELTS",
+  "Chứng chỉ giảng dạy tiếng Anh quốc tế CELTA (ĐH Cambridge)",
   "Tốt nghiệp Đại học Ngoại Thương TPHCM",
+  "Cựu học sinh Phổ Thông Năng Khiếu & THPT Chuyên Trần Đại Nghĩa",
 ] as const;
 
 type Cert = {
@@ -97,10 +98,10 @@ export default function Certificates() {
             {/* Nhãn nhỏ trên tiêu đề — cùng kiểu với các section khác của trang
                 chủ (xem Testimonials): uppercase, giãn chữ 0.1em, màu brand */}
             <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
-              Học vấn &amp; Chứng chỉ
+              Profile giáo viên
             </span>
             <h2 className="font-serif text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
-              Bằng cấp &amp; Chứng chỉ
+              Uy tín &amp; Thực lực
             </h2>
             <ul className="space-y-3">
               {CREDENTIALS.map((c) => (

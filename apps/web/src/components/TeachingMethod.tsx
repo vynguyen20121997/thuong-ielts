@@ -23,8 +23,8 @@ import {
  * - **Bốn kỹ năng thành bốn HÀNG**, tên trái / mô tả phải, thay cho lưới 2×2.
  *   Mô tả dài 4 dòng nhồi vào cột hẹp là chỗ khó đọc nhất của khối cũ; trải
  *   ngang thì còn 2 dòng, và bốn cái tên xếp thẳng một cột nên lướt mắt thấy hết.
- * - **Câu chốt của mỗi mô tả tô đậm** (`emphasis`). Chữ giữ nguyên văn theo
- *   Google Doc, chỉ tách câu cuối ra để ai đọc vội nắm được luận điểm.
+ * - **Cụm trọng tâm được tô đậm** theo nội dung đã duyệt; vị trí nhấn mạnh
+ *   khác nhau ở mỗi kỹ năng, không mặc định là câu cuối.
  *
  * Server component: tĩnh hoàn toàn, JS duy nhất là `Reveal`.
  */
@@ -52,37 +52,40 @@ const STEPS = [
 
 /**
  * Bảng "Skill → Cách học" — nguyên văn theo Google Doc cấu trúc website.
- * `lead` + `emphasis` là MỘT đoạn của tài liệu, cắt ở dấu chấm cuối để câu chốt
- * được tô đậm. Ghép lại phải ra đúng đoạn gốc — đừng viết lại một trong hai.
+ * Mỗi đoạn được tách thành phần trước, cụm cần nhấn và phần sau; ghép lại phải
+ * ra đúng nội dung gốc.
  */
 const SKILLS = [
   {
     icon: BookOpen,
     name: "Reading",
-    lead: "Học sinh được hướng dẫn cách tiếp cận từng dạng bài từ dễ đến khó, xác định vị trí thông tin, nhận diện paraphrase và phân tích nguyên nhân sai.",
-    emphasis:
-      "Trọng tâm là đọc hiểu và xử lý thông tin, thay vì phụ thuộc vào tips, tricks hay học mẹo.",
+    before:
+      "Học sinh được hướng dẫn cách tiếp cận từng dạng bài từ dễ đến khó, xác định vị trí thông tin, nhận diện paraphrase và phân tích nguyên nhân sai. Trọng tâm là ",
+    emphasis: "đọc hiểu và xử lý thông tin",
+    after: ", thay vì phụ thuộc vào tips, tricks hay học mẹo.",
   },
   {
     icon: Headphones,
     name: "Listening",
-    lead: "Mỗi lỗi sai được phân tích để xác định nguyên nhân: không nghe được âm, không nhận ra paraphrase, mất tập trung hay dùng sai chiến thuật.",
-    emphasis:
-      "Từ đó, học sinh xây dựng cách nghe và làm bài phù hợp với từng dạng câu hỏi.",
+    before: "Mỗi lỗi sai được phân tích để xác định nguyên nhân: ",
+    emphasis: "không nghe được âm, không nhận ra paraphrase, mất tập trung hay dùng sai chiến thuật.",
+    after: " Từ đó, học sinh xây dựng cách nghe và làm bài phù hợp với từng dạng câu hỏi.",
   },
   {
     icon: PenLine,
     name: "Writing",
-    lead: "Học sinh phát triển từ câu → đoạn → bài hoàn chỉnh, học cấu trúc và cách triển khai từng dạng Task 1 & Task 2.",
-    emphasis:
-      "Mỗi bài viết được chấm theo 4 tiêu chí IELTS và lỗi cá nhân được theo dõi để tránh lặp lại ở những bài sau.",
+    before: "Học sinh phát triển từ ",
+    emphasis: "câu → đoạn → bài hoàn chỉnh",
+    after:
+      ", học cấu trúc và cách triển khai từng dạng Task 1 & Task 2. Mỗi bài viết được chấm theo 4 tiêu chí IELTS và lỗi cá nhân được theo dõi để tránh lặp lại ở những bài sau.",
   },
   {
     icon: Mic,
     name: "Speaking",
-    lead: "Tập trung vào phát triển ý, phản xạ và khả năng diễn đạt tự nhiên.",
-    emphasis:
-      "Học sinh không cần học thuộc bài mẫu hay cố sử dụng từ vựng phức tạp, mà được hướng dẫn cách xây dựng câu trả lời dựa trên trải nghiệm của chính mình.",
+    before: "Tập trung vào ",
+    emphasis: "phát triển ý, phản xạ và khả năng diễn đạt tự nhiên.",
+    after:
+      " Học sinh không cần học thuộc bài mẫu hay cố sử dụng từ vựng phức tạp, mà được hướng dẫn cách xây dựng câu trả lời dựa trên trải nghiệm của chính mình.",
   },
 ] as const;
 
@@ -91,19 +94,15 @@ export default function TeachingMethod() {
     <section id="phuong-phap" className="py-16 md:py-24 bg-mist relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Đầu khối căn trái: tiêu đề và câu dẫn nằm CẠNH nhau, không chồng lên nhau giữa trang */}
-        <Reveal className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16 md:items-end mb-12 md:mb-14">
+        <Reveal className="mb-12 md:mb-14">
           <div className="flex flex-col gap-4">
             <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
               Phương pháp giảng dạy
             </span>
-            <h2 className="font-serif text-3xl md:text-[46px] font-bold tracking-tight text-brand leading-[1.12]">
+            <h2 className="font-serif text-3xl md:text-[46px] font-bold tracking-tight text-brand leading-[1.12] md:whitespace-nowrap">
               Lộ trình học có trọng tâm
             </h2>
           </div>
-          <p className="text-brand/70 text-base md:text-lg leading-relaxed md:pb-1.5">
-            Ba bước lặp lại xuyên suốt lộ trình: biết chính xác mình yếu ở đâu, luyện đúng chỗ đó,
-            và nhìn thấy sự tiến bộ qua từng tuần.
-          </p>
         </Reveal>
 
         {/* Ba nguyên tắc cốt lõi của lộ trình học. */}
@@ -156,8 +155,9 @@ export default function TeachingMethod() {
                     </h3>
                   </div>
                   <p className="text-sm md:text-base text-brand/70 leading-relaxed text-pretty">
-                    {skill.lead}{" "}
+                    {skill.before}
                     <strong className="font-semibold text-brand">{skill.emphasis}</strong>
+                    {skill.after}
                   </p>
                 </Reveal>
               );

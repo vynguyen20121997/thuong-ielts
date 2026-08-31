@@ -29,7 +29,7 @@ export default function Header() {
       items: [
         { label: "Về giáo viên", to: "/gioi-thieu" },
         { label: "Kinh nghiệm giảng dạy", to: "/gioi-thieu#kinh-nghiem" },
-        { label: "Học vấn & Chứng chỉ", to: "/gioi-thieu#hoc-van" },
+        { label: "Profile giáo viên", to: "/gioi-thieu#hoc-van" },
       ],
     },
     {

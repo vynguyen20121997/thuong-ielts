@@ -13,11 +13,10 @@ import {
   Calendar,
   Maximize2,
 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { ExtendedTestimonialItem } from "../data/testimonialsData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
-import Carousel from "./Carousel";
 import Reveal from "./Reveal";
 
 function firstLetter(name: string): string {
@@ -29,9 +28,11 @@ interface TestimonialsProps {
   variant?: "preview" | "full";
 }
 
-// Preview theo sheet portfolio: carousel 6–8 thành tích nổi bật, tự động chạy
-const PREVIEW_COUNT = 8;
+// Preview: 18 thẻ, chia đều ba trang lưới 3×2.
+const PREVIEW_COUNT = 18;
+const PREVIEW_PAGE_SIZE = 6;
 const BATCH = 9;
+const PREVIEW_EXCLUDED_IDS = new Set(["student-hong-hanh-51"]);
 
 function LazyProofImage({ src, alt }: { src: string; alt: string }) {
   const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
@@ -85,6 +86,7 @@ function scoreKey(score: string): number {
 
 export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const isPreview = variant === "preview";
+  const shouldReduceMotion = useReducedMotion();
 
   const [expandedReviews, setExpandedReviews] = useState<Record<string, boolean>>({});
   const [cardImageIndex, setCardImageIndex] = useState<Record<string, number>>({});
@@ -92,6 +94,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const [selectedProofIndex, setSelectedProofIndex] = useState<number>(0);
   const [selectedProofName, setSelectedProofName] = useState<string>("");
   const [activeYear, setActiveYear] = useState<string>("all");
+  const [previewPage, setPreviewPage] = useState(0);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
 
@@ -147,7 +150,35 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     [testimonials],
   );
 
-  const shown = isPreview ? byScore.slice(0, PREVIEW_COUNT) : filtered.slice(0, visibleCount);
+  // Ưu tiên 12 bạn từ 8.0 trở lên, nhưng lượt cuối vẫn có đại diện 7.5, 7.0
+  // và 6.5 để khối thành tích phản ánh đa dạng mục tiêu học viên.
+  const previewItems = useMemo(() => {
+    const eligibleItems = byScore.filter((item) => !PREVIEW_EXCLUDED_IDS.has(item.id));
+    const highScores = eligibleItems.filter((item) => scoreKey(item.score) >= 8).slice(0, 12);
+    const selectedIds = new Set(highScores.map((item) => item.id));
+    const remaining = eligibleItems.filter((item) => !selectedIds.has(item.id));
+    const takeScore = (score: number, count: number) =>
+      remaining.filter((item) => scoreKey(item.score) === score).slice(0, count);
+
+    return [...highScores, ...takeScore(7.5, 3), ...takeScore(7, 2), ...takeScore(6.5, 1)].slice(
+      0,
+      PREVIEW_COUNT,
+    );
+  }, [byScore]);
+  const previewPageCount = Math.max(1, Math.ceil(previewItems.length / PREVIEW_PAGE_SIZE));
+  const previewPageItems = previewItems.slice(
+    previewPage * PREVIEW_PAGE_SIZE,
+    (previewPage + 1) * PREVIEW_PAGE_SIZE,
+  );
+  const shown = isPreview ? previewItems : filtered.slice(0, visibleCount);
+
+  useEffect(() => {
+    if (!isPreview || shouldReduceMotion || previewPageCount < 2) return;
+    const interval = window.setInterval(() => {
+      setPreviewPage((page) => (page + 1) % previewPageCount);
+    }, 5500);
+    return () => window.clearInterval(interval);
+  }, [isPreview, previewPageCount, shouldReduceMotion]);
 
   const hasMore = !isPreview && filtered.length > visibleCount;
 
@@ -343,11 +374,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           <Reveal className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
             <div className="text-left flex flex-col gap-4">
               <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
-                Góc Vinh Danh Học Viên
+                Thành tích học viên
               </span>
-              <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
-                120+ Học Viên Thành Công <br />
-                Chinh Phục Mục Tiêu IELTS
+              <h2 className="font-serif text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
+                120+ Học viên thành công đạt mục tiêu IELTS
               </h2>
             </div>
             <Link
@@ -386,7 +416,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           </div>
         )}
 
-        {/* Cards: carousel on homepage preview, grid on full page */}
+        {/* Cards: lưới vuông có phân trang ở trang chủ, grid đầy đủ ở trang riêng */}
         {isLoading ? (
           <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/40 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
@@ -397,41 +427,80 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             Chưa có dữ liệu học viên.
           </div>
         ) : isPreview ? (
-          /* Carousel tự chạy theo sheet portfolio. Ảnh vinh danh trong DB đã là
-             thẻ thiết kế sẵn (khung đỏ, tên, band, LRWS) — hiển thị nguyên bản,
-             không vẽ lại khung/tên kẻo lặp thông tin. Bấm mở lightbox. */
+          /* Ảnh vinh danh đã là thẻ thiết kế sẵn; gom thành lưới 3×2 để xem
+             nhiều học viên một lượt, nhưng vẫn chuyển được thêm hai trang. */
           <Reveal delay={0.1}>
-          <Carousel ariaLabel="Thành tích học viên">
-            {shown.map((test, i) => {
-              const images = test.proofUrl ?? [];
-              if (images.length === 0) return null;
-              return (
-                <button
-                  key={test.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedProofImages(images);
-                    setSelectedProofIndex(0);
-                    setSelectedProofName(test.studentName);
-                  }}
-                  className="testimonial-card group relative snap-start shrink-0 w-[280px] sm:w-[320px] rounded-[28px] overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-zoom-in"
-                  id={test.id}
+            <div className="relative" aria-label="Thành tích học viên">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={previewPage}
+                  initial={{ opacity: 0, x: 28 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -28 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5"
                 >
-                  {i === 0 && (
-                    <span className="absolute top-4 left-4 z-10 px-3 py-1 bg-[#B3130B] text-white text-2xs font-bold uppercase tracking-wider rounded-full shadow">
-                      Hot
-                    </span>
-                  )}
-                  <img
-                    src={images[0]}
-                    alt={`Thành tích ${test.studentName}: ${test.score}`}
-                    loading="lazy"
-                    className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                  />
-                </button>
-              );
-            })}
-          </Carousel>
+                  {previewPageItems.map((test) => {
+                    const images = test.proofUrl ?? [];
+                    if (images.length === 0) return null;
+                    return (
+                      <button
+                        key={test.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedProofImages(images);
+                          setSelectedProofIndex(0);
+                          setSelectedProofName(test.studentName);
+                        }}
+                        className="testimonial-card group relative aspect-square overflow-hidden rounded-[24px] shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-zoom-in"
+                        id={test.id}
+                      >
+                        <img
+                          src={images[0]}
+                          alt={`Thành tích ${test.studentName}: ${test.score}`}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              </AnimatePresence>
+
+              {previewPageCount > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewPage((page) => (page - 1 + previewPageCount) % previewPageCount)}
+                    aria-label="Xem nhóm thành tích trước"
+                    className="absolute -left-4 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-brand shadow-lg transition-colors hover:border-leaf hover:bg-leaf md:flex"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewPage((page) => (page + 1) % previewPageCount)}
+                    aria-label="Xem nhóm thành tích tiếp theo"
+                    className="absolute -right-4 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-brand shadow-lg transition-colors hover:border-leaf hover:bg-leaf md:flex"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                  <div className="mt-5 flex items-center justify-center gap-2">
+                    {Array.from({ length: previewPageCount }, (_, page) => (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => setPreviewPage(page)}
+                        aria-label={`Xem nhóm thành tích ${page + 1}`}
+                        className={`h-2 rounded-full transition-all ${
+                          page === previewPage ? "w-7 bg-brand" : "w-2 bg-brand/25 hover:bg-brand/45"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </Reveal>
         ) : (
           <>

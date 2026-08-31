@@ -44,7 +44,7 @@ export interface FeaturedContent {
 
 export const DEFAULT_HERO_CONTENT: HeroContent = {
   portraitUrl: "/images/ho-ngoc-thuong-hero.webp",
-  titleLine1: "Hồ Ngọc Thương",
+  titleLine1: "HỒ NGỌC THƯƠNG",
   titleLine2: "Chuyên Gia IELTS Master",
   quote:
     "Chuyên gia Luyện thi IELTS và Phát triển Tư duy Biện chứng",
