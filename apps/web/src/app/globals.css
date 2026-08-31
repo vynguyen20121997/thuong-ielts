@@ -43,6 +43,10 @@
   --color-brand-deep: #052E16;
   --color-leaf: #9FE870;
   --color-leaf-dark: #86D65A;
+  /* xanh lá vừa: chữ tiêu đề lớn muốn nhạt hơn brand mà vẫn đọc được
+     trên nền trắng (4.9:1, đạt AA cả cho chữ thường). leaf/leaf-dark
+     quá sáng để làm màu chữ. */
+  --color-brand-soft: #2E7D42;
   --color-ink: #1A1A1A;
   --color-cream: #FAF9F6;
   --color-mist: #F3F4EF;

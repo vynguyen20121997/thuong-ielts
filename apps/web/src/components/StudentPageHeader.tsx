@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import CountUp from "./CountUp";
 
 export interface HeaderAvatar {
   label: string;
@@ -54,7 +55,7 @@ export default function StudentPageHeader({
         {/* Big underlined total */}
         <div className="mb-4">
           <span className="relative inline-block font-serif text-6xl md:text-8xl font-bold tracking-tighter text-brand leading-none">
-            {count}
+            {typeof count === "number" ? <CountUp value={count} /> : count}
             <span className="absolute left-1/2 -translate-x-1/2 -bottom-2 md:-bottom-3 h-1.5 md:h-2 w-2/3 bg-leaf rounded-full" />
           </span>
         </div>

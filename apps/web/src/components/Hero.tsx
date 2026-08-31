@@ -113,8 +113,12 @@ export default function Hero() {
               variants={popIn}
               className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.1] mb-5"
             >
-              <span className="text-brand">{hero.titleLine1}. </span>
-              <span className="text-brand">{hero.titleLine2}.</span>
+              <span className="text-brand">{hero.titleLine1} </span>
+              {/* Dòng 2 gạch chân bằng border của chính span: vệt kẻ luôn dài
+                  đúng bằng chữ, không phải canh tay một khối trang trí rời. */}
+              <span className="text-brand-soft inline-block border-b-4 border-leaf pb-1">
+                {hero.titleLine2}.
+              </span>
             </motion.h1>
 
             {/* Pill tag như "Secretário" của poster */}
@@ -187,32 +191,38 @@ export default function Hero() {
               style={{ transformOrigin: "bottom center" }}
               className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0"
             >
-              {/* Mảng brand hình bóng tròn, lệch phải-xuống phía sau */}
-              <div className="absolute inset-0 translate-x-6 translate-y-4 rounded-full bg-brand" />
-              {/* Mảng chính màu leaf, cùng hình bóng tròn */}
-              <div className="absolute inset-0 rounded-full bg-leaf" />
+              {/* Vòng sau, lệch phải-xuống: xanh non pha loãng, đậm hơn vòng
+                  trước một nhịp để còn thấy được viền lệch */}
+              <div className="absolute inset-0 translate-x-6 translate-y-4 rounded-full bg-gradient-to-br from-leaf/55 to-leaf-dark/45" />
+              {/* Vòng trước: gradient nhạt nhất, từ sage sang leaf pha loãng */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-sage-3 to-leaf/55" />
             </motion.div>
-            {/* Wrapper giữ căn giữa bằng Tailwind; motion animate ảnh bên trong
-                (transform của motion sẽ ghi đè nếu đặt thẳng lên phần tử có
-                -translate-x-1/2) */}
+            {/* Wrapper giữ căn giữa bằng Tailwind; clip-path chạy trên khối
+                bọc nên ảnh và bóng sticker lộ ra cùng một nhịp — trước đây chỉ
+                ảnh chính trượt lên còn bóng đứng yên, nên lúc đang chạy nhìn
+                thành hai hình lệch nhau. */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[85%] w-auto md:h-auto md:w-[108%] max-w-none pointer-events-none">
-              <motion.img
-                initial={reduce ? false : { opacity: 0, y: 110 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 90, damping: 20, delay: 0.35 }}
+              <motion.div
+                initial={reduce ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
+                animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+                transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 style={{ x: parallaxX }}
-                src={hero.portraitUrl}
-                alt="Cô Hồ Ngọc Thương"
-                className="h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none"
-              />
-              {/* Bóng silhouette lệch kiểu sticker (như mẫu): chính ảnh đó,
-                  brightness(0)+invert(1) thành mảng trắng phẳng, đẩy lệch phải */}
-              <img
-                aria-hidden="true"
-                src={hero.portraitUrl}
-                alt=""
-                className="absolute inset-0 h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none -z-10 translate-x-7 [filter:brightness(0)invert(1)] opacity-70"
-              />
+                className="relative h-full w-auto md:h-auto md:w-full"
+              >
+                <img
+                  src={hero.portraitUrl}
+                  alt="Cô Hồ Ngọc Thương"
+                  className="relative h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none"
+                />
+                {/* Bóng silhouette lệch kiểu sticker (như mẫu): chính ảnh đó,
+                    brightness(0)+invert(1) thành mảng trắng phẳng, đẩy lệch phải */}
+                <img
+                  aria-hidden="true"
+                  src={hero.portraitUrl}
+                  alt=""
+                  className="absolute inset-0 h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none -z-10 translate-x-7 [filter:brightness(0)invert(1)] opacity-70"
+                />
+              </motion.div>
             </div>
           </div>
         </div>
