@@ -52,8 +52,8 @@ export default function Header() {
           className="group flex items-center gap-2.5 cursor-pointer shrink-0"
           id="logo-button"
         >
-          <span className="w-10 h-10 rounded-full bg-leaf flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-leaf-dark">
-            <GraduationCap size={20} className="text-brand" />
+          <span className="w-10 h-10 rounded-full bg-brand flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-brand-deep">
+            <GraduationCap size={20} className="text-leaf" />
           </span>
           <span className="font-bold text-lg tracking-tight text-brand whitespace-nowrap">
             HNT IELTS

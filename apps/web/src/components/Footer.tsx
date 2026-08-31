@@ -15,8 +15,8 @@ export default function Footer() {
           {/* Thương hiệu */}
           <div className="md:col-span-4">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-6">
-              <span className="w-10 h-10 rounded-full bg-leaf flex items-center justify-center shrink-0">
-                <GraduationCap size={20} className="text-brand" />
+              <span className="w-10 h-10 rounded-full bg-brand flex items-center justify-center shrink-0">
+                <GraduationCap size={20} className="text-leaf" />
               </span>
               <span className="font-bold text-lg tracking-tight">HNT IELTS</span>
             </Link>

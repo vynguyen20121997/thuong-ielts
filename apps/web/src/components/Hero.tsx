@@ -65,8 +65,8 @@ export default function Hero() {
               <span className="text-brand">{hero.titleLine2}.</span>
             </h1>
 
-            {/* Pill tag như "Secretário" của poster — nền xanh sáng cho nhẹ mắt */}
-            <span className="inline-flex items-center px-6 py-2.5 bg-leaf text-brand rounded-full text-sm font-bold mb-6">
+            {/* Pill tag như "Secretário" của poster */}
+            <span className="inline-flex items-center px-6 py-2.5 bg-brand text-white rounded-full text-sm font-bold mb-6">
               IELTS 8.5 Overall (×3) · CELTA Cambridge
             </span>
 
