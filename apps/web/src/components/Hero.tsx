@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import gsap from "gsap";
 import { ArrowRight, Check } from "lucide-react";
 import type { HeroContent } from "@thuong-ielts/db";
 
@@ -34,6 +35,48 @@ const STATS = [
 
 export default function Hero() {
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
+  const sectionRef = useRef<HTMLElement>(null);
+  const capsuleRef = useRef<HTMLDivElement>(null);
+  const portraitRef = useRef<HTMLImageElement>(null);
+  const textColRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  // Reveal dàn cảnh bằng GSAP: viên nang mọc từ đáy → chân dung trồi lên sau
+  // nó → cột chữ và thanh điểm nối đuôi. Chỉ chạy một lần lúc vào trang.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from(capsuleRef.current, {
+        scaleY: 0,
+        transformOrigin: "bottom center",
+        duration: 0.9,
+      })
+        // Ảnh nằm trong wrapper căn giữa bằng Tailwind — animate ảnh bên trong
+        // để GSAP không ghi đè translate-x của wrapper.
+        .from(portraitRef.current, { y: 110, autoAlpha: 0, duration: 1.1 }, "-=0.55")
+        .from(
+          textColRef.current ? Array.from(textColRef.current.children) : [],
+          { y: 26, autoAlpha: 0, duration: 0.7, stagger: 0.08 },
+          "-=0.9",
+        )
+        .from(statsRef.current, { y: 24, autoAlpha: 0, duration: 0.7 }, "-=0.4");
+
+      // Parallax nhẹ theo chuột trên desktop — chạy sau khi reveal xong
+      const fine = window.matchMedia("(pointer: fine)").matches;
+      if (fine && portraitRef.current) {
+        const toX = gsap.quickTo(portraitRef.current, "x", { duration: 0.8, ease: "power2.out" });
+        const onMove = (e: MouseEvent) => {
+          toX(((e.clientX - window.innerWidth / 2) / window.innerWidth) * 24);
+        };
+        tl.eventCallback("onComplete", () => window.addEventListener("mousemove", onMove));
+        return () => window.removeEventListener("mousemove", onMove);
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   useEffect(() => {
     fetch("/api/hero")
@@ -53,13 +96,14 @@ export default function Hero() {
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative pt-24 md:pt-28 overflow-hidden bg-gradient-to-br from-mist via-[#FAF7F4] to-[#F6EFEC]"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-8 items-end">
           {/* Cột chữ: headline → pill → hồ sơ năng lực → CTA (bố cục poster) */}
-          <div className="text-left pb-6 md:pb-14 order-1">
+          <div ref={textColRef} className="text-left pb-6 md:pb-14 order-1">
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.1] mb-5">
               <span className="text-brand">{hero.titleLine1}. </span>
               <span className="text-brand">{hero.titleLine2}.</span>
@@ -119,18 +163,25 @@ export default function Hero() {
           <div className="relative h-[460px] sm:h-[560px] md:h-[640px] order-2">
             {/* Viên nang bo tròn hẳn đầu trên, hẹp hơn người — người tràn ra hai bên và lên trên.
                 Màu xanh sáng #9FE870 đồng bộ với nút "Xem Thành Tích Học Viên". */}
-            <div className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 rounded-t-[999px] bg-leaf" />
-            <img
-              src={hero.portraitUrl}
-              alt="Cô Hồ Ngọc Thương"
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[85%] w-auto md:h-auto md:w-[108%] max-w-none object-contain object-bottom select-none pointer-events-none"
+            <div
+              ref={capsuleRef}
+              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 rounded-t-[999px] bg-leaf"
             />
+            {/* Wrapper giữ căn giữa bằng Tailwind; GSAP animate ảnh bên trong */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[85%] w-auto md:h-auto md:w-[108%] max-w-none pointer-events-none">
+              <img
+                ref={portraitRef}
+                src={hero.portraitUrl}
+                alt="Cô Hồ Ngọc Thương"
+                className="h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Thanh điểm số sáng đè mép dưới — pill trắng, số xanh */}
-      <div className="relative z-20 max-w-6xl mx-auto px-6 md:px-12 -mt-2 pb-10">
+      <div ref={statsRef} className="relative z-20 max-w-6xl mx-auto px-6 md:px-12 -mt-2 pb-10">
         <div className="bg-white rounded-[32px] shadow-[0_20px_60px_rgba(20,83,45,0.12)] border border-black/5 px-6 py-6 md:py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:divide-x md:divide-black/10">
           {STATS.map((s) => (
             <div key={s.label} className="text-center px-4">
