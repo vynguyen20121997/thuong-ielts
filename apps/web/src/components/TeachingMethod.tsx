@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Reveal from "./Reveal";
 import {
   Stethoscope,
   Target,
@@ -74,7 +75,7 @@ export default function TeachingMethod() {
     <section id="phuong-phap" className="py-16 md:py-20 bg-mist-2 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Header căn giữa theo Figma */}
-        <div className="text-center max-w-2xl mx-auto mb-12 flex flex-col items-center gap-4">
+        <Reveal className="text-center max-w-2xl mx-auto mb-12 flex flex-col items-center gap-4">
           <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
             Phương Pháp Giảng Dạy
           </span>
@@ -85,15 +86,16 @@ export default function TeachingMethod() {
             Ba bước lặp lại xuyên suốt lộ trình: biết chính xác mình yếu ở đâu, luyện đúng chỗ đó,
             và nhìn thấy sự tiến bộ qua từng tuần.
           </p>
-        </div>
+        </Reveal>
 
-        {/* 3 thẻ so le: thẻ giữa hạ thấp trên desktop */}
+        {/* 3 thẻ so le: thẻ giữa hạ thấp trên desktop, reveal nối đuôi nhau */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-start mb-16">
           {STEPS.map((step, i) => {
             const Icon = step.icon;
             return (
-              <div
+              <Reveal
                 key={step.number}
+                delay={i * 0.08}
                 className={`bg-white rounded-[32px] p-8 shadow-sm hover:shadow-lg transition-shadow duration-300 ${i === 1 ? "md:mt-14" : ""}`}
               >
                 <span className="h-20 w-20 rounded-full bg-sage-3 flex items-center justify-center mb-8">
@@ -108,17 +110,21 @@ export default function TeachingMethod() {
                 <p className="text-sm md:text-base text-brand/60 leading-relaxed">
                   {step.description}
                 </p>
-              </div>
+              </Reveal>
             );
           })}
         </div>
 
         {/* Bảng Skill → Cách học: 4 kỹ năng, mỗi kỹ năng tóm tắt cách dạy */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14">
-          {SKILLS.map((skill) => {
+          {SKILLS.map((skill, i) => {
             const Icon = skill.icon;
             return (
-              <div key={skill.name} className="bg-white rounded-[28px] p-7 md:p-8 flex flex-col gap-4 shadow-sm">
+              <Reveal
+                key={skill.name}
+                delay={(i % 2) * 0.08}
+                className="bg-white rounded-[28px] p-7 md:p-8 flex flex-col gap-4 shadow-sm"
+              >
                 <div className="flex items-center gap-3">
                   <span className="h-11 w-11 rounded-full bg-leaf flex items-center justify-center shrink-0">
                     <Icon size={20} className="text-brand" />
@@ -128,13 +134,13 @@ export default function TeachingMethod() {
                 <p className="text-sm md:text-base text-brand/70 leading-relaxed">
                   {skill.description}
                 </p>
-              </div>
+              </Reveal>
             );
           })}
         </div>
 
         {/* Nút vào trang phương pháp chi tiết (theo doc) */}
-        <div className="text-center">
+        <Reveal className="text-center">
           <Link
             href="/phuong-phap"
             className="group inline-flex items-center gap-2 px-9 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md"
@@ -145,7 +151,7 @@ export default function TeachingMethod() {
               className="transition-transform duration-300 group-hover:translate-x-1"
             />
           </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

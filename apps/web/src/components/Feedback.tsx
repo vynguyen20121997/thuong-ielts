@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Quote, X, Maximize2 } from "lucide-react";
 import { FeedbackItem } from "../data/feedbackData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
+import Reveal from "./Reveal";
 
 function firstLetter(s: string): string {
   const t = s.trim();
@@ -106,7 +107,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Preview header — căn giữa theo Figma, tiêu đề sans đậm thay vì serif */}
         {isPreview && (
-          <div className="text-center mb-12 flex flex-col items-center gap-4">
+          <Reveal className="text-center mb-12 flex flex-col items-center gap-4">
             <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
               Học Viên Nói Gì Về Cô Thương
             </span>
@@ -114,7 +115,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
               150+ Đánh Giá Tích Cực <br />
               Từ Học Viên
             </h2>
-          </div>
+          </Reveal>
         )}
 
         {/* Cards: carousel on homepage preview, masonry on full page */}
@@ -132,6 +133,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
             {/* Masonry 2 cột theo Figma: bề rộng cột cố định, chiều cao thẻ ôm
                 theo ảnh (ảnh giữ nguyên tỉ lệ, không kéo giãn theo ô lưới);
                 ảnh quá dài thì cắt ở 560px — bấm vào lightbox xem đủ. */}
+            <Reveal delay={0.1}>
             <div className="columns-1 md:columns-2 gap-6">
               {visible.map((item) => (
                 <button
@@ -161,6 +163,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 </button>
               ))}
             </div>
+            </Reveal>
 
             <div className="mt-12 text-center">
               <Link

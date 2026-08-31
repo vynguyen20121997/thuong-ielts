@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Reveal from "./Reveal";
 import { ArrowRight } from "lucide-react";
 
 /**
@@ -8,7 +9,7 @@ import { ArrowRight } from "lucide-react";
 export default function ContactCTA() {
   return (
     <section id="lien-he" className="py-16 md:py-20 bg-brand relative overflow-hidden">
-      <div className="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-10">
+      <Reveal className="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-10">
         <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-white leading-snug mb-4">
           Bạn muốn học IELTS cùng mình <br className="hidden md:block" />
           hoặc trao đổi về cơ hội hợp tác?
@@ -34,7 +35,7 @@ export default function ContactCTA() {
             Liên Hệ Hợp Tác
           </Link>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

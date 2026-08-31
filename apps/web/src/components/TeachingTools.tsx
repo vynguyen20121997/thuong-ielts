@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Reveal from "./Reveal";
 import {
   FileCheck2,
   Mic,
@@ -37,7 +38,7 @@ export default function TeachingTools() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
           {/* Cột trái: tiêu đề + mô tả + CTA */}
-          <div className="text-left flex flex-col items-start gap-5">
+          <Reveal className="text-left flex flex-col items-start gap-5">
             <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
               Hệ Thống & Công Cụ Giảng Dạy
             </span>
@@ -66,14 +67,14 @@ export default function TeachingTools() {
                 className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
-          </div>
+          </Reveal>
 
           {/* Cột phải: lưới 2×2 công cụ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-            {TOOLS.map((tool) => {
+            {TOOLS.map((tool, i) => {
               const Icon = tool.icon;
               return (
-                <div key={tool.name} className="bg-sage rounded-[28px] p-7">
+                <Reveal key={tool.name} delay={i * 0.08} className="bg-sage rounded-[28px] p-7">
                   <span className="h-14 w-14 rounded-full bg-white flex items-center justify-center mb-8 shadow-sm">
                     <Icon size={22} className="text-brand" />
                   </span>
@@ -81,14 +82,15 @@ export default function TeachingTools() {
                     {tool.name}
                   </h3>
                   <p className="text-sm text-brand/60 leading-relaxed">{tool.description}</p>
-                </div>
+                </Reveal>
               );
             })}
 
             {/* Bộ đề luyện tập miễn phí — thẻ xanh đậm, bấm được */}
+            <Reveal delay={0.24}>
             <Link
               href="/kiem-tra-kien-thuc"
-              className="group bg-brand hover:bg-brand-deep rounded-[28px] p-7 transition-colors duration-300 flex flex-col"
+              className="group h-full bg-brand hover:bg-brand-deep rounded-[28px] p-7 transition-colors duration-300 flex flex-col"
             >
               <span className="h-14 w-14 rounded-full bg-sage-3/20 flex items-center justify-center mb-8">
                 <GraduationCap size={22} className="text-[#C9E3BE]" />
@@ -107,6 +109,7 @@ export default function TeachingTools() {
                 />
               </span>
             </Link>
+            </Reveal>
           </div>
         </div>
       </div>

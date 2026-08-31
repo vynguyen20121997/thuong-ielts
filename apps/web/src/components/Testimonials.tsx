@@ -18,6 +18,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ExtendedTestimonialItem } from "../data/testimonialsData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
 import Carousel from "./Carousel";
+import Reveal from "./Reveal";
 
 function firstLetter(name: string): string {
   const t = name.trim();
@@ -339,7 +340,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Preview header — trái tiêu đề, phải nút outline theo Figma */}
         {isPreview && (
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
+          <Reveal className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
             <div className="text-left flex flex-col gap-4">
               <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
                 Góc Vinh Danh Học Viên
@@ -355,7 +356,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             >
               Xem tất cả thành tích học viên
             </Link>
-          </div>
+          </Reveal>
         )}
 
         {/* Year filter — full page only */}
@@ -399,6 +400,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           /* Carousel tự chạy theo sheet portfolio. Ảnh vinh danh trong DB đã là
              thẻ thiết kế sẵn (khung đỏ, tên, band, LRWS) — hiển thị nguyên bản,
              không vẽ lại khung/tên kẻo lặp thông tin. Bấm mở lightbox. */
+          <Reveal delay={0.1}>
           <Carousel ariaLabel="Thành tích học viên">
             {shown.map((test, i) => {
               const images = test.proofUrl ?? [];
@@ -430,6 +432,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
               );
             })}
           </Carousel>
+          </Reveal>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
