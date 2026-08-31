@@ -187,10 +187,10 @@ export default function Hero() {
               style={{ transformOrigin: "bottom center" }}
               className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0"
             >
-              {/* Mảng BÓNG brand bo tròn mượt, lệch phải-xuống phía sau */}
-              <div className="absolute inset-0 translate-x-6 translate-y-4 rounded-t-[999px] bg-brand" />
-              {/* Mảng chính màu leaf, cùng dáng vòm */}
-              <div className="absolute inset-0 rounded-t-[999px] bg-leaf" />
+              {/* Mảng brand hình bóng tròn, lệch phải-xuống phía sau */}
+              <div className="absolute inset-0 translate-x-6 translate-y-4 rounded-full bg-brand" />
+              {/* Mảng chính màu leaf, cùng hình bóng tròn */}
+              <div className="absolute inset-0 rounded-full bg-leaf" />
             </motion.div>
             {/* Wrapper giữ căn giữa bằng Tailwind; motion animate ảnh bên trong
                 (transform của motion sẽ ghi đè nếu đặt thẳng lên phần tử có
