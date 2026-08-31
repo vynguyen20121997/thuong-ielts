@@ -177,15 +177,15 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Chân dung zoom lớn tràn khỏi VIÊN NANG xanh phía sau (đúng hình khối poster) */}
+          {/* Chân dung zoom lớn tràn khỏi TẤM THẺ xanh phía sau (đúng hình khối poster) */}
           <div className="relative h-[460px] sm:h-[560px] md:h-[640px] order-2">
-            {/* Viên nang mọc lên từ đáy bằng spring */}
+            {/* Tấm thẻ bo lớn, mọc lên từ đáy bằng spring */}
             <motion.div
               initial={reduce ? false : { scaleY: 0 }}
               animate={{ scaleY: 1 }}
               transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.1 }}
               style={{ transformOrigin: "bottom center" }}
-              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 rounded-t-[999px] bg-leaf"
+              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0 bg-brand [clip-path:polygon(0%_30%,8%_8%,30%_0%,74%_2%,96%_10%,100%_42%,97%_100%,2%_100%)]"
             />
             {/* Wrapper giữ căn giữa bằng Tailwind; motion animate ảnh bên trong
                 (transform của motion sẽ ghi đè nếu đặt thẳng lên phần tử có
