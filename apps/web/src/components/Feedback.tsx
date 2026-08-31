@@ -82,7 +82,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
   return (
     <section
       id="feedback"
-      className={`${isPreview ? "py-16 md:py-20 bg-mist" : "pb-24 bg-white"} relative overflow-hidden border-b border-black/5`}
+      className={`${isPreview ? "py-16 md:py-20 bg-white" : "pb-24 bg-white"} relative overflow-hidden border-b border-black/5`}
     >
       {/* Nền preview phẳng theo Figma; glow chỉ giữ cho trang đầy đủ */}
       {!isPreview && (
@@ -140,7 +140,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                   key={item.id}
                   type="button"
                   onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
-                  className="feedback-card group mb-6 w-full break-inside-avoid flex flex-col gap-6 text-left bg-white rounded-[32px] p-8 shadow-sm hover:shadow-xl transition-all duration-300 cursor-zoom-in"
+                  className="feedback-card group mb-6 w-full break-inside-avoid flex flex-col gap-6 text-left bg-white border border-black/5 rounded-[32px] p-8 shadow-sm hover:shadow-xl transition-all duration-300 cursor-zoom-in"
                 >
                   <span className="flex items-center gap-2">
                     <Quote size={17} className="fill-brand-deep text-brand-deep shrink-0" />

@@ -34,7 +34,7 @@ const TOOLS = [
 
 export default function TeachingTools() {
   return (
-    <section id="he-thong-giang-day" className="py-16 md:py-20 bg-mist-3 relative overflow-hidden">
+    <section id="he-thong-giang-day" className="py-16 md:py-20 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
           {/* Cột trái: tiêu đề + mô tả + CTA */}
