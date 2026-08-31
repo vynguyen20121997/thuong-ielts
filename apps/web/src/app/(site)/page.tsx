@@ -1,4 +1,5 @@
 import Hero from "../../components/Hero";
+import Certificates from "../../components/Certificates";
 import Testimonials from "../../components/Testimonials";
 import Feedback from "../../components/Feedback";
 import TeachingMethod from "../../components/TeachingMethod";
@@ -11,6 +12,9 @@ export default function HomePage() {
       {/* Thứ tự theo Google Doc cấu trúc website:
           hero → thành tích → cảm nhận → phương pháp → công cụ → liên hệ */}
       <Hero />
+
+      {/* Học vấn & chứng chỉ ngay dưới hero — chứng thực trước khi vào thành tích học viên */}
+      <Certificates />
 
       <div id="testimonials-container">
         <Testimonials variant="preview" />
