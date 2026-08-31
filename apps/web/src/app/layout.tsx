@@ -41,7 +41,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HNT.IELTS - Hồ Ngọc Thương | Luyện Thi IELTS Logic",
+  title: "Thương Hồ's Class",
   description:
     "Chuyên gia luyện thi IELTS và phát triển tư duy biện chứng. Chương trình luyện thi IELTS chất lượng cao, giúp học viên Việt Nam chinh phục IELTS bền vững và thực tế.",
 };

@@ -6,12 +6,11 @@ export async function GET() {
     const { rows } = await pool.query(
       `SELECT id, subject,
               COALESCE(
-                (SELECT '/api/media/' || fma.media_id::text
+                (SELECT array_agg('/api/media/' || fma.media_id::text ORDER BY fma.position)
                  FROM feedback_media_assets fma
-                 WHERE fma.feedback_id = feedbacks.id
-                 ORDER BY fma.position LIMIT 1),
-                image_url
-              ) AS image_url,
+                 WHERE fma.feedback_id = feedbacks.id),
+                CASE WHEN image_url IS NOT NULL AND image_url <> '' THEN ARRAY[image_url] ELSE ARRAY[]::text[] END
+              ) AS image_urls,
               date, is_class_summary
        FROM feedbacks
        ORDER BY date DESC NULLS LAST`
@@ -20,7 +19,8 @@ export async function GET() {
     const data = rows.map((r) => ({
       id: r.id,
       subject: r.subject,
-      imageUrl: r.image_url ?? "",
+      imageUrl: r.image_urls?.[0] ?? "",
+      imageUrls: r.image_urls ?? [],
       date: toDisplayDate(r.date),
       isClassSummary: r.is_class_summary ?? false,
     }));

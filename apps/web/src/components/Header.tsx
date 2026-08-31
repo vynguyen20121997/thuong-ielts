@@ -23,19 +23,30 @@ export default function Header() {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const navItems = [
-    { label: "Trang Chủ", to: "/" },
-    { label: "Giới Thiệu", to: "/gioi-thieu" },
-    { label: "Giảng Dạy", to: "/phuong-phap" },
-    { label: "Thành Tích", to: "/thanh-tich" },
+  const navGroups = [
+    {
+      label: "Giới Thiệu",
+      items: [
+        { label: "Về giáo viên", to: "/gioi-thieu" },
+        { label: "Kinh nghiệm giảng dạy", to: "/gioi-thieu#kinh-nghiem" },
+        { label: "Học vấn & Chứng chỉ", to: "/gioi-thieu#hoc-van" },
+      ],
+    },
+    {
+      label: "Giảng Dạy",
+      items: [
+        { label: "Phương pháp giảng dạy", to: "/phuong-phap" },
+        { label: "Hệ thống & Công cụ giảng dạy", to: "/he-thong-cong-cu" },
+      ],
+    },
+    {
+      label: "Thành Tích",
+      items: [
+        { label: "Kết quả học viên", to: "/ket-qua-hoc-vien" },
+        { label: "Câu chuyện học viên", to: "/thanh-tich" },
+      ],
+    },
   ];
-
-  const studentPages = [
-    { label: "Kết quả học viên", to: "/ket-qua-hoc-vien" },
-    { label: "Cảm nhận học viên", to: "/cam-nhan-hoc-vien" },
-  ];
-
-  const isStudentActive = studentPages.some((p) => p.to === pathname);
 
   const linkClass = (isActive: boolean) =>
     `relative py-2 text-xs lg:text-sm transition-colors cursor-pointer group whitespace-nowrap ${isActive ? "text-brand font-bold" : "text-brand/70 font-semibold hover:text-brand"}`;
@@ -56,7 +67,7 @@ export default function Header() {
             <GraduationCap size={20} className="text-leaf" />
           </span>
           <span className="font-bold text-lg tracking-tight text-brand whitespace-nowrap">
-            HNT IELTS
+            Thương Hồ&apos;s Class
           </span>
         </Link>
 
@@ -65,18 +76,14 @@ export default function Header() {
           className="hidden md:flex items-center gap-3 lg:gap-5 xl:gap-7 min-w-0"
           id="desktop-nav"
         >
-          {navItems.map((item) => (
-            <Link key={item.to} href={item.to} className={linkClass(pathname === item.to)}>
-              {item.label}
-            </Link>
-          ))}
-
-          {/* Học Viên dropdown */}
-          <div className="relative group py-2" id="nav-hocvien">
+          {navGroups.map((group) => {
+            const active = group.items.some((item) => pathname === item.to.split("#")[0]);
+            return (
+          <div key={group.label} className="relative group py-2">
             <button
-              className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${isStudentActive ? "text-brand font-bold" : "text-brand/70 font-semibold group-hover:text-brand"}`}
+              className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${active ? "text-brand font-bold" : "text-brand/70 font-semibold group-hover:text-brand"}`}
             >
-              Học Viên
+              {group.label}
               <ChevronDown
                 size={14}
                 className="transition-transform duration-300 group-hover:rotate-180"
@@ -84,7 +91,7 @@ export default function Header() {
             </button>
             <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
               <div className="bg-white border border-black/5 rounded-2xl shadow-xl p-2 w-56">
-                {studentPages.map((p) => (
+                {group.items.map((p) => (
                   <Link
                     key={p.to}
                     href={p.to}
@@ -96,7 +103,12 @@ export default function Header() {
               </div>
             </div>
           </div>
+            );
+          })}
 
+          <Link href="/cam-nhan-hoc-vien" className={linkClass(pathname === "/cam-nhan-hoc-vien")}>
+            Đánh Giá
+          </Link>
           <Link href="/tu-van" className={linkClass(pathname === "/tu-van")}>
             Liên Hệ
           </Link>
@@ -124,21 +136,11 @@ export default function Header() {
         id="mobile-menu-drawer"
       >
         <div className="flex flex-col gap-7">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              href={item.to}
-              className="text-3xl font-bold text-left text-brand hover:text-brand-deep transition-colors cursor-pointer"
-            >
-              {item.label}
-            </Link>
-          ))}
-
-          {/* Học Viên group */}
-          <div>
-            <span className="text-2xs text-brand/40 font-medium block mb-3">Học Viên</span>
+          {navGroups.map((group) => (
+          <div key={group.label}>
+            <span className="text-2xs text-brand/40 font-medium block mb-3">{group.label}</span>
             <div className="flex flex-col gap-4 pl-1">
-              {studentPages.map((p) => (
+              {group.items.map((p) => (
                 <Link
                   key={p.to}
                   href={p.to}
@@ -149,6 +151,11 @@ export default function Header() {
               ))}
             </div>
           </div>
+          ))}
+
+          <Link href="/cam-nhan-hoc-vien" className="text-3xl font-bold text-left text-brand hover:text-brand-deep transition-colors cursor-pointer">
+            Đánh Giá
+          </Link>
 
           <Link
             href="/tu-van"

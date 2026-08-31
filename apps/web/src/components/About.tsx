@@ -51,7 +51,7 @@ export default function About() {
   return (
     <section
       ref={sectionRef}
-      id="about"
+      id="ve-giao-vien"
       className="py-28 bg-white relative overflow-hidden border-b border-black/5"
     >
       {/* Decorative background visual elements */}
@@ -111,7 +111,7 @@ export default function About() {
           </div>
 
           {/* Education & Certification Block */}
-          <div className="reveal-element grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <div id="hoc-van" className="reveal-element grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 scroll-mt-28">
             <div className="flex gap-4 p-6 bg-white border border-black/5 rounded-2xl shadow-sm">
               <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
                 <GraduationCap className="text-brand" size={24} />
@@ -141,7 +141,7 @@ export default function About() {
           </div>
 
           {/* Narrative description */}
-          <div className="reveal-element mb-10 text-ink/85 space-y-4">
+          <div id="kinh-nghiem" className="reveal-element mb-10 text-ink/85 space-y-4 scroll-mt-28">
             <p className="text-base md:text-lg leading-relaxed">
               Xin chào, tôi là <strong>Hồ Ngọc Thương</strong>. Sau khi tốt nghiệp, tôi từng đi làm
               văn phòng nhưng không tìm thấy cảm hứng trong công việc, nên quyết định học IELTS vì

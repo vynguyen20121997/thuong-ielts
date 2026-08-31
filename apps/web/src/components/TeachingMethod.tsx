@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 /**
- * Homepage block "Phương pháp giảng dạy" — 3 bước Chẩn đoán → Cải thiện → Theo dõi.
+ * Homepage block "Phương pháp giảng dạy".
  *
  * Bố cục đặt lại cho dễ đọc, ba điểm đáng nhớ:
  *
@@ -31,21 +31,18 @@ import {
 
 const STEPS = [
   {
-    number: "01",
     icon: Stethoscope,
     title: "Chẩn đoán đúng vấn đề",
     description:
       "Xác định cụ thể điểm mạnh, điểm yếu và nguyên nhân khiến học viên chưa đạt band mục tiêu.",
   },
   {
-    number: "02",
     icon: Target,
     title: "Luyện tập có trọng tâm",
     description:
       "Thiết kế bài tập và phương pháp luyện tập tập trung vào những kỹ năng học viên thực sự cần cải thiện.",
   },
   {
-    number: "03",
     icon: TrendingUp,
     title: "Theo dõi sự tiến bộ",
     description:
@@ -100,7 +97,7 @@ export default function TeachingMethod() {
               Phương pháp giảng dạy
             </span>
             <h2 className="font-serif text-3xl md:text-[46px] font-bold tracking-tight text-brand leading-[1.12]">
-              Chẩn đoán → Cải thiện → Theo dõi
+              Lộ trình học có trọng tâm
             </h2>
           </div>
           <p className="text-brand/70 text-base md:text-lg leading-relaxed md:pb-1.5">
@@ -109,14 +106,14 @@ export default function TeachingMethod() {
           </p>
         </Reveal>
 
-        {/* Ba bước NGANG HÀNG. Bước 03 tô đậm vòng icon vì nó là bước đóng vòng lặp. */}
+        {/* Ba nguyên tắc cốt lõi của lộ trình học. */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 mb-14 md:mb-16">
           {STEPS.map((step, i) => {
             const Icon = step.icon;
             const last = i === STEPS.length - 1;
             return (
               <Reveal
-                key={step.number}
+                key={step.title}
                 delay={i * 0.08}
                 className="bg-white rounded-[28px] p-8 md:p-9 flex flex-col gap-3.5 shadow-sm hover:shadow-lg transition-shadow duration-300"
               >
@@ -125,9 +122,6 @@ export default function TeachingMethod() {
                     className={`h-13 w-13 rounded-full flex items-center justify-center shrink-0 ${last ? "bg-leaf" : "bg-sage-3"}`}
                   >
                     <Icon size={24} className={last ? "text-brand-deep" : "text-brand"} />
-                  </span>
-                  <span className="font-mono text-2xs font-bold uppercase tracking-[0.06em] text-brand/40">
-                    Bước {step.number}
                   </span>
                 </div>
                 <h3 className="font-serif text-xl md:text-[21px] font-bold text-brand leading-snug">
@@ -141,11 +135,8 @@ export default function TeachingMethod() {
           })}
         </div>
 
-        {/* Bốn kỹ năng: mỗi kỹ năng một HÀNG, tên trái / mô tả phải */}
+        {/* Bốn kỹ năng: mỗi kỹ năng một hàng, tên trái / mô tả phải */}
         <div className="mb-12 md:mb-14">
-          <span className="block text-sm font-semibold uppercase tracking-[0.1em] text-brand/45 mb-5">
-            Bốn kỹ năng, bốn cách học
-          </span>
           <div className="flex flex-col gap-2.5">
             {SKILLS.map((skill, i) => {
               const Icon = skill.icon;
@@ -186,7 +177,6 @@ export default function TeachingMethod() {
               className="transition-transform duration-300 group-hover:translate-x-1"
             />
           </Link>
-          <span className="text-sm text-brand/55">Chi tiết từng kỹ năng, 22 mục.</span>
         </Reveal>
       </div>
     </section>

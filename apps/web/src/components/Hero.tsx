@@ -13,7 +13,7 @@ import type { HeroContent } from "@thuong-ielts/db";
 const DEFAULT_HERO: HeroContent = {
   portraitUrl: "/images/ho-ngoc-thuong-hero.webp",
   titleLine1: "Hồ Ngọc Thương",
-  titleLine2: "Giáo Viên IELTS",
+  titleLine2: "Giáo viên IELTS",
   quote:
     "Giúp học viên tiến bộ thông qua lộ trình có hệ thống, nhận xét chi tiết và phương pháp học tập phù hợp.",
   bio: "IELTS Overall 8.5 (3 lần thi), Reading & Listening 9.0 (3 lần), Writing 8.5 (2026), Speaking 8.5 (2021). Chứng chỉ giảng dạy CELTA do Đại học Cambridge cấp và 6 năm kinh nghiệm luyện thi IELTS.",
@@ -24,7 +24,7 @@ const DEFAULT_HERO: HeroContent = {
 // Ba con số muốn nổi ngay cạnh chân dung — khác STATS ở dưới: đây là phần
 // highlight, STATS là dải điểm số đầy đủ đè mép dưới hero.
 const HERO_HIGHLIGHTS = [
-  { value: "8.5", label: "IELTS Overall (×3)" },
+  { value: "CELTA-qualified", label: "teacher" },
   { value: "6 năm", label: "Kinh nghiệm giảng dạy" },
   { value: "120+", label: "Học viên thành công" },
 ] as const;
@@ -117,7 +117,7 @@ export default function Hero() {
               {/* Dòng 2 gạch chân bằng border của chính span: vệt kẻ luôn dài
                   đúng bằng chữ, không phải canh tay một khối trang trí rời. */}
               <span className="text-brand-soft inline-block border-b-4 border-leaf pb-1">
-                {hero.titleLine2}.
+                {hero.titleLine2.replace(/\.$/, "")}
               </span>
             </motion.h1>
 
@@ -173,7 +173,11 @@ export default function Hero() {
                   key={h.label}
                   className="flex flex-col gap-1 rounded-[20px] border border-brand/8 bg-white px-4 py-4 shadow-[0_12px_30px_rgba(20,83,45,0.12)]"
                 >
-                  <span className="text-[34px] font-bold leading-none tracking-tight text-brand-soft">
+                  <span
+                    className={`font-bold leading-none tracking-tight text-brand-soft ${
+                      h.value === "CELTA-qualified" ? "text-[19px]" : "text-[34px]"
+                    }`}
+                  >
                     {h.value}
                   </span>
                   <span className="text-xs font-semibold leading-snug text-ink/55">
@@ -223,7 +227,11 @@ export default function Hero() {
                 key={h.label}
                 className="flex flex-col gap-1 rounded-[20px] border border-brand/8 bg-white px-4 py-4 shadow-[0_12px_30px_rgba(20,83,45,0.12)]"
               >
-                <span className="text-2xl font-bold leading-none tracking-tight text-brand-soft">
+                <span
+                  className={`font-bold leading-none tracking-tight text-brand-soft ${
+                    h.value === "CELTA-qualified" ? "text-[13px]" : "text-2xl"
+                  }`}
+                >
                   {h.value}
                 </span>
                 <span className="text-2xs font-semibold leading-snug text-ink/55">

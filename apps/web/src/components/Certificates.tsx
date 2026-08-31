@@ -20,11 +20,12 @@ import Reveal from "./Reveal";
 
 // Hồ sơ năng lực — gạch đầu dòng theo sheet portfolio (trước đây nằm ở hero)
 const CREDENTIALS = [
-  "IELTS Overall 8.5 — 3 lần thi",
-  "Reading & Listening 9.0 — 3 lần",
-  "Writing 8.5 (2026) · Speaking 8.5 (2021)",
-  "Chứng chỉ CELTA — Đại học Cambridge",
-  "6 năm kinh nghiệm luyện thi IELTS",
+  "IELTS Overall 8.5 - 3 lần",
+  "Reading & Listening 9.0 - 3 lần",
+  "Writing 8.5 (2026) & Speaking 8.5 (2021)",
+  "Chứng chỉ giảng dạy tiếng Anh quốc tế CELTA (ĐH Cambridge)",
+  "6 năm kinh nghiệm giảng dạy IELTS",
+  "Tốt nghiệp Đại học Ngoại Thương TPHCM",
 ] as const;
 
 type Cert = {
@@ -89,16 +90,9 @@ export default function Certificates() {
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-center">
           {/* Cột trái: hồ sơ năng lực (chuyển từ hero xuống) */}
           <Reveal className="flex flex-col items-start gap-5">
-            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
-              Học vấn &amp; Chứng chỉ
-            </span>
             <h2 className="font-serif text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
-              Hồ sơ năng lực
+              Bằng cấp &amp; Chứng chỉ
             </h2>
-            <p className="text-brand/70 text-base leading-relaxed">
-              Ba lần thi IELTS đều đạt Overall 8.5 với Reading và Listening 9.0 tuyệt đối. Mỗi
-              gạch đầu dòng bên dưới đều có bằng thật bên cạnh — bấm vào ảnh để phóng to.
-            </p>
             <ul className="space-y-3">
               {CREDENTIALS.map((c) => (
                 <li

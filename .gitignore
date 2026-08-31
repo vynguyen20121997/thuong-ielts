@@ -21,6 +21,3 @@ next-env.d.ts
 
 # Codex CLI configuration
 .codex/
-
-# Playwright MCP session artifacts
-.playwright-mcp/
