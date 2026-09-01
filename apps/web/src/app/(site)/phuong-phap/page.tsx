@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BookOpen, Headphones, PenLine, Mic, ArrowDown, ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
+import NavigationButtonLabel from "../../../components/NavigationButtonLabel";
 
 
 /**
@@ -464,7 +465,7 @@ export default function TeachingMethodPage() {
                   >
                     <span className="flex items-center gap-3 font-bold">
                       <span className="flex h-10 w-10 items-center justify-center rounded-full bg-leaf"><Icon size={19} /></span>
-                      Phương pháp Dạy {section.name}
+                      <NavigationButtonLabel>Phương pháp Dạy {section.name}</NavigationButtonLabel>
                     </span>
                     <ArrowRight size={19} className="transition-transform group-hover:translate-x-1" />
                   </Link>
@@ -480,7 +481,7 @@ export default function TeachingMethodPage() {
             href="/tu-van"
             className="group inline-flex items-center gap-2 px-9 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md"
           >
-            Đăng Ký Học
+            <NavigationButtonLabel>Đăng Ký Học</NavigationButtonLabel>
             <ArrowRight
               size={16}
               className="transition-transform duration-300 group-hover:translate-x-1"

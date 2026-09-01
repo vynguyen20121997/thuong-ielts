@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 import {
   motion,
   useMotionValue,
@@ -137,14 +138,14 @@ export default function Hero() {
                 href="#testimonials"
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
               >
-                Xem Thành Tích Học Viên
+                <NavigationButtonLabel>Xem Thành Tích Học Viên</NavigationButtonLabel>
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </a>
               <a
                 href="#phuong-phap"
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
               >
-                Khám Phá Phương Pháp Giảng Dạy
+                <NavigationButtonLabel>Khám Phá Phương Pháp Giảng Dạy</NavigationButtonLabel>
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </a>
             </motion.div>

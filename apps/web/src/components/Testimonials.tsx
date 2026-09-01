@@ -19,14 +19,14 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ExtendedTestimonialItem } from "../data/testimonialsData";
 import StudentPageHeader from "./StudentPageHeader";
 import Reveal from "./Reveal";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 
 interface TestimonialsProps {
   variant?: "preview" | "full";
 }
 
-// Preview: 18 thẻ, chia đều ba trang lưới 3×2.
+// Preview: 18 thẻ điểm, chia thành hai dải chạy liên tục ở trang chủ.
 const PREVIEW_COUNT = 18;
-const PREVIEW_PAGE_SIZE = 6;
 const BATCH = 9;
 const PREVIEW_EXCLUDED_IDS = new Set(["student-hong-hanh-51"]);
 
@@ -90,7 +90,6 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const [selectedProofIndex, setSelectedProofIndex] = useState<number>(0);
   const [selectedProofName, setSelectedProofName] = useState<string>("");
   const [activeYear, setActiveYear] = useState<string>("all");
-  const [previewPage, setPreviewPage] = useState(0);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
 
@@ -161,10 +160,12 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
       PREVIEW_COUNT,
     );
   }, [byScore]);
-  const previewPageCount = Math.max(1, Math.ceil(previewItems.length / PREVIEW_PAGE_SIZE));
-  const previewPageItems = previewItems.slice(
-    previewPage * PREVIEW_PAGE_SIZE,
-    (previewPage + 1) * PREVIEW_PAGE_SIZE,
+  const previewRows = useMemo(
+    () => [
+      previewItems.filter((_, index) => index % 2 === 0),
+      previewItems.filter((_, index) => index % 2 !== 0),
+    ],
+    [previewItems],
   );
   const highAchievers = useMemo(
     () => byScore.filter((item) => [8, 8.5].includes(scoreKey(item.score))),
@@ -175,14 +176,6 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     ? filtered.filter((item) => ![8, 8.5].includes(scoreKey(item.score)))
     : filtered;
   const shown = isPreview ? previewItems : regularItems.slice(0, visibleCount);
-
-  useEffect(() => {
-    if (!isPreview || shouldReduceMotion || previewPageCount < 2) return;
-    const interval = window.setInterval(() => {
-      setPreviewPage((page) => (page + 1) % previewPageCount);
-    }, 5500);
-    return () => window.clearInterval(interval);
-  }, [isPreview, previewPageCount, shouldReduceMotion]);
 
   const hasMore = !isPreview && regularItems.length > visibleCount;
 
@@ -383,7 +376,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
               href="/ket-qua-hoc-vien"
               className="group shrink-0 inline-flex items-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
             >
-              Xem tất cả thành tích học viên
+              <NavigationButtonLabel>Xem tất cả thành tích học viên</NavigationButtonLabel>
               <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </Reveal>
@@ -416,7 +409,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           </div>
         )}
 
-        {/* Cards: lưới vuông có phân trang ở trang chủ, grid đầy đủ ở trang riêng */}
+        {/* Cards: hai dải điểm chạy ngược chiều ở trang chủ, grid đầy đủ ở trang riêng */}
         {isLoading ? (
           <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/40 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
@@ -427,79 +420,46 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             Chưa có dữ liệu học viên.
           </div>
         ) : isPreview ? (
-          /* Ảnh vinh danh đã là thẻ thiết kế sẵn; gom thành lưới 3×2 để xem
-             nhiều học viên một lượt, nhưng vẫn chuyển được thêm hai trang. */
           <Reveal delay={0.1}>
-            <div className="relative" aria-label="Thành tích học viên">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={previewPage}
-                  initial={{ opacity: 0, x: 28 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -28 }}
-                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5"
-                >
-                  {previewPageItems.map((test) => {
-                    const images = test.proofUrl ?? [];
-                    if (images.length === 0) return null;
-                    return (
-                      <button
-                        key={test.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedProofImages(images);
-                          setSelectedProofIndex(0);
-                          setSelectedProofName(test.studentName);
-                        }}
-                        className="testimonial-card group relative aspect-square overflow-hidden rounded-[24px] shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-zoom-in"
-                        id={test.id}
-                      >
-                        <img
-                          src={images[0]}
-                          alt={`Thành tích ${test.studentName}: ${test.score}`}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              </AnimatePresence>
-
-              {previewPageCount > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => setPreviewPage((page) => (page - 1 + previewPageCount) % previewPageCount)}
-                    aria-label="Xem nhóm thành tích trước"
-                    className="absolute -left-4 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-brand shadow-lg transition-colors hover:border-leaf hover:bg-leaf md:flex"
+            <div className="space-y-4 overflow-hidden py-2" aria-label="Thành tích học viên">
+              {previewRows.map((row, rowIndex) => (
+                <div key={rowIndex} className="overflow-hidden">
+                  <div
+                    className={`flex w-max gap-4 pr-4 will-change-transform md:gap-5 md:pr-5 ${
+                      shouldReduceMotion
+                        ? ""
+                        : rowIndex === 0
+                          ? "student-score-marquee-left"
+                          : "student-score-marquee-right"
+                    }`}
                   >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPreviewPage((page) => (page + 1) % previewPageCount)}
-                    aria-label="Xem nhóm thành tích tiếp theo"
-                    className="absolute -right-4 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-brand shadow-lg transition-colors hover:border-leaf hover:bg-leaf md:flex"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                  <div className="mt-5 flex items-center justify-center gap-2">
-                    {Array.from({ length: previewPageCount }, (_, page) => (
-                      <button
-                        key={page}
-                        type="button"
-                        onClick={() => setPreviewPage(page)}
-                        aria-label={`Xem nhóm thành tích ${page + 1}`}
-                        className={`h-2 rounded-full transition-all ${
-                          page === previewPage ? "w-7 bg-brand" : "w-2 bg-brand/25 hover:bg-brand/45"
-                        }`}
-                      />
-                    ))}
+                    {[...row, ...row].map((test, copyIndex) => {
+                      const images = test.proofUrl ?? [];
+                      if (images.length === 0) return null;
+                      return (
+                        <button
+                          key={`${test.id}-${copyIndex}`}
+                          type="button"
+                          onClick={() => {
+                            setSelectedProofImages(images);
+                            setSelectedProofIndex(0);
+                            setSelectedProofName(test.studentName);
+                          }}
+                          className="testimonial-card group relative aspect-square w-[154px] shrink-0 overflow-hidden rounded-[22px] shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-zoom-in sm:w-[184px] md:w-[205px]"
+                          id={copyIndex < row.length ? test.id : undefined}
+                        >
+                          <img
+                            src={images[0]}
+                            alt={`Thành tích ${test.studentName}: ${test.score}`}
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
-                </>
-              )}
+                </div>
+              ))}
             </div>
           </Reveal>
         ) : (

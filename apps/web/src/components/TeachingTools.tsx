@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { X, ZoomIn, ChevronLeft, ChevronRight, ArrowRight, GraduationCap } from "lucide-react";
 import Reveal from "./Reveal";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 
 /**
  * Khối "Hệ thống & Công cụ giảng dạy" trên trang chủ.
@@ -115,7 +116,7 @@ export default function TeachingTools() {
               href="/he-thong-cong-cu"
               className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md"
             >
-              Khám phá hệ thống giảng dạy
+              <NavigationButtonLabel>Khám phá hệ thống giảng dạy</NavigationButtonLabel>
               <ArrowRight
                 size={16}
                 className="transition-transform duration-300 group-hover:translate-x-1"
@@ -231,7 +232,7 @@ export default function TeachingTools() {
               Bấm giờ như thi thật, nộp bài là có điểm, band ước lượng và giải thích từng câu.
             </p>
             <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-leaf">
-              Vào Phòng Luyện Tập
+              <NavigationButtonLabel>Vào Phòng Luyện Tập</NavigationButtonLabel>
               <ArrowRight
                 size={15}
                 className="transition-transform duration-300 group-hover:translate-x-1"

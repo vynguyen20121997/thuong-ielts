@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Quote, X, Maximize2, ArrowRight } from "lucide-react";
 import { FeedbackItem } from "../data/feedbackData";
 import StudentPageHeader, { HeaderAvatar } from "./StudentPageHeader";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 import Reveal from "./Reveal";
 
 function firstLetter(s: string): string {
@@ -57,6 +58,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
 
   const previewItems = feedbackItems.filter((item) => !PREVIEW_EXCLUDED_IDS.has(item.id));
   const visible = isPreview ? previewItems.slice(0, PREVIEW_COUNT) : feedbackItems.slice(0, visibleCount);
+  const previewColumns = [
+    visible.filter((_, index) => index % 2 === 0),
+    visible.filter((_, index) => index % 2 !== 0),
+  ];
 
   const hasMore = !isPreview && visibleCount < feedbackItems.length;
 
@@ -122,7 +127,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
           </Reveal>
         )}
 
-        {/* Cards: carousel on homepage preview, masonry on full page */}
+        {/* Cards: hai cột feedback chạy ngược chiều ở trang chủ, masonry ở trang riêng */}
         {isLoading ? (
           <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/40 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
@@ -134,39 +139,50 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
           </div>
         ) : isPreview ? (
           <>
-            {/* Masonry 3 cột (10 thẻ): bề rộng cột cố định, chiều cao thẻ ôm
-                theo ảnh (ảnh giữ nguyên tỉ lệ, không kéo giãn theo ô lưới);
-                ảnh quá dài thì cắt ở 420px — bấm vào lightbox xem đủ. */}
             <Reveal delay={0.1}>
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5">
-              {visible.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
-                  className="feedback-card group mb-5 w-full break-inside-avoid flex flex-col gap-4 text-left bg-white border border-black/5 rounded-[24px] p-5 shadow-sm hover:shadow-xl transition-all duration-300 cursor-zoom-in"
-                >
-                  <span className="flex items-center gap-2">
-                    <Quote size={15} className="fill-brand-deep text-brand-deep shrink-0" />
-                    <span className="text-xs font-bold text-brand-deep tracking-wide leading-tight">
-                      {item.subject}
-                    </span>
-                  </span>
-                  <div className="relative rounded-xl overflow-hidden max-h-[420px]">
-                    <img
-                      src={item.imageUrl}
-                      alt={`Cảm nhận học viên: ${item.subject}`}
-                      loading="lazy"
-                      className="w-full h-auto"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-medium gap-1.5 ">
-                      <Maximize2 size={14} />
-                      Phóng to để đọc rõ hơn
+              <div className="grid h-[590px] grid-cols-2 gap-4 overflow-hidden md:h-[720px] md:gap-5">
+                {previewColumns.map((column, columnIndex) => (
+                  <div key={columnIndex} className="overflow-hidden">
+                    <div
+                      className={`feedback-marquee-track flex w-full flex-col gap-4 pb-4 md:gap-5 md:pb-5 ${
+                        reduce
+                          ? ""
+                          : columnIndex === 0
+                            ? "feedback-marquee-down"
+                            : "feedback-marquee-up"
+                      }`}
+                    >
+                      {[...column, ...column].map((item, copyIndex) => (
+                        <button
+                          key={`${item.id}-${copyIndex}`}
+                          type="button"
+                          onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
+                          className="feedback-card group w-full shrink-0 overflow-hidden rounded-[20px] border border-black/5 bg-white p-3 text-left shadow-sm transition-all duration-300 hover:shadow-xl cursor-zoom-in md:rounded-[24px] md:p-5"
+                        >
+                          <span className="mb-3 flex items-center gap-2 md:mb-4">
+                            <Quote size={15} className="shrink-0 fill-brand-deep text-brand-deep" />
+                            <span className="text-xs font-bold leading-tight tracking-wide text-brand-deep">
+                              {item.subject}
+                            </span>
+                          </span>
+                          <div className="relative max-h-[420px] overflow-hidden rounded-xl">
+                            <img
+                              src={item.imageUrl}
+                              alt={`Cảm nhận học viên: ${item.subject}`}
+                              loading="lazy"
+                              className="h-auto w-full"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center gap-1.5 bg-black/40 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+                              <Maximize2 size={14} />
+                              Phóng to để đọc rõ hơn
+                            </div>
+                          </div>
+                        </button>
+                      ))}
                     </div>
                   </div>
-                </button>
-              ))}
-            </div>
+                ))}
+              </div>
             </Reveal>
 
             <div className="mt-12 text-center">
@@ -174,7 +190,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 href="/cam-nhan-hoc-vien"
                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
               >
-                Xem Thêm Cảm Nhận
+                <NavigationButtonLabel>Xem Thêm Cảm Nhận</NavigationButtonLabel>
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>

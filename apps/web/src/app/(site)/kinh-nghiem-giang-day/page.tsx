@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import NavigationButtonLabel from "../../../components/NavigationButtonLabel";
 
 export const metadata: Metadata = { title: "Kinh nghiệm giảng dạy | Thương Hồ's Class" };
 
@@ -40,7 +41,7 @@ export default function TeachingExperiencePage() {
         </section>
         <section className="mt-16 rounded-[28px] bg-brand p-8 md:p-10">
           <p className="max-w-3xl text-lg leading-relaxed text-white/85 md:text-xl">Việc từng trực tiếp giảng dạy một dải trình độ rất rộng giúp mình không chỉ hiểu một bài IELTS khó ở đâu, mà còn hiểu người học ở từng level cần được hỗ trợ như thế nào để đi đến bước tiếp theo.</p>
-          <Link href="/phuong-phap" className="group mt-7 inline-flex items-center gap-2 text-sm font-bold text-leaf">Tìm hiểu phương pháp giảng dạy <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
+          <Link href="/phuong-phap" className="group mt-7 inline-flex items-center gap-2 text-sm font-bold text-leaf"><NavigationButtonLabel>Tìm hiểu phương pháp giảng dạy</NavigationButtonLabel> <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
         </section>
       </div>
     </main>

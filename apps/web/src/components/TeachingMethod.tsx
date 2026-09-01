@@ -10,6 +10,7 @@ import {
   Mic,
   ArrowRight,
 } from "lucide-react";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 
 /**
  * Homepage block "Phương pháp giảng dạy".
@@ -106,28 +107,25 @@ export default function TeachingMethod() {
         </Reveal>
 
         {/* Ba nguyên tắc cốt lõi của lộ trình học. */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 mb-14 md:mb-16">
+        <div className="mb-14 grid grid-cols-1 gap-6 md:mb-16 md:grid-cols-3 md:gap-7">
           {STEPS.map((step, i) => {
             const Icon = step.icon;
             return (
-              <Reveal
-                key={step.title}
-                delay={i * 0.08}
-                className="bg-white rounded-[28px] p-8 md:p-9 flex flex-col gap-3.5 shadow-sm hover:shadow-lg transition-shadow duration-300"
-              >
-                <div className="flex items-center gap-3.5">
-                  <span
-                    className="h-13 w-13 rounded-full flex items-center justify-center shrink-0 bg-leaf"
-                  >
-                    <Icon size={24} className="text-brand-deep" />
-                  </span>
+              <Reveal key={step.title} delay={i * 0.08} className="group relative min-h-[410px]">
+                <div className={`absolute inset-x-3 top-3 flex min-h-[190px] flex-col items-center justify-center rounded-[28px] bg-leaf px-7 text-center transition-all duration-500 ease-out ${i === 1 ? "-rotate-[3deg]" : i === 2 ? "rotate-[3deg]" : "rotate-[-2deg]"} group-hover:translate-y-40 group-hover:rotate-[10deg] md:px-8`}>
+                  <p className="translate-y-2 text-sm leading-relaxed text-brand opacity-0 transition-all duration-300 delay-75 group-hover:translate-y-0 group-hover:opacity-100">
+                    {step.description}
+                  </p>
                 </div>
-                <h3 className="font-serif text-xl md:text-[21px] font-bold text-brand leading-snug">
-                  {step.title}
-                </h3>
-                <p className="text-sm md:text-base text-brand/70 leading-relaxed">
-                  {step.description}
-                </p>
+                <div className="relative z-10 flex min-h-[190px] flex-col rounded-[28px] bg-white p-7 shadow-sm transition-all duration-500 ease-out group-hover:-rotate-[10deg] group-hover:shadow-[0_18px_35px_rgba(20,83,45,0.14)] md:p-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-leaf text-brand-deep">
+                      <Icon size={22} />
+                    </span>
+                    <span className="font-mono text-3xl font-bold tracking-[-0.05em] text-brand/20 transition-colors duration-300 group-hover:text-brand/45">0{i + 1}</span>
+                  </div>
+                  <h3 className="mt-6 font-serif text-xl font-bold leading-snug text-brand md:text-[21px]">{step.title}</h3>
+                </div>
               </Reveal>
             );
           })}
@@ -170,7 +168,7 @@ export default function TeachingMethod() {
             href="/phuong-phap"
             className="group inline-flex items-center justify-center gap-2 px-9 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md"
           >
-            Khám Phá Phương Pháp Giảng Dạy
+            <NavigationButtonLabel>Khám Phá Phương Pháp Giảng Dạy</NavigationButtonLabel>
             <ArrowRight
               size={16}
               className="transition-transform duration-300 group-hover:translate-x-1"

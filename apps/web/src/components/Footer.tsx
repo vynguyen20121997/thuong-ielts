@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, GraduationCap, QrCode, Mail, Globe, MessageSquare, Images } from "lucide-react";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 
 /**
  * Footer theo Figma: nền xanh nhạt, 4 cột (thương hiệu / thông tin / khởi đầu
@@ -65,7 +66,7 @@ export default function Footer() {
               href="/tu-van"
               className="group inline-flex items-center gap-1.5 text-sm font-bold text-brand hover:text-brand-deep transition-colors"
             >
-              Nhận lịch tư vấn miễn phí
+              <NavigationButtonLabel>Nhận lịch tư vấn miễn phí</NavigationButtonLabel>
               <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, BriefcaseBusiness, HeartHandshake, RefreshCw, Target } from "lucide-react";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 
 const LEARNING_STORY = [
   "Mình bắt đầu học tiếng Anh khá muộn, đến lớp 6 mới thực sự tiếp xúc với môn học này. Lúc đó mình lại được xếp vào lớp giỏi nhất của Trường Trần Đại Nghĩa, nơi nhiều bạn đã có nền tảng rất tốt và có thể nói tiếng Anh “như gió”. Cảm giác bị bỏ lại phía sau khiến mình từng rất tự ti, rồi dần chuyển thành ghét, chống đối và gần như bỏ mặc môn tiếng Anh.",
@@ -52,8 +53,8 @@ export default function About() {
               <p>Thay vì chỉ cung cấp mẹo làm bài hoặc những công thức có sẵn, mình muốn học viên hiểu mình đang sai ở đâu, vì sao sai và cần làm gì tiếp theo để tiến bộ.</p>
             </div>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link href="/kinh-nghiem-giang-day" className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-deep">Xem kinh nghiệm giảng dạy <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
-              <Link href="/phuong-phap" className="group inline-flex items-center gap-2 rounded-full border border-brand/20 px-5 py-3 text-sm font-bold text-brand transition-colors hover:bg-sage">Tìm hiểu phương pháp học <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
+              <Link href="/kinh-nghiem-giang-day" className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-deep"><NavigationButtonLabel>Xem kinh nghiệm giảng dạy</NavigationButtonLabel> <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
+              <Link href="/phuong-phap" className="group inline-flex items-center gap-2 rounded-full border border-brand/20 px-5 py-3 text-sm font-bold text-brand transition-colors hover:bg-sage"><NavigationButtonLabel>Tìm hiểu phương pháp học</NavigationButtonLabel> <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
             </div>
           </div>
           <div className="relative mx-auto w-full max-w-md lg:max-w-none">

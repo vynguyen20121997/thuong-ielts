@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import NavigationButtonLabel from "../../../../components/NavigationButtonLabel";
 import { notFound } from "next/navigation";
 
 import { SKILL_SECTIONS } from "../page";
@@ -96,7 +97,7 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
                 href={`/phuong-phap/${other.id}`}
                 className="group flex items-center justify-between rounded-2xl border border-brand/10 px-5 py-4 font-bold text-brand transition-colors hover:bg-sage"
               >
-                Dạy {other.name}
+                <NavigationButtonLabel>Dạy {other.name}</NavigationButtonLabel>
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
               </Link>
             ))}

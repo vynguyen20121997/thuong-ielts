@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Reveal from "./Reveal";
 import { ArrowRight } from "lucide-react";
+import NavigationButtonLabel from "./NavigationButtonLabel";
 
 /**
  * Khối liên hệ cuối trang chủ theo sheet portfolio: câu mời + hai nút
@@ -22,7 +23,7 @@ export default function ContactCTA() {
             href="/tu-van"
             className="group inline-flex items-center gap-2 px-9 py-4 bg-leaf hover:bg-white text-brand font-bold text-sm rounded-full transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            Đăng Ký Học
+            <NavigationButtonLabel>Đăng Ký Học</NavigationButtonLabel>
             <ArrowRight
               size={16}
               className="transition-transform duration-300 group-hover:translate-x-1"
@@ -32,7 +33,7 @@ export default function ContactCTA() {
             href="/tu-van"
             className="group inline-flex items-center gap-2 px-9 py-4 border-2 border-white/30 hover:border-white text-white font-bold text-sm rounded-full transition-colors duration-300"
           >
-            Liên Hệ Hợp Tác
+            <NavigationButtonLabel>Liên Hệ Hợp Tác</NavigationButtonLabel>
             <ArrowRight
               size={16}
               className="transition-transform duration-300 group-hover:translate-x-1"

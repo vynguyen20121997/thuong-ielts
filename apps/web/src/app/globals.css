@@ -206,3 +206,126 @@ html {
     opacity: 1;
   }
 }
+
+/* Hai hàng thành tích ở trang chủ chạy liên tục trên chính một dải ảnh đã
+   nhân đôi. Dịch đúng một nửa bề ngang sẽ nối vòng không có điểm nhảy. */
+@keyframes student-score-marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes student-score-marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.student-score-marquee-left {
+  animation: student-score-marquee-left 38s linear infinite;
+}
+
+.student-score-marquee-right {
+  animation: student-score-marquee-right 42s linear infinite;
+}
+
+@keyframes feedback-marquee-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes feedback-marquee-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.feedback-marquee-down {
+  animation: feedback-marquee-down 70s linear infinite;
+}
+
+.feedback-marquee-up {
+  animation: feedback-marquee-up 76s linear infinite;
+}
+
+.feedback-marquee-track:hover,
+.feedback-marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
+/* Nhãn nút điều hướng thay phiên nhau như một dải chữ nhỏ, còn nguyên chiều
+   cao của nút để không làm layout dịch chuyển khi người dùng rê chuột. */
+.navigation-button-label {
+  display: inline-grid;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.navigation-button-label-current,
+.navigation-button-label-next {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+
+.navigation-button-label-character {
+  display: inline-block;
+  transition:
+    transform 560ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 420ms ease;
+  transition-delay: calc(var(--character-index) * 26ms);
+}
+
+.navigation-button-label-next .navigation-button-label-character {
+  opacity: 0;
+  transform: translate3d(0, 125%, 0);
+}
+
+.group:hover .navigation-button-label-current .navigation-button-label-character,
+.group:focus-visible .navigation-button-label-current .navigation-button-label-character {
+  opacity: 0;
+  transform: translate3d(0, -125%, 0);
+}
+
+.group:hover .navigation-button-label-next .navigation-button-label-character,
+.group:focus-visible .navigation-button-label-next .navigation-button-label-character {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Các nút dùng nhãn chuyển động cùng chuyển sang xanh lá sáng để phản hồi
+   của thao tác hover rõ ràng hơn, kể cả khi nút ban đầu có nền xanh đậm. */
+.group:has(> .navigation-button-label):hover,
+.group:has(> .navigation-button-label):focus-visible {
+  background-color: var(--color-leaf);
+  color: var(--color-brand-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .student-score-marquee-left,
+  .student-score-marquee-right,
+  .feedback-marquee-down,
+  .feedback-marquee-up {
+    animation: none;
+  }
+
+  .navigation-button-label-character {
+    transition: none;
+  }
+
+  .navigation-button-label-next .navigation-button-label-character {
+    display: none;
+  }
+}
