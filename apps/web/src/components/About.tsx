@@ -1,222 +1,95 @@
-"use client";
+import Link from "next/link";
+import { ArrowRight, BookOpen, BriefcaseBusiness, HeartHandshake, RefreshCw, Target } from "lucide-react";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Bookmark, Compass, Brain, GraduationCap } from "lucide-react";
+const LEARNING_STORY = [
+  "Mình bắt đầu học tiếng Anh khá muộn, đến lớp 6 mới thực sự tiếp xúc với môn học này. Lúc đó mình lại được xếp vào lớp giỏi nhất của Trường Trần Đại Nghĩa, nơi nhiều bạn đã có nền tảng rất tốt và có thể nói tiếng Anh “như gió”. Cảm giác bị bỏ lại phía sau khiến mình từng rất tự ti, rồi dần chuyển thành ghét, chống đối và gần như bỏ mặc môn tiếng Anh.",
+  "Đến lớp 9, vì quá sợ không đậu Phổ thông Năng khiếu, mình quyết định xây lại từ đầu theo cách đơn giản nhất: học thật nhiều từ vựng và làm thật nhiều bài tập ngữ pháp. Trong cặp lúc nào cũng có một cuốn từ điển Oxford dày cộm và một quyển sổ ghi từ mới. Mình cũng rất may mắn khi gặp được những thầy cô tiếng Anh giỏi — những người không chỉ giúp mình tiến bộ mà còn thay đổi hoàn toàn cách mình nhìn về môn học này.",
+  "Từ lớp 10 trở đi, tiếng Anh của mình tiến bộ rất nhanh, phần lớn nhờ việc mình bắt đầu thực sự yêu thích nó. Vì thích văn hóa phương Tây, mình đọc, nghe và xem rất nhiều nội dung tiếng Anh một cách tự nhiên. Từ một học sinh từng sợ tiếng Anh, mình dần đạt những điểm số thuộc nhóm cao trong lớp và ở trung tâm. Một trong những cột mốc lớn nhất với mình là tiếng Anh trở thành lợi thế giúp mình đậu Đại học Ngoại thương. Sau này tiếng Anh lại tiếp tục thay đổi cuộc đời mình theo hướng tích cực hơn khi mang lại công việc phù hợp với năng lực và tâm hồn của mình hơn.",
+  "Có một kỷ niệm mình vẫn nhớ rất rõ. Khi mình bắt đầu tiến bộ ở lớp 9, cô giáo từng chủ động chọn mình vào một nhóm nhỏ để học nâng cao. Nhưng vì vào sau và nền tảng không vững bằng các bạn còn lại, mình nhanh chóng bị tụt lại, hoảng sợ đến mức khóc và xin mẹ cho nghỉ. Đến giờ, đó vẫn là một trong những điều mình tiếc nhất: nếu ngày đó cố thêm một chút, có lẽ mình đã có thể đi xa hơn.",
+  "Vì vậy, mình từng tự hứa với bản thân: một khi đã quay lại với tiếng Anh, mình sẽ không bỏ cuộc với nó thêm lần nào nữa. Có lẽ cũng chính vì đã từng là một học sinh chật vật và muốn bỏ cuộc, mình càng hiểu cảm giác của những bạn đang gặp khó khăn với IELTS ngày hôm nay.",
+];
 
-gsap.registerPlugin(ScrollTrigger);
+const TEACHING_STORY = [
+  "Sau khi tốt nghiệp Đại học Ngoại thương, mình có khoảng hai năm làm việc trong lĩnh vực Truyền thông – Quảng cáo – Marketing. Trong thời gian đó, nhờ có nền tảng IELTS 7.5 từ năm hai đại học, mình thường xuyên được giao các công việc liên quan đến tiếng Anh như dịch tài liệu, biên tập nội dung và ghi chép lại các buổi phỏng vấn bằng tiếng Anh.",
+  "Dù tiếng Anh luôn là một thế mạnh được tận dụng trong công việc, mình lại không thực sự tìm thấy nhiều niềm vui hay cảm giác gắn bó với công việc văn phòng. Trái lại, việc học IELTS sau giờ làm lại trở thành một sở thích mà mình rất nghiêm túc theo đuổi. Năm 2019, sau khi đạt IELTS Overall 8.5, mình quyết định thực hiện một bước chuyển lớn: rời lĩnh vực cũ để bắt đầu giảng dạy IELTS.",
+  "Những ngày đầu đi dạy cũng không hề dễ dàng. Mình từng khá loay hoay khi nhận ra rằng giỏi tiếng Anh và biết cách dạy tiếng Anh là hai chuyện rất khác nhau. Nhờ quá trình học hỏi từ những người quản lý, đồng nghiệp đầu tiên tại The IELTS Workshop, tiếp tục học phương pháp giảng dạy bài bản và không ngừng thử nghiệm, điều chỉnh trong lớp học, mình dần tìm được cách dạy phù hợp với bản thân.",
+  "Cũng từ đó, mình nhận ra đây là công việc mà mình thực sự muốn gắn bó: truyền cảm hứng học tiếng Anh và đồng hành cùng những học viên đang gặp khó khăn với IELTS.",
+];
 
-export default function About() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+const PRINCIPLES = [
+  { icon: Target, title: "Hiệu quả luôn được đặt lên hàng đầu", text: "Mỗi hoạt động, bài tập hay phần chữa bài đều cần có mục tiêu rõ ràng và giúp học viên cải thiện đúng vấn đề mình đang gặp phải. Với mình, học nhiều không quan trọng bằng học đúng và nhìn thấy sự tiến bộ thực sự." },
+  { icon: HeartHandshake, title: "Giáo viên là người đồng hành, tạo niềm vui và sự thoải mái", text: "Mình muốn lớp học là một không gian đủ thoải mái để học viên dám hỏi, dám sai và dám thử lại. Giáo viên không chỉ là người truyền đạt kiến thức mà còn là người đồng hành, giúp học viên duy trì động lực trong suốt quá trình học." },
+  { icon: RefreshCw, title: "Giáo viên cũng phải không ngừng học hỏi và đổi mới", text: "Không có một phương pháp nào phù hợp mãi mãi với tất cả học viên. Vì vậy, mình luôn cố gắng quan sát, thử nghiệm, điều chỉnh và cải thiện cách dạy dựa trên phản hồi và hiệu quả thực tế trong lớp học." },
+] as const;
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // 1. Image parallax scrolling
-      if (imageRef.current) {
-        gsap.to(imageRef.current, {
-          yPercent: 12,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-
-      // 2. Reveal-on-scroll for textual content
-      gsap.fromTo(
-        ".reveal-element",
-        { opacity: 0, y: 35 },
-        {
-          opacity: 1,
-          y: 0,
-          stagger: 0.2,
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-          },
-        },
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
+function StorySection({ id, number, title, eyebrow, paragraphs, icon: Icon }: { id: string; number: string; title: string; eyebrow: string; paragraphs: readonly string[]; icon: typeof BookOpen }) {
   return (
-    <section
-      ref={sectionRef}
-      id="ve-giao-vien"
-      className="py-28 bg-white relative overflow-hidden border-b border-black/5"
-    >
-      {/* Decorative background visual elements */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 rounded-full bg-[#15803D]/5 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 left-0 w-96 h-96 rounded-full bg-brand/3 blur-[120px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-        {/* Left Side: Parallax Image Column */}
-        <div className="lg:col-span-5 order-2 lg:order-1">
-          <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.06)] group">
-            {/* Elegant overlay frame */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-4 border border-white/20 rounded-2xl z-20 pointer-events-none" />
-
-            <img
-              ref={imageRef}
-              src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800"
-              alt="Logic study preparation and notes"
-              referrerPolicy="no-referrer"
-              className="absolute top-[-10%] left-0 w-full h-[120%] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            />
-
-            {/* Float Label */}
-            <div className="absolute bottom-8 left-8 right-8 z-20 bg-white/95 border border-black/5 p-5 rounded-2xl shadow-xl">
-              <span className="text-2xs text-brand block mb-1 font-medium">
-                Triết lý hàng đầu
-              </span>
-              <p className="font-sans italic text-sm text-ink/90 leading-relaxed">
-                "Đừng áp lực điểm số quá. Chỉ cần đạt đúng target của mình, rồi tiếp tục thực hiện
-                những dự định lớn hơn."
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Side: Informative & Philosophy Content */}
-        <div className="lg:col-span-7 order-1 lg:order-2 text-left">
-          <div className="reveal-element">
-            <span className="text-xs text-brand block mb-3 font-medium">
-              Giảng Viên & Người Truyền Cảm Hứng
-            </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-ink mb-4 leading-[1.15]">
-              Học IELTS Bằng Tư Duy <br />
-              Thay Vì Ghi Nhớ Máy Móc
-            </h2>
-            <div className="flex flex-wrap gap-2 mb-8">
-              <span className="text-2xs bg-brand/10 text-brand px-3 py-1.5 rounded-full font-medium">
-                8.5 IELTS Overall
-              </span>
-              <span className="text-2xs bg-brand/10 text-brand px-3 py-1.5 rounded-full font-medium">
-                CELTA Certified
-              </span>
-              <span className="text-2xs bg-brand/10 text-brand px-3 py-1.5 rounded-full font-medium">
-                4+ Năm Kinh Nghiệm
-              </span>
-            </div>
-          </div>
-
-          {/* Education & Certification Block */}
-          <div id="hoc-van" className="reveal-element grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 scroll-mt-28">
-            <div className="flex gap-4 p-6 bg-white border border-black/5 rounded-2xl shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
-                <GraduationCap className="text-brand" size={24} />
-              </div>
-              <div>
-                <h3 className="font-serif font-bold text-base text-ink mb-1">
-                  Cử Nhân Kinh Tế Đối Ngoại
-                </h3>
-                <p className="text-sm text-ink/70 leading-relaxed">
-                  Tốt nghiệp Đại học Ngoại Thương (FTU).
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-4 p-6 bg-white border border-black/5 rounded-2xl shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
-                <Bookmark className="text-brand" size={24} />
-              </div>
-              <div>
-                <h3 className="font-serif font-bold text-base text-ink mb-1">
-                  Chứng Chỉ Giảng Dạy CELTA
-                </h3>
-                <p className="text-sm text-ink/70 leading-relaxed">
-                  Chứng chỉ sư phạm quốc tế do Đại học Cambridge cấp.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Narrative description */}
-          <div id="kinh-nghiem" className="reveal-element mb-10 text-ink/85 space-y-4 scroll-mt-28">
-            <p className="text-base md:text-lg leading-relaxed">
-              Xin chào, tôi là <strong>Hồ Ngọc Thương</strong>. Sau khi tốt nghiệp, tôi từng đi làm
-              văn phòng nhưng không tìm thấy cảm hứng trong công việc, nên quyết định học IELTS vì
-              đam mê - và sau khi đạt 8.5 Overall, tôi chọn con đường đi dạy. Hơn 4 năm trực tiếp
-              đứng lớp, tôi nhận ra sai lầm lớn nhất của đại đa số học viên là học vẹt cấu trúc và
-              từ vựng riêng lẻ.
-            </p>
-            <p className="text-base leading-relaxed">
-              Tại lớp học của tôi, bạn sẽ học cách{" "}
-              <strong>vận hành tư duy phân tích của giám khảo</strong>. Chúng ta sẽ giải quyết bài
-              đọc (Reading) như giải một câu đố Logic, và làm chủ bài nghe (Listening) thông qua cấu
-              trúc ngữ điệu và tư duy định vị từ khóa thông minh.
-            </p>
-          </div>
-
-          {/* The Core Principles - featured flagship + supporting trio */}
-          <div className="reveal-element">
-            {/* Featured Principle: the "Logic" methodology, full width */}
-            <div className="flex gap-4 items-start p-5 bg-brand/5 border border-brand/15 rounded-2xl mb-5">
-              <div className="h-11 w-11 rounded-xl bg-brand flex items-center justify-center shrink-0">
-                <Brain className="text-white" size={20} />
-              </div>
-              <div>
-                <span className="text-2xs text-brand/70 font-medium block mb-1">
-                  Phương pháp cốt lõi
-                </span>
-                <h4 className="font-bold text-base text-ink mb-1">Sơ Đồ Tư Duy Logic</h4>
-                <p className="text-sm text-ink/70 leading-relaxed">
-                  Bản đồ hóa từ vựng đồng nghĩa, tối giản hóa cấu trúc câu giúp hiểu nhanh 100% văn
-                  bản học thuật.
-                </p>
-              </div>
-            </div>
-
-            {/* Supporting principles, tighter trio */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-lg bg-[#15803D]/10 flex items-center justify-center shrink-0 border border-[#15803D]/20">
-                  <Compass className="text-[#15803D]" size={16} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-ink mb-1">Nghe Chủ Động</h4>
-                  <p className="text-xs text-ink/70 leading-relaxed">
-                    Phát hiện bẫy thông tin, paraphrase trong hội thoại thực tế của Listening.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0 border border-brand/20">
-                  <Bookmark className="text-brand" size={16} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-ink mb-1">Nói & Viết Sắc Bén</h4>
-                  <p className="text-xs text-ink/70 leading-relaxed">
-                    Lập luận mạch lạc, thuyết phục tối đa các giám khảo khó tính nhất.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-lg bg-brand/10 flex items-center justify-center shrink-0 border border-brand/20">
-                  <GraduationCap className="text-brand" size={16} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-ink mb-1">Chăm Sóc 1-Kèm-1</h4>
-                  <p className="text-xs text-ink/70 leading-relaxed">
-                    Sửa chi tiết bài viết, ghi âm nói hàng tuần để tối ưu tiến bộ.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+    <section id={id} className="scroll-mt-28 border-t-2 border-brand/15 py-16 md:py-20">
+      <div className="grid gap-8 lg:grid-cols-[190px_1fr]">
+        <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/45">{number}</span><span className="mt-5 flex h-11 w-11 items-center justify-center rounded-full bg-leaf text-brand"><Icon size={20} /></span></div>
+        <div>
+          <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">{eyebrow}</p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-brand md:text-4xl">{title}</h2>
+          <div className="mt-8 space-y-5 text-base leading-relaxed text-brand/75 md:text-lg">{paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
         </div>
       </div>
     </section>
+  );
+}
+
+export default function About() {
+  return (
+    <div className="bg-white">
+      <section className="relative overflow-hidden border-b border-brand/10 bg-mist">
+        <div className="absolute -right-24 top-8 h-80 w-80 rounded-full bg-leaf/35 blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-16 md:px-12 md:py-24 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-brand/60">Về giáo viên</p>
+            <h1 className="mt-4 text-4xl font-bold tracking-tight text-brand md:text-6xl">Hồ Ngọc Thương</h1>
+            <p className="mt-4 text-lg font-semibold text-brand/75">IELTS Teacher · CELTA-certified</p>
+            <div className="mt-8 max-w-xl space-y-4 text-base leading-relaxed text-brand/75 md:text-lg">
+              <p>Mình là Hồ Ngọc Thương, giáo viên IELTS với định hướng giảng dạy tập trung vào hiểu bản chất – luyện tập có mục tiêu – theo dõi tiến bộ bằng dữ liệu.</p>
+              <p>Thay vì chỉ cung cấp mẹo làm bài hoặc những công thức có sẵn, mình muốn học viên hiểu mình đang sai ở đâu, vì sao sai và cần làm gì tiếp theo để tiến bộ.</p>
+            </div>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link href="/kinh-nghiem-giang-day" className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-deep">Xem kinh nghiệm giảng dạy <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
+              <Link href="/phuong-phap" className="group inline-flex items-center gap-2 rounded-full border border-brand/20 px-5 py-3 text-sm font-bold text-brand transition-colors hover:bg-sage">Tìm hiểu phương pháp học <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" /></Link>
+            </div>
+          </div>
+          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+            <div className="absolute -inset-3 rounded-[34px] border border-brand/15" />
+            <img src="/images/about/teacher-hero-placeholder.png" alt="Ảnh minh họa tạm thời cho giáo viên Hồ Ngọc Thương" className="relative aspect-[4/5] w-full rounded-[28px] object-cover shadow-[0_22px_50px_rgba(20,83,45,0.15)]" />
+            <p className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white/95 px-4 py-3 text-xs leading-relaxed text-brand/70 shadow-sm">Ảnh minh họa tạm thời — có thể thay bằng ảnh chân dung của cô sau này.</p>
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-5xl px-6 md:px-12">
+        <StorySection id="hanh-trinh" number="01" eyebrow="Hành trình học tiếng Anh của mình" title="Mình cũng từng là một học sinh rất sợ tiếng Anh" paragraphs={LEARNING_STORY} icon={BookOpen} />
+        <StorySection id="kinh-nghiem" number="02" eyebrow="Mình đến với việc dạy tiếng Anh như thế nào?" title="Từ công việc văn phòng chuyển sang giảng dạy" paragraphs={TEACHING_STORY} icon={BriefcaseBusiness} />
+
+        <section className="scroll-mt-28 border-t-2 border-brand/15 py-16 md:py-20">
+          <div className="grid gap-8 lg:grid-cols-[190px_1fr]">
+            <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/45">03</span></div>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Quan điểm giảng dạy</p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-brand md:text-4xl">Hiệu quả – Đồng hành – Không ngừng cải thiện</h2>
+              <div className="mt-8 grid gap-4">{PRINCIPLES.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-brand/10 bg-mist p-6"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-leaf text-brand"><Icon size={19} /></span><h3 className="mt-4 text-lg font-bold text-brand">{title}</h3><p className="mt-2 text-sm leading-relaxed text-brand/75 md:text-base">{text}</p></article>)}</div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t-2 border-brand/15 py-16 md:py-20">
+          <div className="grid gap-8 lg:grid-cols-[190px_1fr]">
+            <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/45">04</span></div>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Lời khuyên dành cho học viên</p>
+              <blockquote className="mt-5 border-l-4 border-leaf pl-6"><p className="text-2xl font-bold italic leading-snug text-brand md:text-3xl">“It’s all about the journey, not the destination.”</p></blockquote>
+              <div className="mt-7 space-y-4 text-base leading-relaxed text-brand/75 md:text-lg"><p>Đừng chỉ nhìn vào band điểm cuối cùng. Hãy cố gắng tiến bộ hơn chính mình một chút mỗi ngày, trân trọng những thành quả nhỏ và xem mỗi lỗi sai hay lần thất bại là một cơ hội để học thêm điều gì đó.</p><p>Chỉ cần tiếp tục tiến về phía trước, kết quả sẽ đến như một hệ quả của cả quá trình.</p></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }

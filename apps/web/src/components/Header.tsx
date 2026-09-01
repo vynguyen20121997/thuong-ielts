@@ -28,8 +28,8 @@ export default function Header() {
       label: "Giới Thiệu",
       items: [
         { label: "Về giáo viên", to: "/gioi-thieu" },
-        { label: "Kinh nghiệm giảng dạy", to: "/gioi-thieu#kinh-nghiem" },
-        { label: "Học vấn & Chứng chỉ", to: "/gioi-thieu#hoc-van" },
+        { label: "Kinh nghiệm giảng dạy", to: "/kinh-nghiem-giang-day" },
+        { label: "Học vấn & Chứng chỉ", to: "/hoc-van-chung-chi" },
       ],
     },
     {

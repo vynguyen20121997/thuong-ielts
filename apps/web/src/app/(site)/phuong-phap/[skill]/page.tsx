@@ -4,6 +4,17 @@ import { notFound } from "next/navigation";
 
 import { SKILL_SECTIONS } from "../page";
 
+const READING_ILLUSTRATIONS = [
+  "/images/reading-method/reading-01-structure.png",
+  "/images/reading-method/reading-02-strategy.png",
+  "/images/reading-method/reading-03-understanding.png",
+  "/images/reading-method/reading-04-evidence.png",
+  "/images/reading-method/reading-05-vocabulary.png",
+  "/images/reading-method/reading-06-practice.png",
+  "/images/reading-method/reading-07-progress.png",
+  "/images/reading-method/reading-08-goal.png",
+] as const;
+
 type SkillPageProps = {
   params: Promise<{ skill: string }>;
 };
@@ -42,25 +53,36 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
         <div className="space-y-6">
           {section.items.map((item, itemIndex) => (
             <article key={item.title} className="rounded-[24px] bg-mist p-7 md:p-8">
-              <h2 className="mb-4 text-lg font-bold text-brand md:text-xl">
-                <span className="mr-2 text-brand/60">{itemIndex + 1}.</span>
-                {item.title}
-              </h2>
-              {item.paras?.map((paragraph, index) => (
-                <p key={`${item.title}-para-${index}`} className="mb-3 text-sm leading-relaxed text-brand/75 md:text-base">
-                  {paragraph}
-                </p>
-              ))}
-              {item.bullets && (
-                <ul className="mb-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-brand/75 marker:text-brand md:text-base">
-                  {item.bullets.map((bullet, index) => <li key={`${item.title}-bullet-${index}`}>{bullet}</li>)}
-                </ul>
-              )}
-              {item.after?.map((paragraph, index) => (
-                <p key={`${item.title}-after-${index}`} className="mb-3 text-sm leading-relaxed text-brand/75 last:mb-0 md:text-base">
-                  {paragraph}
-                </p>
-              ))}
+              <div className="flex flex-col gap-6 md:flex-row md:items-start">
+                {section.id === "reading" && (
+                  <img
+                    src={READING_ILLUSTRATIONS[itemIndex]}
+                    alt={`Minh họa: ${item.title}`}
+                    className="aspect-square w-full rounded-2xl object-cover md:w-44 md:shrink-0"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <h2 className="mb-4 text-lg font-bold text-brand md:text-xl">
+                    <span className="mr-2 text-brand/60">{itemIndex + 1}.</span>
+                    {item.title}
+                  </h2>
+                  {item.paras?.map((paragraph, index) => (
+                    <p key={`${item.title}-para-${index}`} className="mb-3 text-sm leading-relaxed text-brand/75 md:text-base">
+                      {paragraph}
+                    </p>
+                  ))}
+                  {item.bullets && (
+                    <ul className="mb-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-brand/75 marker:text-brand md:text-base">
+                      {item.bullets.map((bullet, index) => <li key={`${item.title}-bullet-${index}`}>{bullet}</li>)}
+                    </ul>
+                  )}
+                  {item.after?.map((paragraph, index) => (
+                    <p key={`${item.title}-after-${index}`} className="mb-3 text-sm leading-relaxed text-brand/75 last:mb-0 md:text-base">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </div>
             </article>
           ))}
         </div>
