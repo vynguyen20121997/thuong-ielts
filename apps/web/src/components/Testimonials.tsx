@@ -28,7 +28,14 @@ interface TestimonialsProps {
 // Preview: 18 thẻ điểm, chia thành hai dải chạy liên tục ở trang chủ.
 const PREVIEW_COUNT = 18;
 const BATCH = 9;
-const PREVIEW_EXCLUDED_IDS = new Set(["student-hong-hanh-51"]);
+// Các ảnh này vẫn giữ ở trang thành tích đầy đủ, nhưng không dùng trong carousel
+// trang chủ theo lựa chọn biên tập hiện tại.
+const PREVIEW_EXCLUDED_IDS = new Set([
+  "student-hong-hanh-51",
+  "student-it-on48-hong-hanh-online-ha-noi-19",
+  "student-phung-minh-thu-20",
+  "student-hoang-cao-duc-17",
+]);
 
 function LazyProofImage({ src, alt }: { src: string; alt: string }) {
   const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
@@ -145,8 +152,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     [testimonials],
   );
 
-  // Ưu tiên 12 bạn từ 8.0 trở lên, nhưng lượt cuối vẫn có đại diện 7.5, 7.0
-  // và 6.5 để khối thành tích phản ánh đa dạng mục tiêu học viên.
+  // Ưu tiên 12 bạn từ 8.0 trở lên; các vị trí còn lại dành cho 7.5 và 7.0.
   const previewItems = useMemo(() => {
     const eligibleItems = byScore.filter((item) => !PREVIEW_EXCLUDED_IDS.has(item.id));
     const highScores = eligibleItems.filter((item) => scoreKey(item.score) >= 8).slice(0, 12);
@@ -155,7 +161,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     const takeScore = (score: number, count: number) =>
       remaining.filter((item) => scoreKey(item.score) === score).slice(0, count);
 
-    return [...highScores, ...takeScore(7.5, 3), ...takeScore(7, 2), ...takeScore(6.5, 1)].slice(
+    return [...highScores, ...takeScore(7.5, 3), ...takeScore(7, 3)].slice(
       0,
       PREVIEW_COUNT,
     );
