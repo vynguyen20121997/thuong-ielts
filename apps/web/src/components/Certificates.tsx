@@ -106,16 +106,27 @@ export default function Certificates() {
               Thành tích &amp; Chuyên môn
             </h2>
             <ul className="space-y-3">
-              {CREDENTIALS.map((c) => (
-                <li
+              {CREDENTIALS.map((c, i) => (
+                <motion.li
                   key={c}
+                  initial={reduce ? false : { opacity: 0, x: -14 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ duration: 0.38, delay: 0.15 + i * 0.075, ease: "easeOut" }}
+                  whileHover={reduce ? undefined : { x: 4 }}
                   className="flex items-start gap-2.5 text-sm md:text-base text-brand/80"
                 >
-                  <span className="h-6 w-6 rounded-full bg-leaf flex items-center justify-center shrink-0 mt-0.5">
+                  <motion.span
+                    initial={reduce ? false : { scale: 0.7 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.2 + i * 0.075 }}
+                    className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-leaf"
+                  >
                     <Check size={14} className="text-brand-deep" />
-                  </span>
+                  </motion.span>
                   {c}
-                </li>
+                </motion.li>
               ))}
             </ul>
             <Link
@@ -140,19 +151,23 @@ export default function Certificates() {
                     key={cert.url}
                     type="button"
                     custom={direction}
-                    initial={reduce ? false : { opacity: 0, x: direction * 80 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={reduce ? undefined : { opacity: 0, x: direction * -80 }}
-                    transition={{ type: "spring", stiffness: 160, damping: 24 }}
+                    initial={reduce ? false : { opacity: 0, x: direction * 56, scale: 0.985 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={reduce ? undefined : { opacity: 0, x: direction * -56, scale: 0.985 }}
+                    transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
                     onClick={() => setLightbox(cert)}
                     className="group absolute inset-0 flex items-center justify-center cursor-zoom-in"
                     aria-label={`Phóng to ${cert.title}`}
                   >
-                    <span className="relative block h-full">
+                    <span className="relative block h-full overflow-hidden rounded-2xl">
                       <img
                         src={cert.url}
                         alt={cert.title}
-                        className="h-full w-auto max-w-full object-contain rounded-2xl shadow-[0_16px_48px_rgba(20,83,45,0.14)] select-none"
+                        className="h-full w-auto max-w-full rounded-2xl object-contain shadow-[0_16px_48px_rgba(20,83,45,0.14)] transition-transform duration-700 ease-out group-hover:scale-[1.025] select-none"
+                      />
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-y-[-30%] -left-[65%] w-[42%] -skew-x-12 bg-white/0 blur-sm transition-all duration-[1100ms] ease-out group-hover:left-[125%] group-hover:bg-white/30"
                       />
                       <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-brand/0 group-hover:bg-brand/15 transition-colors duration-300">
                         <ZoomIn
