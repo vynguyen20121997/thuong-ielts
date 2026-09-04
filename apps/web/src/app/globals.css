@@ -260,6 +260,23 @@ html.site-loading body {
   overflow: hidden;
 }
 
+/*
+ * Wordmark trên header trốn đi trong lúc màn chờ còn che. Không ẩn thì nó nằm
+ * lờ mờ sau lớp blur, thành ra dòng chữ ở giữa màn hình đang bay tới một chỗ mà
+ * chữ đã có sẵn ở đó rồi — mất hẳn ý nghĩa của cú bay.
+ *
+ * Ẩn bằng CSS chứ không bằng JS, và móc vào `html.site-loading` vì class đó do
+ * script inline trong `layout.tsx` gắn ngay lúc parse: wordmark tắt từ frame đầu
+ * tiên, không chờ bundle hydrate. `LoadingScreen` ẩn tiếp bằng inline style cho
+ * nốt đoạn sau khi class này được gỡ.
+ *
+ * JS tắt thì class không bao giờ được gắn, wordmark hiện bình thường — cùng lý
+ * do mà `<noscript>` trong `LoadingScreen` ẩn hẳn lớp phủ.
+ */
+html.site-loading #logo-wordmark {
+  opacity: 0;
+}
+
 @keyframes gate-sweep {
   0% {
     transform: translateX(-100%);

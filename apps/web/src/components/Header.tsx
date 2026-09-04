@@ -75,7 +75,10 @@ export default function Header() {
           <span className="w-10 h-10 rounded-full bg-brand flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-brand-deep">
             <GraduationCap size={20} className="text-leaf" />
           </span>
-          <span className="font-bold text-lg tracking-tight text-brand whitespace-nowrap">
+          <span
+            id="logo-wordmark"
+            className="font-bold text-lg tracking-tight text-brand whitespace-nowrap"
+          >
             Thương Hồ&apos;s Class
           </span>
         </Link>
