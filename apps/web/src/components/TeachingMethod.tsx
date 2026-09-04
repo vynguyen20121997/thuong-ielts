@@ -103,7 +103,8 @@ export default function TeachingMethod() {
           </div>
         </Reveal>
 
-        {/* Bốn kỹ năng: thẻ ảnh mở ra khi rê chuột. */}
+        {/* Bốn kỹ năng: ảnh hiện sẵn, rê chuột mới mở phần mô tả. Trước đây ảnh
+            cũng ẩn theo mô tả, nên lúc nghỉ bốn thẻ chỉ là bốn ô trắng trống. */}
           <div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
             {SKILLS.map((skill, i) => {
@@ -121,8 +122,15 @@ export default function TeachingMethod() {
                   >
                     <div
                       aria-hidden="true"
-                    className="absolute inset-0 scale-110 bg-cover bg-[position:65%_center] opacity-0 transition-[opacity,transform] duration-700 ease-out group-hover:scale-100 group-hover:opacity-100 group-focus:scale-100 group-focus:opacity-100"
+                      className="absolute inset-0 bg-cover bg-[position:65%_center] brightness-[0.96] saturate-[0.92] transition-transform duration-700 ease-out group-hover:scale-105 group-focus:scale-105"
                       style={{ backgroundImage: `url(${skill.image})` }}
+                    />
+                    {/* Màn trắng lúc nghỉ: chỉ dày ở NỬA DƯỚI, nơi tên kỹ năng
+                        (màu brand) cần nền sáng mới đọc được. Bản trước phủ trắng
+                        gần kín cả thẻ nên bốn ảnh bệch ra thành một mảng chói. */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-gradient-to-t from-white from-15% via-white/70 via-55% to-transparent transition-opacity duration-500 group-hover:opacity-0 group-focus:opacity-0"
                     />
                   <div className="absolute inset-0 bg-gradient-to-t from-brand/90 via-brand/45 to-brand/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus:opacity-100" />
                   <div className="relative flex h-full min-h-[232px] flex-col md:min-h-[312px]">

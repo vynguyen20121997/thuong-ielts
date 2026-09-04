@@ -152,7 +152,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative pt-24 md:pt-28 overflow-hidden bg-white"
+      className="relative pt-24 md:pt-20 overflow-hidden bg-white"
     >
       <PageArch />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
@@ -224,24 +224,31 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Chân dung zoom lớn tràn khỏi TẤM THẺ xanh phía sau (đúng hình khối poster) */}
-          <div className="relative h-[460px] sm:h-[560px] md:h-[640px] order-2">
-            {/* Tấm thẻ bo lớn, mọc lên từ đáy bằng spring */}
+          {/* Chân dung zoom lớn tràn khỏi VÒNG TRÒN xanh phía sau (hình khối poster) */}
+          {/* Chiều cao cột chân dung co theo màn hình: trên laptop thấp
+              (~800px) khối 640px cố định đẩy dải chỉ số rơi khỏi khung nhìn.
+              `svh` chứ không phải `vh` để thanh địa chỉ mobile không làm nhảy. */}
+          <div className="relative h-[460px] sm:h-[560px] md:h-[clamp(460px,calc(100svh-230px),640px)] order-2">
+            {/* Tấm nền xanh sau lưng, mọc lên từ đáy bằng spring. Hình khối lấy
+                hình BẦU DỤC: `rounded-full` trên khung hẹp ngang hơn cao (rộng
+                88% cột) — cùng utility đó trên khung vuông sẽ ra hình tròn.
+                Đỉnh oval (`top-1`) là mức cao nhất còn được: header `fixed` cao
+                đúng 80px và `pt-20` của section đặt cột ngay sát dưới nó, nên
+                chỉ còn 4px hở — cao hơn nữa là chui vào header. Mép dưới ăn vào
+                dải chỉ số. */}
             <motion.div
               initial={reduce ? false : { scaleY: 0 }}
               animate={ready ? { scaleY: 1 } : { scaleY: 0 }}
               transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.1 }}
               style={{ transformOrigin: "bottom center" }}
-              className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0"
+              className="absolute -bottom-10 left-1/2 top-1 w-[88%] -translate-x-1/2"
             >
-              {/* Vòng sau, lệch phải-xuống: xanh non pha loãng, đậm hơn vòng
-                  trước một nhịp để còn thấy được viền lệch */}
-              <div className="absolute inset-0 translate-x-6 translate-y-4 rounded-full bg-gradient-to-br from-leaf/55 to-leaf-dark/45" />
-              {/* Vòng trước: gradient nhạt nhất, từ sage sang leaf pha loãng */}
+              {/* Một mảnh duy nhất, không còn lớp lệch phía sau — đúng kiểu tấm
+                  nền phẳng của mẫu poster. */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-sage-3 to-leaf/55" />
             </motion.div>
-            {/* Ba con số neo mép phải, chồng lên phần trống bên phải khối xanh
-                — không lấy bề ngang của cột nên hai bóng xanh giữ nguyên dáng */}
+            {/* Ba con số neo mép phải, chồng lên phần trống bên phải vòng xanh
+                — không lấy bề ngang của cột nên hai vòng giữ nguyên dáng */}
             <motion.div
               initial={reduce ? false : { opacity: 0, x: 16 }}
               animate={ready ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
@@ -266,7 +273,7 @@ export default function Hero() {
                 bọc nên ảnh và bóng sticker lộ ra cùng một nhịp — trước đây chỉ
                 ảnh chính trượt lên còn bóng đứng yên, nên lúc đang chạy nhìn
                 thành hai hình lệch nhau. */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[85%] w-auto md:h-auto md:w-[108%] max-w-none pointer-events-none">
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[85%] w-auto md:h-full md:w-[108%] max-w-none pointer-events-none">
               <motion.div
                 initial={reduce ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
                 animate={
@@ -276,12 +283,12 @@ export default function Hero() {
                 }
                 transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 style={{ x: parallaxX }}
-                className="relative h-full w-auto md:h-auto md:w-full"
+                className="relative h-full w-auto md:h-full md:w-full"
               >
                 <img
                   src={hero.portraitUrl}
                   alt="Cô Hồ Ngọc Thương"
-                  className="relative h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none"
+                  className="relative h-full w-auto md:h-full md:w-full max-w-none object-contain object-bottom select-none"
                 />
                 {/* Bóng silhouette lệch kiểu sticker (như mẫu): chính ảnh đó,
                     brightness(0)+invert(1) thành mảng trắng phẳng, đẩy lệch phải */}
@@ -289,7 +296,7 @@ export default function Hero() {
                   aria-hidden="true"
                   src={hero.portraitUrl}
                   alt=""
-                  className="absolute inset-0 h-full w-auto md:h-auto md:w-full max-w-none object-contain object-bottom select-none -z-10 translate-x-7 [filter:brightness(0)invert(1)] opacity-70"
+                  className="absolute inset-0 h-full w-auto md:h-full md:w-full max-w-none object-contain object-bottom select-none -z-10 translate-x-7 [filter:brightness(0)invert(1)] opacity-70"
                 />
               </motion.div>
             </div>
@@ -324,7 +331,7 @@ export default function Hero() {
         initial={reduce ? false : { opacity: 0, y: 24 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
         transition={{ type: "spring", stiffness: 120, damping: 22, delay: 0.75 }}
-        className="relative z-20 max-w-6xl mx-auto px-6 md:px-12 -mt-2 pb-10"
+        className="relative z-20 max-w-6xl mx-auto px-6 md:px-12 -mt-2 pb-10 md:pb-6"
       >
         <div className="bg-white rounded-[32px] shadow-[0_20px_60px_rgba(20,83,45,0.12)] border border-black/5 px-6 py-6 md:py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:divide-x md:divide-black/10">
           {IMPACT_STATS.map((s) => (
