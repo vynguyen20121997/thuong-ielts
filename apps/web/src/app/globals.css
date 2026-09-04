@@ -399,6 +399,39 @@ html.site-loading body {
   color: var(--color-brand-deep);
 }
 
+/* Hai CTA của Hero có một dải sáng lướt qua thay vì chỉ đổi màu tức thời.
+   Chuyển động này làm rõ điểm bấm nhưng không tranh sự chú ý với chân dung. */
+.hero-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    box-shadow 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-cta::before {
+  position: absolute;
+  z-index: 0;
+  inset: -1px;
+  content: "";
+  background: var(--color-leaf);
+  transform: translate3d(-102%, 0, 0);
+  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-cta:hover,
+.hero-cta:focus-visible {
+  color: var(--color-brand-deep);
+  border-color: var(--color-leaf);
+  box-shadow: 0 16px 30px rgba(20, 83, 45, 0.22);
+}
+
+.hero-cta:hover::before,
+.hero-cta:focus-visible::before {
+  transform: translate3d(0, 0, 0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .student-score-marquee-left,
   .student-score-marquee-right,
@@ -419,6 +452,10 @@ html.site-loading body {
   }
 
   .navigation-button-label-next .navigation-button-label-character {
+    display: none;
+  }
+
+  .hero-cta::before {
     display: none;
   }
 }

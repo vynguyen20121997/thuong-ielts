@@ -64,6 +64,50 @@ const popIn: Variants = {
   },
 };
 
+const headlineReveal: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.13, delayChildren: 0.04 },
+  },
+};
+
+const headlineLine: Variants = {
+  hidden: { opacity: 0, y: "115%" },
+  visible: {
+    opacity: 1,
+    y: "0%",
+    transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const underlineReveal: Variants = {
+  hidden: { scaleX: 0 },
+  visible: {
+    scaleX: 1,
+    transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const buttonGroup: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1], delay: 0.08 },
+  },
+};
+
+const quoteReveal: Variants = {
+  hidden: { opacity: 0, y: 16, filter: "blur(4px)", color: "rgba(31, 41, 55, 0.18)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    color: "rgba(31, 41, 55, 0.65)",
+    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 export default function Hero() {
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   // Hero là màn đầu: nội dung của nó phải có TRƯỚC khi khách nhìn thấy trang,
@@ -78,7 +122,6 @@ export default function Hero() {
   // Parallax nhẹ theo chuột cho chân dung — spring của motion cho mượt
   const mx = useMotionValue(0);
   const parallaxX = useSpring(mx, { stiffness: 60, damping: 18 });
-  const [quoteBeforeDetail, ...quoteAfterDetail] = hero.quote.split("chi tiết");
 
   useEffect(() => {
     fetch("/api/hero")
@@ -125,41 +168,59 @@ export default function Hero() {
             className="text-left pb-6 md:pb-0 md:self-center order-1"
           >
             <motion.h1
-              variants={popIn}
+              variants={headlineReveal}
               className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold tracking-tight leading-[1.1] mb-5"
             >
-              <span className="block text-brand">{hero.titleLine1}</span>
+              <span className="-mt-[0.18em] block overflow-hidden pt-[0.18em] pb-[0.08em]">
+                <motion.span variants={headlineLine} className="block text-brand">
+                  {hero.titleLine1}
+                </motion.span>
+              </span>
               {/* Dòng 2 gạch chân bằng border của chính span: vệt kẻ luôn dài
                   đúng bằng chữ, không phải canh tay một khối trang trí rời. */}
-              <span className="mt-2 inline-block border-b-4 border-leaf pb-1 text-brand-soft">
-                {hero.titleLine2.replace(/\.$/, "")}
+              <span className="mt-2 block overflow-hidden pb-[0.18em]">
+                <motion.span variants={headlineLine} className="block text-brand-soft">
+                  {hero.titleLine2.replace(/\.$/, "")}
+                </motion.span>
+                <motion.span
+                  aria-hidden="true"
+                  variants={underlineReveal}
+                  style={{ transformOrigin: "left center" }}
+                  className="mt-1 block h-1 w-full max-w-[490px] rounded-full bg-leaf"
+                />
               </span>
             </motion.h1>
 
             <motion.p
-              variants={popIn}
-              className="max-w-[35rem] text-pretty text-[15px] leading-[1.65] text-ink/65 md:text-[17px] mb-7"
+              variants={quoteReveal}
+              className="max-w-[35rem] text-pretty text-[15px] leading-[1.65] md:text-[17px] mb-7"
             >
-              {quoteBeforeDetail}
-              <br />
-              chi tiết{quoteAfterDetail.join("chi tiết")}
+              {hero.quote}
             </motion.p>
 
-            <motion.div variants={popIn} className="flex flex-wrap items-center gap-4">
-              <a
+            <motion.div variants={buttonGroup} className="flex flex-wrap items-center gap-4">
+              <motion.a
                 href="#testimonials"
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
+                whileHover={reduce ? undefined : { y: -3, scale: 1.015 }}
+                whileTap={reduce ? undefined : { scale: 0.98 }}
+                className="hero-cta group inline-flex items-center gap-2 px-8 py-4 bg-brand text-white font-bold text-sm rounded-full shadow-md cursor-pointer"
               >
-                <NavigationButtonLabel>Xem Thành Tích Học Viên</NavigationButtonLabel>
-                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-              <a
+                <span className="relative z-10 inline-flex items-center gap-2">
+                  <NavigationButtonLabel>Xem Thành Tích Học Viên</NavigationButtonLabel>
+                  <ArrowRight size={16} className="transition-transform duration-500 group-hover:translate-x-1.5" />
+                </span>
+              </motion.a>
+              <motion.a
                 href="#phuong-phap"
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md cursor-pointer"
+                whileHover={reduce ? undefined : { y: -3, scale: 1.015 }}
+                whileTap={reduce ? undefined : { scale: 0.98 }}
+                className="hero-cta hero-cta-secondary group inline-flex items-center gap-2 border-2 border-brand bg-white px-8 py-[14px] text-brand font-bold text-sm rounded-full shadow-none cursor-pointer"
               >
-                <NavigationButtonLabel>Khám Phá Phương Pháp Giảng Dạy</NavigationButtonLabel>
-                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
+                <span className="relative z-10 inline-flex items-center gap-2">
+                  <NavigationButtonLabel>Khám Phá Phương Pháp Giảng Dạy</NavigationButtonLabel>
+                  <ArrowRight size={16} className="transition-transform duration-500 group-hover:translate-x-1.5" />
+                </span>
+              </motion.a>
             </motion.div>
           </motion.div>
 
