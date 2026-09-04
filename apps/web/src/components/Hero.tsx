@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import NavigationButtonLabel from "./NavigationButtonLabel";
+import CountUp from "./CountUp";
 import {
   motion,
   useMotionValue,
@@ -37,55 +38,6 @@ const IMPACT_STATS = [
   { value: "1200", suffix: "+", label: "Học viên" },
   { value: "110", suffix: "+", label: "Học viên đạt mục tiêu" },
 ] as const;
-
-type LotteryDirection = "up" | "down";
-
-function LotteryDigit({ digit, direction, delay, reduce }: { digit: string; direction: LotteryDirection; delay: number; reduce: boolean | null }) {
-  if (!/^\d$/.test(digit) || reduce) return <span>{digit}</span>;
-
-  const target = Number(digit);
-  const reel = Array.from({ length: 6 }, (_, index) => String((target + 5 - index + 10) % 10));
-  const downReel = [...reel].reverse();
-  const digits = direction === "up" ? reel : downReel;
-  // `em` bám đúng chiều cao một chữ số. Dùng `%` ở đây sẽ tính theo cả dải
-  // sáu số, khiến reel đi quá xa và có lúc để trống khung.
-  const travel = `${(digits.length - 1) * -1}em`;
-
-  return (
-    <span className="inline-block h-[1em] overflow-hidden align-top" aria-label={digit}>
-      <motion.span
-        aria-hidden="true"
-        className="block"
-        initial={{ y: direction === "up" ? "0%" : travel }}
-        animate={{ y: direction === "up" ? travel : "0%" }}
-        transition={{ duration: 3.6, delay, ease: [0.08, 0.92, 0.12, 1] }}
-      >
-        {digits.map((item, index) => (
-          <span key={`${item}-${index}`} className="block h-[1em] leading-none">
-            {item}
-          </span>
-        ))}
-      </motion.span>
-    </span>
-  );
-}
-
-function LotteryNumber({ value, suffix, reduce }: { value: string; suffix: string; reduce: boolean | null }) {
-  return (
-    <span className="inline-flex items-baseline">
-      {Array.from(value).map((digit, index) => (
-        <LotteryDigit
-          key={`${digit}-${index}`}
-          digit={digit}
-          direction={index % 2 === 0 ? "up" : "down"}
-          delay={0.8 + index * 0.08}
-          reduce={reduce}
-        />
-      ))}
-      <span className="ml-0.5 text-[0.48em] font-semibold tracking-normal">{suffix}</span>
-    </span>
-  );
-}
 
 /*
   Entrance kiểu "hero stagger" của motion.dev: cột chữ là container stagger,
@@ -291,7 +243,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Dải chỉ số: các chữ số quay kiểu lottery, xen kẽ hai chiều. */}
+      {/* Dải chỉ số dùng cùng kiểu đếm tăng dần như Câu chuyện học viên. */}
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -301,14 +253,17 @@ export default function Hero() {
         <div className="bg-white rounded-[32px] shadow-[0_20px_60px_rgba(20,83,45,0.12)] border border-black/5 px-6 py-6 md:py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:divide-x md:divide-black/10">
           {IMPACT_STATS.map((s) => (
             <div key={s.label} className="text-center px-4">
-              <span className="mb-1.5 block text-2xl font-bold leading-none text-brand md:text-3xl">
-                <LotteryNumber
-                  value={s.value}
-                  suffix={s.suffix}
-                  reduce={reduce}
+              <span className="mb-1.5 block text-2xl font-bold leading-none text-[#15803D] md:text-3xl">
+                <CountUp
+                  value={Number(s.value)}
+                  duration={2}
+                  delay={0.9}
                 />
+                <span className={`ml-1 font-semibold tracking-normal ${s.suffix === "+" ? "text-[0.92em]" : "text-[0.68em]"}`}>
+                  {s.suffix}
+                </span>
               </span>
-              <span className="text-2xs md:text-xs font-semibold uppercase tracking-[0.08em] text-brand/55">
+              <span className="text-2xs md:text-xs font-semibold uppercase tracking-[0.08em] text-black/60">
                 {s.label}
               </span>
             </div>

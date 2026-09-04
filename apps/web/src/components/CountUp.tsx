@@ -13,11 +13,17 @@ import { useReducedMotion } from "motion/react";
 export default function CountUp({
   value,
   duration = 2,
+  delay = 0,
+  overshoot,
   className,
 }: {
   value: number;
   /** Giây */
   duration?: number;
+  /** Chờ trước khi bắt đầu đếm, tính bằng giây. */
+  delay?: number;
+  /** Mốc chạy quá đà trước khi quay về giá trị cuối. */
+  overshoot?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -35,21 +41,25 @@ export default function CountUp({
     }
 
     const state = { val: shown.current };
-    const tween = gsap.to(state, {
-      val: value,
-      duration,
-      ease: "power2.out",
-      onUpdate: () => {
-        node.textContent = String(Math.round(state.val));
-      },
-    });
+    const update = () => {
+      node.textContent = String(Math.round(state.val));
+    };
+    const tween = gsap.timeline({ delay });
+
+    if (overshoot !== undefined && overshoot !== value) {
+      tween
+        .to(state, { val: overshoot, duration: duration * 0.72, ease: "power2.out", onUpdate: update })
+        .to(state, { val: value, duration: duration * 0.28, ease: "power2.inOut", onUpdate: update });
+    } else {
+      tween.to(state, { val: value, duration, ease: "power2.out", onUpdate: update });
+    }
 
     return () => {
       // Giữ lại số đang hiện để lần đổi giá trị sau đếm tiếp, không nhảy về 0
       shown.current = Math.round(state.val);
       tween.kill();
     };
-  }, [value, duration, reduce]);
+  }, [value, duration, delay, overshoot, reduce]);
 
   return (
     <span ref={ref} className={className}>

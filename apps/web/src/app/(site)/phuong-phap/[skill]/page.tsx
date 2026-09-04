@@ -16,6 +16,32 @@ const READING_ILLUSTRATIONS = [
   "/images/reading-method/reading-08-goal.png",
 ] as const;
 
+const LISTENING_ILLUSTRATIONS = [
+  "/images/listening-method/listening-01-structure.png",
+  "/images/listening-method/listening-02-meaning.png",
+  "/images/listening-method/listening-03-vocabulary.png",
+  "/images/listening-method/listening-04-practice.png",
+  "/images/listening-method/listening-05-progress.png",
+] as const;
+
+const WRITING_ILLUSTRATIONS = [
+  "/images/writing-method/writing-01-layers.png",
+  "/images/writing-method/writing-02-framework.png",
+  "/images/writing-method/writing-03-thinking.png",
+  "/images/writing-method/writing-04-language.png",
+  "/images/writing-method/writing-05-criteria.png",
+  "/images/writing-method/writing-06-feedback.png",
+] as const;
+
+const SPEAKING_ILLUSTRATIONS = [
+  "/images/speaking-method/speaking-01-experience.png",
+  "/images/speaking-method/speaking-02-depth.png",
+  "/images/speaking-method/speaking-03-pathways.png",
+  "/images/speaking-method/speaking-04-output.png",
+  "/images/speaking-method/speaking-05-feedback.png",
+  "/images/speaking-method/speaking-06-independent.png",
+] as const;
+
 type SkillPageProps = {
   params: Promise<{ skill: string }>;
 };
@@ -30,6 +56,16 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
   if (!section) notFound();
 
   const Icon = section.icon;
+  const illustrations =
+    section.id === "reading"
+      ? READING_ILLUSTRATIONS
+      : section.id === "listening"
+        ? LISTENING_ILLUSTRATIONS
+        : section.id === "writing"
+          ? WRITING_ILLUSTRATIONS
+          : section.id === "speaking"
+            ? SPEAKING_ILLUSTRATIONS
+            : null;
 
   return (
     <main className="relative z-10 min-h-screen bg-white pb-24 pt-28 md:pt-32">
@@ -55,9 +91,9 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
           {section.items.map((item, itemIndex) => (
             <article key={item.title} className="rounded-[24px] bg-mist p-7 md:p-8">
               <div className="flex flex-col gap-6 md:flex-row md:items-start">
-                {section.id === "reading" && (
+                {illustrations && (
                   <img
-                    src={READING_ILLUSTRATIONS[itemIndex]}
+                    src={illustrations[itemIndex]}
                     alt={`Minh họa: ${item.title}`}
                     className="aspect-square w-full rounded-2xl object-cover md:w-44 md:shrink-0"
                   />

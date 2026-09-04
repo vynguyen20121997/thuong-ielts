@@ -140,54 +140,68 @@ export const SKILL_SECTIONS: SkillSection[] = [
     icon: Headphones,
     items: [
       {
-        title: "Hiểu từng dạng câu hỏi trước khi nghe",
+        title: "Hiểu cấu trúc đề và từng dạng bài",
         paras: [
-          "Listening có nhiều dạng bài khác nhau và mỗi dạng yêu cầu học sinh tập trung vào một loại thông tin khác nhau. Học sinh được hướng dẫn cách xử lý từng dạng từ dễ đến khó, bao gồm:",
+          "Học sinh trước hết được làm quen với cấu trúc bài thi IELTS Listening, đặc điểm của từng section và các dạng câu hỏi thường gặp như Gap Filling, Multiple Choice, Matching, Map/Plan Labelling,...",
+          "Với mỗi dạng bài, học sinh được hướng dẫn cách:",
         ],
         bullets: [
-          "đọc câu hỏi trước khi nghe;",
+          "đọc và phân tích câu hỏi trước khi nghe;",
           "dự đoán loại thông tin cần nghe;",
-          "xác định keyword;",
-          "nhận diện distractor;",
-          "theo dõi sự thay đổi của người nói;",
-          "và chuyển sự chú ý sang câu tiếp theo đúng thời điểm.",
+          "nhận diện cách thông tin thường được diễn đạt và paraphrase trong audio;",
+          "lựa chọn cách tiếp cận phù hợp để xử lý bài nhanh nhưng vẫn chính xác.",
         ],
       },
       {
-        title: "Không nghe theo kiểu “bắt keyword”",
+        title: "Nói không với “tips & tricks” và nghe bắt keyword",
         paras: [
-          "Một lỗi phổ biến là học sinh cố chờ nghe đúng từ xuất hiện trong câu hỏi. Trong IELTS Listening, câu hỏi và audio thường sử dụng paraphrase, nên việc chỉ chờ một keyword cụ thể dễ khiến học sinh bỏ lỡ đáp án.",
-          "Vì vậy, trọng tâm là giúp học sinh: nghe để hiểu ý → nhận diện thông tin tương đương → chọn đáp án, thay vì: thấy keyword → chờ keyword trong audio.",
-        ],
-      },
-      {
-        title: "Mỗi câu sai phải có một nguyên nhân",
-        paras: [
-          "Sai Listening không phải lúc nào cũng vì “nghe yếu”. Một câu sai có thể đến từ nhiều nguyên nhân:",
+          "Listening không được dạy theo hướng chỉ chờ nghe đúng một keyword rồi chọn đáp án. Trong bài thi thật, từ trong câu hỏi thường được paraphrase, thông tin có thể được sửa lại giữa chừng và nhiều từ khóa gây nhiễu cũng xuất hiện trong audio.",
+          "Vì vậy, trọng tâm của lớp học là nghe hiểu nội dung thực sự.",
+          "Tùy vào trình độ và lỗi của học sinh, các hoạt động như take notes, nghe chép chính tả (dictation), nghe lại từng đoạn ngắn và đối chiếu transcript được sử dụng để kiểm tra xem học sinh thực sự nghe được bao nhiêu.",
+          "Qua đó, học sinh dần xác định chính xác nguyên nhân mất điểm, ví dụ:",
         ],
         bullets: [
-          "Không nghe được âm → vấn đề pronunciation / connected speech.",
-          "Nghe được nhưng không hiểu → vocabulary hoặc grammar.",
-          "Hiểu nhưng không nhận ra đáp án → paraphrase.",
-          "Biết đáp án nhưng bỏ lỡ câu tiếp theo → concentration.",
-          "Bị distractor đánh lừa → question strategy.",
-        ],
-        after: [
-          "Việc phân loại lỗi giúp học sinh biết chính xác kỹ năng nào cần cải thiện, thay vì chỉ nghe đi nghe lại toàn bộ bài.",
+          "không nhận ra từ dù đã biết từ đó;",
+          "không theo kịp tốc độ nói;",
+          "bỏ lỡ paraphrase;",
+          "nghe sai số, tên riêng hoặc spelling;",
+          "mất tập trung khi audio chuyển sang thông tin tiếp theo.",
         ],
       },
       {
-        title: "Phát triển khả năng nghe ngôn ngữ thực tế",
-        paras: ["Bên cạnh luyện đề, học sinh được tiếp xúc với:"],
+        title: "Xây dựng Vocabulary và Background Knowledge",
+        paras: [
+          "Trước hoặc trong bài học, giáo viên sẽ chọn lọc những blocking vocabulary – những từ thực sự cản trở việc hiểu bài – để pre-teach thay vì yêu cầu học sinh học toàn bộ từ mới trong transcript.",
+          "Vocabulary được củng cố thông qua các hoạt động như matching, vocabulary games, paraphrase practice và review lại từ trong ngữ cảnh.",
+          "Các hoạt động lead-in và discussion ngắn cũng được sử dụng để cung cấp background knowledge về những chủ đề thường xuất hiện trong IELTS như education, travel, environment, university life hay workplace. Khi đã quen với chủ đề và cách các ý thường được diễn đạt, học sinh sẽ dễ dự đoán và xử lý thông tin khi nghe hơn.",
+        ],
+      },
+      {
+        title: "Luyện tập từ từng dạng bài đến Full Listening Test",
+        paras: [
+          "Ở các lớp beginner, mỗi bài học thường tập trung vào một dạng câu hỏi hoặc một nhóm kỹ năng cụ thể, giúp học sinh có đủ thời gian nhận diện dạng bài, hiểu lỗi sai và luyện tập lặp lại cho đến khi hình thành cách xử lý ổn định.",
+          "Khi lên level intermediate trở lên và đã quen với các dạng câu hỏi, học sinh sẽ chuyển sang luyện full section và full Listening test, nơi nhiều dạng bài xuất hiện liên tục giống bài thi thật.",
+          "Bài tập về nhà cũng được giao xuyên suốt khóa học và bổ sung theo năng lực của từng học sinh, giúp duy trì tần suất nghe thường xuyên thay vì chỉ luyện Listening trong giờ học.",
+        ],
+      },
+      {
+        title: "Theo dõi tiến bộ bằng điểm số và lỗi sai",
+        paras: [
+          "Tiến bộ của học sinh được theo dõi không chỉ bằng band score mà còn thông qua hệ thống track số câu đúng – sai và các nhóm lỗi thường gặp.",
+          "Sau mỗi bài luyện, giáo viên có thể xác định học sinh đang mất điểm chủ yếu vì:",
+        ],
         bullets: [
-          "pronunciation;",
-          "connected speech;",
-          "những cách diễn đạt phổ biến;",
-          "từ vựng theo topic;",
-          "và các dạng paraphrase thường gặp.",
+          "vocabulary;",
+          "spelling;",
+          "paraphrase;",
+          "tốc độ xử lý;",
+          "mất tập trung;",
+          "không nhận diện được âm;",
+          "hoặc chưa nắm chiến thuật của dạng bài.",
         ],
         after: [
-          "Mục tiêu là cải thiện khả năng nghe tiếng Anh, chứ không chỉ tăng số câu đúng trong một bài test.",
+          "Dữ liệu này được sử dụng để điều chỉnh bài tập và bổ sung practice phù hợp, thay vì để học sinh làm nhiều đề một cách ngẫu nhiên.",
+          "Các bài Mock Test được tổ chức định kỳ và mô phỏng bài thi thật sát nhất có thể, giúp theo dõi sự tiến bộ qua từng giai đoạn và kiểm tra khả năng áp dụng kỹ năng dưới áp lực thời gian.",
         ],
       },
     ],
@@ -200,7 +214,9 @@ export const SKILL_SECTIONS: SkillSection[] = [
       {
         title: "Học Writing theo từng tầng",
         paras: [
-          "Học sinh không được yêu cầu viết một bài hoàn chỉnh ngay khi chưa kiểm soát tốt những đơn vị nhỏ hơn. Quá trình học đi từ: Sentence → Idea → Paragraph → Full Response.",
+          "Học sinh không được yêu cầu viết một bài hoàn chỉnh ngay khi chưa kiểm soát tốt những đơn vị nhỏ hơn.",
+          "Quá trình học đi từ:",
+          "Sentence → Idea → Paragraph → Full Response",
           "Tùy trình độ, học sinh có thể bắt đầu từ:",
         ],
         bullets: [
@@ -216,34 +232,32 @@ export const SKILL_SECTIONS: SkillSection[] = [
         ],
       },
       {
-        title: "Mỗi dạng bài có một cấu trúc rõ ràng",
-        paras: ["Với cả Task 1 và Task 2, học sinh được hướng dẫn:"],
-        bullets: [
-          "yêu cầu của từng dạng bài;",
-          "cách phân tích đề;",
-          "cách tổ chức thông tin;",
-          "cấu trúc từng paragraph;",
-          "và các cấu trúc ngôn ngữ có thể sử dụng.",
-        ],
-        after: [
-          "Ở level beginner, học sinh có thể được cung cấp mẫu và sentence frame khá rõ để làm quen. Khi trình độ tăng lên, mức độ hỗ trợ giảm dần để học sinh có thể tự lựa chọn cấu trúc phù hợp.",
+        title: "Framework là nền tảng, không phải bài học thuộc",
+        paras: [
+          "Với cả Task 1 và Task 2, học sinh được hướng dẫn rõ yêu cầu từng dạng bài, cách phân tích đề, tổ chức thông tin, cấu trúc paragraph và các cấu trúc ngôn ngữ phù hợp.",
+          "Ở level beginner, giáo viên có thể cung cấp framework và sentence frame khá cụ thể để học sinh làm quen với logic của bài viết. Khi trình độ tăng lên, mức độ hỗ trợ sẽ giảm dần.",
+          "Mục tiêu không phải để học sinh học thuộc một khuôn mẫu cố định, mà để các em dần biết tự lựa chọn cấu trúc, cách diễn đạt và phát triển ý phù hợp, từ đó hình thành writing style riêng.",
         ],
       },
       {
-        title: "Framework là điểm bắt đầu, không phải bài học thuộc",
+        title: "Phát triển Critical Thinking qua cách đào sâu luận điểm",
         paras: [
-          "Mẫu câu và framework được sử dụng để giúp học sinh hiểu logic của bài viết. Tuy nhiên, mục tiêu không phải để tất cả học sinh viết một bài giống nhau. Khi đã quen với cấu trúc cơ bản, học sinh được khuyến khích:",
+          "Học sinh được hướng dẫn cách phát triển một luận điểm theo logic rõ ràng, thay vì đưa ra nhiều ý nhưng chỉ giải thích sơ sài.",
+          "Trọng tâm là học cách trả lời các câu hỏi như Why? How? So what?, từ đó giải thích nguyên nhân, cơ chế, hệ quả và ví dụ một cách mạch lạc. Mục tiêu là giúp học sinh hình thành tư duy lập luận tốt hơn và viết những body paragraphs có chiều sâu.",
         ],
-        bullets: [
-          "thay đổi cách diễn đạt;",
-          "lựa chọn cấu trúc phù hợp với ý của mình;",
-          "phát triển luận điểm khác nhau;",
-          "và dần hình thành writing style riêng.",
+      },
+      {
+        title: "Ưu tiên ngôn ngữ đơn giản, chính xác và tự nhiên",
+        paras: [
+          "Học sinh không bị đặt áp lực phải sử dụng thật nhiều advanced vocabulary hay cấu trúc phức tạp để đạt điểm cao. Thay vào đó, ưu tiên là dùng từ và ngữ pháp đúng, rõ ràng, tự nhiên và phù hợp với ý muốn diễn đạt.",
+          "Bên cạnh đó, học sinh vẫn được bổ sung topical vocabulary, collocations và cách paraphrase theo từng chủ đề để mở rộng vốn từ một cách có chọn lọc và ứng dụng được vào bài viết.",
         ],
       },
       {
         title: "Chấm bài theo đúng 4 tiêu chí IELTS",
-        paras: ["Mỗi bài viết được đánh giá dựa trên:"],
+        paras: [
+          "Mỗi bài viết được đánh giá dựa trên:",
+        ],
         bullets: [
           "Task Achievement / Task Response",
           "Coherence & Cohesion",
@@ -251,46 +265,20 @@ export const SKILL_SECTIONS: SkillSection[] = [
           "Grammatical Range & Accuracy",
         ],
         after: [
-          "Học sinh không chỉ nhận một band score tổng thể mà còn cần hiểu: điểm của mình đang bị giới hạn ở đâu? Ví dụ: một học sinh có idea tốt nhưng grammar chưa ổn sẽ cần một hướng cải thiện khác với một học sinh viết chính xác nhưng phát triển ý quá sơ sài.",
+          "Học sinh không chỉ nhận một band score tổng thể mà còn cần hiểu:",
+          "Điểm của mình đang bị giới hạn ở đâu?",
         ],
       },
       {
-        title: "Feedback không kết thúc khi bài được chữa",
+        title: "Tập trung sửa lỗi và giảm lỗi lặp lại",
         paras: [
-          "Một bài Writing chỉ thực sự có giá trị khi lỗi trong bài đó giúp học sinh viết tốt hơn ở bài tiếp theo. Vì vậy, feedback được sử dụng theo một vòng: Write → Feedback → Identify recurring errors → Correct → Rewrite → Apply in next task.",
-          "Các lỗi cá nhân thường xuyên xuất hiện được theo dõi để học sinh biết mình đang có pattern nào, chẳng hạn:",
-        ],
-        bullets: [
-          "article;",
-          "subject–verb agreement;",
-          "word form;",
-          "collocation;",
-          "sentence structure;",
-          "comparative structures;",
-          "development of ideas.",
+          "Feedback không chỉ để chỉ ra bài viết sai ở đâu, mà quan trọng hơn là giúp học sinh hiểu lỗi, sửa được lỗi và tránh lặp lại trong những bài sau.",
+          "Quá trình được thực hiện theo vòng:",
+          "Write → Feedback → Identify recurring errors → Correct → Rewrite → Apply in next task",
+          "Các lỗi thường xuyên xuất hiện như article, subject–verb agreement, word form, collocation, sentence structure hay development of ideas được theo dõi qua nhiều bài viết.",
         ],
         after: [
-          "Mục tiêu là giảm dần recurring errors, thay vì để giáo viên sửa cùng một lỗi hết bài này đến bài khác.",
-        ],
-      },
-      {
-        title: "Rewrite là một phần của quá trình học",
-        paras: ["Sau feedback, học sinh có thể được yêu cầu:"],
-        bullets: [
-          "sửa lại câu sai;",
-          "viết lại một đoạn;",
-          "hoặc hoàn thiện lại toàn bộ bài tùy vấn đề.",
-        ],
-        after: [
-          "Việc rewrite giúp biến feedback từ kiến thức thụ động thành kỹ năng học sinh có thể thực sự sử dụng.",
-        ],
-      },
-      {
-        title: "Vocabulary và grammar được học trong ngữ cảnh",
-        paras: [
-          "Thay vì học grammar và vocabulary tách biệt hoàn toàn khỏi Writing, những nội dung này được đưa vào bài học dựa trên nhu cầu thực tế.",
-          "Ví dụ: nếu học sinh đang học Static Charts, grammar có thể tập trung vào comparatives, superlatives, expressing proportions. Nếu học Task 2 Problems & Solutions, vocabulary được xây dựng xoay quanh causes, consequences, stakeholders, solutions.",
-          "Nhờ đó, học sinh học ngôn ngữ cùng lúc với việc học cách sử dụng nó.",
+          "Mục tiêu là giúp học sinh nhận ra pattern lỗi cá nhân và giảm dần recurring errors, thay vì để giáo viên phải sửa đi sửa lại cùng một lỗi ở mỗi bài.",
         ],
       },
     ],
@@ -319,25 +307,13 @@ export const SKILL_SECTIONS: SkillSection[] = [
         ],
       },
       {
-        title: "Không ép học sinh sử dụng vocabulary “cao cấp”",
+        title: "Ưu tiên phát triển ý sâu hơn là dùng vocabulary “khủng”",
         paras: [
-          "Một câu trả lời Speaking tốt không nhất thiết phải chứa nhiều idiom hay từ hiếm. Học sinh được hướng dẫn tập trung vào: ý rõ → diễn đạt tự nhiên → vocabulary phù hợp → grammar đủ linh hoạt, thay vì cố nhồi những từ mình chưa thực sự sử dụng được.",
-          "Vocabulary được nâng cấp dần khi khả năng diễn đạt đã ổn định.",
-        ],
-      },
-      {
-        title: "Input phải tạo ra output",
-        paras: [
-          "Việc học một danh sách vocabulary hoặc xem một sample answer không đồng nghĩa với việc học sinh có thể sử dụng chúng khi Speaking. Vì vậy, kiến thức mới luôn cần được đưa vào practice.",
-          "Một chu trình có thể là: Input → Guided Practice → Speaking → Feedback → Speak Again. Học sinh không chỉ nghe giáo viên sửa mà phải nói lại để áp dụng feedback ngay lập tức.",
-        ],
-      },
-      {
-        title: "Feedback ngay tại lớp",
-        paras: ["Những vấn đề quan trọng về:"],
-        bullets: ["pronunciation;", "grammar;", "vocabulary;", "fluency;", "idea development"],
-        after: [
-          "được chỉ ra trong quá trình luyện tập. Sau feedback, học sinh được yêu cầu thử lại câu trả lời để cảm nhận rõ sự khác biệt giữa lần đầu và lần sau. Điều này đặc biệt quan trọng với Speaking vì chỉ “hiểu lỗi” chưa đủ; học sinh phải tạo lại output đúng bằng miệng.",
+          "Một câu trả lời Speaking tốt không cần quá nhiều idiom, từ hiếm hay vocabulary quá “advanced”. Trọng tâm là giúp học sinh diễn giải một ý rõ ràng, chi tiết và có logic.",
+          "Học sinh được hướng dẫn mở rộng câu trả lời, thay vì chỉ đưa ra nhiều ý ngắn nhưng không phát triển.",
+          "Ưu tiên sẽ là:",
+          "ý rõ → phát triển đủ sâu → diễn đạt tự nhiên → vocabulary phù hợp → grammar linh hoạt",
+          "Vocabulary vẫn được nâng cấp theo từng topic, nhưng phải là những từ thực sự ứng dụng được vào câu trả lời, thay vì học để “show off” từ vựng.",
         ],
       },
       {
@@ -347,12 +323,37 @@ export const SKILL_SECTIONS: SkillSection[] = [
           "Answer → Reason",
           "Answer → Example",
           "Past → Present",
-          "Opinion → Explanation",
-          "Situation → Feeling",
           "General idea → Personal experience",
         ],
         after: [
-          "Sau đó học sinh tự chọn cấu trúc phù hợp với câu hỏi và cách tư duy của mình. Mục tiêu không phải để cả lớp trả lời giống nhau mà là giúp mỗi học sinh xây dựng một hệ thống phát triển ý của riêng mình.",
+          "Sau đó học sinh tự chọn cấu trúc phù hợp với câu hỏi và cách tư duy của mình.",
+          "Mục tiêu không phải để cả lớp trả lời giống nhau mà là giúp mỗi học sinh xây dựng một hệ thống phát triển ý của riêng mình.",
+        ],
+      },
+      {
+        title: "Input phải tạo ra output",
+        paras: [
+          "Trong Speaking, học sinh được tiếp xúc với authentic English materials qua các hoạt động nghe và đọc để rút ra cách diễn đạt, vocabulary và ideas có thể sử dụng trong từng chủ đề.",
+          "Phần input này không dừng ở việc “học từ mới”, mà được thiết kế để:",
+        ],
+        bullets: [
+          "bổ sung topic-specific vocabulary có tính ứng dụng cao;",
+          "mở rộng background knowledge về các chủ đề thường gặp;",
+          "giúp học sinh quan sát cách người bản ngữ diễn đạt ý tự nhiên.",
+        ],
+        after: [
+          "Sau đó, ngôn ngữ và ý tưởng mới được đưa ngay vào các bài tập liên quan theo chu trình:",
+          "Input → Guided Practice → Speaking → Feedback → Speak Again",
+          "Mục tiêu là để học sinh không chỉ nhận biết kiến thức mới mà có thể chủ động sử dụng chúng trong câu trả lời Speaking của mình.",
+        ],
+      },
+      {
+        title: "Feedback ngay tại lớp",
+        paras: [
+          "Trong quá trình luyện Speaking, các vấn đề quan trọng về pronunciation, grammar, vocabulary, fluency và idea development được chỉ ra ngay tại lớp.",
+          "Sau feedback, học sinh được yêu cầu thử lại câu trả lời để trực tiếp tạo ra output tốt hơn, thay vì chỉ nghe và hiểu lỗi.",
+          "Các lỗi thường xuyên xuất hiện cũng được ghi nhận trong hệ thống theo dõi lỗi, giúp giáo viên và học sinh nhận diện recurring mistakes qua nhiều buổi học và tập trung sửa những vấn đề ảnh hưởng nhiều nhất đến điểm Speaking.",
+          "Mục tiêu là để lỗi được sửa, luyện lại và giảm dần theo thời gian, thay vì lặp lại từ buổi này sang buổi khác.",
         ],
       },
       {
