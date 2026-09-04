@@ -125,23 +125,24 @@ export default function TeachingMethod() {
                       className="absolute inset-0 bg-cover bg-[position:65%_center] brightness-[0.96] saturate-[0.92] transition-transform duration-700 ease-out group-hover:scale-105 group-focus:scale-105"
                       style={{ backgroundImage: `url(${skill.image})` }}
                     />
-                    {/* Màn trắng lúc nghỉ: chỉ dày ở NỬA DƯỚI, nơi tên kỹ năng
-                        (màu brand) cần nền sáng mới đọc được. Bản trước phủ trắng
-                        gần kín cả thẻ nên bốn ảnh bệch ra thành một mảng chói. */}
+                    {/* Không phủ trắng nữa — ảnh để nguyên. Chữ đọc được nhờ
+                        gradient xanh dâng từ chân thẻ: lúc nghỉ vừa đủ đỡ chữ,
+                        rê chuột thì đậm lên để nhường chỗ cho phần mô tả. Đây là
+                        lớp DUY NHẤT che ảnh, và nó tối chứ không sáng, nên ảnh
+                        vẫn ra ảnh chứ không bệch thành mảng chói. */}
                     <div
                       aria-hidden="true"
-                      className="absolute inset-0 bg-gradient-to-t from-white from-15% via-white/70 via-55% to-transparent transition-opacity duration-500 group-hover:opacity-0 group-focus:opacity-0"
+                      className="absolute inset-0 bg-gradient-to-t from-brand/95 via-brand/25 via-40% to-transparent to-65% transition-opacity duration-500 group-hover:opacity-100 group-focus:opacity-100"
                     />
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand/90 via-brand/45 to-brand/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus:opacity-100" />
                   <div className="relative flex h-full min-h-[232px] flex-col md:min-h-[312px]">
                       <span className="flex h-12 w-12 items-center justify-center rounded-full bg-leaf text-brand-deep transition-transform duration-500 group-hover:rotate-6 group-focus:rotate-6">
                         <Icon size={22} />
                       </span>
                     <div className="mt-auto">
-                        <h3 className="text-[28px] font-bold leading-none text-brand transition-colors duration-500 group-hover:text-white group-focus:text-white">
+                        <h3 className="text-[28px] font-bold leading-none text-white drop-shadow-[0_1px_10px_rgba(5,46,22,0.45)]">
                           {skill.name}
                         </h3>
-                        <div className="mt-4 h-px w-full bg-brand/25 transition-colors duration-500 group-hover:bg-white/60 group-focus:bg-white/60" />
+                        <div className="mt-4 h-px w-full bg-white/45 transition-colors duration-500 group-hover:bg-white/60 group-focus:bg-white/60" />
                       <div className="mt-3 grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-out group-hover:grid-rows-[1fr] group-focus:grid-rows-[1fr]">
                         <div className="overflow-hidden">
                           <p className="translate-y-4 text-xs leading-[1.5] text-white/90 opacity-0 transition-[opacity,transform] duration-500 delay-100 group-hover:translate-y-0 group-hover:opacity-100 group-focus:translate-y-0 group-focus:opacity-100">
