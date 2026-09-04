@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, BriefcaseBusiness, HeartHandshake, RefreshCw, Target } from "lucide-react";
 import NavigationButtonLabel from "./NavigationButtonLabel";
+import PageArch from "./PageArch";
 
 const LEARNING_STORY = [
   "Mình bắt đầu học tiếng Anh khá muộn, đến lớp 6 mới thực sự tiếp xúc với môn học này. Lúc đó mình lại được xếp vào lớp giỏi nhất của Trường Trần Đại Nghĩa, nơi nhiều bạn đã có nền tảng rất tốt và có thể nói tiếng Anh “như gió”. Cảm giác bị bỏ lại phía sau khiến mình từng rất tự ti, rồi dần chuyển thành ghét, chống đối và gần như bỏ mặc môn tiếng Anh.",
@@ -42,10 +43,11 @@ export default function About() {
   return (
     <div className="bg-white">
       <section className="relative overflow-hidden border-b border-brand/10 bg-mist">
+        <PageArch />
         <div className="absolute -right-24 top-8 h-80 w-80 rounded-full bg-leaf/35 blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-16 md:px-12 md:py-24 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-6 pb-16 pt-28 md:px-12 md:pb-24 md:pt-32 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.14em] text-brand/60">Về giáo viên</p>
+            <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Về giáo viên</p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight text-brand md:text-6xl">Hồ Ngọc Thương</h1>
             <p className="mt-4 text-lg font-semibold text-brand/75">IELTS Teacher · CELTA-certified</p>
             <div className="mt-8 max-w-xl space-y-4 text-base leading-relaxed text-brand/75 md:text-lg">

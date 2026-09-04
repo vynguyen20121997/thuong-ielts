@@ -64,7 +64,7 @@ export default function DanhSach({ items }: { items: Item[] }) {
         <div key={b.id} className="bg-white border border-black/10 rounded-2xl p-5">
           <div className="flex flex-wrap items-start gap-3 mb-3">
             <div className="mr-auto min-w-0">
-              <span className="block font-serif text-base font-black text-[#1A1A1A]">{b.nhan}</span>
+              <span className="block text-base font-bold text-[#1A1A1A]">{b.nhan}</span>
               <span className="block text-xs text-[#1A1A1A]/45 mt-0.5">
                 {b.daVao} lượt vào · {b.daNop} đã nộp
                 {b.choKhach && " · cho khách gõ tên"}

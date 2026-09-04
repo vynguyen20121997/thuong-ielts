@@ -3,6 +3,8 @@ import { GraduationCap } from "lucide-react";
 
 import SkillGrid from "../../../features/practice/ui/SkillGrid";
 
+import PageArch from "../../../components/PageArch";
+
 export const metadata: Metadata = {
   title: "Kiểm tra kiến thức IELTS | HNT.IELTS - Hồ Ngọc Thương",
   description:
@@ -12,13 +14,14 @@ export const metadata: Metadata = {
 export default function PracticeHubPage() {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <PageArch />
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         <div className="max-w-2xl mb-12">
-          <span className="text-xs text-brand mb-3 font-medium flex items-center gap-1.5">
+          <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand mb-3 flex items-center gap-1.5">
             <GraduationCap size={15} />
             Phòng Luyện Tập
           </span>
-          <h1 className="font-serif text-4xl md:text-6xl font-bold tracking-tight text-ink leading-[1.05]">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-ink leading-[1.05]">
             Kiểm Tra Kiến Thức IELTS
           </h1>
           <p className="text-ink/70 text-sm md:text-base leading-relaxed mt-5">

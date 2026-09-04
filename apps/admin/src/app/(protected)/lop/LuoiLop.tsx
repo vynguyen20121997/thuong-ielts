@@ -189,10 +189,10 @@ export default function LuoiLop({ banDau }: { banDau: TheLop[] }) {
                 <div className="flex items-start gap-4">
                   <div className="min-w-0 mr-auto">
                     <span className="flex items-center gap-2">
-                      <span className="rounded px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wide bg-black/[0.05] text-[#1A1A1A]/50">
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-black/[0.05] text-[#1A1A1A]/50">
                         {l.kyNang === "listening" ? "Nghe" : "Đọc"}
                       </span>
-                      <span className="font-serif text-base font-black text-[#1A1A1A] truncate">
+                      <span className="text-base font-bold text-[#1A1A1A] truncate">
                         {l.nhan}
                       </span>
                       {!l.conMo && l.loai === "bai-giao" && (
@@ -217,7 +217,7 @@ export default function LuoiLop({ banDau }: { banDau: TheLop[] }) {
 
                   <span className="text-right shrink-0">
                     <b
-                      className={`block font-serif text-3xl font-black tabular-nums leading-none ${
+                      className={`block text-3xl font-bold tabular-nums leading-none ${
                         l.dangLam > 0 ? "text-[#157F3D]" : "text-[#1A1A1A]/20"
                       }`}
                     >
@@ -270,7 +270,7 @@ export default function LuoiLop({ banDau }: { banDau: TheLop[] }) {
 function So({ so, nhan, mau = "" }: { so: number; nhan: string; mau?: string }) {
   return (
     <span className="block">
-      <b className={`block font-serif text-xl font-black tabular-nums leading-tight ${mau}`}>
+      <b className={`block text-xl font-bold tabular-nums leading-tight ${mau}`}>
         {so}
       </b>
       <span className="block text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A]/40">

@@ -28,7 +28,7 @@ export default function AdminNav() {
     <header className="sticky top-0 z-40 bg-white border-b border-black/10">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-8">
-          <span className="font-serif font-black text-lg text-[#1A1A1A]">
+          <span className="font-bold text-lg text-[#1A1A1A]">
             HNT<span className="text-[#14532D]">.</span>Admin
           </span>
           <nav className="hidden sm:flex items-center gap-6">

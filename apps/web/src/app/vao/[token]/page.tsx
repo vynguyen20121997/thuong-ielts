@@ -114,7 +114,7 @@ function Khung({ tieuDe, children }: { tieuDe: string; children: React.ReactNode
   return (
     <main className="mx-auto max-w-lg px-5 py-20">
       <div className="rounded-3xl border border-black/10 bg-white p-8 flex flex-col gap-4">
-        <h1 className="font-serif text-2xl font-black text-ink">{tieuDe}</h1>
+        <h1 className="text-2xl font-bold text-ink">{tieuDe}</h1>
         {children}
       </div>
     </main>

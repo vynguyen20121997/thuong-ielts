@@ -227,11 +227,11 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         {audioElement}
         <div className="min-h-[70vh] bg-[#F5F5F3] flex items-center justify-center px-4 py-14">
         <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-black/5 p-8 md:p-12">
-          <h1 className="font-serif text-3xl font-bold text-center text-ink mb-8">
+          <h1 className="text-3xl font-bold text-center text-ink mb-8">
             Hướng dẫn làm bài kiểm tra
           </h1>
 
-          <h2 className="font-serif text-lg font-semibold text-ink mb-3">
+          <h2 className="text-lg font-semibold text-ink mb-3">
             Lưu ý trước khi làm bài
           </h2>
           <p className="text-sm font-bold text-ink mb-2">Bài nghe sẽ chạy như thi thật:</p>

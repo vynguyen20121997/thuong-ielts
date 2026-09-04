@@ -33,7 +33,7 @@ export default function Footer() {
 
           {/* Thông tin */}
           <div className="md:col-span-3">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.1em] mb-6">Thông Tin</h4>
+            <h4 className="text-sm font-bold uppercase tracking-[0.12em] mb-6">Thông Tin</h4>
             <ul className="space-y-4 text-sm text-brand/70 font-medium">
               <li>
                 <Link href="/gioi-thieu" className="hover:text-brand transition-colors">
@@ -55,7 +55,7 @@ export default function Footer() {
 
           {/* Khởi đầu lộ trình */}
           <div className="md:col-span-3">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.1em] mb-6">
+            <h4 className="text-sm font-bold uppercase tracking-[0.12em] mb-6">
               Khởi Đầu Lộ Trình
             </h4>
             <p className="text-sm text-brand/60 leading-relaxed mb-5">
@@ -73,7 +73,7 @@ export default function Footer() {
 
           {/* Social */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.1em] mb-6">
+            <h4 className="text-sm font-bold uppercase tracking-[0.12em] mb-6">
               Social Connect
             </h4>
             <div className="flex items-center gap-3">

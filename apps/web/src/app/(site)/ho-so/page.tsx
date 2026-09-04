@@ -5,6 +5,8 @@ import { UserRound } from "lucide-react";
 import { currentStudent } from "../../../features/account/server/guard";
 import ProfileForm from "../../../features/account/ui/ProfileForm";
 
+import PageArch from "../../../components/PageArch";
+
 export const metadata: Metadata = {
   title: "Hồ sơ học viên | HNT.IELTS",
 };
@@ -33,13 +35,14 @@ export default async function ProfilePage({
 
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
-      <div className="max-w-xl mx-auto px-6">
+      <PageArch />
+      <div className="relative z-10 max-w-xl mx-auto px-6">
         <div className="bg-white border border-black/5 rounded-2xl shadow-sm p-7 md:p-9">
-          <span className="flex items-center gap-1.5 text-2xs font-medium text-brand">
+          <span className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-[0.12em] text-brand">
             <UserRound size={14} />
             Hồ sơ học viên
           </span>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight mt-2">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight mt-2">
             {greeting ? `Chào ${greeting}, cho hỏi thêm ba điều` : "Cho hỏi thêm ba điều"}
           </h1>
           <p className="text-sm text-ink/65 leading-relaxed mt-2 mb-7">

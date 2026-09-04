@@ -206,7 +206,7 @@ export default function Header() {
           <AccountMenu compact />
 
           <div className="text-center">
-            <p className="font-mono text-xs text-brand/40">
+            <p className="text-xs text-brand/40">
               © 2026 Hồ Ngọc Thương. All rights reserved.
             </p>
           </div>

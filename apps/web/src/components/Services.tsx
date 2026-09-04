@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BookOpen, Headphones, PenTool, Sparkles, Check, ChevronRight, X } from "lucide-react";
 import { CourseItem } from "../types";
+import PageArch from "./PageArch";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -117,13 +118,14 @@ export default function Services() {
       id="courses"
       className="py-28 bg-white relative overflow-hidden border-b border-black/5"
     >
+      <PageArch />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Tạm ẩn Editorial Heading
         <div className="max-w-3xl mb-16 text-left">
           <span className="text-xs text-brand block mb-3 font-medium">
             Lộ Trình Tinh Gọn - Cá Nhân Hóa
           </span>
-          <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-ink leading-tight mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-ink leading-tight mb-4">
             Các Chương Trình Đào Tạo <br />
             Chuyên Sâu Điểm Nhấn
           </h2>
@@ -146,7 +148,7 @@ export default function Services() {
             <span className="text-2xs bg-white/10 px-3 py-1 rounded-full font-medium inline-block mb-5">
               Chương trình chủ lực · {courses[0].duration}
             </span>
-            <h3 className="font-serif text-3xl md:text-4xl font-bold mb-3">{courses[0].title}</h3>
+            <h3 className="text-3xl md:text-4xl font-bold mb-3">{courses[0].title}</h3>
             <p className="text-xs font-semibold mb-4 text-leaf">{courses[0].target}</p>
             <p className="text-sm md:text-base text-white/75 leading-relaxed mb-6">
               {courses[0].description}
@@ -187,7 +189,7 @@ export default function Services() {
                 </div>
 
                 {/* Course Main Details */}
-                <h3 className="font-serif text-xl font-bold text-ink group-hover:text-brand transition-colors mb-2">
+                <h3 className="text-xl font-bold text-ink group-hover:text-brand transition-colors mb-2">
                   {course.title}
                 </h3>
                 <p
@@ -246,11 +248,11 @@ export default function Services() {
                 </span>
               </div>
 
-              <h3 className="font-serif text-3xl font-bold text-ink mb-2">
+              <h3 className="text-3xl font-bold text-ink mb-2">
                 {selectedCourse.title}
               </h3>
 
-              <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6 text-sm font-mono text-ink/70">
+              <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6 text-sm text-ink/70">
                 <p>
                   Thời gian học:{" "}
                   <strong className="text-ink">{selectedCourse.duration}</strong>

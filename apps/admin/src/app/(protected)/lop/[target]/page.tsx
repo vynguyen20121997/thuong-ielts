@@ -46,7 +46,7 @@ export default async function TrangLop({
           {bia?.boDe ? ` · ${bia.boDe}` : ""} ·{" "}
           {bia?.kyNang === "listening" ? "Nghe" : "Đọc"}
         </span>
-        <h1 className="font-serif text-3xl font-black text-[#1A1A1A]">
+        <h1 className="text-3xl font-bold text-[#1A1A1A]">
           {bia?.nhan ?? "Bảng lớp trực tiếp"}
         </h1>
         {/* Tên đề luôn hiện dưới tên buổi: cô giao cùng một đề cho ba lớp thì

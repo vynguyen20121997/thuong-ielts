@@ -20,11 +20,11 @@ export default function PracticeSection() {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div className="max-w-2xl">
-            <span className="text-xs text-brand mb-3 font-medium flex items-center gap-1.5">
+            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand mb-3 flex items-center gap-1.5">
               <GraduationCap size={15} />
               Kiểm Tra Kiến Thức IELTS
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-ink leading-tight">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-ink leading-tight">
               Làm Thử Một Bài, <br />
               Biết Ngay Mình Đang Ở Đâu
             </h2>

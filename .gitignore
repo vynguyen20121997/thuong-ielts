@@ -21,3 +21,6 @@ next-env.d.ts
 
 # Codex CLI configuration
 .codex/
+
+# Playwright MCP: ảnh chụp và log của phiên gỡ lỗi, không thuộc về repo
+.playwright-mcp/

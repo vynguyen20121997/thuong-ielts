@@ -29,7 +29,7 @@ export default async function TrangCauKho({
         <TabLop khoa={target} />
       </div>
 
-      <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mt-2 mb-1">Chữa câu nào trước</h1>
+      <h1 className="text-3xl font-bold text-[#1A1A1A] mt-2 mb-1">Chữa câu nào trước</h1>
       <p className="text-sm text-[#1A1A1A]/55 mb-8">
         {bia?.nhan ?? target} · xếp theo tỉ lệ đúng từ thấp lên cao
       </p>
@@ -43,7 +43,7 @@ export default async function TrangCauKho({
           {cau.map((c) => (
             <div key={c.so} className="rounded-2xl border border-black/10 bg-white p-5">
               <div className="flex items-center gap-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/[0.04] font-serif text-base font-black text-[#1A1A1A]/70">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/[0.04] text-base font-bold text-[#1A1A1A]/70">
                   {c.so}
                 </span>
 
@@ -58,7 +58,7 @@ export default async function TrangCauKho({
 
                 <span className="text-right shrink-0">
                   <b
-                    className={`block font-serif text-2xl font-black tabular-nums leading-none ${
+                    className={`block text-2xl font-bold tabular-nums leading-none ${
                       c.tiLe < 40 ? "text-[#C62828]" : c.tiLe < 70 ? "text-[#B26A00]" : "text-[#157F3D]"
                     }`}
                   >

@@ -6,6 +6,8 @@ import { formatAttempts } from "../../../../features/practice/domain/catalog";
 import { listListeningTests } from "../../../../features/practice/server/listeningRepository";
 import ListeningCatalog from "../../../../features/practice/ui/ListeningCatalog";
 
+import PageArch from "../../../../components/PageArch";
+
 export const metadata: Metadata = {
   title: "Luyện Listening IELTS | HNT.IELTS - Hồ Ngọc Thương",
   description:
@@ -20,7 +22,8 @@ export default async function ListeningCatalogPage() {
 
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <PageArch />
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         <nav className="flex items-center gap-1.5 text-2xs font-medium text-ink/40 mb-6">
           <Link href="/kiem-tra-kien-thuc" className="hover:text-brand transition-colors">
             Kiểm tra kiến thức
@@ -31,11 +34,11 @@ export default async function ListeningCatalogPage() {
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <span className="text-xs text-brand mb-3 font-medium flex items-center gap-1.5">
+            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand mb-3 flex items-center gap-1.5">
               <Headphones size={15} />
               Kỹ năng Nghe
             </span>
-            <h1 className="font-serif text-4xl md:text-6xl font-bold tracking-tight text-ink leading-[1.05]">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-ink leading-[1.05]">
               Luyện Listening <br className="hidden md:block" />
               Có File Nghe Thật
             </h1>
@@ -47,7 +50,7 @@ export default async function ListeningCatalogPage() {
 
           <div className="flex gap-8 shrink-0">
             <div>
-              <span className="font-serif text-3xl font-bold text-brand block leading-none">
+              <span className="text-3xl font-bold text-brand block leading-none">
                 {tests.length}
               </span>
               <span className="text-2xs text-ink/45 font-medium mt-1.5 block">
@@ -55,7 +58,7 @@ export default async function ListeningCatalogPage() {
               </span>
             </div>
             <div>
-              <span className="font-serif text-3xl font-bold text-brand block leading-none">
+              <span className="text-3xl font-bold text-brand block leading-none">
                 {formatAttempts(totalAttempts)}
               </span>
               <span className="text-2xs text-ink/45 font-medium mt-1.5 block">

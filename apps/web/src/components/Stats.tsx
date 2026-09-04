@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CheckCircle2, Award, Users, Star } from "lucide-react";
+import PageArch from "./PageArch";
 
 // Register ScrollTrigger with GSAP
 gsap.registerPlugin(ScrollTrigger);
@@ -129,6 +130,7 @@ export default function Stats() {
       id="stats"
       className="py-24 bg-white text-ink relative overflow-hidden border-t border-b border-black/5"
     >
+      <PageArch />
       {/* Decorative Grid Lines */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
@@ -140,7 +142,7 @@ export default function Stats() {
             <span className="text-xs text-brand block mb-3 font-medium">
               Thực Chứng Đẳng Cấp
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-ink">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-ink">
               Điểm Số Thật, <br />
               Thành Quả Rực Rỡ
             </h2>
@@ -171,7 +173,7 @@ export default function Stats() {
               <div className="h-10 w-10 bg-white/15 rounded-lg flex items-center justify-center mb-8">
                 <Award className="text-leaf" size={20} />
               </div>
-              <p className="font-serif text-7xl md:text-8xl font-bold tracking-tight mb-3">
+              <p className="text-7xl md:text-8xl font-bold tracking-tight mb-3">
                 <span ref={overallRef}>0.0</span>
               </p>
               <h3 className="text-lg font-bold mb-2">IELTS Overall Band</h3>
@@ -193,7 +195,7 @@ export default function Stats() {
                 <div className="h-9 w-9 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-5">
                   <Star className="text-[#15803D]" size={18} />
                 </div>
-                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#15803D]">
+                <p className="text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#15803D]">
                   <span ref={listeningRef}>0.0</span>
                 </p>
                 <h3 className="text-sm font-bold text-ink mb-2">Listening Score</h3>
@@ -212,7 +214,7 @@ export default function Stats() {
                 <div className="h-9 w-9 bg-brand/10 border border-brand/20 rounded-lg flex items-center justify-center mb-5">
                   <Users className="text-brand" size={18} />
                 </div>
-                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-ink">
+                <p className="text-4xl md:text-5xl font-bold tracking-tight mb-2 text-ink">
                   <span ref={studentsRef}>0</span>
                   <span className="text-brand">+</span>
                 </p>
@@ -232,7 +234,7 @@ export default function Stats() {
                 <div className="h-9 w-9 bg-[#15803D]/10 border border-[#15803D]/20 rounded-lg flex items-center justify-center mb-5">
                   <CheckCircle2 className="text-[#15803D]" size={18} />
                 </div>
-                <p className="font-serif text-4xl md:text-5xl font-bold tracking-tight mb-2 text-ink">
+                <p className="text-4xl md:text-5xl font-bold tracking-tight mb-2 text-ink">
                   <span ref={passRef}>0</span>
                   <span className="text-[#15803D]">%</span>
                 </p>

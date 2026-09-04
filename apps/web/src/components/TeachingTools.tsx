@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { X, ZoomIn, ChevronLeft, ChevronRight, ArrowRight, GraduationCap } from "lucide-react";
 import Reveal from "./Reveal";
 import NavigationButtonLabel from "./NavigationButtonLabel";
+import PageArch from "./PageArch";
 
 /**
  * Khối "Hệ thống & Công cụ giảng dạy" trên trang chủ.
@@ -66,7 +67,18 @@ const SHOTS: Shot[] = [
 
 const AUTOPLAY_MS = 5000;
 
-export default function TeachingTools() {
+/**
+ * `variant="full"` = trang riêng /he-thong-cong-cu: khối này là đầu trang nên
+ * đội vòm xanh chung. Trên trang chủ nó nằm giữa dòng chảy nên để `"preview"`
+ * (mặc định) — vòm giữa trang sẽ thành một vệt màu lạc lõng.
+ */
+export default function TeachingTools({
+  variant = "preview",
+}: {
+  variant?: "preview" | "full";
+}) {
+  const isFull = variant === "full";
+
   const reduce = useReducedMotion();
   const [index, setIndex] = useState(0);
   // direction chỉ phục vụ animation: 1 = tiến (trượt trái), -1 = lùi
@@ -92,15 +104,19 @@ export default function TeachingTools() {
   const shot = SHOTS[index];
 
   return (
-    <section id="he-thong-giang-day" className="py-16 md:py-24 bg-white relative overflow-hidden">
+    <section
+      id="he-thong-giang-day"
+      className={`${isFull ? "pt-28 pb-16 md:pt-32 md:pb-24" : "py-16 md:py-24"} bg-white relative overflow-hidden`}
+    >
+      {isFull && <PageArch />}
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-start">
           {/* Cột trái: giới thiệu hệ thống */}
           <Reveal className="flex flex-col items-start gap-5">
-            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
+            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
               Hệ thống &amp; Công cụ giảng dạy
             </span>
-            <h2 className="font-serif text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
+            <h2 className="text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
               Công cụ đồng hành cùng học viên
             </h2>
             <p className="text-brand/70 text-base leading-relaxed">
@@ -190,7 +206,7 @@ export default function TeachingTools() {
                   transition={{ duration: 0.22 }}
                   className="mt-5 border-t border-brand/10 pt-5"
                 >
-                  <p className="font-serif text-xl font-bold leading-snug text-brand">{shot.title}</p>
+                  <p className="text-xl font-bold leading-snug text-brand">{shot.title}</p>
                   <p className="mt-1.5 text-sm leading-relaxed text-brand/60">{shot.detail}</p>
                 </motion.div>
               </AnimatePresence>
@@ -225,7 +241,7 @@ export default function TeachingTools() {
             <span className="h-14 w-14 rounded-full bg-sage-3/20 flex items-center justify-center mb-6">
               <GraduationCap size={22} className="text-leaf" />
             </span>
-            <h3 className="font-serif text-xl md:text-2xl font-bold text-white mb-2 leading-snug">
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 leading-snug">
               Bộ Đề Luyện Tập Miễn Phí
             </h3>
             <p className="text-sm md:text-base text-leaf/80 leading-relaxed mb-6 max-w-xl">
@@ -272,7 +288,7 @@ export default function TeachingTools() {
                 alt={lightbox.alt}
                 className="max-h-[78vh] w-auto max-w-full rounded-2xl object-contain border border-white/10 shadow-2xl"
               />
-              <p className="mt-4 text-center text-white font-serif font-bold text-base max-w-lg">
+              <p className="mt-4 text-center text-white font-bold text-base max-w-lg">
                 {lightbox.title}
                 <span className="block mt-1 font-sans font-normal text-sm text-white/70">
                   {lightbox.detail}

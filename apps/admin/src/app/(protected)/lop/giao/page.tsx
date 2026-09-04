@@ -36,7 +36,7 @@ export default async function TrangGiaoBai() {
 
   return (
     <div>
-      <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mb-2">Giao bài cho lớp</h1>
+      <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Giao bài cho lớp</h1>
       <p className="text-sm text-[#1A1A1A]/55 mb-8 max-w-2xl">
         Chọn đề rồi bấm tạo link. Gửi link vào nhóm lớp — học sinh bấm là vào thẳng đúng đề, và
         hiện ngay trên bảng lớp của cô.
@@ -53,7 +53,7 @@ export default async function TrangGiaoBai() {
         }))}
       />
 
-      <h2 className="font-serif text-xl font-black text-[#1A1A1A] mt-12 mb-4">Đã giao</h2>
+      <h2 className="text-xl font-bold text-[#1A1A1A] mt-12 mb-4">Đã giao</h2>
       <DanhSach
         items={daGiao.map((b) => ({
           id: b.id,

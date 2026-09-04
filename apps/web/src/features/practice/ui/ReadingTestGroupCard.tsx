@@ -47,7 +47,7 @@ export default function ReadingTestGroupCard({
     <div
       className={`relative h-40 bg-gradient-to-br ${COVER_TONES[index % COVER_TONES.length]} overflow-hidden`}
     >
-      <span className="absolute -right-4 -bottom-8 font-serif text-[7rem] font-bold text-white/[0.08] leading-none select-none">
+      <span className="absolute -right-4 -bottom-8 text-[7rem] font-bold text-white/[0.08] leading-none select-none">
         {String(index + 1).padStart(2, "0")}
       </span>
 
@@ -99,7 +99,7 @@ export default function ReadingTestGroupCard({
         ))}
       </div>
 
-      <h3 className="font-serif text-lg font-bold tracking-tight text-ink leading-snug group-hover:text-brand transition-colors">
+      <h3 className="text-lg font-bold tracking-tight text-ink leading-snug group-hover:text-brand transition-colors">
         {group.label}
       </h3>
     </>

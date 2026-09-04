@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 
 export default function TeachingToolsPage() {
   return (
-    <main className="relative z-10 pt-20">
-      <TeachingTools />
+    <main className="relative z-10">
+      <TeachingTools variant="full" />
     </main>
   );
 }

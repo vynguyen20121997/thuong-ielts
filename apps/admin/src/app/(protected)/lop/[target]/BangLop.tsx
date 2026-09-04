@@ -377,7 +377,7 @@ export default function BangLop({
           </p>
         ) : (
           <>
-            <h2 className="font-serif text-lg font-black text-[#1A1A1A]">{emDangChon.ten}</h2>
+            <h2 className="text-lg font-bold text-[#1A1A1A]">{emDangChon.ten}</h2>
             <p className="text-[11px] text-[#1A1A1A]/45 mb-4">
               {emDangChon.khach ? "Khách vãng lai" : "Tài khoản"} · {NHAN[emDangChon.trangThai]}
             </p>
@@ -411,7 +411,7 @@ export default function BangLop({
                         )}
                       </span>
                       <span
-                        className={`flex h-5 w-5 items-center justify-center rounded text-[11px] font-black ${
+                        className={`flex h-5 w-5 items-center justify-center rounded text-[11px] font-bold ${
                           m === null
                             ? "bg-black/[0.04] text-[#1A1A1A]/30"
                             : m
@@ -457,7 +457,7 @@ export default function BangLop({
 function Stat({ so, nhan }: { so: string; nhan: string }) {
   return (
     <span className="block">
-      <b className="block font-serif text-2xl font-black text-[#1A1A1A] tabular-nums leading-tight">
+      <b className="block text-2xl font-bold text-[#1A1A1A] tabular-nums leading-tight">
         {so}
       </b>
       <span className="block text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A]/40">

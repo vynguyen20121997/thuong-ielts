@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { currentStudent } from "../../../features/account/server/guard";
 import { listAttemptsByStudent } from "../../../features/practice/server/attemptRepository";
 
+import PageArch from "../../../components/PageArch";
+
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -35,8 +37,9 @@ export default async function TrangLichSu() {
 
   return (
     <main className="relative z-10 pt-28 pb-20 bg-white min-h-screen">
-      <div className="mx-auto max-w-3xl px-5">
-        <h1 className="font-serif text-4xl font-black text-ink mb-2">Bài đã làm</h1>
+      <PageArch />
+      <div className="relative z-10 mx-auto max-w-3xl px-5">
+        <h1 className="text-4xl font-bold text-ink mb-2">Bài đã làm</h1>
         <p className="text-sm text-ink/55 mb-8">
           Toàn bộ bài Reading và Listening em đã làm trên trang này.
         </p>
@@ -89,14 +92,14 @@ export default async function TrangLichSu() {
                       Chờ thầy cô trả điểm
                     </span>
                   ) : (
-                    <span className="text-base font-black tabular-nums text-ink">
+                    <span className="text-base font-bold tabular-nums text-ink">
                       {l.correct}
                       <span className="text-ink/40 font-medium text-sm">/{l.total}</span>
                     </span>
                   )}
 
                   {l.band !== null && (
-                    <span className="rounded-lg bg-leaf/25 px-2.5 py-1 text-xs font-black text-brand tabular-nums">
+                    <span className="rounded-lg bg-leaf/25 px-2.5 py-1 text-xs font-bold text-brand tabular-nums">
                       {l.band.toFixed(1)}
                     </span>
                   )}
@@ -117,7 +120,7 @@ export default async function TrangLichSu() {
 function Stat({ so, nhan }: { so: string; nhan: string }) {
   return (
     <span className="block">
-      <b className="block font-serif text-2xl font-black text-brand tabular-nums leading-tight">
+      <b className="block text-2xl font-bold text-brand tabular-nums leading-tight">
         {so}
       </b>
       <span className="block text-[10px] uppercase tracking-wider font-bold text-ink/40">

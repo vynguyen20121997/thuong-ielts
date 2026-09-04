@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import NavigationButtonLabel from "../../../components/NavigationButtonLabel";
+import PageArch from "../../../components/PageArch";
 
 export const metadata: Metadata = { title: "Kinh nghiệm giảng dạy | Thương Hồ's Class" };
 
@@ -16,11 +17,12 @@ const MILESTONES = [
 
 export default function TeachingExperiencePage() {
   return (
-    <main className="min-h-screen bg-white pb-24 pt-28 md:pt-32">
-      <div className="mx-auto max-w-5xl px-6 md:px-12">
+    <main className="relative min-h-screen bg-white pb-24 pt-28 md:pt-32">
+      <PageArch />
+      <div className="relative z-10 mx-auto max-w-5xl px-6 md:px-12">
         <Link href="/gioi-thieu" className="group inline-flex items-center gap-2 text-sm font-bold text-brand/70 hover:text-brand"><ArrowLeft size={17} className="transition-transform group-hover:-translate-x-1" />Về giáo viên</Link>
         <header className="max-w-3xl border-b-2 border-brand/15 pb-12 pt-8">
-          <p className="text-sm font-bold uppercase tracking-[0.14em] text-brand/60">Kinh nghiệm giảng dạy</p>
+          <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Kinh nghiệm giảng dạy</p>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-brand md:text-6xl">Từng bước đi qua nhiều trình độ khác nhau</h1>
           <p className="mt-7 text-base leading-relaxed text-brand/75 md:text-lg">Hành trình giảng dạy của mình không bắt đầu từ những lớp band cao. Trong nhiều năm, mình lần lượt đi qua các trình độ từ mất gốc, nền tảng đến IELTS 7.5+. Chính quá trình đó giúp mình hiểu rõ hơn những khó khăn rất khác nhau của học viên ở từng giai đoạn và cách một người học thực sự tiến bộ qua từng level.</p>
         </header>

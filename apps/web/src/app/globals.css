@@ -2,14 +2,15 @@
 
 @theme {
   /*
-    Ba họ chữ nạp ở `layout.tsx` qua next/font. Token giữ tên Tailwind
-    (`font-serif`, `font-sans`, `font-mono`) để không phải sửa hết class trong
-    component, nhưng bây giờ chúng nói đúng sự thật: `font-serif` RA serif.
+    Hai họ chữ nạp ở `layout.tsx` qua next/font. Không còn `--font-serif`:
+    cả site dùng một giọng chữ sans, chốt tháng 9/2026.
 
-    Trước đây `--font-serif` trỏ vào Outfit — một sans hình học. 66 chỗ ghi
-    font-serif mà lên màn hình vẫn là sans, nên cả trang chỉ có một giọng chữ.
+    Cố tình KHÔNG khai `--font-serif` trỏ vào font sans cho tiện. Đã có hai
+    lần bài học: nó từng trỏ vào Outfit (một sans hình học) và 66 chỗ ghi
+    `font-serif` vẫn ra sans mà không ai nhận ra. Giờ nếu ai lỡ viết
+    `font-serif`, Tailwind rơi về Georgia — trông lạc ngay, thấy liền, sửa
+    liền. Lỗi ồn ào tốt hơn lỗi im lặng.
   */
-  --font-serif: var(--font-display), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-numeric), ui-monospace, monospace;
 
@@ -60,13 +61,28 @@
 /*
   Ba quy ước chữ, để lần sau thêm màn hình mới thì theo:
 
-  1. `font-serif` cho tiêu đề. Không dùng cho câu chữ dài.
-  2. Nhãn nhỏ = `text-2xs font-medium`, chữ thường, không giãn chữ. Trước đây
-     mỗi nhãn là `font-mono text-[9px] uppercase tracking-[0.2em] font-bold` —
-     124 chỗ như vậy, với 4 giá trị giãn chữ khác nhau cho cùng một loại nhãn.
-  3. `font-mono` chỉ cho số liệu: đồng hồ, số câu, điểm, slug.
+  1. Một font cho tất cả: Be Vietnam Pro. Tiêu đề tách khỏi thân bài bằng
+     CỠ và ĐỘ ĐẬM, không bằng đổi họ chữ. Đừng thêm font thứ ba vào chỉ để
+     một khối trông khác đi — đó là cách site này từng có ba giọng chữ đánh
+     nhau. Đã thử Literata cho tiêu đề (79 chỗ) và đã gỡ.
 
-  In hoa + `tracking-wider` chỉ còn ở nút bấm, và chỉ một kiểu duy nhất.
+  2. Nhãn nhỏ trên tiêu đề (eyebrow) = `text-sm font-bold uppercase
+     tracking-[0.12em]`, màu tự do. Một công thức duy nhất.
+     Từng có 8 biến thể (text-2xs/xs/sm × medium/semibold/bold × bốn giá trị
+     giãn chữ) cho cùng một vai — gộp về một vào tháng 9/2026.
+     Không tính vào đây: nhãn số liệu trong thẻ (`Hero.tsx`) và chữ chạy
+     trong phòng thi (`ReadingPlayer`, `ReadingExamGate`) — chúng nhỏ hơn
+     chính tiêu đề bên cạnh, phóng to lên là lấn át.
+
+  3. `font-mono` chỉ cho số liệu: đồng hồ, số câu, điểm, số thứ tự, slug.
+     Không dùng cho câu chữ — đã có lần cả câu "Thông tin cá nhân của bạn
+     hoàn toàn bảo mật" và dòng copyright nằm trong JetBrains Mono.
+
+  Trọng lượng: Be Vietnam Pro chỉ nạp 400/500/600/700 (xem `layout.tsx`).
+  `font-black`/`font-extrabold` KHÔNG có face thật — trình duyệt tự bôi đậm
+  giả, mỗi trình duyệt một kiểu. Đậm nhất dùng được là `font-bold`. Cần đậm
+  hơn nữa thì thêm "800"/"900" vào danh sách weight ở `layout.tsx` trước đã,
+  đừng viết class rồi hy vọng.
 */
 
 /* Base Editorial Styling */

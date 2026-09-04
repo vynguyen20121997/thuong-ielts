@@ -57,7 +57,7 @@ export default function ExitWarningDialog({
           <div>
             <h2
               id="exit-warning-title"
-              className="font-serif text-lg font-bold text-ink leading-snug"
+              className="text-lg font-bold text-ink leading-snug"
             >
               Thoát khỏi bài đang làm?
             </h2>

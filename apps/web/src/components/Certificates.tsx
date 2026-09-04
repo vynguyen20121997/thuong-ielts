@@ -99,10 +99,10 @@ export default function Certificates() {
           <Reveal className="flex flex-col items-start gap-5">
             {/* Nhãn nhỏ trên tiêu đề — cùng kiểu với các section khác của trang
                 chủ (xem Testimonials): uppercase, giãn chữ 0.1em, màu brand */}
-            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
+            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
               Profile giáo viên
             </span>
-            <h2 className="font-serif text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
+            <h2 className="text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
               Thành tích &amp; Chuyên môn
             </h2>
             <ul className="space-y-3">
@@ -208,7 +208,7 @@ export default function Certificates() {
                   transition={{ duration: 0.22 }}
                   className="mt-5 border-t border-brand/10 pt-5"
                 >
-                  <p className="font-serif text-xl font-bold leading-snug text-brand">{cert.title}</p>
+                  <p className="text-xl font-bold leading-snug text-brand">{cert.title}</p>
                   <p className="mt-1.5 text-sm leading-relaxed text-brand/60">{cert.detail}</p>
                 </motion.div>
               </AnimatePresence>
@@ -265,7 +265,7 @@ export default function Certificates() {
                 alt={lightbox.title}
                 className="max-h-[78vh] w-auto max-w-full rounded-2xl object-contain border border-white/10 shadow-2xl"
               />
-              <p className="mt-4 text-center text-white font-serif font-bold text-base max-w-lg">
+              <p className="mt-4 text-center text-white font-bold text-base max-w-lg">
                 {lightbox.title}
                 <span className="block mt-1 font-sans font-normal text-sm text-white/70">
                   {lightbox.detail}

@@ -107,7 +107,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
       <div className="mt-5 bg-white border border-black/5 rounded-2xl shadow-sm overflow-hidden">
         {/* Bìa đề */}
         <div className="relative bg-gradient-to-br from-brand to-brand-deep px-6 md:px-9 py-7 md:py-9 overflow-hidden">
-          <span className="absolute -right-6 -bottom-10 font-serif text-[9rem] font-bold text-white/[0.07] leading-none select-none">
+          <span className="absolute -right-6 -bottom-10 text-[9rem] font-bold text-white/[0.07] leading-none select-none">
             {outline.questionCount}
           </span>
 
@@ -115,7 +115,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
             <span className="text-2xs font-medium text-leaf">
               {outline.collection} · {LEVEL_LABELS[outline.level]}
             </span>
-            <h1 className="font-serif text-2xl md:text-4xl font-bold tracking-tight text-white leading-tight mt-2">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-white leading-tight mt-2">
               {outline.title}
             </h1>
             <p className="text-white/70 text-sm mt-2">
@@ -135,7 +135,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
           ].map(({ icon: Icon, value, label }) => (
             <div key={label} className="px-4 py-5 flex flex-col items-center gap-1">
               <Icon size={15} className="text-brand/50" />
-              <span className="font-serif text-2xl font-bold text-ink leading-none tabular-nums">
+              <span className="text-2xl font-bold text-ink leading-none tabular-nums">
                 {value}
               </span>
               <span className="text-2xs text-ink/40 font-medium">{label}</span>

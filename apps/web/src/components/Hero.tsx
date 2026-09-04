@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import NavigationButtonLabel from "./NavigationButtonLabel";
 import CountUp from "./CountUp";
+import PageArch from "./PageArch";
 import {
   motion,
   useMotionValue,
@@ -101,6 +102,7 @@ export default function Hero() {
       id="hero"
       className="relative pt-24 md:pt-28 overflow-hidden bg-white"
     >
+      <PageArch />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-8 items-end">
           {/* Cột chữ: container stagger, từng khối bật vào bằng spring.

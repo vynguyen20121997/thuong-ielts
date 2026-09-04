@@ -1,12 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Display typeface. Token kept as --font-serif so existing font-serif
-     utility usages across components pick this up without touching every file. */
-  --font-serif: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /*
+    Một họ chữ cho giao diện + mono cho số liệu, nạp ở `layout.tsx` qua
+    next/font — giống hệt `apps/web`.
+
+    Không còn `--font-serif`. Nó từng trỏ vào "Outfit" — một font SANS — nên
+    mọi chỗ ghi `font-serif` ở admin đều ra sans mà không ai biết. Đừng dựng
+    lại cái bẫy đó: muốn thêm họ chữ thì nạp font thật và đặt đúng tên.
+  */
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-numeric), ui-monospace, monospace;
 }
 
 /*

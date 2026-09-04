@@ -43,7 +43,7 @@ function SkillCard({ skill, compact }: { skill: PracticeSkill; compact?: boolean
 
       <div className="mt-5">
         <h3
-          className={`font-serif text-xl font-bold tracking-tight ${isOpen ? "text-ink" : "text-ink/45"}`}
+          className={`text-xl font-bold tracking-tight ${isOpen ? "text-ink" : "text-ink/45"}`}
         >
           {skill.name}
         </h3>

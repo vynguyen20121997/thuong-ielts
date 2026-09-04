@@ -287,10 +287,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
         <div>
           <div className="flex items-start justify-between gap-3 mb-5">
             <div>
-              <h4 className="font-serif font-bold text-sm text-ink leading-tight">
+              <h4 className="font-bold text-sm text-ink leading-tight">
                 {test.studentName}
               </h4>
-              <p className="text-2xs text-ink/50 mt-0.5 font-extrabold leading-none">
+              <p className="text-2xs text-ink/50 mt-0.5 font-bold leading-none">
                 {test.schoolOrJob}
               </p>
             </div>
@@ -312,7 +312,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
           {test.comment && (
             <div className="relative mb-5">
               <p
-                className={`text-xs md:text-sm text-ink/80 leading-relaxed font-serif ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}
+                className={`text-xs md:text-sm text-ink/80 leading-relaxed ${!isExpanded && isLongComment ? "line-clamp-4" : ""}`}
               >
                 "{test.comment}"
               </p>
@@ -371,10 +371,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
         {isPreview && (
           <Reveal className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
             <div className="text-left flex flex-col gap-4">
-              <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
+              <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
                 Thành tích học viên
               </span>
-              <h2 className="font-serif text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
+              <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
                 100+ Học viên chinh phục thành công mục tiêu IELTS
               </h2>
             </div>
@@ -473,10 +473,10 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
             {showHighAchievers && highAchievers.length > 0 && (
               <Reveal className="mb-8 md:mb-10">
                 <div className="mb-7 flex flex-col gap-2 border-l-4 border-leaf pl-5">
-                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-brand/60">
+                  <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">
                     High Achievers
                   </span>
-                  <h2 className="font-serif text-3xl font-bold tracking-tight text-brand md:text-4xl">
+                  <h2 className="text-3xl font-bold tracking-tight text-brand md:text-4xl">
                     Học viên đạt 8.0 &amp; 8.5 IELTS
                   </h2>
                 </div>
@@ -568,7 +568,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 )}
 
                 {/* Caption below the image */}
-                <p className="mt-4 text-center text-white font-serif font-bold text-lg">
+                <p className="mt-4 text-center text-white font-bold text-lg">
                   {selectedProofName}
                 </p>
               </motion.div>

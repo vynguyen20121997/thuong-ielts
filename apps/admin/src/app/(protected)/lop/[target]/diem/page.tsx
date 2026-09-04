@@ -38,7 +38,7 @@ export default async function TrangBangDiem({
         <TabLop khoa={target} />
       </div>
       <div className="flex flex-wrap items-end gap-4 mt-2 mb-6">
-        <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mr-auto">
+        <h1 className="text-3xl font-bold text-[#1A1A1A] mr-auto">
           Bảng điểm
           <span className="block text-sm font-sans font-medium text-[#1A1A1A]/45 mt-1">{target}</span>
         </h1>
@@ -130,7 +130,7 @@ export default async function TrangBangDiem({
 function Stat({ so, nhan }: { so: string; nhan: string }) {
   return (
     <span className="block">
-      <b className="block font-serif text-2xl font-black text-[#1A1A1A] tabular-nums leading-tight">
+      <b className="block text-2xl font-bold text-[#1A1A1A] tabular-nums leading-tight">
         {so}
       </b>
       <span className="block text-[10px] uppercase tracking-wider font-bold text-[#1A1A1A]/40">

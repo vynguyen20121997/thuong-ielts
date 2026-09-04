@@ -61,7 +61,7 @@ export default function AdminHeroPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mb-2">Trang chủ — Hero</h1>
+      <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Trang chủ — Hero</h1>
       <p className="text-sm text-[#1A1A1A]/50 mb-8">
         Chỉnh sửa ảnh và nội dung hiển thị ở khu vực Hero (đầu trang chủ).
       </p>

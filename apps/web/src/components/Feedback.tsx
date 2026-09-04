@@ -117,10 +117,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
         {/* Preview header — căn giữa theo Figma, tiêu đề sans đậm thay vì serif */}
         {isPreview && (
           <Reveal className="text-center mb-12 flex flex-col items-center gap-4">
-            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
+            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
               Học Viên Nói Gì Về Cô Thương
             </span>
-            <h2 className="font-serif text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
+            <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
               150+ Đánh Giá Tích Cực <br />
               Từ Học Viên
             </h2>
@@ -212,7 +212,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 >
                   <div className="px-5 pt-5 pb-3">
                     <Quote size={18} className="text-leaf mb-2" />
-                    <p className="font-serif text-sm md:text-base font-bold text-ink leading-snug">
+                    <p className="text-sm md:text-base font-bold text-ink leading-snug">
                       {item.subject}
                     </p>
                     {item.date && (
@@ -281,7 +281,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 alt={`Cảm nhận học viên: ${lightbox.subject}`}
                 className="max-h-[78vh] w-auto max-w-full rounded-2xl object-contain border border-white/10 shadow-2xl"
               />
-              <p className="mt-4 text-center text-white font-serif font-bold text-base max-w-lg">
+              <p className="mt-4 text-center text-white font-bold text-base max-w-lg">
                 {lightbox.subject}
               </p>
             </motion.div>

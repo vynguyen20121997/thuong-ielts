@@ -13,6 +13,7 @@ import {
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
+import PageArch from "./PageArch";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -67,6 +68,7 @@ export default function Contact() {
       id="contact"
       className="py-28 bg-white relative overflow-hidden border-b border-black/5"
     >
+      <PageArch />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           {/* Left Column: Direct Contact Info & Booking Slogan */}
@@ -74,7 +76,7 @@ export default function Contact() {
             <span className="text-xs text-brand block mb-3 font-medium">
               Đồng Hành Cùng Bạn
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold tracking-tight text-ink leading-tight mb-6">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-ink leading-tight mb-6">
               Bắt Đầu Lộ Trình <br />
               Chinh Phục IELTS <br />
               Ngay Hôm Nay
@@ -147,7 +149,7 @@ export default function Contact() {
               {!formSubmitted ? (
                 <form onSubmit={handleSubmit} className="space-y-6" id="consultation-form">
                   <div className="text-left mb-6">
-                    <h3 className="font-serif text-2xl font-bold text-ink mb-2">
+                    <h3 className="text-2xl font-bold text-ink mb-2">
                       Đăng Ký Đánh Giá Năng Lực
                     </h3>
                     <p className="text-xs text-ink/50">
@@ -298,7 +300,7 @@ export default function Contact() {
                     <Send size={14} />
                   </button>
 
-                  <p className="text-2xs text-center text-ink/40 font-mono font-bold">
+                  <p className="text-2xs text-center text-ink/40 font-medium">
                     * Thông tin cá nhân của bạn hoàn toàn bảo mật theo chính sách học viên.
                   </p>
                 </form>
@@ -313,7 +315,7 @@ export default function Contact() {
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="font-serif text-3xl font-bold text-ink">
+                    <h3 className="text-3xl font-bold text-ink">
                       Đăng Ký Thành Công!
                     </h3>
                     <p className="text-sm text-ink/70 max-w-md mx-auto">

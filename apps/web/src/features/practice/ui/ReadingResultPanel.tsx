@@ -56,20 +56,20 @@ export default function ReadingResultPanel({
 
       <div className={`grid grid-cols-3 gap-4 mb-6 ${giauDiem ? "hidden" : ""}`}>
         <div>
-          <span className="font-serif text-4xl font-bold block leading-none">
+          <span className="text-4xl font-bold block leading-none">
             {result.correct}
             <span className="text-white/40 text-2xl">/{result.total}</span>
           </span>
           <span className="text-2xs text-white/50 font-medium mt-2 block">Câu đúng</span>
         </div>
         <div>
-          <span className="font-serif text-4xl font-bold block leading-none text-leaf">
+          <span className="text-4xl font-bold block leading-none text-leaf">
             {formatBand(result.band)}
           </span>
           <span className="text-2xs text-white/50 font-medium mt-2 block">Band ước lượng</span>
         </div>
         <div>
-          <span className="font-serif text-4xl font-bold block leading-none">{percent}%</span>
+          <span className="text-4xl font-bold block leading-none">{percent}%</span>
           <span className="text-2xs text-white/50 font-medium mt-2 block">Độ chính xác</span>
         </div>
       </div>

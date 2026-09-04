@@ -8,6 +8,8 @@ import { currentStudent } from "../../../features/account/server/guard";
 import { isProfileComplete } from "../../../features/account/domain/types";
 import LoginPanel from "../../../features/account/ui/LoginPanel";
 
+import PageArch from "../../../components/PageArch";
+
 export const metadata: Metadata = {
   title: "Đăng nhập | HNT.IELTS",
   description: "Đăng nhập để làm đề Reading và Listening, lưu kết quả và theo dõi tiến bộ.",
@@ -44,13 +46,14 @@ export default async function LoginPage({
 
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
-      <div className="max-w-md mx-auto px-6">
+      <PageArch />
+      <div className="relative z-10 max-w-md mx-auto px-6">
         <div className="bg-white border border-black/5 rounded-2xl shadow-sm p-7 md:p-9">
-          <span className="flex items-center gap-1.5 text-2xs font-medium text-brand">
+          <span className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-[0.12em] text-brand">
             <BookOpen size={14} />
             Kiểm tra kiến thức
           </span>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight mt-2">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight mt-2">
             Đăng nhập để làm bài
           </h1>
           <p className="text-sm text-ink/65 leading-relaxed mt-2 mb-7">

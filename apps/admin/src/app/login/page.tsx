@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm bg-white border border-black/10 rounded-2xl shadow-sm p-8"
       >
-        <h1 className="font-serif text-2xl font-black text-[#1A1A1A] mb-1">Admin</h1>
+        <h1 className="text-2xl font-bold text-[#1A1A1A] mb-1">Admin</h1>
         <p className="text-sm text-[#1A1A1A]/60 mb-6">HNT.IELTS - Hồ Ngọc Thương</p>
 
         <div className="mb-4">

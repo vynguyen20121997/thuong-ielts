@@ -77,11 +77,11 @@ export default function TeachingMethod() {
         {/* Đầu khối căn trái: tiêu đề và câu dẫn nằm CẠNH nhau, không chồng lên nhau giữa trang */}
         <Reveal className="mb-8 md:mb-10">
           <div className="flex flex-col gap-4">
-            <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand">
+            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
               Phương pháp giảng dạy
             </span>
             <div className="flex flex-col items-start gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <h2 className="font-serif text-3xl font-bold leading-[1.12] tracking-tight text-brand md:text-[46px] md:whitespace-nowrap">
+              <h2 className="text-3xl font-bold leading-[1.12] tracking-tight text-brand md:text-[46px] md:whitespace-nowrap">
                 Học bài bản &amp; đi sâu vào bản chất
               </h2>
               <Link
@@ -130,7 +130,7 @@ export default function TeachingMethod() {
                         <Icon size={22} />
                       </span>
                     <div className="mt-auto">
-                        <h3 className="font-serif text-[28px] font-bold leading-none text-brand transition-colors duration-500 group-hover:text-white group-focus:text-white">
+                        <h3 className="text-[28px] font-bold leading-none text-brand transition-colors duration-500 group-hover:text-white group-focus:text-white">
                           {skill.name}
                         </h3>
                         <div className="mt-4 h-px w-full bg-brand/25 transition-colors duration-500 group-hover:bg-white/60 group-focus:bg-white/60" />

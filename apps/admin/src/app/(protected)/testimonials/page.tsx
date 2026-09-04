@@ -164,7 +164,7 @@ export default function AdminTestimonialsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mb-2">Kết quả học viên</h1>
+      <h1 className="text-3xl font-bold text-[#1A1A1A] mb-2">Kết quả học viên</h1>
       <p className="text-sm text-[#1A1A1A]/50 mb-8">
         Chỉnh sửa text và ảnh hiển thị trên carousel "Góc Vinh Danh Học Viên" ở trang chủ.
       </p>
@@ -177,7 +177,7 @@ export default function AdminTestimonialsPage() {
             <div key={item.id} className="bg-white border border-black/10 rounded-2xl p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-serif font-bold text-base text-[#1A1A1A]">{item.studentName}</h3>
+                  <h3 className="font-bold text-base text-[#1A1A1A]">{item.studentName}</h3>
                   <p className="text-xs text-[#1A1A1A]/50">{item.schoolOrJob} &middot; {item.score} &middot; {item.date}</p>
                 </div>
                 <div className="flex gap-2 shrink-0">

@@ -127,7 +127,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
               {paper.collection} · {LEVEL_LABELS[paper.level]}
               {multi && ` · ${paper.sections.length} passage`}
             </span>
-            <h1 className="font-serif text-sm md:text-base font-bold text-ink truncate">
+            <h1 className="text-sm md:text-base font-bold text-ink truncate">
               {paper.title}
             </h1>
           </div>
@@ -236,7 +236,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
               <BookOpen size={12} />
               {multi ? `Reading Passage ${session.sectionIndex + 1}` : "Reading Passage"}
             </span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight">
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight">
               {section.passage.title}
             </h2>
             {section.passage.intro && (
@@ -247,12 +247,13 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
 
             <div className="mt-6 space-y-5">
               {section.passage.paragraphs.map((paragraph, index) => (
-                // Bài đọc để ở serif: Literata vẽ để đọc dài, và đề Cambridge
-                // trên giấy cũng là serif. Câu hỏi bên cạnh vẫn sans, nên hai
-                // cột phân biệt được bằng chữ chứ không cần thêm đường kẻ.
-                <p key={index} className="font-serif text-base leading-[1.8] text-ink/85">
+                // Bài đọc từng để serif (Literata) cho giống đề Cambridge trên
+                // giấy; đã gỡ khi cả site về một họ chữ. Giờ cột bài đọc phân
+                // biệt với cột câu hỏi bằng `leading-[1.8]` — dòng thưa hơn hẳn
+                // phần còn lại, và đó là thứ giữ cho đoạn văn dài đỡ mỏi mắt.
+                <p key={index} className="text-base leading-[1.8] text-ink/85">
                   {paragraph.label && (
-                    <span className="font-serif font-bold text-brand mr-2">
+                    <span className="font-bold text-brand mr-2">
                       {paragraph.label}
                     </span>
                   )}

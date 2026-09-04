@@ -26,7 +26,7 @@ export default async function TrangDanhSachLop() {
   return (
     <div>
       <div className="flex flex-wrap items-end gap-5 mb-8">
-        <h1 className="font-serif text-3xl font-black text-[#1A1A1A] mr-auto">
+        <h1 className="text-3xl font-bold text-[#1A1A1A] mr-auto">
           Lớp đang làm bài
           <span className="block text-sm font-sans font-medium text-[#1A1A1A]/50 mt-1">
             Bài cô giao trong 2 ngày qua, và học viên tự luyện trong 24 giờ qua

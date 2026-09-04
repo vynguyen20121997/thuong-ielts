@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import NavigationButtonLabel from "../../../components/NavigationButtonLabel";
 
 
+import PageArch from "../../../components/PageArch";
+
 /**
  * Trang Phương pháp giảng dạy — nội dung nguyên văn theo Google Doc cấu trúc
  * website (phần "Giảng dạy > Phương pháp giảng dạy"). Server component tĩnh.
@@ -392,10 +394,11 @@ const PROCESS = [
 export default function TeachingMethodPage() {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white">
-      <div className="max-w-4xl mx-auto px-6 md:px-8">
+      <PageArch />
+      <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8">
         {/* Mở đầu */}
         <div className="mb-14 text-left">
-          <span className="text-sm font-semibold uppercase tracking-[0.1em] text-brand block mb-4">
+          <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand block mb-4">
             Giảng Dạy
           </span>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-brand leading-[1.15] mb-6">
