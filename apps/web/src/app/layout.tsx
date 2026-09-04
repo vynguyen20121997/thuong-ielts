@@ -42,10 +42,29 @@ export const metadata: Metadata = {
     "Chuyên gia luyện thi IELTS và phát triển tư duy biện chứng. Chương trình luyện thi IELTS chất lượng cao, giúp học viên Việt Nam chinh phục IELTS bền vững và thực tế.",
 };
 
+/**
+ * Khoá cuộn cho màn chờ, chạy ngay lúc trình duyệt đọc tới thẻ này.
+ *
+ * Không đặt trong `useEffect` của `LoadingScreen` được: effect chỉ chạy sau khi
+ * React hydrate, mà đo trên Slow 3G thì đúng giai đoạn màn chờ đang che là giai
+ * đoạn React chưa kịp sống. Khoá muộn bằng không khoá: khách vẫn lăn chuột kéo
+ * được trang đi mất đằng sau lớp mờ, xong màn chờ thì đã ở giữa trang.
+ *
+ * `setTimeout` ở đây là lối thoát, phải khớp với con số của animation `.site-loader`
+ * trong `globals.css` (8s): hai thứ phải nhả cùng lúc, nếu không sẽ có lúc lớp mờ đã
+ * tan mà trang vẫn không cuộn được — trông hệt như trang bị treo. Đổi một bên thì
+ * đổi nốt bên kia. Đường bình thường không chớ tới đây: `LoadingScreen` nhả khoá
+ * ngay khi `PageReady` báo xong.
+ */
+const LOCK_SCROLL = `(function(){var d=document.documentElement;d.classList.add('site-loading');setTimeout(function(){d.classList.remove('site-loading')},8000)})()`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" className={`${body.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <script dangerouslySetInnerHTML={{ __html: LOCK_SCROLL }} />
+        {children}
+      </body>
     </html>
   );
 }

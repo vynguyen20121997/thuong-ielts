@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import NavigationButtonLabel from "./NavigationButtonLabel";
 import CountUp from "./CountUp";
 import PageArch from "./PageArch";
+import { usePageReady, useHoldPageReady } from "./PageReady";
 import {
   motion,
   useMotionValue,
@@ -65,6 +66,13 @@ const popIn: Variants = {
 
 export default function Hero() {
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
+  // Hero là màn đầu: nội dung của nó phải có TRƯỚC khi khách nhìn thấy trang,
+  // nếu không chữ tiêu đề đổi ngay trước mắt. Giữ màn chờ lại cho tới khi
+  // `/api/hero` xong — kể cả khi hỏng, vì lúc đó ta dùng `DEFAULT_HERO`.
+  const [heroSettled, setHeroSettled] = useState(false);
+  useHoldPageReady(!heroSettled);
+
+  const ready = usePageReady();
   const reduce = useReducedMotion();
 
   // Parallax nhẹ theo chuột cho chân dung — spring của motion cho mượt
@@ -85,7 +93,8 @@ export default function Hero() {
           setHero((prev) => ({ ...prev, ...data }));
         }
       })
-      .catch((err) => console.error("Failed to load hero content:", err));
+      .catch((err) => console.error("Failed to load hero content:", err))
+      .finally(() => setHeroSettled(true));
   }, []);
 
   useEffect(() => {
@@ -112,7 +121,7 @@ export default function Hero() {
           <motion.div
             variants={textContainer}
             initial={reduce ? false : "hidden"}
-            animate="visible"
+            animate={ready ? "visible" : "hidden"}
             className="text-left pb-6 md:pb-0 md:self-center order-1"
           >
             <motion.h1
@@ -159,7 +168,7 @@ export default function Hero() {
             {/* Tấm thẻ bo lớn, mọc lên từ đáy bằng spring */}
             <motion.div
               initial={reduce ? false : { scaleY: 0 }}
-              animate={{ scaleY: 1 }}
+              animate={ready ? { scaleY: 1 } : { scaleY: 0 }}
               transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.1 }}
               style={{ transformOrigin: "bottom center" }}
               className="absolute left-[-4%] right-[-4%] top-[2%] bottom-0"
@@ -174,7 +183,7 @@ export default function Hero() {
                 — không lấy bề ngang của cột nên hai bóng xanh giữ nguyên dáng */}
             <motion.div
               initial={reduce ? false : { opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
+              animate={ready ? { opacity: 1, x: 0 } : { opacity: 0, x: 16 }}
               transition={{ type: "spring", stiffness: 120, damping: 22, delay: 0.55 }}
               className="absolute right-0 md:-right-6 top-1/2 z-10 hidden w-[142px] -translate-y-1/2 flex-col gap-3 md:flex"
             >
@@ -199,7 +208,11 @@ export default function Hero() {
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[85%] w-auto md:h-auto md:w-[108%] max-w-none pointer-events-none">
               <motion.div
                 initial={reduce ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
-                animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+                animate={
+                  ready
+                    ? { clipPath: "inset(0% 0% 0% 0%)" }
+                    : { clipPath: "inset(100% 0% 0% 0%)" }
+                }
                 transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 style={{ x: parallaxX }}
                 className="relative h-full w-auto md:h-auto md:w-full"
@@ -224,7 +237,7 @@ export default function Hero() {
           {/* Rail số dưới md: một hàng ba thẻ, nằm sau chân dung trong lưới */}
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
             transition={{ type: "spring", stiffness: 120, damping: 22, delay: 0.55 }}
             className="order-3 grid grid-cols-3 gap-3 md:hidden"
           >
@@ -248,7 +261,7 @@ export default function Hero() {
       {/* Dải chỉ số dùng cùng kiểu đếm tăng dần như Câu chuyện học viên. */}
       <motion.div
         initial={reduce ? false : { opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
         transition={{ type: "spring", stiffness: 120, damping: 22, delay: 0.75 }}
         className="relative z-20 max-w-6xl mx-auto px-6 md:px-12 -mt-2 pb-10"
       >

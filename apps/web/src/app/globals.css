@@ -190,6 +190,76 @@ html {
  * hứa hẹn con số nào. `prefers-reduced-motion` được xử lý ở component bằng
  * `motion-reduce:` (vạch đứng yên, đầy khung).
  */
+/*
+ * Màn chờ đầu trang. Ba chấm nhảy lệch pha nhau (độ trễ đặt ở component),
+ * không phải thanh tiến độ — cũng vì lý do đã ghi ở `gate-sweep` bên dưới:
+ * không đo được tiến độ thật thì đừng hứa con số nào.
+ */
+@keyframes site-loader-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-9px);
+    opacity: 1;
+  }
+}
+
+.site-loader-dot {
+  animation: site-loader-dot 1.1s ease-in-out infinite;
+}
+
+/*
+ * Lối thoát của lớp phủ, viết bằng CSS chứ KHÔNG bằng JS. Đây là phần quan
+ * trọng nhất của màn chờ, đừng gỡ.
+ *
+ * Bản đầu đặt trần thời gian bằng `setTimeout` trong component. Đo trên Slow 3G
+ * thì thấy nó vô dụng: lúc ấy React chưa hydrate (đo được `reactHydrated: false`
+ * mà lớp phủ vẫn `opacity: 1`), tức là cái đồng hồ cứu hộ nằm trong chính đoạn
+ * JS chưa tải xong. Kết quả: nội dung đã render sẵn trong HTML nhưng bị che lại
+ * để chờ bundle — đúng ngược với việc một màn chờ sinh ra để làm.
+ *
+ * CSS chạy ngay khi trình duyệt đọc tới, không chờ ai cả. Hết giờ là lớp phủ tự
+ * tan, dù JS có tới hay không.
+ *
+ * 8s trông rất dài, và đó là cố ý — đây là lưới cứu hộ cho trường hợp bundle
+ * hỏng hẳn, KHÔNG phải đồng hồ của đường bình thường (đường đó do `PageReady`
+ * lo, thường xong trong vòng một giây). Đặt 3s như bản đầu thì hỏng: đo trên
+ * Slow 3G thấy lúc đó React vẫn chưa hydrate (22 script còn đang tải), mà motion
+ * render `initial` ngay trong HTML server nên hero đang mang `opacity: 0`. Vén màn
+ * đúng lúc đó là đổi một màn chờ đang chạy lấy một hero trắng trơn — tệ hơn hẳn.
+ */
+.site-loader {
+  animation: site-loader-bailout 400ms ease-out 8s forwards;
+}
+
+@keyframes site-loader-bailout {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/*
+ * Khoá cuộn khi màn chờ còn che. Không khoá thì Lenis vẫn nhận con lăn và kéo
+ * trang trôi đằng sau lớp mờ — xong màn chờ là khách đã ở giữa trang mà không
+ * hiểu tại sao.
+ *
+ * Class đặt trên <html> vì nó được gắn bởi một đoạn script inline trong
+ * `layout.tsx`, chạy trước cả khi <body> có nội dung. Phải khoá cả hai thẻ:
+ * chỉ khoá <html> thì <body> vẫn tự cuộn được.
+ *
+ * `scrollbar-gutter: stable` ở trên lo phần không giật layout khi thanh cuộn biến
+ * mất rồi hiện lại.
+ */
+html.site-loading,
+html.site-loading body {
+  overflow: hidden;
+}
+
 @keyframes gate-sweep {
   0% {
     transform: translateX(-100%);
@@ -335,6 +405,13 @@ html {
   .feedback-marquee-down,
   .feedback-marquee-up {
     animation: none;
+  }
+
+  /* Chấm đứng yên nhưng phải sáng đều lại: keyframe bỏ giữa chừng sẽ để
+     chúng ở opacity 0.4, trông như bị mờ lỗi chứ không như cố ý. */
+  .site-loader-dot {
+    animation: none;
+    opacity: 0.75;
   }
 
   .navigation-button-label-character {

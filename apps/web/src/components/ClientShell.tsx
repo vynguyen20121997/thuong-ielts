@@ -8,6 +8,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import Header from "./Header";
 import Footer from "./Footer";
+import LoadingScreen from "./LoadingScreen";
+import { PageReadyProvider } from "./PageReady";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,17 +52,22 @@ export default function ClientShell({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   return (
-    <div className="relative min-h-screen bg-white text-ink antialiased selection:bg-green-600/20 selection:text-green-950">
-      {/* Immersive Editorial Border Frame */}
-      <div className="fixed inset-0 pointer-events-none border-[12px] border-white/60 z-40" />
+    <PageReadyProvider>
+      <div className="relative min-h-screen bg-white text-ink antialiased selection:bg-green-600/20 selection:text-green-950">
+        {/* Màn chờ đầu trang — đứng trên mọi thứ, kể cả header (z-50). */}
+        <LoadingScreen />
 
-      {/* Modern Sticky Navigation */}
-      <Header />
+        {/* Immersive Editorial Border Frame */}
+        <div className="fixed inset-0 pointer-events-none border-[12px] border-white/60 z-40" />
 
-      {children}
+        {/* Modern Sticky Navigation */}
+        <Header />
 
-      {/* Footer block */}
-      <Footer />
-    </div>
+        {children}
+
+        {/* Footer block */}
+        <Footer />
+      </div>
+    </PageReadyProvider>
   );
 }
