@@ -2,6 +2,7 @@ import Hero from "../../components/Hero";
 import Certificates from "../../components/Certificates";
 import Testimonials from "../../components/Testimonials";
 import Feedback from "../../components/Feedback";
+import ClassroomGallery from "../../components/ClassroomGallery";
 import TeachingMethod from "../../components/TeachingMethod";
 import TeachingTools from "../../components/TeachingTools";
 import ContactCTA from "../../components/ContactCTA";
@@ -23,6 +24,8 @@ export default function HomePage() {
       <div id="feedback-container">
         <Feedback variant="preview" />
       </div>
+
+      <ClassroomGallery />
 
       <TeachingMethod />
 

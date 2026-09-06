@@ -124,6 +124,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
               150+ Đánh Giá Tích Cực <br />
               Từ Học Viên
             </h2>
+            <p className="max-w-xl text-base leading-relaxed text-ink/70">
+              Những chia sẻ chân thành về <strong className="font-semibold text-brand">hành trình học tập, sự đồng hành sát sao</strong> và{" "}
+              <strong className="font-semibold text-brand">niềm vui</strong> khi từng bước tiến bộ.
+            </p>
           </Reveal>
         )}
 

@@ -72,7 +72,7 @@ const SKILLS = [
 
 export default function TeachingMethod() {
   return (
-    <section id="phuong-phap" className="relative overflow-hidden bg-mist pt-16 pb-14 md:pt-24 md:pb-16">
+    <section id="phuong-phap" className="relative overflow-hidden bg-white pt-16 pb-14 md:pt-24 md:pb-16">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Đầu khối căn trái: tiêu đề và câu dẫn nằm CẠNH nhau, không chồng lên nhau giữa trang */}
         <Reveal className="mb-8 md:mb-10">
@@ -96,8 +96,11 @@ export default function TeachingMethod() {
               </Link>
             </div>
             <div>
-              <p className="max-w-3xl text-sm leading-relaxed text-brand/65 md:text-base">
-                Không học mẹo, không phụ thuộc bài mẫu. Tại Thương Hồ&apos;s Class, khả năng tư duy phản biện &amp; tính cá nhân của học viên được đề cao và thúc đẩy phát triển để các bạn có thể giải thích được đáp án, lựa chọn cách tiếp cận phù hợp và đưa câu chuyện thật của bản thân vào bài làm.
+              <p className="max-w-3xl text-base leading-relaxed text-ink/70">
+                <strong className="font-semibold text-brand">Không học mẹo, không phụ thuộc bài mẫu</strong>. Tại Thương Hồ&apos;s Class, khả năng{" "}
+                <strong className="font-semibold text-brand">tư duy phản biện</strong> &amp;{" "}
+                <strong className="font-semibold text-brand">tính cá nhân</strong> của học viên được đề cao và thúc đẩy phát triển để các bạn có thể giải thích được đáp án, lựa chọn cách tiếp cận phù hợp và đưa{" "}
+                <strong className="font-semibold text-brand">câu chuyện thật</strong> của bản thân vào bài làm.
               </p>
             </div>
           </div>

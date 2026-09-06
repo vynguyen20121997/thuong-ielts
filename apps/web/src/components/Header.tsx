@@ -46,13 +46,13 @@ export default function Header() {
           ],
         },
         { label: "Hệ thống & Công cụ giảng dạy", to: "/he-thong-cong-cu" },
+        { label: "Hình Ảnh Lớp Học", to: "/hinh-anh-lop-hoc" },
       ],
     },
     {
       label: "Thành Tích",
       items: [
         { label: "Kết quả học viên", to: "/ket-qua-hoc-vien" },
-        { label: "Câu chuyện học viên", to: "/thanh-tich" },
       ],
     },
   ];

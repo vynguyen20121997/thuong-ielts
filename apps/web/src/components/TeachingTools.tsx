@@ -78,6 +78,9 @@ export default function TeachingTools({
   variant?: "preview" | "full";
 }) {
   const isFull = variant === "full";
+  const introHeadingClass = "text-brand";
+  const introBodyClass = "text-ink/70";
+  const eyebrowClass = "text-brand";
 
   const reduce = useReducedMotion();
   const [index, setIndex] = useState(0);
@@ -106,31 +109,32 @@ export default function TeachingTools({
   return (
     <section
       id="he-thong-giang-day"
-      className={`${isFull ? "pt-28 pb-16 md:pt-32 md:pb-24" : "py-16 md:py-24"} bg-white relative overflow-hidden`}
+      className={`${isFull ? "bg-white pt-28 pb-16 md:pt-32 md:pb-24" : "bg-mist py-16 md:py-24"} relative overflow-hidden`}
     >
       {isFull && <PageArch />}
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-start">
           {/* Cột trái: giới thiệu hệ thống */}
           <Reveal className="flex flex-col items-start gap-5">
-            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
+            <span className={`text-sm font-bold uppercase tracking-[0.12em] ${eyebrowClass}`}>
               Hệ thống &amp; Công cụ giảng dạy
             </span>
-            <h2 className="text-3xl md:text-[42px] font-bold tracking-tight text-brand leading-[1.12]">
+            <h2 className={`text-3xl font-bold leading-[1.12] tracking-tight md:text-[42px] ${introHeadingClass}`}>
               Công cụ đồng hành cùng học viên
             </h2>
-            <p className="text-brand/70 text-base leading-relaxed">
-              Bên cạnh nội dung bài học, giáo viên xây dựng một hệ thống theo dõi riêng để việc học
-              không dừng lại ở từng buổi trên lớp. Bài tập, lỗi sai, kết quả Reading – Listening,
-              feedback Speaking và các bài Mock Test đều được ghi nhận xuyên suốt quá trình học.
+            <p className={`text-base leading-relaxed ${introBodyClass}`}>
+              Bên cạnh nội dung bài học, giáo viên xây dựng một hệ thống theo dõi riêng để việc học không dừng lại ở từng buổi trên lớp. {" "}
+              <strong className="font-semibold text-brand">Bài tập, lỗi sai, kết quả Reading – Listening, feedback Speaking và các bài Mock Test</strong>{" "}
+              đều được ghi nhận xuyên suốt quá trình học.
             </p>
-            <p className="text-brand/70 text-base leading-relaxed">
-              Nhờ đó, học sinh nhìn thấy rõ mình đang sai ở đâu, lỗi nào lặp lại nhiều lần và kỹ
-              năng nào đang thực sự tiến bộ — bấm vào ảnh bên cạnh để xem rõ từng hệ thống.
+            <p className={`text-base leading-relaxed ${introBodyClass}`}>
+              Nhờ đó, học sinh nhìn thấy rõ mình {" "}
+              <strong className="font-semibold text-brand">đang sai ở đâu, lỗi nào lặp lại nhiều lần</strong> và {" "}
+              <strong className="font-semibold text-brand">kỹ năng nào đang thực sự tiến bộ</strong>.
             </p>
             <Link
               href="/he-thong-cong-cu"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-full transition-colors duration-300 shadow-md"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-brand px-8 py-3.5 text-sm font-bold text-white shadow-md transition-colors duration-300 hover:bg-brand-deep"
             >
               <NavigationButtonLabel>Khám phá hệ thống giảng dạy</NavigationButtonLabel>
               <ArrowRight
@@ -143,7 +147,7 @@ export default function TeachingTools({
           {/* Cột phải: sân khấu slideshow */}
           <Reveal delay={0.1}>
             <div
-              className="relative bg-mist border border-black/5 rounded-[32px] px-3 py-4 md:px-10 md:py-5"
+              className="relative overflow-hidden rounded-[32px] border border-brand/15 bg-white px-3 py-4 md:px-10 md:py-5"
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
             >
@@ -165,7 +169,7 @@ export default function TeachingTools({
                       <img
                         src={shot.url}
                         alt={shot.alt}
-                        className="max-h-full w-auto max-w-full object-contain rounded-2xl shadow-[0_16px_48px_rgba(20,83,45,0.14)] select-none"
+                        className="max-h-full w-auto max-w-full rounded-2xl border-2 border-brand/20 object-contain select-none"
                       />
                       <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-brand/0 group-hover:bg-brand/15 transition-colors duration-300">
                         <ZoomIn
@@ -236,7 +240,7 @@ export default function TeachingTools({
         <Reveal delay={0.1} className="mt-14">
           <Link
             href="/kiem-tra-kien-thuc"
-            className="group block bg-brand hover:bg-brand-deep rounded-[28px] p-8 md:p-10 transition-colors duration-300"
+            className="group block rounded-[28px] bg-brand p-8 transition-colors duration-300 hover:bg-brand-deep md:p-10"
           >
             <span className="h-14 w-14 rounded-full bg-sage-3/20 flex items-center justify-center mb-6">
               <GraduationCap size={22} className="text-leaf" />

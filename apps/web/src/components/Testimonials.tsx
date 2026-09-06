@@ -375,8 +375,14 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
                 Thành tích học viên
               </span>
               <h2 className="text-3xl md:text-[40px] font-bold tracking-tight text-brand leading-[1.2]">
-                100+ Học viên chinh phục thành công mục tiêu IELTS
+                110+ Học viên chinh phục thành công mục tiêu IELTS
               </h2>
+              <p className="text-base leading-relaxed text-ink/70">
+                <strong className="font-semibold text-brand">4</strong> học viên đạt <strong className="font-semibold text-brand">8.5 overall</strong>,{" "}
+                <strong className="font-semibold text-brand">12</strong> học viên đạt <strong className="font-semibold text-brand">8.0 overall</strong>,{" "}
+                <strong className="font-semibold text-brand">65</strong> học viên đạt <strong className="font-semibold text-brand">7.0-7.5 overall</strong>,{" "}
+                <strong className="font-semibold text-brand">29</strong> học viên đạt <strong className="font-semibold text-brand">6.0-6.5 overall</strong>
+              </p>
             </div>
             <Link
               href="/ket-qua-hoc-vien"
