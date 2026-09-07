@@ -7,12 +7,48 @@ import PageArch from "../../../components/PageArch";
 export const metadata: Metadata = { title: "Kinh nghiệm giảng dạy | Thương Hồ's Class" };
 
 const MILESTONES = [
-  { year: "2019", title: "Bắt đầu với lớp học 1-1", text: "Mình bắt đầu dạy IELTS dưới hình thức gia sư cá nhân. Đây cũng là năm mình có những học viên đầu tiên đạt mục tiêu, với kết quả IELTS 6.0 và 7.5." },
-  { year: "2020", title: "Gia nhập The IELTS Workshop", text: "Mình chính thức gia nhập The IELTS Workshop, một trung tâm chuyên sâu về IELTS, và bắt đầu con đường giảng dạy chuyên nghiệp trong một môi trường đào tạo có hệ thống." },
-  { year: "2020–2021", title: "Xây nền từ những lớp thấp nhất", text: "Dù đã sở hữu IELTS Overall 8.5, mình vẫn dành một thời gian dài giảng dạy các lớp ngữ pháp nền tảng và học viên trình độ 0–3.0. Giai đoạn này giúp mình hiểu sâu hơn những lỗ hổng căn bản của người học và cách giải thích kiến thức sao cho thật đơn giản, dễ tiếp cận." },
-  { year: "2022", title: "Giảng dạy trình độ 3.5–5.5", text: "Khi chuyển sang các lớp IELTS chính thức, mình bắt đầu đồng hành với học viên ở nhóm 3.5–5.5, tập trung vào việc xây nền kỹ năng và giúp học viên làm quen với từng dạng bài trong IELTS." },
-  { year: "2023", title: "Giảng dạy trình độ 6.0–6.5", text: "Mình tiếp tục phụ trách các lớp ở level cao hơn, nơi trọng tâm chuyển dần từ xây nền sang nâng chất lượng ngôn ngữ, hoàn thiện chiến thuật và xử lý bài thi ở mức độ phức tạp hơn." },
-  { year: "2024–2025", title: "Giảng dạy level Master 7.5+", text: "Đây là một cột mốc đặc biệt trong hành trình giảng dạy của mình khi trở thành giáo viên nữ duy nhất tại The IELTS Workshop được phân công giảng dạy level Master 7.5+ trong giai đoạn này." },
+  { year: "Đầu 2020", title: "Bắt đầu với lớp học 1-1", text: "Mình bắt đầu dạy IELTS dưới hình thức gia sư cá nhân. Đây cũng là năm mình có những học viên đầu tiên đạt mục tiêu, với kết quả IELTS 6.0 và 7.5." },
+  {
+    year: "Cuối 2020",
+    title: "Gia nhập The IELTS Workshop TPHCM",
+    text: "Mình chính thức gia nhập The IELTS Workshop, một trung tâm chuyên sâu về IELTS, và bắt đầu con đường giảng dạy chuyên nghiệp trong một môi trường đào tạo có hệ thống.",
+    image: "/images/experience/teachers-the-ielts-workshop.jpg",
+    imageFit: "contain",
+  },
+  {
+    year: "2020–2021",
+    title: "Xây nền từ những lớp thấp nhất",
+    text: "Dù đã sở hữu IELTS Overall 8.5, mình vẫn dành một thời gian dài giảng dạy các lớp ngữ pháp nền tảng và học viên trình độ 0–3.0. Giai đoạn này giúp mình hiểu sâu hơn những lỗ hổng căn bản của người học và cách giải thích kiến thức sao cho thật đơn giản, dễ tiếp cận.",
+    image: "/images/experience/foundation-retouched.png",
+    caption: "Một trong những lớp Foundation đầu tiên của mình",
+  },
+  {
+    year: "2022",
+    title: "Giảng dạy trình độ 3.5–5.5",
+    text: "Khi chuyển sang các lớp IELTS chính thức, mình bắt đầu đồng hành với học viên ở nhóm 3.5–5.5, tập trung vào việc xây nền kỹ năng và giúp học viên làm quen với từng dạng bài trong IELTS.",
+    image: "/images/experience/sophomore-retouched.png",
+    caption: "Một trong những lớp Sophomore đầu tiên của mình",
+  },
+  {
+    year: "2023",
+    title: "Giảng dạy trình độ 6.0–6.5",
+    text: "Mình tiếp tục phụ trách các lớp ở level cao hơn, nơi trọng tâm chuyển dần từ xây nền sang nâng chất lượng ngôn ngữ, hoàn thiện chiến thuật và xử lý bài thi ở mức độ phức tạp hơn.",
+    image: "/images/experience/senior-natural-retouch.png",
+    caption: "Lớp Senior ở quận Tân Bình",
+  },
+  {
+    year: "2024–2025",
+    title: "Giảng dạy level Master 7.5+",
+    text: "Đây là một cột mốc đặc biệt trong hành trình giảng dạy của mình khi trở thành giáo viên nữ duy nhất tại The IELTS Workshop HCM được phân công giảng dạy level Master 7.5+ trong giai đoạn này.",
+    image: "/images/experience/master-natural-retouch.png",
+    caption: "Giáo viên nữ đầu tiên ở HCM giảng dạy level Master",
+  },
+  {
+    year: "2024–2025",
+    title: "Làm diễn giả chia sẻ về học IELTS cho các trường đại học trong TPHCM",
+    text: "Bên cạnh công việc đứng lớp, mình có cơ hội đồng hành cùng sinh viên tại các trường đại học ở TP.HCM qua những buổi chia sẻ về lộ trình học IELTS, cách xây nền kỹ năng và duy trì động lực học tập bền vững.",
+    image: "https://drive.google.com/thumbnail?id=1dMv6MGwfdQ7IlYXyGuNQeoKHlSHGBkcK&sz=w2000",
+  },
 ] as const;
 
 export default function TeachingExperiencePage() {
@@ -28,16 +64,27 @@ export default function TeachingExperiencePage() {
         </header>
         <section className="relative mt-14 space-y-10 before:absolute before:bottom-0 before:left-[19px] before:top-0 before:w-0.5 before:bg-brand/20 md:before:left-1/2">
           {MILESTONES.map((milestone, index) => (
-            <article key={milestone.year} className="relative grid gap-5 pl-12 md:grid-cols-2 md:gap-12 md:pl-0">
+            <article key={`${milestone.year}-${milestone.title}`} className="relative grid gap-5 pl-12 md:grid-cols-2 md:gap-12 md:pl-0">
               <span className="absolute left-[11px] top-6 z-10 h-[17px] w-[17px] rounded-full border-4 border-white bg-leaf shadow-sm md:left-1/2 md:-translate-x-1/2" />
               <div className={index % 2 === 0 ? "md:col-start-1 md:text-right" : "md:col-start-2"}>
                 <span className="font-mono text-sm font-bold tracking-[0.1em] text-brand/55">{milestone.year}</span>
                 <h2 className="mt-2 text-2xl font-bold text-brand">{milestone.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-brand/75 md:text-base">{milestone.text}</p>
               </div>
-              <div className={index % 2 === 0 ? "md:col-start-2 md:row-start-1" : "md:col-start-1 md:row-start-1"}>
-                <img src="/images/experience/timeline-placeholder.png" alt={milestone.title} className="aspect-[4/3] w-full rounded-2xl object-cover shadow-[0_10px_28px_rgba(20,83,45,0.1)]" />
-              </div>
+              {"image" in milestone && (
+                <div className={index % 2 === 0 ? "md:col-start-2 md:row-start-1" : "md:col-start-1 md:row-start-1"}>
+                  <img
+                    src={milestone.image}
+                    alt={milestone.title}
+                    className={`w-full rounded-2xl bg-white shadow-[0_10px_28px_rgba(20,83,45,0.1)] ${"imageFit" in milestone && milestone.imageFit === "contain" ? "aspect-square object-contain" : "aspect-[4/3] object-cover"}`}
+                  />
+                  {"caption" in milestone && (
+                    <p className="mt-2 text-center text-xs italic leading-relaxed text-brand/60">
+                      ({milestone.caption})
+                    </p>
+                  )}
+                </div>
+              )}
             </article>
           ))}
         </section>
