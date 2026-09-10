@@ -1,0 +1,1742 @@
+{
+  "version": "2026-09-09-v1",
+  "duration": 2700,
+  "questions": [
+    {
+      "id": "L01",
+      "section": "Listening",
+      "prompt": "Four-bed room available in _____",
+      "options": [],
+      "accepted": [
+        "August"
+      ],
+      "area": "L_NUMBERS_TIME",
+      "tag": "month_availability",
+      "review": "Xác định tháng có phòng bốn giường",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L02",
+      "section": "Listening",
+      "prompt": "Room price in high season: € _____",
+      "options": [],
+      "accepted": [
+        "77.5",
+        "77.50",
+        "77,50",
+        "77,5"
+      ],
+      "area": "L_NUMBERS_TIME",
+      "tag": "price_decimal",
+      "review": "Nghe mức giá phòng mùa cao điểm, bao gồm phần thập phân",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L03",
+      "section": "Listening",
+      "prompt": "Cheaper if you booked _____ in advance",
+      "options": [],
+      "accepted": [
+        "1 month",
+        "one month"
+      ],
+      "area": "L_NUMBERS_TIME",
+      "tag": "advance_booking_period",
+      "review": "Xác định thời gian cần đặt trước để được giá rẻ hơn; ghi đúng số lượng và đơn vị",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L04",
+      "section": "Listening",
+      "prompt": "Meal included in price: _____",
+      "options": [],
+      "accepted": [
+        "breakfast"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "included_meal",
+      "review": "Xác định bữa ăn được bao gồm trong giá phòng",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L05",
+      "section": "Listening",
+      "prompt": "Must bring your own: _____",
+      "options": [],
+      "accepted": [
+        "towels"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "required_personal_item",
+      "review": "Xác định vật dụng khách phải tự mang theo",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L06",
+      "section": "Listening",
+      "prompt": "A lounge with a variety of _____",
+      "options": [],
+      "accepted": [
+        "books"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "lounge_contents",
+      "review": "Xác định những gì được cung cấp trong phòng sinh hoạt chung",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L07",
+      "section": "Listening",
+      "prompt": "_____ room",
+      "options": [],
+      "accepted": [
+        "games"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "facility_room_type",
+      "review": "Xác định loại phòng tiện ích của khách sạn",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L08",
+      "section": "Listening",
+      "prompt": "Hotel facilities: _____",
+      "options": [],
+      "accepted": [
+        "Internet"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "available_service",
+      "review": "Xác định dịch vụ hoặc tiện ích có tại khách sạn",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L09",
+      "section": "Listening",
+      "prompt": "Collect _____",
+      "options": [],
+      "accepted": [
+        "shells"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "activity_collecting",
+      "review": "Xác định vật có thể thu nhặt trong một hoạt động",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L10",
+      "section": "Listening",
+      "prompt": "Hire _____",
+      "options": [],
+      "accepted": [
+        "bicycles"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "activity_rental",
+      "review": "Xác định phương tiện có thể thuê",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "ONE WORD AND/OR A NUMBER"
+    },
+    {
+      "id": "L11",
+      "section": "Listening",
+      "prompt": "Their work could be delayed by the _____",
+      "options": [],
+      "accepted": [
+        "weather"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "project_delay_factor",
+      "review": "Xác định yếu tố có thể khiến dự án bị chậm",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "NO MORE THAN TWO WORDS"
+    },
+    {
+      "id": "L12",
+      "section": "Listening",
+      "prompt": "Before they go to the beach they need to visit the _____",
+      "options": [],
+      "accepted": [
+        "Environment Agency"
+      ],
+      "area": "L_SPECIFIC_DETAILS",
+      "tag": "organisation_name",
+      "review": "Nghe và ghi tên cơ quan cần đến trước khi ra bãi biển",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": "NO MORE THAN TWO WORDS"
+    },
+    {
+      "id": "L13",
+      "section": "Listening",
+      "prompt": "Take photographs",
+      "options": [
+        {
+          "value": "A",
+          "label": "Katy"
+        },
+        {
+          "value": "B",
+          "label": "Harry"
+        },
+        {
+          "value": "C",
+          "label": "Both Katy and Harry"
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "L_SPEAKER_TASKS",
+      "tag": "task_photography",
+      "review": "Xác định người đảm nhận việc chụp ảnh",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "L14",
+      "section": "Listening",
+      "prompt": "Collect samples",
+      "options": [
+        {
+          "value": "A",
+          "label": "Katy"
+        },
+        {
+          "value": "B",
+          "label": "Harry"
+        },
+        {
+          "value": "C",
+          "label": "Both Katy and Harry"
+        }
+      ],
+      "accepted": [
+        "A"
+      ],
+      "area": "L_SPEAKER_TASKS",
+      "tag": "task_sample_collection",
+      "review": "Xác định người đảm nhận việc thu thập mẫu",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "L15",
+      "section": "Listening",
+      "prompt": "Interview people",
+      "options": [
+        {
+          "value": "A",
+          "label": "Katy"
+        },
+        {
+          "value": "B",
+          "label": "Harry"
+        },
+        {
+          "value": "C",
+          "label": "Both Katy and Harry"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "L_SPEAKER_TASKS",
+      "tag": "task_shared_interviews",
+      "review": "Xác định công việc được cả hai người cùng thực hiện",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "L16",
+      "section": "Listening",
+      "prompt": "Analyse data",
+      "options": [
+        {
+          "value": "A",
+          "label": "Katy"
+        },
+        {
+          "value": "B",
+          "label": "Harry"
+        },
+        {
+          "value": "C",
+          "label": "Both Katy and Harry"
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "L_SPEAKER_TASKS",
+      "tag": "task_data_analysis",
+      "review": "Xác định người đảm nhận việc phân tích dữ liệu",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "L17",
+      "section": "Listening",
+      "prompt": "Why does Harry want to do a presentation?",
+      "options": [
+        {
+          "value": "A",
+          "label": "to practise skills for his future career"
+        },
+        {
+          "value": "B",
+          "label": "to catch up with his course requirements"
+        },
+        {
+          "value": "C",
+          "label": "to get a better mark than for his last presentation"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "L_REASONS_ATTITUDES",
+      "tag": "motivation_presentation",
+      "review": "Hiểu động cơ Harry muốn thuyết trình",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "L18",
+      "section": "Listening",
+      "prompt": "What is Katy’s attitude to writing up the project?",
+      "options": [
+        {
+          "value": "A",
+          "label": "She is worried about the time available for writing."
+        },
+        {
+          "value": "B",
+          "label": "She thinks it is unfair if she has to do all the writing."
+        },
+        {
+          "value": "C",
+          "label": "She is concerned that some parts will be difficult."
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "L_REASONS_ATTITUDES",
+      "tag": "attitude_workload_fairness",
+      "review": "Hiểu thái độ của Katy về sự công bằng khi phân chia việc viết báo cáo",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "L19",
+      "section": "Listening",
+      "prompt": "Why does Harry want to involve the other students at the end of the presentation?",
+      "options": [
+        {
+          "value": "A",
+          "label": "to get their opinions about the conclusions"
+        },
+        {
+          "value": "B",
+          "label": "to help him and Katy reach firm conclusions"
+        },
+        {
+          "value": "C",
+          "label": "to see if they have reached similar conclusions"
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "L_REASONS_ATTITUDES",
+      "tag": "purpose_audience_involvement",
+      "review": "Hiểu mục đích mời các sinh viên khác tham gia ở cuối bài thuyết trình",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "L20",
+      "section": "Listening",
+      "prompt": "Katy agrees to deal with any questions because",
+      "options": [
+        {
+          "value": "A",
+          "label": "she feels she will be confident about the material"
+        },
+        {
+          "value": "B",
+          "label": "Harry will be doing the main presentation"
+        },
+        {
+          "value": "C",
+          "label": "she has already told Dr Smith she will do this"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "L_REASONS_ATTITUDES",
+      "tag": "reason_prior_commitment",
+      "review": "Hiểu lý do Katy đồng ý đảm nhận phần trả lời câu hỏi",
+      "explanation": "Đáp án theo answer key của giáo viên. Có thể nghe lại audio sau khi nộp bài.",
+      "limit": ""
+    },
+    {
+      "id": "R01",
+      "section": "Reading",
+      "prompt": "Paragraph A",
+      "options": [
+        {
+          "value": "i",
+          "label": "A contrast between two historic approaches to documentary filmmaking"
+        },
+        {
+          "value": "ii",
+          "label": "Disagreement between two individual documentary makers"
+        },
+        {
+          "value": "iii",
+          "label": "A wide range of opportunities to promote documentary filmmaking"
+        },
+        {
+          "value": "iv",
+          "label": "A number of criticisms about all documentary filmmaking in the past"
+        },
+        {
+          "value": "v",
+          "label": "One film that represented a fresh approach to documentary filmmaking"
+        },
+        {
+          "value": "vi",
+          "label": "Some probable future trends in documentary filmmaking"
+        },
+        {
+          "value": "vii",
+          "label": "The debate about the origins of documentary filmmaking"
+        },
+        {
+          "value": "viii",
+          "label": "The ability of ordinary people to create documentary films for the first time"
+        }
+      ],
+      "accepted": [
+        "iv"
+      ],
+      "area": "R_MAIN_IDEA",
+      "tag": "matching_headings",
+      "review": "Hiểu ý chính và cấu trúc đoạn văn",
+      "evidence": "A",
+      "explanation": "Đối chiếu đáp án với đoạn A. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R02",
+      "section": "Reading",
+      "prompt": "Paragraph B",
+      "options": [
+        {
+          "value": "i",
+          "label": "A contrast between two historic approaches to documentary filmmaking"
+        },
+        {
+          "value": "ii",
+          "label": "Disagreement between two individual documentary makers"
+        },
+        {
+          "value": "iii",
+          "label": "A wide range of opportunities to promote documentary filmmaking"
+        },
+        {
+          "value": "iv",
+          "label": "A number of criticisms about all documentary filmmaking in the past"
+        },
+        {
+          "value": "v",
+          "label": "One film that represented a fresh approach to documentary filmmaking"
+        },
+        {
+          "value": "vi",
+          "label": "Some probable future trends in documentary filmmaking"
+        },
+        {
+          "value": "vii",
+          "label": "The debate about the origins of documentary filmmaking"
+        },
+        {
+          "value": "viii",
+          "label": "The ability of ordinary people to create documentary films for the first time"
+        }
+      ],
+      "accepted": [
+        "vii"
+      ],
+      "area": "R_MAIN_IDEA",
+      "tag": "matching_headings",
+      "review": "Hiểu ý chính và cấu trúc đoạn văn",
+      "evidence": "B",
+      "explanation": "Đối chiếu đáp án với đoạn B. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R03",
+      "section": "Reading",
+      "prompt": "Paragraph C",
+      "options": [
+        {
+          "value": "i",
+          "label": "A contrast between two historic approaches to documentary filmmaking"
+        },
+        {
+          "value": "ii",
+          "label": "Disagreement between two individual documentary makers"
+        },
+        {
+          "value": "iii",
+          "label": "A wide range of opportunities to promote documentary filmmaking"
+        },
+        {
+          "value": "iv",
+          "label": "A number of criticisms about all documentary filmmaking in the past"
+        },
+        {
+          "value": "v",
+          "label": "One film that represented a fresh approach to documentary filmmaking"
+        },
+        {
+          "value": "vi",
+          "label": "Some probable future trends in documentary filmmaking"
+        },
+        {
+          "value": "vii",
+          "label": "The debate about the origins of documentary filmmaking"
+        },
+        {
+          "value": "viii",
+          "label": "The ability of ordinary people to create documentary films for the first time"
+        }
+      ],
+      "accepted": [
+        "i"
+      ],
+      "area": "R_MAIN_IDEA",
+      "tag": "matching_headings",
+      "review": "Hiểu ý chính và cấu trúc đoạn văn",
+      "evidence": "C",
+      "explanation": "Đối chiếu đáp án với đoạn C. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R04",
+      "section": "Reading",
+      "prompt": "Paragraph D",
+      "options": [
+        {
+          "value": "i",
+          "label": "A contrast between two historic approaches to documentary filmmaking"
+        },
+        {
+          "value": "ii",
+          "label": "Disagreement between two individual documentary makers"
+        },
+        {
+          "value": "iii",
+          "label": "A wide range of opportunities to promote documentary filmmaking"
+        },
+        {
+          "value": "iv",
+          "label": "A number of criticisms about all documentary filmmaking in the past"
+        },
+        {
+          "value": "v",
+          "label": "One film that represented a fresh approach to documentary filmmaking"
+        },
+        {
+          "value": "vi",
+          "label": "Some probable future trends in documentary filmmaking"
+        },
+        {
+          "value": "vii",
+          "label": "The debate about the origins of documentary filmmaking"
+        },
+        {
+          "value": "viii",
+          "label": "The ability of ordinary people to create documentary films for the first time"
+        }
+      ],
+      "accepted": [
+        "viii"
+      ],
+      "area": "R_MAIN_IDEA",
+      "tag": "matching_headings",
+      "review": "Hiểu ý chính và cấu trúc đoạn văn",
+      "evidence": "D",
+      "explanation": "Đối chiếu đáp án với đoạn D. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R05",
+      "section": "Reading",
+      "prompt": "Paragraph E",
+      "options": [
+        {
+          "value": "i",
+          "label": "A contrast between two historic approaches to documentary filmmaking"
+        },
+        {
+          "value": "ii",
+          "label": "Disagreement between two individual documentary makers"
+        },
+        {
+          "value": "iii",
+          "label": "A wide range of opportunities to promote documentary filmmaking"
+        },
+        {
+          "value": "iv",
+          "label": "A number of criticisms about all documentary filmmaking in the past"
+        },
+        {
+          "value": "v",
+          "label": "One film that represented a fresh approach to documentary filmmaking"
+        },
+        {
+          "value": "vi",
+          "label": "Some probable future trends in documentary filmmaking"
+        },
+        {
+          "value": "vii",
+          "label": "The debate about the origins of documentary filmmaking"
+        },
+        {
+          "value": "viii",
+          "label": "The ability of ordinary people to create documentary films for the first time"
+        }
+      ],
+      "accepted": [
+        "v"
+      ],
+      "area": "R_MAIN_IDEA",
+      "tag": "matching_headings",
+      "review": "Hiểu ý chính và cấu trúc đoạn văn",
+      "evidence": "E",
+      "explanation": "Đối chiếu đáp án với đoạn E. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R06",
+      "section": "Reading",
+      "prompt": "Paragraph F",
+      "options": [
+        {
+          "value": "i",
+          "label": "A contrast between two historic approaches to documentary filmmaking"
+        },
+        {
+          "value": "ii",
+          "label": "Disagreement between two individual documentary makers"
+        },
+        {
+          "value": "iii",
+          "label": "A wide range of opportunities to promote documentary filmmaking"
+        },
+        {
+          "value": "iv",
+          "label": "A number of criticisms about all documentary filmmaking in the past"
+        },
+        {
+          "value": "v",
+          "label": "One film that represented a fresh approach to documentary filmmaking"
+        },
+        {
+          "value": "vi",
+          "label": "Some probable future trends in documentary filmmaking"
+        },
+        {
+          "value": "vii",
+          "label": "The debate about the origins of documentary filmmaking"
+        },
+        {
+          "value": "viii",
+          "label": "The ability of ordinary people to create documentary films for the first time"
+        }
+      ],
+      "accepted": [
+        "iii"
+      ],
+      "area": "R_MAIN_IDEA",
+      "tag": "matching_headings",
+      "review": "Hiểu ý chính và cấu trúc đoạn văn",
+      "evidence": "F",
+      "explanation": "Đối chiếu đáp án với đoạn F. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R07",
+      "section": "Reading",
+      "prompt": "The creation of some new technologies did not change viewers’ attitudes towards documentaries as quickly as is sometimes proposed.",
+      "options": [
+        {
+          "value": "A",
+          "label": "Dr Helmut Fischer"
+        },
+        {
+          "value": "B",
+          "label": "Anthony Berwick"
+        },
+        {
+          "value": "C",
+          "label": "Paula Murphy"
+        },
+        {
+          "value": "D",
+          "label": "Maria Fiala"
+        },
+        {
+          "value": "E",
+          "label": "Josh Camberwell"
+        }
+      ],
+      "accepted": [
+        "D"
+      ],
+      "area": "R_VIEWPOINT_ATTRIBUTION",
+      "tag": "matching_features",
+      "review": "Xác định quan điểm của từng người",
+      "evidence": "D",
+      "explanation": "Đối chiếu đáp án với đoạn D. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R08",
+      "section": "Reading",
+      "prompt": "One set of beliefs and techniques helped to make documentary films academically respectable.",
+      "options": [
+        {
+          "value": "A",
+          "label": "Dr Helmut Fischer"
+        },
+        {
+          "value": "B",
+          "label": "Anthony Berwick"
+        },
+        {
+          "value": "C",
+          "label": "Paula Murphy"
+        },
+        {
+          "value": "D",
+          "label": "Maria Fiala"
+        },
+        {
+          "value": "E",
+          "label": "Josh Camberwell"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "R_VIEWPOINT_ATTRIBUTION",
+      "tag": "matching_features",
+      "review": "Xác định quan điểm của từng người",
+      "evidence": "C",
+      "explanation": "Đối chiếu đáp án với đoạn C. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R09",
+      "section": "Reading",
+      "prompt": "The action of putting material on film essentially changes the nature of the original material.",
+      "options": [
+        {
+          "value": "A",
+          "label": "Dr Helmut Fischer"
+        },
+        {
+          "value": "B",
+          "label": "Anthony Berwick"
+        },
+        {
+          "value": "C",
+          "label": "Paula Murphy"
+        },
+        {
+          "value": "D",
+          "label": "Maria Fiala"
+        },
+        {
+          "value": "E",
+          "label": "Josh Camberwell"
+        }
+      ],
+      "accepted": [
+        "A"
+      ],
+      "area": "R_VIEWPOINT_ATTRIBUTION",
+      "tag": "matching_features",
+      "review": "Xác định quan điểm của từng người",
+      "evidence": "A",
+      "explanation": "Đối chiếu đáp án với đoạn A. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R10",
+      "section": "Reading",
+      "prompt": "Documentary filmmakers have an obligation to include their own opinions about and analysis of the real events that they show in their films.",
+      "options": [
+        {
+          "value": "A",
+          "label": "Dr Helmut Fischer"
+        },
+        {
+          "value": "B",
+          "label": "Anthony Berwick"
+        },
+        {
+          "value": "C",
+          "label": "Paula Murphy"
+        },
+        {
+          "value": "D",
+          "label": "Maria Fiala"
+        },
+        {
+          "value": "E",
+          "label": "Josh Camberwell"
+        }
+      ],
+      "accepted": [
+        "E"
+      ],
+      "area": "R_VIEWPOINT_ATTRIBUTION",
+      "tag": "matching_features",
+      "review": "Xác định quan điểm của từng người",
+      "evidence": "E",
+      "explanation": "Đối chiếu đáp án với đoạn E. Đáp án theo tài liệu của giáo viên.",
+      "limit": ""
+    },
+    {
+      "id": "R11",
+      "section": "Reading",
+      "prompt": "The Hamburg Short Film Festival accepts films no more than _____ long in one of its categories.",
+      "options": [],
+      "accepted": [
+        "three minutes"
+      ],
+      "area": "R_DETAIL_EXTRACTION",
+      "tag": "summary_completion",
+      "review": "Trích xuất thông tin, dạng từ và giới hạn từ",
+      "evidence": "F",
+      "explanation": "Đối chiếu đáp án với đoạn F. Đáp án theo tài liệu của giáo viên.",
+      "limit": "NO MORE THAN TWO WORDS AND A NUMBER"
+    },
+    {
+      "id": "R12",
+      "section": "Reading",
+      "prompt": "The Short and Sweet Film Festival is especially good for documentary makers who are _____.",
+      "options": [],
+      "accepted": [
+        "first timers"
+      ],
+      "area": "R_DETAIL_EXTRACTION",
+      "tag": "summary_completion",
+      "review": "Trích xuất thông tin, dạng từ và giới hạn từ",
+      "evidence": "F",
+      "explanation": "Đối chiếu đáp án với đoạn F. Đáp án theo tài liệu của giáo viên.",
+      "limit": "NO MORE THAN TWO WORDS AND A NUMBER"
+    },
+    {
+      "id": "R13",
+      "section": "Reading",
+      "prompt": "The Atlanta Shortsfest accepts numerous forms of documentaries including _____, which are becoming more common.",
+      "options": [],
+      "accepted": [
+        "animations"
+      ],
+      "area": "R_DETAIL_EXTRACTION",
+      "tag": "summary_completion",
+      "review": "Trích xuất thông tin, dạng từ và giới hạn từ",
+      "evidence": "F",
+      "explanation": "Đối chiếu đáp án với đoạn F. Đáp án theo tài liệu của giáo viên.",
+      "limit": "NO MORE THAN TWO WORDS AND A NUMBER"
+    },
+    {
+      "id": "G01",
+      "section": "Grammar",
+      "prompt": "The student _____ helped me with my application was very patient.",
+      "options": [
+        {
+          "value": "A",
+          "label": "which"
+        },
+        {
+          "value": "B",
+          "label": "whose"
+        },
+        {
+          "value": "C",
+          "label": "who"
+        },
+        {
+          "value": "D",
+          "label": "where"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "G_RELATIVE_CLAUSES",
+      "tag": "relative_pronoun_subject",
+      "review": "Đại từ quan hệ chỉ người, làm chủ ngữ của mệnh đề quan hệ",
+      "explanation": "“Who” thay cho “the student” và làm chủ ngữ của động từ “helped”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G02",
+      "section": "Grammar",
+      "prompt": "You _____ bring your own laptop. The centre provides a computer for every student.",
+      "options": [
+        {
+          "value": "A",
+          "label": "mustn't"
+        },
+        {
+          "value": "B",
+          "label": "don't have to"
+        },
+        {
+          "value": "C",
+          "label": "can't"
+        },
+        {
+          "value": "D",
+          "label": "shouldn't"
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "G_MODALS",
+      "tag": "absence_of_obligation",
+      "review": "Diễn đạt sự không bắt buộc; phân biệt với sự cấm đoán",
+      "explanation": "Máy tính đã được trung tâm cung cấp, nên học sinh không bắt buộc mang laptop: “don't have to”. “Mustn't” mang nghĩa không được phép.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G03",
+      "section": "Grammar",
+      "prompt": "The teacher does not allow students _____ their phones during the test.",
+      "options": [
+        {
+          "value": "A",
+          "label": "using"
+        },
+        {
+          "value": "B",
+          "label": "use"
+        },
+        {
+          "value": "C",
+          "label": "used"
+        },
+        {
+          "value": "D",
+          "label": "to use"
+        }
+      ],
+      "accepted": [
+        "D"
+      ],
+      "area": "G_VERB_PATTERNS_PREPOSITIONS",
+      "tag": "allow_object_to_infinitive",
+      "review": "Cấu trúc “allow + tân ngữ + to-infinitive”",
+      "explanation": "Sau “allow + tân ngữ” dùng “to + động từ”: “allow students to use”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G04",
+      "section": "Grammar",
+      "prompt": "The online course costs $80, while the classroom course costs $120. The classroom course is _____ the online course.",
+      "options": [
+        {
+          "value": "A",
+          "label": "more expensive than"
+        },
+        {
+          "value": "B",
+          "label": "as expensive as"
+        },
+        {
+          "value": "C",
+          "label": "the most expensive"
+        },
+        {
+          "value": "D",
+          "label": "more expensive as"
+        }
+      ],
+      "accepted": [
+        "A"
+      ],
+      "area": "G_COMPARISONS",
+      "tag": "comparative_more",
+      "review": "So sánh hơn với tính từ dài",
+      "explanation": "Khóa học trực tiếp có giá cao hơn. Với tính từ dài “expensive”, dùng “more expensive than”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G05",
+      "section": "Grammar",
+      "prompt": "These classrooms _____ every evening after the students leave.",
+      "options": [
+        {
+          "value": "A",
+          "label": "clean"
+        },
+        {
+          "value": "B",
+          "label": "are cleaned"
+        },
+        {
+          "value": "C",
+          "label": "are cleaning"
+        },
+        {
+          "value": "D",
+          "label": "have cleaned"
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "G_PASSIVE",
+      "tag": "present_simple_passive",
+      "review": "Bị động hiện tại đơn",
+      "explanation": "Phòng học là đối tượng được dọn dẹp. Hoạt động lặp lại mỗi tối nên dùng bị động hiện tại đơn: “are cleaned”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G06",
+      "section": "Grammar",
+      "prompt": "Mai and Linh both scored 85 on the test. Mai's score was _____ Linh's.",
+      "options": [
+        {
+          "value": "A",
+          "label": "higher than"
+        },
+        {
+          "value": "B",
+          "label": "the highest of"
+        },
+        {
+          "value": "C",
+          "label": "as higher as"
+        },
+        {
+          "value": "D",
+          "label": "as high as"
+        }
+      ],
+      "accepted": [
+        "D"
+      ],
+      "area": "G_COMPARISONS",
+      "tag": "equality_comparison",
+      "review": "So sánh bằng",
+      "explanation": "Hai học sinh có điểm bằng nhau, nên dùng “as high as”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G07",
+      "section": "Grammar",
+      "prompt": "Last week, the students _____ a survey and collected _____ information about local transport.",
+      "options": [
+        {
+          "value": "A",
+          "label": "conducted / some"
+        },
+        {
+          "value": "B",
+          "label": "conduct / some"
+        },
+        {
+          "value": "C",
+          "label": "conducted / many"
+        },
+        {
+          "value": "D",
+          "label": "have conducted / many"
+        }
+      ],
+      "accepted": [
+        "A"
+      ],
+      "area": "G_FOUNDATIONS",
+      "tag": "past_simple_uncountable_quantifier",
+      "review": "Quá khứ đơn; lượng từ dùng với danh từ không đếm được",
+      "explanation": "“Last week” yêu cầu quá khứ đơn: “conducted”. “Information” không đếm được, dùng được với “some”, không dùng với “many”.",
+      "wrongReviews": {
+        "B": "Quá khứ đơn với thời điểm đã kết thúc",
+        "C": "Lượng từ với danh từ không đếm được",
+        "D": "Phân biệt quá khứ đơn/hiện tại hoàn thành và lượng từ"
+      }
+    },
+    {
+      "id": "G08",
+      "section": "Grammar",
+      "prompt": "I am interested _____ more about the course before I apply.",
+      "options": [
+        {
+          "value": "A",
+          "label": "to learn"
+        },
+        {
+          "value": "B",
+          "label": "in learn"
+        },
+        {
+          "value": "C",
+          "label": "in learning"
+        },
+        {
+          "value": "D",
+          "label": "to learning"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "G_VERB_PATTERNS_PREPOSITIONS",
+      "tag": "interested_in_gerund",
+      "review": "Giới từ trong “interested in”; V-ing sau giới từ",
+      "explanation": "Cụm đúng là “interested in”. Sau giới từ “in”, động từ chuyển thành V-ing: “in learning”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G09",
+      "section": "Grammar",
+      "prompt": "If you submit the form today, we _____ your application tomorrow.",
+      "options": [
+        {
+          "value": "A",
+          "label": "processed"
+        },
+        {
+          "value": "B",
+          "label": "would process"
+        },
+        {
+          "value": "C",
+          "label": "had processed"
+        },
+        {
+          "value": "D",
+          "label": "will process"
+        }
+      ],
+      "accepted": [
+        "D"
+      ],
+      "area": "G_CONDITIONALS",
+      "tag": "first_conditional",
+      "review": "Câu điều kiện loại 1",
+      "explanation": "Điều kiện có thể xảy ra trong tương lai: if + hiện tại đơn, will + động từ.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G10",
+      "section": "Grammar",
+      "prompt": "Anna has just completed a twelve-hour shift without a break. She _____ be exhausted.",
+      "options": [
+        {
+          "value": "A",
+          "label": "must"
+        },
+        {
+          "value": "B",
+          "label": "mustn't"
+        },
+        {
+          "value": "C",
+          "label": "can't"
+        },
+        {
+          "value": "D",
+          "label": "doesn't have to"
+        }
+      ],
+      "accepted": [
+        "A"
+      ],
+      "area": "G_MODALS",
+      "tag": "strong_deduction",
+      "review": "“Must” diễn đạt suy luận có cơ sở chắc chắn",
+      "explanation": "Ca làm kéo dài mười hai tiếng không nghỉ là căn cứ để suy luận Anna rất mệt. “Must be” diễn đạt suy luận này.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G11",
+      "section": "Grammar",
+      "prompt": "I spoke to a student _____ application had been accepted.",
+      "options": [
+        {
+          "value": "A",
+          "label": "who"
+        },
+        {
+          "value": "B",
+          "label": "whom"
+        },
+        {
+          "value": "C",
+          "label": "whose"
+        },
+        {
+          "value": "D",
+          "label": "which"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "G_RELATIVE_CLAUSES",
+      "tag": "relative_possession",
+      "review": "Quan hệ sở hữu với “whose”",
+      "explanation": "Đơn đăng ký thuộc về người học sinh, nên dùng “whose application”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G12",
+      "section": "Grammar",
+      "prompt": "_____ the course was demanding, most students completed it successfully.",
+      "options": [
+        {
+          "value": "A",
+          "label": "Despite"
+        },
+        {
+          "value": "B",
+          "label": "Although"
+        },
+        {
+          "value": "C",
+          "label": "Because of"
+        },
+        {
+          "value": "D",
+          "label": "In spite of"
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "G_SENTENCE_LINKING",
+      "tag": "subordinating_conjunction",
+      "review": "Liên từ phụ thuộc đứng trước mệnh đề nhượng bộ",
+      "explanation": "Sau chỗ trống là một mệnh đề đầy đủ: “the course was demanding”. “Although” phù hợp; “despite”, “because of” và “in spite of” không đứng trực tiếp trước mệnh đề này.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G13",
+      "section": "Grammar",
+      "prompt": "All application forms must _____ before Friday.",
+      "options": [
+        {
+          "value": "A",
+          "label": "submit"
+        },
+        {
+          "value": "B",
+          "label": "be submitting"
+        },
+        {
+          "value": "C",
+          "label": "have submitted"
+        },
+        {
+          "value": "D",
+          "label": "be submitted"
+        }
+      ],
+      "accepted": [
+        "D"
+      ],
+      "area": "G_PASSIVE",
+      "tag": "modal_passive",
+      "review": "Câu bị động sau modal verb",
+      "explanation": "Các mẫu đơn là đối tượng được nộp. Bị động sau “must” có dạng “must be + V3”: “must be submitted”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G14",
+      "section": "Grammar",
+      "prompt": "Of all five practice tests, this one is _____. Its questions are much harder than those in the other four.",
+      "options": [
+        {
+          "value": "A",
+          "label": "more difficult"
+        },
+        {
+          "value": "B",
+          "label": "as difficult"
+        },
+        {
+          "value": "C",
+          "label": "less difficult"
+        },
+        {
+          "value": "D",
+          "label": "the most difficult"
+        }
+      ],
+      "accepted": [
+        "D"
+      ],
+      "area": "G_COMPARISONS",
+      "tag": "superlative",
+      "review": "So sánh nhất với tính từ dài",
+      "explanation": "Câu so sánh một bài với toàn bộ năm bài và xác định bài khó nhất, nên dùng “the most difficult”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G15",
+      "section": "Grammar",
+      "prompt": "Since the course began, each student _____ at least three _____.",
+      "options": [
+        {
+          "value": "A",
+          "label": "have completed / assignments"
+        },
+        {
+          "value": "B",
+          "label": "has completed / assignments"
+        },
+        {
+          "value": "C",
+          "label": "has completed / assignment"
+        },
+        {
+          "value": "D",
+          "label": "completed / assignment"
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "G_FOUNDATIONS",
+      "tag": "present_perfect_agreement_countable",
+      "review": "Hiện tại hoàn thành; hòa hợp với “each student”; danh từ đếm được số nhiều",
+      "explanation": "“Since the course began” dẫn đến hiện tại hoàn thành. “Each student” là chủ ngữ số ít, đi với “has”. Sau “three” cần danh từ số nhiều “assignments”.",
+      "wrongReviews": {
+        "A": "Hòa hợp chủ ngữ–động từ với “each student”",
+        "C": "Danh từ đếm được số nhiều sau số đếm",
+        "D": "Hiện tại hoàn thành và danh từ số nhiều"
+      }
+    },
+    {
+      "id": "G16",
+      "section": "Grammar",
+      "prompt": "I don't have a quiet place to study. If I _____ a room of my own, I would find it easier to concentrate.",
+      "options": [
+        {
+          "value": "A",
+          "label": "had"
+        },
+        {
+          "value": "B",
+          "label": "have"
+        },
+        {
+          "value": "C",
+          "label": "will have"
+        },
+        {
+          "value": "D",
+          "label": "had had"
+        }
+      ],
+      "accepted": [
+        "A"
+      ],
+      "area": "G_CONDITIONALS",
+      "tag": "second_conditional",
+      "review": "Câu điều kiện loại 2",
+      "explanation": "Người nói hiện không có phòng riêng. Giả định trái với hiện tại dùng điều kiện loại 2: “If I had …, I would …”.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G17",
+      "section": "Grammar",
+      "prompt": "The bus service was cancelled. _____, many students arrived late.",
+      "options": [
+        {
+          "value": "A",
+          "label": "However"
+        },
+        {
+          "value": "B",
+          "label": "Similarly"
+        },
+        {
+          "value": "C",
+          "label": "Therefore"
+        },
+        {
+          "value": "D",
+          "label": "For example"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "G_SENTENCE_LINKING",
+      "tag": "conjunctive_adverb_result",
+      "review": "Trạng từ liên kết diễn đạt kết quả",
+      "explanation": "Việc học sinh đến muộn là kết quả của việc hủy dịch vụ xe buýt. “Therefore” diễn đạt quan hệ kết quả.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G18",
+      "section": "Grammar",
+      "prompt": "The college library, _____ was renovated last year, now stays open until 10 p.m.",
+      "options": [
+        {
+          "value": "A",
+          "label": "that"
+        },
+        {
+          "value": "B",
+          "label": "where"
+        },
+        {
+          "value": "C",
+          "label": "which"
+        },
+        {
+          "value": "D",
+          "label": "what"
+        }
+      ],
+      "accepted": [
+        "C"
+      ],
+      "area": "G_RELATIVE_CLAUSES",
+      "tag": "non_defining_clause",
+      "review": "Mệnh đề quan hệ không xác định, chỉ vật",
+      "explanation": "Phần giữa hai dấu phẩy là mệnh đề quan hệ không xác định. “Which” thay cho thư viện và làm chủ ngữ của “was renovated”; không dùng “that” trong cấu trúc này.",
+      "wrongReviews": {}
+    },
+    {
+      "id": "G19",
+      "section": "Grammar",
+      "prompt": "By the time we submitted our applications yesterday, our teacher _____ us some useful _____ during the previous week's lesson.",
+      "options": [
+        {
+          "value": "A",
+          "label": "had given / advice"
+        },
+        {
+          "value": "B",
+          "label": "has given / advice"
+        },
+        {
+          "value": "C",
+          "label": "had given / advices"
+        },
+        {
+          "value": "D",
+          "label": "has given / advices"
+        }
+      ],
+      "accepted": [
+        "A"
+      ],
+      "area": "G_FOUNDATIONS",
+      "tag": "past_perfect_uncountable",
+      "review": "Quá khứ hoàn thành; danh từ không đếm được “advice”",
+      "explanation": "Giáo viên đưa lời khuyên trong tuần trước, trước lúc học sinh nộp đơn vào hôm qua. Dùng quá khứ hoàn thành “had given”. “Advice” không đếm được và không thêm -s.",
+      "wrongReviews": {
+        "B": "Phân biệt hiện tại hoàn thành và quá khứ hoàn thành",
+        "C": "Danh từ không đếm được “advice”",
+        "D": "Quá khứ hoàn thành và danh từ không đếm được"
+      }
+    },
+    {
+      "id": "G20",
+      "section": "Grammar",
+      "prompt": "Which sentence is grammatically correct?",
+      "options": [
+        {
+          "value": "A",
+          "label": "The course was expensive. Although, I decided to enrol."
+        },
+        {
+          "value": "B",
+          "label": "The course was expensive. However, I decided to enrol."
+        },
+        {
+          "value": "C",
+          "label": "The course was expensive. Despite, I decided to enrol."
+        },
+        {
+          "value": "D",
+          "label": "The course was expensive. In spite of, I decided to enrol."
+        }
+      ],
+      "accepted": [
+        "B"
+      ],
+      "area": "G_SENTENCE_LINKING",
+      "tag": "linker_structure_contrast",
+      "review": "Phân biệt cấu trúc dùng “however”, “although”, “despite” và “in spite of”",
+      "explanation": "“However” có thể mở đầu câu thứ hai để liên kết với câu trước. “Although” cần gắn mệnh đề phụ với mệnh đề chính; “despite” và “in spite of” cần danh từ hoặc V-ing theo sau trong các cấu trúc thông thường này.",
+      "wrongReviews": {}
+    }
+  ],
+  "passage": [
+    "A For much of the twentieth century, documentary films were over shadowed by their more successful Hollywood counterparts. For a number of reasons, documentaries were frequently ignored by critics and film studies courses at universities. Firstly, the very idea of documentary film made some people suspicious. As the critic Dr Helmut Fischer put it, ‘Documentary makers might have ambitions to tell the “truth” and show only “facts” but there is no such thing as a non-fiction film. That’s because, as soon as you record an incident on camera, you are altering its reality in a fundamental way’. Secondly, even supporters of documentaries could not agree on a precise definition, which did little to improve the reputation of the genre. Lastly, there were also concerns about the ethics of filming subjects without their consent, which is a necessity in many documentary films.",
+    "B None of this prevented documentaries from being produced, though exactly when the process started is open to question. It is often claimed that Nanook of the North was the first documentary. Made by the American filmmaker Robert J. Flaherty in 1922, the film depicts the hard, sometimes heroic lives of native American peoples in the Canadian Arctic. Nanook of the North is said to have set off a trend that continued though the 1920s with the films of Dziga Vertov in the Soviet Union and works by other filmmakers around the world. However, that 1922 starting point has been disputed by supporters of an earlier date. Among this group is film historian Anthony Berwick, who argues that the genre can be traced back as early as 1895, when similar films started to appear, including newsreels, scientific films and accounts of journeys of exploration.",
+    "C In the years following 1922, one particular style of documentary started to appear. These films adopted a serious tone while depicting the lives of actual people. Cameras were mounted on tripods and subjects rehearsed and repeated activities for the purposes of the film. British filmmaker John Grierson was an important member of this group. Grierson’s career lasted nearly 40 years, beginning with Drifters (1929) and culminating with I Remember, I Remember (1968). However, by the 1960s Grierson’s style of film was being rejected by the Direct Cinema movement, which wanted to produce more natural and authentic films: cameras were hand-held; no additional lighting or sound was used; and the subjects did not rehearse. According to film writer Paula Murphy, the principles and methods of Direct Cinema brought documentaries to the attention of universities and film historians as never before. Documentaries started to be recognized as a distinct genre worthy of serious scholarly analysis.",
+    "D Starting in the 1980s, the widespread availability of first video and then digital cameras transformed filmmaking. The flexibility and low cost of these devices meant that anyone could now be a filmmaker. Amateurs working from home could compete with professionals in ways never possible before. The appearance of online film-sharing platforms in the early 2000s only increased the new possibilities for amateur filmmakers. Nonetheless, while countless amateur documentaries were being made, perhaps the most popular documentary of 2006 was still the professionally made An Inconvenient Truth. New cameras and digital platforms revolutionised the making of films. But as critic Maria Fiala has pointed out, ‘The argument sometimes put forward that these innovations immediately transformed what the public expected to see in a documentary isn't entirely accurate’. ",
+    "E However, a new generation of documentary filmmakers then emerged, and with them came a new philosophy of the genre. These filmmakers moved away from highlighting political themes or urgent social issues. Instead the focus moved inwards, exploring personal lives, relationships and emotions. It could be argued that Catfish (2010) was a perfect example of this new trend. The film chronicles the everyday lives and interactions of the social media generation and was both a commercial and critical success. Filmmaker Josh Camberwell maintains that Catfish embodies a new realization that documentaries are inherently subjective and that this should be celebrated. Says Camberwell, ‘It is a requirement for documentary makers to express a particular viewpoint and give personal responses to the material they are recording.’",
+    "F The popularity and variety of documentaries today is illustrated by the large number of film festivals focusing on the genre around the world. The biggest of all must be Hot Docs Festival in Canada, which over the years has showcased hundreds of documentaries from more than 50 different countries Even older is the Hamburg International Short Film Festival. As its name suggests, Hamburg specializes in short films, but one category takes this to its limits – entries may not exceed three minutes in duration. The Short and Sweet Festival is a slightly smaller event held in Utah, USA. The small size of the festival means that for first timers this is the ideal venue to try to get some recognition for their films. Then there is the Atlanta Shortsfest, which is a great event for a wide variety of filmmakers. Atlanta welcomes all established types of documentaries and recognises the growing popularity of animations, with a category specifically for films of this type. These are just a few of the scores of film festivals on offer, and there are more being established every year. All in all, it has never been easier for documentary makers to get their films in front of an audience."
+  ],
+  "title": "Making Documentary Films",
+  "areas": [
+    {
+      "name": "Thì, hòa hợp chủ ngữ–động từ và danh từ",
+      "feedback": [
+        "Bạn nên củng cố cách chọn thì theo mốc thời gian, chia động từ theo chủ ngữ và sử dụng danh từ đếm được/không đếm được. Hãy kiểm tra từng thành phần này riêng khi hoàn thành câu.",
+        "Bạn xử lý đúng phần lớn câu hỏi kết hợp về thì và danh từ, nhưng vẫn còn nội dung cần ôn. Hãy chú ý mốc thời gian, chủ ngữ “each student” và dạng danh từ sau lượng từ hoặc số đếm.",
+        "Bạn xử lý chính xác các câu kết hợp về thì, hòa hợp chủ ngữ–động từ và danh từ trong bài. Bạn nhận diện tốt các mốc thời gian và chọn đúng dạng từ trong những cấu trúc được kiểm tra."
+      ],
+      "id": "G_FOUNDATIONS",
+      "section": "Grammar",
+      "thresholds": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "V-ing/to-infinitive và giới từ",
+      "feedback": [
+        "Bạn nên luyện cách chọn dạng động từ theo cấu trúc đứng trước. Hãy học cả cụm như “allow someone to do something” và “be interested in doing something”, thay vì học từng từ riêng lẻ.",
+        "Bạn nhận diện đúng một trong hai cấu trúc được kiểm tra. Hãy ôn lại câu chưa đúng và chú ý sự khác nhau giữa “to + động từ nguyên mẫu” và “giới từ + V-ing”.",
+        "Bạn chọn đúng dạng động từ và giới từ trong cả hai cấu trúc được kiểm tra. Hãy tiếp tục mở rộng các mẫu động từ đi với V-ing, to-infinitive và giới từ."
+      ],
+      "id": "G_VERB_PATTERNS_PREPOSITIONS",
+      "section": "Grammar",
+      "thresholds": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "Câu điều kiện",
+      "feedback": [
+        "Bạn nên luyện phân biệt điều kiện có thể xảy ra trong tương lai với tình huống giả định trái với hiện tại. Sau khi xác định ý nghĩa, hãy chọn dạng động từ phù hợp cho cả hai mệnh đề.",
+        "Bạn làm đúng một trong hai câu điều kiện. Hãy củng cố sự khác nhau giữa loại 1 và loại 2, đặc biệt là cách dùng “will” và “would” cùng dạng động từ trong mệnh đề “if”.",
+        "Bạn phân biệt đúng điều kiện loại 1 và loại 2 trong các tình huống được kiểm tra, đồng thời chọn chính xác dạng động từ cần dùng."
+      ],
+      "id": "G_CONDITIONALS",
+      "section": "Grammar",
+      "thresholds": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "Modal verbs",
+      "feedback": [
+        "Bạn nên ôn cách modal verbs thay đổi ý nghĩa của câu. Tập trung phân biệt “không bắt buộc” với “không được phép”, đồng thời nhận diện cách dùng “must” để đưa ra suy luận.",
+        "Bạn hiểu đúng một trong hai cách dùng được kiểm tra. Hãy đọc kỹ ngữ cảnh để xác định câu đang nói về yêu cầu, sự cho phép hay một suy luận.",
+        "Bạn nhận diện chính xác sự không bắt buộc và suy luận có cơ sở trong bài. Bạn chọn đúng cách diễn đạt theo ngữ cảnh của cả hai câu."
+      ],
+      "id": "G_MODALS",
+      "section": "Grammar",
+      "thresholds": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "Conjunctions/conjunctive adverbs",
+      "feedback": [
+        "Bạn nên luyện xác định quan hệ giữa các ý, chẳng hạn tương phản hoặc kết quả, rồi chọn từ nối phù hợp. Đồng thời chú ý từ nối cần đi với mệnh đề, danh từ hay một câu độc lập.",
+        "Bạn chọn đúng phần lớn cách liên kết ý được kiểm tra. Hãy củng cố cả ý nghĩa lẫn cấu trúc của từ nối, đặc biệt khi phân biệt “although”, “however” và “despite”.",
+        "Bạn nhận diện đúng quan hệ giữa các ý và sử dụng chính xác những cấu trúc liên kết được kiểm tra, bao gồm nhượng bộ, kết quả và tương phản."
+      ],
+      "id": "G_SENTENCE_LINKING",
+      "section": "Grammar",
+      "thresholds": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "Relative clauses",
+      "feedback": [
+        "Bạn nên luyện chọn đại từ quan hệ theo đối tượng và vai trò trong câu: chỉ người, chỉ vật hay chỉ sở hữu. Hãy chú ý thêm dấu phẩy để nhận diện mệnh đề quan hệ không xác định.",
+        "Bạn xử lý đúng phần lớn mệnh đề quan hệ được kiểm tra. Hãy ôn lại cách dùng “who”, “whose” và “which”, đặc biệt là giới hạn sử dụng “that” trong mệnh đề có dấu phẩy.",
+        "Bạn chọn chính xác đại từ quan hệ chỉ người, chỉ sở hữu và chỉ vật trong các câu được kiểm tra, bao gồm mệnh đề quan hệ không xác định."
+      ],
+      "id": "G_RELATIVE_CLAUSES",
+      "section": "Grammar",
+      "thresholds": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "Câu bị động",
+      "feedback": [
+        "Bạn nên luyện xác định chủ ngữ thực hiện hay chịu tác động của hành động. Với câu bị động, hãy chú ý thành phần “be + V3” và cách kết hợp với thì hoặc modal verb.",
+        "Bạn nhận diện đúng một trong hai cấu trúc bị động. Hãy ôn lại sự khác nhau giữa “am/is/are + V3” và “modal verb + be + V3”.",
+        "Bạn chọn đúng cấu trúc bị động hiện tại đơn và bị động sau modal verb trong cả hai câu được kiểm tra."
+      ],
+      "id": "G_PASSIVE",
+      "section": "Grammar",
+      "thresholds": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "So sánh",
+      "feedback": [
+        "Bạn nên luyện xác định câu đang so sánh hơn, bằng hay nhất trước khi chọn cấu trúc. Tập trung vào ba mẫu: “more … than”, “as … as” và “the most …”.",
+        "Bạn phân biệt đúng phần lớn các dạng so sánh được kiểm tra. Hãy ôn lại dạng chưa đúng và kiểm tra các thành phần đi kèm như “than”, “as” và “the”.",
+        "Bạn chọn chính xác cấu trúc so sánh hơn, bằng và nhất theo thông tin được cho trong bài."
+      ],
+      "id": "G_COMPARISONS",
+      "section": "Grammar",
+      "thresholds": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "Hiểu ý chính & cấu trúc đoạn văn",
+      "feedback": [
+        "Bạn nên luyện xác định nội dung bao quát của từng đoạn và phân biệt ý chính với ví dụ, tên riêng hoặc chi tiết nổi bật. Trước khi chọn heading, hãy tự tóm tắt đoạn bằng một câu ngắn.",
+        "Bạn xác định được ý chính của nhiều đoạn, nhưng đôi lúc còn nhầm giữa ý bao quát và chi tiết phụ. Hãy chú ý cách đoạn triển khai ý, chẳng hạn đối chiếu hai cách tiếp cận hoặc dùng ví dụ để minh họa một xu hướng.",
+        "Bạn nhận diện tốt ý chính và cách triển khai nội dung trong các đoạn được kiểm tra. Bạn phân biệt khá hiệu quả giữa thông tin bao quát và chi tiết minh họa khi chọn heading."
+      ],
+      "id": "R_MAIN_IDEA",
+      "section": "Reading",
+      "thresholds": [
+        3,
+        5
+      ]
+    },
+    {
+      "name": "Hiểu & xác định quan điểm của từng người",
+      "feedback": [
+        "Bạn nên luyện tìm phần nhận định đi kèm từng tên người và đối chiếu với câu hỏi. Đặc biệt chú ý từ phủ định, mức độ chắc chắn và các từ thể hiện yêu cầu hoặc nghĩa vụ.",
+        "Bạn xác định đúng một phần đáng kể các quan điểm, nhưng chưa ổn định khi nhận định được diễn đạt lại hoặc có sắc thái. Hãy kiểm tra cả nội dung lẫn mức độ của phát biểu trước khi chọn người tương ứng.",
+        "Bạn xác định chính xác người đưa ra các nhận định trong bài và hiểu tốt nội dung quan điểm khi được diễn đạt lại, bao gồm những khác biệt về mức độ và sắc thái."
+      ],
+      "id": "R_VIEWPOINT_ATTRIBUTION",
+      "section": "Reading",
+      "thresholds": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "Tìm & trích xuất thông tin cụ thể",
+      "feedback": [
+        "Bạn nên luyện tìm chi tiết tương ứng với từng chỗ trống trong bản tóm tắt. Sau khi tìm được thông tin, hãy kiểm tra cụm từ cần lấy, đơn vị, dạng số ít/số nhiều và giới hạn từ.",
+        "Bạn tìm và trích xuất đúng phần lớn thông tin được kiểm tra. Hãy kiểm tra kỹ đáp án sau khi điền, đặc biệt là đơn vị, dạng từ, chính tả và sự phù hợp với câu tóm tắt.",
+        "Bạn tìm và trích xuất chính xác các chi tiết được kiểm tra, đồng thời chọn được từ/cụm từ phù hợp để hoàn thành bản tóm tắt."
+      ],
+      "id": "R_DETAIL_EXTRACTION",
+      "section": "Reading",
+      "thresholds": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "Từ vựng trong bài đọc",
+      "feedback": [
+        "Kết quả toàn bài gợi ý bạn nên củng cố từ vựng phục vụ đọc hiểu. Hãy học các từ và cụm từ trọng tâm, dùng câu xung quanh để hiểu nghĩa phù hợp, đồng thời luyện nối những cách diễn đạt cùng nghĩa giữa câu hỏi và bài đọc.",
+        "Kết quả toàn bài gợi ý bạn có nền tảng khá khi vận dụng vốn từ, thông tin ngữ cảnh và paraphrase để đọc hiểu. Bạn nên luyện thêm các từ trừu tượng và cách diễn đạt có phủ định hoặc khác biệt về mức độ.",
+        "Kết quả toàn bài gợi ý bạn vận dụng hiệu quả vốn từ, ngữ cảnh và khả năng nhận diện paraphrase để xử lý bài đọc này. Bạn có thể tiếp tục mở rộng vốn từ qua những bài đọc có chủ đề và cách diễn đạt đa dạng hơn."
+      ],
+      "id": "R_VOCABULARY_OVERALL",
+      "section": "Reading",
+      "thresholds": [
+        5,
+        10
+      ]
+    },
+    {
+      "name": "Nghe thông tin số và thời gian",
+      "feedback": [
+        "Bạn nên luyện nghe và ghi lại tháng, giá tiền và khoảng thời gian. Trước khi nghe, hãy xác định ô trống cần loại thông tin nào; sau khi điền, kiểm tra số lượng, phần thập phân và đơn vị.",
+        "Bạn ghi đúng phần lớn thông tin số và thời gian được kiểm tra. Hãy ôn lại câu chưa đúng và kiểm tra kỹ cách ghi giá tiền hoặc khoảng thời gian để tăng độ chính xác.",
+        "Bạn nghe và ghi chính xác tháng, giá tiền và thời gian đặt trước trong bài. Bạn xử lý tốt các thông tin số và thời gian được kiểm tra."
+      ],
+      "id": "L_NUMBERS_TIME",
+      "section": "Listening",
+      "thresholds": [
+        2,
+        3
+      ]
+    },
+    {
+      "name": "Nghe và ghi lại thông tin cụ thể",
+      "feedback": [
+        "Bạn nên luyện xác định chi tiết cần nghe và ghi lại từ khóa phù hợp. Trước khi audio bắt đầu, hãy dự đoán ô trống cần tên đồ vật, dịch vụ, hoạt động hay cơ quan; sau khi điền, kiểm tra chính tả và dạng từ.",
+        "Bạn xác định và ghi đúng một phần đáng kể các chi tiết trong bài, nhưng kết quả chưa ổn định. Hãy luyện nghe theo từng mục thông tin và kiểm tra kỹ những đáp án có tên riêng hoặc danh từ số nhiều.",
+        "Bạn nghe và ghi lại tốt phần lớn thông tin cụ thể được kiểm tra. Bạn xác định khá chính xác các chi tiết về dịch vụ, hoạt động và kế hoạch trong hai bối cảnh của bài nghe."
+      ],
+      "id": "L_SPECIFIC_DETAILS",
+      "section": "Listening",
+      "thresholds": [
+        4,
+        7
+      ]
+    },
+    {
+      "name": "Theo dõi người nói và phân công công việc",
+      "feedback": [
+        "Bạn nên luyện theo dõi ai đảm nhận từng nhiệm vụ trong hội thoại. Hãy phân biệt công việc của Katy, Harry và việc cả hai cùng làm; chú ý thông tin xác nhận người thực hiện thay vì chỉ tên được nhắc đến gần nhiệm vụ.",
+        "Bạn xác định đúng một phần đáng kể việc phân công, nhưng còn nhầm ở một số nhiệm vụ. Hãy theo dõi đầy đủ lượt trao đổi và phân biệt công việc cá nhân với công việc chung trước khi chọn đáp án.",
+        "Bạn xác định chính xác người đảm nhận từng nhiệm vụ trong bài. Bạn phân biệt tốt công việc của mỗi người và công việc được cả hai cùng thực hiện."
+      ],
+      "id": "L_SPEAKER_TASKS",
+      "section": "Listening",
+      "thresholds": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "Hiểu lý do, thái độ và quyết định",
+      "feedback": [
+        "Bạn nên luyện nghe để hiểu vì sao người nói muốn làm một việc và họ cảm thấy thế nào về việc đó. Hãy đối chiếu ý nghĩa của cả phát biểu với các lựa chọn, thay vì chỉ chọn phương án có từ giống với audio.",
+        "Bạn hiểu đúng một phần đáng kể các lý do và thái độ được kiểm tra. Hãy chú ý thêm sự khác nhau giữa mong muốn, mục đích, cảm nhận và cam kết đã có để lựa chọn chính xác hơn.",
+        "Bạn hiểu chính xác các lý do, thái độ và căn cứ cho quyết định trong bài. Bạn phân biệt tốt động cơ cá nhân, cảm nhận về phân chia công việc và mục đích của các hành động được thảo luận."
+      ],
+      "id": "L_REASONS_ATTITUDES",
+      "section": "Listening",
+      "thresholds": [
+        2,
+        4
+      ]
+    }
+  ],
+  "audio": [
+    "1c9YmsUC_Syf_m582UNKaxQiu83yp4dh9",
+    "13NHgz2YEiYiToGw6JqEL9-lc54ou3o_v"
+  ]
+}

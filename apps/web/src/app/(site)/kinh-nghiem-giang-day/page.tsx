@@ -47,7 +47,7 @@ const MILESTONES = [
     year: "2024–2025",
     title: "Làm diễn giả chia sẻ về học IELTS cho các trường đại học trong TPHCM",
     text: "Bên cạnh công việc đứng lớp, mình có cơ hội đồng hành cùng sinh viên tại các trường đại học ở TP.HCM qua những buổi chia sẻ về lộ trình học IELTS, cách xây nền kỹ năng và duy trì động lực học tập bền vững.",
-    image: "https://drive.google.com/thumbnail?id=1dMv6MGwfdQ7IlYXyGuNQeoKHlSHGBkcK&sz=w2000",
+    image: "/images/experience/university-ielts-talk.jpg",
   },
 ] as const;
 

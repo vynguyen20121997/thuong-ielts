@@ -41,31 +41,31 @@ export const classroomImages = [
   { src: "/images/classroom/classroom-33.jpg", alt: "Cả lớp cùng học tập" },
   { src: "/images/classroom/classroom-34.jpg", alt: "Học viên tập trung hoàn thành bài tập" },
   {
-    src: "https://drive.google.com/thumbnail?id=1r4sTBlYyq2sBlDgm3I9Tx7D6ipHDletx&sz=w2000",
+    src: "/images/classroom/classroom-drive-01.jpg",
     alt: "Học viên cùng tham gia hoạt động tại lớp",
   },
   {
-    src: "https://drive.google.com/thumbnail?id=1e_wsFTOqiBdDYTDOCLkIBJCJx_-DMJGy&sz=w2000",
+    src: "/images/classroom/classroom-drive-02.jpg",
     alt: "Không khí lớp học trực tiếp",
   },
   {
-    src: "https://drive.google.com/thumbnail?id=1C-0gbHeXu1q57gPdI-XU9NZv2H6JaRnw&sz=w2000",
+    src: "/images/classroom/classroom-drive-03.jpg",
     alt: "Học viên nam luyện tập cá nhân tại nhà",
   },
   {
-    src: "https://drive.google.com/thumbnail?id=1p_-esYh3_EhzBoDcXPMPvQzQTm7FBZiE&sz=w2000",
+    src: "/images/classroom/classroom-drive-04.jpg",
     alt: "Học viên nam học 1-1 tại lớp",
   },
   {
-    src: "https://drive.google.com/thumbnail?id=1kTV9RoJjLmYG61JvtpUqWTivdE9s_cUr&sz=w2000",
+    src: "/images/classroom/classroom-drive-05.jpg",
     alt: "Buổi học trực tuyến cùng học viên",
   },
   {
-    src: "https://drive.google.com/thumbnail?id=1W8l7xRdUhzXb-Qpex6bVCWWcu2tl4rm0&sz=w2000",
+    src: "/images/classroom/classroom-drive-06.jpg",
     alt: "Lớp học Online qua Zoom",
   },
   {
-    src: "https://drive.google.com/thumbnail?id=1jhk0bjF00PvMXVw3KUNpd4zaP-neqk1M&sz=w2000",
+    src: "/images/classroom/classroom-drive-07.jpg",
     alt: "Buổi học Online và tương tác trực tuyến",
   },
 ];
@@ -103,15 +103,15 @@ export const classroomVideos = [
 const onlineImageSources = new Set([
   "/images/classroom/classroom-27.jpg",
   "/images/classroom/classroom-30.jpg",
-  "https://drive.google.com/thumbnail?id=1kTV9RoJjLmYG61JvtpUqWTivdE9s_cUr&sz=w2000",
-  "https://drive.google.com/thumbnail?id=1W8l7xRdUhzXb-Qpex6bVCWWcu2tl4rm0&sz=w2000",
-  "https://drive.google.com/thumbnail?id=1jhk0bjF00PvMXVw3KUNpd4zaP-neqk1M&sz=w2000",
+  "/images/classroom/classroom-drive-05.jpg",
+  "/images/classroom/classroom-drive-06.jpg",
+  "/images/classroom/classroom-drive-07.jpg",
 ]);
 
 const oneToOneImageSources = new Set([
   "/images/classroom/classroom-13.jpg",
-  "https://drive.google.com/thumbnail?id=1C-0gbHeXu1q57gPdI-XU9NZv2H6JaRnw&sz=w2000",
-  "https://drive.google.com/thumbnail?id=1p_-esYh3_EhzBoDcXPMPvQzQTm7FBZiE&sz=w2000",
+  "/images/classroom/classroom-drive-03.jpg",
+  "/images/classroom/classroom-drive-04.jpg",
 ]);
 
 export const classroomMedia = [

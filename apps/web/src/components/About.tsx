@@ -61,8 +61,7 @@ export default function About() {
           </div>
           <div className="relative mx-auto w-full max-w-md lg:max-w-none">
             <div className="absolute -inset-3 rounded-[34px] border border-brand/15" />
-            <img src="/images/about/teacher-hero-placeholder.png" alt="Ảnh minh họa tạm thời cho giáo viên Hồ Ngọc Thương" className="relative aspect-[4/5] w-full rounded-[28px] object-cover shadow-[0_22px_50px_rgba(20,83,45,0.15)]" />
-            <p className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white/95 px-4 py-3 text-xs leading-relaxed text-brand/70 shadow-sm">Ảnh minh họa tạm thời — có thể thay bằng ảnh chân dung của cô sau này.</p>
+            <img src="/images/about/teacher-speaking.jpg" alt="Cô Hồ Ngọc Thương chia sẻ về việc học IELTS" className="relative aspect-[4/5] w-full rounded-[28px] object-cover shadow-[0_22px_50px_rgba(20,83,45,0.15)]" />
           </div>
         </div>
       </section>

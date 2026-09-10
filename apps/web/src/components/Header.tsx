@@ -77,7 +77,7 @@ export default function Header() {
           </span>
           <span
             id="logo-wordmark"
-            className="font-bold text-lg tracking-tight text-brand whitespace-nowrap"
+            className="block lg:hidden xl:block font-bold text-lg tracking-tight text-brand whitespace-nowrap"
           >
             Thương Hồ&apos;s Class
           </span>
@@ -85,7 +85,7 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav
-          className="hidden md:flex items-center gap-3 lg:gap-5 xl:gap-7 min-w-0"
+          className="hidden lg:flex items-center gap-3 xl:gap-5 min-w-0"
           id="desktop-nav"
         >
           {navGroups.map((group) => {
@@ -142,17 +142,20 @@ export default function Header() {
           <Link href="/tu-van" className={linkClass(pathname === "/tu-van")}>
             Liên Hệ
           </Link>
+          <Link href="/kiem-tra-nen-tang-ielts" aria-current={pathname === '/kiem-tra-nen-tang-ielts' ? 'page' : undefined} className="rounded-full bg-leaf px-4 py-3 text-xs font-bold text-brand-deep whitespace-nowrap transition-colors hover:bg-leaf-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand">
+            Kiểm tra nền tảng IELTS ↗
+          </Link>
         </nav>
 
         {/* Action */}
-        <div className="hidden md:flex items-center gap-3 shrink-0" id="header-action-container">
+        <div className="hidden lg:flex items-center gap-3 shrink-0" id="header-action-container">
           <AccountMenu />
         </div>
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden p-2 text-brand hover:text-brand-deep transition-colors cursor-pointer shrink-0"
+          className="lg:hidden p-2 text-brand hover:text-brand-deep transition-colors cursor-pointer shrink-0"
           aria-label="Toggle Menu"
           id="mobile-menu-toggle"
         >
@@ -162,10 +165,11 @@ export default function Header() {
 
       {/* Mobile Menu Drawer */}
       <div
-        className={`fixed inset-0 top-[64px] bg-mist z-40 md:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}
+        className={`fixed inset-0 top-[64px] bg-mist z-40 lg:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}
         id="mobile-menu-drawer"
       >
         <div className="flex flex-col gap-7">
+          <Link href="/kiem-tra-nen-tang-ielts" className="rounded-2xl bg-leaf p-5 text-lg font-bold text-brand-deep">Kiểm tra nền tảng IELTS ↗</Link>
           {navGroups.map((group) => (
           <div key={group.label}>
             <span className="text-2xs text-brand/40 font-medium block mb-3">{group.label}</span>
