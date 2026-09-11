@@ -1,7 +1,7 @@
 export type Section = 'Listening' | 'Reading' | 'Grammar';
 export type Question = { id: string; section: Section; prompt: string; options: {value:string;label:string}[]; limit?: string; evidence?: string };
 export type Paper = { version:string; duration:number; questions:Question[]; passage:string[]; title:string; audio:string[] };
-export type Profile = { name:string; email:string; phone:string; level:string; target:string; examDate:string; dailyMinutes:number; consent:boolean; marketing:boolean; previousScore?:string; previousDate?:string; purpose?:string };
+export type Profile = { name:string; email:string; target:string; purpose:string; dailyMinutes?:number };
 export type Workspace = { bookmarks:string[]; highlights:{blockId:string;start:number;end:number}[]; section:Section; audio:number[]; audioDone:boolean[]; scroll:Record<string,number>; issues:string[] };
 export type ItemResult = Question & { answer:string; expected:string; correct:boolean; explanation:string; review:string; area:string };
 export type AreaResult = { id:string; name:string; section:Section; correct:number; total:number; level:number; feedback:string; review:{id:string;text:string;blank:boolean}[] };

@@ -19,8 +19,9 @@ export async function POST(request:Request){
     let token=request.headers.get('authorization')?.replace(/^Bearer /,'')??'';
     if(body.action==='start'){
       const p=body.profile;
-      if(!p||typeof p.name!=='string'||!p.name.trim()||typeof p.email!=='string'||!/^\S+@\S+\.\S+$/.test(p.email)||!p.level||!p.target||!p.examDate||p.consent!==true) {await client.query('ROLLBACK');return json({error:'Vui lòng điền đủ thông tin và đồng ý lưu kết quả.'},400);}
-      const profile={name:p.name.trim().slice(0,150),email:p.email.trim().slice(0,254),phone:String(p.phone??'').slice(0,30),level:String(p.level).slice(0,200),target:String(p.target).slice(0,100),examDate:String(p.examDate).slice(0,100),dailyMinutes:[15,30,45,60].includes(Number(p.dailyMinutes))?Number(p.dailyMinutes):30,consent:true,marketing:p.marketing===true,previousScore:String(p.previousScore??'').slice(0,20),previousDate:String(p.previousDate??'').slice(0,30),purpose:String(p.purpose??'').slice(0,200)};
+      const purposes=['Nộp thi đại học','Đi du học','Đi xin việc','Khác'];
+      if(!p||typeof p.name!=='string'||!p.name.trim()||typeof p.email!=='string'||!/^\S+@\S+\.\S+$/.test(p.email)||!p.target||!purposes.includes(p.purpose)) {await client.query('ROLLBACK');return json({error:'Vui lòng điền đủ thông tin trước khi tiếp tục.'},400);}
+      const profile={name:p.name.trim().slice(0,150),email:p.email.trim().slice(0,254),target:String(p.target).slice(0,100),purpose:String(p.purpose).slice(0,100)};
       // A browser-generated random token makes retries idempotent if the start response is lost.
       if(!/^[a-f0-9]{64}$/.test(token))token=randomBytes(32).toString('hex');
       await client.query(`INSERT INTO diagnostic_attempts(token_hash,version,exam,profile,editor,editor_until) VALUES($1,$2,$3,$4,$5,now()+interval '15 seconds') ON CONFLICT DO NOTHING`,[hash(token),exam.version,JSON.stringify(exam),JSON.stringify(profile),editor]);
