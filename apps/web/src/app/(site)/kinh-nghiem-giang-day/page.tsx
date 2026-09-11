@@ -37,6 +37,14 @@ const MILESTONES = [
     caption: "Lớp Senior ở quận Tân Bình",
   },
   {
+    year: "2023",
+    title: "Đạt giải Giáo viên xuất sắc",
+    text: "Trong quá trình giảng dạy tại The IELTS Workshop TPHCM, mình được ghi nhận là Giáo viên xuất sắc tháng 02/2023. Đây là một dấu mốc đáng nhớ cho sự tận tâm, chất lượng chuyên môn và những nỗ lực đồng hành cùng học viên.",
+    image: "/images/experience/best-teacher-2023.webp",
+    imageFit: "contain",
+    caption: "Chứng nhận Best Employee of the Month – 02/2023",
+  },
+  {
     year: "2024–2025",
     title: "Giảng dạy level Master 7.5+",
     text: "Đây là một cột mốc đặc biệt trong hành trình giảng dạy của mình khi trở thành giáo viên nữ duy nhất tại The IELTS Workshop HCM được phân công giảng dạy level Master 7.5+ trong giai đoạn này.",
