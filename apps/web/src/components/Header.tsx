@@ -77,7 +77,7 @@ export default function Header() {
           </span>
           <span
             id="logo-wordmark"
-            className="block lg:hidden xl:block font-bold text-lg tracking-tight text-brand whitespace-nowrap"
+            className="block font-bold text-lg tracking-tight text-brand whitespace-nowrap"
           >
             Thương Hồ&apos;s Class
           </span>
