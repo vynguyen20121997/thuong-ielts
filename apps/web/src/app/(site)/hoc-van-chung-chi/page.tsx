@@ -29,6 +29,11 @@ const ENGLISH_TEACHING_CERTIFICATES = [
     image: "/images/certificates/teachingenglish-assessing-learning.png",
     description: "Khóa học giúp mình thiết kế hoạt động đánh giá công bằng và phù hợp với nhiều nhóm học viên; vận dụng assessment for learning qua đặt câu hỏi, phản hồi, đánh giá đồng đẳng và tự đánh giá; đồng thời biến việc ôn luyện bài thi thành một quá trình tích cực, có động lực hơn.",
   },
+  {
+    title: "How to Teach Pronunciation by British Council",
+    image: "/images/certificates/teachingenglish-how-to-teach-pronunciation.png",
+    description: "Khóa học giúp mình nhận diện các yếu tố cốt lõi của phát âm tiếng Anh, lựa chọn và đánh giá những hoạt động luyện các âm khó; đồng thời tích hợp luyện phát âm — từ âm riêng lẻ đến trọng âm, ngữ điệu và nối âm — vào các kỹ năng ngôn ngữ khác trong lớp học.",
+  },
 ] as const;
 
 export default function EducationPage() {
