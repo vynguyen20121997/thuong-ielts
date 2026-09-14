@@ -494,7 +494,7 @@ export default function Diagnostic() {
       <article
         id={`diag-${q.id}`}
         key={q.id}
-        className={`diag-question ${q.section === "Listening" ? "diag-listening-question" : ""} ${activeQuestion === q.id ? "is-current" : ""} ${workspace.bookmarks.includes(q.id) ? "is-review" : ""}`}
+        className={`diag-question ${q.section === "Listening" ? "diag-listening-question" : ""} ${q.section === "Listening" && q.id >= "L17" && q.id <= "L20" ? "diag-listening-choice-question" : ""} ${activeQuestion === q.id ? "is-current" : ""} ${workspace.bookmarks.includes(q.id) ? "is-review" : ""}`}
       >
         <div className="diag-question-row mb-3 flex items-start gap-3">
           <span className="diag-question-id font-mono font-bold text-brand">
@@ -1054,6 +1054,7 @@ export default function Diagnostic() {
                 {s === "Reading" && (
                   <>
                     <div className="diag-reading-toolbar">
+                      <h2 className="diag-section-heading">PHẦN 2: READING</h2>
                       <button
                         className="diag-secondary md:hidden"
                         onClick={() =>
@@ -1086,9 +1087,6 @@ export default function Diagnostic() {
                           el.scrollTop = workspace.scroll.passage;
                       }}
                     >
-                      <h2 className="mb-2 text-sm font-bold uppercase tracking-wider text-brand">
-                        Reading
-                      </h2>
                       <h3 className="mb-6 text-2xl font-bold text-brand">
                         {paper.title}
                       </h3>
@@ -1202,7 +1200,11 @@ export default function Diagnostic() {
                       el.scrollTop = workspace.scroll[s];
                   }}
                 >
-                  <h2 className="diag-section-heading">{s}</h2>
+                  {s !== "Reading" && (
+                    <h2 className="diag-section-heading">
+                      PHẦN {sections.indexOf(s) + 1}: {s.toUpperCase()}
+                    </h2>
+                  )}
                   {s === "Listening" && (
                     <div className="diag-part-tabs">
                       <button
@@ -1259,7 +1261,6 @@ export default function Diagnostic() {
                             </p>
                             {matching.map((q) => (
                               <div className="diag-drag-row" key={q.id}>
-                                <span>{q.prompt}</span>
                                 <button
                                   type="button"
                                   draggable={!!answers[q.id]}
@@ -1283,7 +1284,7 @@ export default function Diagnostic() {
                                     }
                                   }}
                                 >
-                                  <b>{q.id.slice(1)}</b>
+                                  <b>{Number(q.id.slice(1))}</b>
                                   {answers[q.id] && (
                                     <em>
                                       {
@@ -1294,6 +1295,9 @@ export default function Diagnostic() {
                                     </em>
                                   )}
                                 </button>
+                                <span>
+                                  <strong>{q.id}.</strong> {q.prompt}
+                                </span>
                                 <button
                                   type="button"
                                   aria-label={`Đánh dấu xem lại ${q.id}`}
@@ -1390,7 +1394,7 @@ export default function Diagnostic() {
                                     }
                                   }}
                                 >
-                                  <b>{q.id.slice(1)}</b>
+                                  <b>{Number(q.id.slice(1))}</b>
                                   {answers[q.id] && (
                                     <em>
                                       {
@@ -1660,7 +1664,7 @@ export default function Diagnostic() {
               onMouseDown={(e) => e.preventDefault()}
               onClick={selectedHighlight ? removeSelectedHighlight : highlight}
             >
-              {selectedHighlight ? "Xóa highlight" : "Tô màu"}
+              {selectedHighlight ? "Xóa highlight" : "Highlight"}
             </button>
           )}
           {submitDialog && (

@@ -50,9 +50,10 @@ export default function Header() {
       ],
     },
     {
-      label: "Thành Tích",
+      label: "Học viên",
       items: [
-        { label: "Kết quả học viên", to: "/ket-qua-hoc-vien" },
+        { label: "Kết quả của học viên", to: "/ket-qua-hoc-vien" },
+        { label: "Đánh giá của học viên", to: "/cam-nhan-hoc-vien" },
       ],
     },
   ];
@@ -92,63 +93,68 @@ export default function Header() {
             const active = group.items.some(
               (item) =>
                 pathname === item.to.split("#")[0] ||
-                item.children?.some((child) => pathname === child.to)
+                item.children?.some((child) => pathname === child.to),
             );
             return (
-          <div key={group.label} className="relative group py-2">
-            <button
-              className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${active ? "text-brand font-bold" : "text-brand/70 font-semibold group-hover:text-brand"}`}
-            >
-              {group.label}
-              <ChevronDown
-                size={14}
-                className="transition-transform duration-300 group-hover:rotate-180"
-              />
-            </button>
-            <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
-              <div className="w-72 rounded-2xl border border-black/5 bg-white p-2 shadow-xl">
-                {group.items.map((p) => (
-                  <div key={p.to}>
-                    <Link
-                      href={p.to}
-                      className="block rounded-xl px-4 py-3 text-sm font-semibold leading-snug text-brand/80 transition-colors hover:bg-sage hover:text-brand whitespace-normal"
-                    >
-                      {p.label}
-                    </Link>
-                    {p.children && (
-                      <div className="mb-1 ml-3 border-l border-brand/15 pl-2">
-                        {p.children.map((child) => (
-                          <Link
-                            key={child.to}
-                            href={child.to}
-                            className="block rounded-lg px-3 py-2 text-sm font-medium text-brand/65 transition-colors hover:bg-sage hover:text-brand"
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
+              <div key={group.label} className="relative group py-2">
+                <button
+                  className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${active ? "text-brand font-bold" : "text-brand/70 font-semibold group-hover:text-brand"}`}
+                >
+                  {group.label}
+                  <ChevronDown
+                    size={14}
+                    className="transition-transform duration-300 group-hover:rotate-180"
+                  />
+                </button>
+                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
+                  <div className="w-72 rounded-2xl border border-black/5 bg-white p-2 shadow-xl">
+                    {group.items.map((p) => (
+                      <div key={p.to}>
+                        <Link
+                          href={p.to}
+                          className="block rounded-xl px-4 py-3 text-sm font-semibold leading-snug text-brand/80 transition-colors hover:bg-sage hover:text-brand whitespace-normal"
+                        >
+                          {p.label}
+                        </Link>
+                        {p.children && (
+                          <div className="mb-1 ml-3 border-l border-brand/15 pl-2">
+                            {p.children.map((child) => (
+                              <Link
+                                key={child.to}
+                                href={child.to}
+                                className="block rounded-lg px-3 py-2 text-sm font-medium text-brand/65 transition-colors hover:bg-sage hover:text-brand"
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-          </div>
             );
           })}
-
-          <Link href="/cam-nhan-hoc-vien" className={linkClass(pathname === "/cam-nhan-hoc-vien")}>
-            Đánh Giá
-          </Link>
           <Link href="/tu-van" className={linkClass(pathname === "/tu-van")}>
             Liên Hệ
           </Link>
-          <Link href="/kiem-tra-nen-tang-ielts" aria-current={pathname === '/kiem-tra-nen-tang-ielts' ? 'page' : undefined} className="rounded-full bg-leaf px-4 py-3 text-xs font-bold text-brand-deep whitespace-nowrap transition-colors hover:bg-leaf-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand">
+          <Link
+            href="/kiem-tra-nen-tang-ielts"
+            aria-current={
+              pathname === "/kiem-tra-nen-tang-ielts" ? "page" : undefined
+            }
+            className="rounded-full bg-leaf px-4 py-3 text-xs font-bold text-brand-deep whitespace-nowrap transition-colors hover:bg-leaf-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+          >
             Kiểm tra nền tảng IELTS ↗
           </Link>
         </nav>
 
         {/* Action */}
-        <div className="hidden lg:flex items-center gap-3 shrink-0" id="header-action-container">
+        <div
+          className="hidden lg:flex items-center gap-3 shrink-0"
+          id="header-action-container"
+        >
           <AccountMenu />
         </div>
 
@@ -169,38 +175,44 @@ export default function Header() {
         id="mobile-menu-drawer"
       >
         <div className="flex flex-col gap-7">
-          <Link href="/kiem-tra-nen-tang-ielts" className="rounded-2xl bg-leaf p-5 text-lg font-bold text-brand-deep">Kiểm tra nền tảng IELTS ↗</Link>
-          {navGroups.map((group) => (
-          <div key={group.label}>
-            <span className="text-2xs text-brand/40 font-medium block mb-3">{group.label}</span>
-            <div className="flex flex-col gap-4 pl-1">
-              {group.items.map((p) => (
-                <div key={p.to} className="space-y-3">
-                  <Link
-                    href={p.to}
-                    className="block text-2xl font-bold text-left text-brand hover:text-brand-deep transition-colors"
-                  >
-                    {p.label}
-                  </Link>
-                  {p.children && (
-                    <div className="ml-2 flex flex-col gap-3 border-l border-brand/20 pl-4">
-                      {p.children.map((child) => (
-                        <Link key={child.to} href={child.to} className="text-lg font-semibold text-brand/70 hover:text-brand">
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-          ))}
-
-          <Link href="/cam-nhan-hoc-vien" className="text-3xl font-bold text-left text-brand hover:text-brand-deep transition-colors cursor-pointer">
-            Đánh Giá
+          <Link
+            href="/kiem-tra-nen-tang-ielts"
+            className="rounded-2xl bg-leaf p-5 text-lg font-bold text-brand-deep"
+          >
+            Kiểm tra nền tảng IELTS ↗
           </Link>
-
+          {navGroups.map((group) => (
+            <div key={group.label}>
+              <span className="text-2xs text-brand/40 font-medium block mb-3">
+                {group.label}
+              </span>
+              <div className="flex flex-col gap-4 pl-1">
+                {group.items.map((p) => (
+                  <div key={p.to} className="space-y-3">
+                    <Link
+                      href={p.to}
+                      className="block text-2xl font-bold text-left text-brand hover:text-brand-deep transition-colors"
+                    >
+                      {p.label}
+                    </Link>
+                    {p.children && (
+                      <div className="ml-2 flex flex-col gap-3 border-l border-brand/20 pl-4">
+                        {p.children.map((child) => (
+                          <Link
+                            key={child.to}
+                            href={child.to}
+                            className="text-lg font-semibold text-brand/70 hover:text-brand"
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
           <Link
             href="/tu-van"
             className="text-3xl font-bold text-left text-brand hover:text-brand-deep transition-colors cursor-pointer"
