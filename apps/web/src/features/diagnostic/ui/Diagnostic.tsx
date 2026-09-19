@@ -5,15 +5,11 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Bookmark,
-  ChevronLeft,
-  ChevronRight,
-  Check,
   Clock3,
   Headphones,
   BookOpen,
   PenLine,
   Settings,
-  Target,
   X,
 } from "lucide-react";
 import type {
@@ -25,6 +21,7 @@ import type {
   Workspace,
 } from "../types";
 import HighlightableText from "../../practice/ui/HighlightableText";
+import ExamQuestionNavigator from "../../practice/ui/ExamQuestionNavigator";
 import AudioPlayer from "./AudioPlayer";
 import StudyPlan from "./StudyPlan";
 import "./diagnostic.css";
@@ -48,6 +45,7 @@ const initialProfile: Profile = {
   purpose: "",
 };
 const STORAGE = "thuong-diagnostic-v1";
+const isLocalDemo = process.env.NODE_ENV === "development";
 type Draft = {
   token: string;
   answers: Record<string, string>;
@@ -381,6 +379,28 @@ export default function Diagnostic() {
         local();
       }
       const data = await api("start", { profile });
+      setAnswers(data.answers);
+      setWorkspace({ ...emptyWorkspace, ...data.workspace });
+      apply(data);
+      local();
+    } catch (error) {
+      setMessage((error as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function startDemo(preset: "foundation" | "intermediate" | "advanced") {
+    setBusy(true);
+    setMessage("");
+    try {
+      // A fresh token keeps the synthetic result separate from any real draft.
+      token.current = Array.from(
+        crypto.getRandomValues(new Uint8Array(32)),
+        (b) => b.toString(16).padStart(2, "0"),
+      ).join("");
+      localStorage.removeItem(STORAGE);
+      dirty.current = false;
+      const data = await api("demo", { preset });
       setAnswers(data.answers);
       setWorkspace({ ...emptyWorkspace, ...data.workspace });
       apply(data);
@@ -761,6 +781,42 @@ export default function Diagnostic() {
               );
             })}
           </div>
+          {isLocalDemo && (
+            <aside
+              className="diag-demo-lab col-span-full"
+              aria-label="Môi trường dữ liệu thử nghiệm"
+            >
+              <div>
+                <p className="diag-demo-kicker">CHỈ HIỂN THỊ Ở LOCALHOST</p>
+                <h2>Môi trường học sinh ảo</h2>
+                <p>
+                  Tạo một bài làm hoàn chỉnh để kiểm tra report, nhận xét và kế
+                  hoạch học. Dữ liệu này là giả lập và tách biệt với học viên
+                  thật.
+                </p>
+              </div>
+              <div className="diag-demo-actions">
+                <button
+                  disabled={busy}
+                  onClick={() => void startDemo("foundation")}
+                >
+                  Tạo học sinh 4.5
+                </button>
+                <button
+                  disabled={busy}
+                  onClick={() => void startDemo("intermediate")}
+                >
+                  Tạo học sinh 5.5
+                </button>
+                <button
+                  disabled={busy}
+                  onClick={() => void startDemo("advanced")}
+                >
+                  Tạo học sinh 6.5
+                </button>
+              </div>
+            </aside>
+          )}
           <div className="col-span-full border-t border-brand/15 pt-6 text-sm leading-relaxed text-ink/65">
             <p className="font-semibold text-brand">Lưu ý:</p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
@@ -1026,6 +1082,16 @@ export default function Diagnostic() {
                     Màn hình tối
                   </button>
                 </div>
+                {isLocalDemo && (
+                  <button
+                    type="button"
+                    className="diag-demo-quick"
+                    disabled={busy}
+                    onClick={() => void startDemo("intermediate")}
+                  >
+                    Tạo báo cáo học sinh ngẫu nhiên
+                  </button>
+                )}
               </aside>
             )}
             {notice && (
@@ -1559,99 +1625,55 @@ export default function Diagnostic() {
               </div>
             ))}
           </fieldset>
-          <footer className="diag-question-nav">
-            <div className="diag-nav-summary">
-              <span>
-                {totalAnswered}/53 câu đã trả lời · {workspace.bookmarks.length}{" "}
-                câu xem lại
-              </span>
-              <span>
-                <i className="diag-legend-answered" /> Đã trả lời{" "}
-                <i className="diag-legend-review" /> Xem lại
-              </span>
-            </div>
-            <div className="diag-section-navigator">
-              <button
-                className="diag-nav-arrow"
-                aria-label="Phần trước"
-                disabled={workspace.section === "Listening"}
-                onClick={() =>
-                  updateWorkspace((w) => ({
-                    ...w,
-                    section: sections[sections.indexOf(w.section) - 1],
-                  }))
-                }
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <div className="diag-nav-sections">
-                {sections.map((s) => (
-                  <section
-                    key={s}
-                    className={workspace.section === s ? "is-open" : ""}
-                  >
-                    <button
-                      className="diag-nav-section-title"
-                      onClick={() =>
-                        updateWorkspace((w) => ({ ...w, section: s }))
-                      }
-                    >
-                      <span>{s}</span>
-                      <span>
-                        {
-                          paper.questions.filter(
-                            (q) => q.section === s && answers[q.id]?.trim(),
-                          ).length
-                        }
-                        /{totals[s]}
-                      </span>
-                    </button>
-                    {workspace.section === s && (
-                      <div className="diag-nav-numbers">
-                        {paper.questions
-                          .filter((q) => q.section === s)
-                          .map((q) => (
-                            <button
-                              key={q.id}
-                              title={`${q.id}: ${answers[q.id]?.trim() ? "Đã trả lời" : "Chưa trả lời"}${workspace.bookmarks.includes(q.id) ? ", đánh dấu xem lại" : ""}`}
-                              aria-current={
-                                activeQuestion === q.id ? "true" : undefined
-                              }
-                              className={`diag-number ${answers[q.id]?.trim() ? "answered" : ""} ${workspace.bookmarks.includes(q.id) ? "review" : ""} ${activeQuestion === q.id ? "current" : ""}`}
-                              onClick={() => jump(q.id)}
-                            >
-                              {q.id.slice(1)}
-                            </button>
-                          ))}
-                      </div>
-                    )}
-                  </section>
-                ))}
-              </div>
-              <button
-                className="diag-nav-arrow"
-                aria-label="Phần tiếp theo"
-                disabled={workspace.section === "Grammar"}
-                onClick={() =>
-                  updateWorkspace((w) => ({
-                    ...w,
-                    section: sections[sections.indexOf(w.section) + 1],
-                  }))
-                }
-              >
-                <ChevronRight size={20} />
-              </button>
-              <button
-                className="diag-submit"
-                disabled={locked}
-                onClick={() => setSubmitDialog(true)}
-                aria-label="Nộp bài"
-                title="Nộp bài"
-              >
-                <Check size={26} strokeWidth={2.4} />
-              </button>
-            </div>
-          </footer>
+          <div className="diag-nav-summary">
+            <span>
+              {totalAnswered}/53 câu đã trả lời · {workspace.bookmarks.length}{" "}
+              câu xem lại
+            </span>
+            <span>
+              <i className="diag-legend-answered" /> Đã trả lời{" "}
+              <i className="diag-legend-review" /> Xem lại
+            </span>
+          </div>
+          <ExamQuestionNavigator
+            className="diag-question-nav"
+            sections={sections.map((section) => ({
+              id: section,
+              label: section,
+              answered: paper.questions.filter(
+                (q) => q.section === section && answers[q.id]?.trim(),
+              ).length,
+              total: totals[section],
+              questions: paper.questions
+                .filter((q) => q.section === section)
+                .map((q) => ({
+                  id: q.id,
+                  number: Number(q.id.slice(1)),
+                  answered: Boolean(answers[q.id]?.trim()),
+                  bookmarked: workspace.bookmarks.includes(q.id),
+                  active: activeQuestion === q.id,
+                })),
+            }))}
+            activeIndex={sections.indexOf(workspace.section)}
+            onSelectSection={(index) =>
+              updateWorkspace((w) => ({ ...w, section: sections[index] }))
+            }
+            onSelectQuestion={(question) => jump(question.id)}
+            onPrevious={() =>
+              updateWorkspace((w) => ({
+                ...w,
+                section: sections[sections.indexOf(w.section) - 1],
+              }))
+            }
+            onNext={() =>
+              updateWorkspace((w) => ({
+                ...w,
+                section: sections[sections.indexOf(w.section) + 1],
+              }))
+            }
+            onSubmit={() => setSubmitDialog(true)}
+            submitDisabled={locked}
+          />
           {selection && (
             <button
               style={{
@@ -1720,39 +1742,52 @@ export default function Diagnostic() {
       )}
       {stage === "result" && session?.result && paper && (
         <div className="diag-results">
-          <div className="diag-score-panel">
-            <div className="mb-5 flex items-center gap-2 text-leaf">
-              <Target size={15} />
-              <span className="text-xs font-semibold">Kết quả bài làm</span>
+          <div className="diag-report-header">
+            <div>
+              <p className="diag-report-kicker">KẾT QUẢ BÀI LÀM</p>
+              <h1>{session.profile.name}</h1>
+              <p className="diag-report-meta">
+                {new Date(session.startedAt).toLocaleString("vi-VN")} ·{" "}
+                {session.autoSubmitted
+                  ? "Bài đã được tự động nộp khi hết giờ."
+                  : "Đã nộp bài."}
+              </p>
             </div>
-            <p className="text-xl font-semibold text-white">
-              {session.profile.name}, đây là kết quả của bạn.
-            </p>
-            <p className="mt-2 text-xs text-white/55">
-              {new Date(session.startedAt).toLocaleString("vi-VN")} ·{" "}
-              {session.autoSubmitted
-                ? "Bài đã được tự động nộp khi hết giờ."
-                : "Đã nộp bài."}
-            </p>
-            <div className="my-7 grid grid-cols-3 divide-x divide-white/15">
-              {sections.map((s) => (
-                <div className="px-2 text-center" key={s}>
-                  <p className="text-xs font-semibold text-white/55">{s}</p>
-                  <p className="mt-2 font-mono text-2xl font-bold text-white md:text-4xl">
-                    {session.result!.scores[s]}
-                    <span className="text-base text-white/35">
-                      /{totals[s]}
-                    </span>
-                  </p>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm leading-relaxed text-white/65">
+            <p className="diag-report-disclaimer">
               Đánh giá sơ bộ theo các câu trong bài, chưa bao gồm Writing và
-              Speaking. Không quy đổi trực tiếp thành IELTS Overall.{" "}
-              {session.result.blanks > 0 &&
-                `${session.result.blanks} câu chưa trả lời.`}
+              Speaking.
             </p>
+          </div>
+          <div className="diag-score-grid">
+            {sections.map((s, index) => {
+              const Icon = [Headphones, BookOpen, PenLine][index];
+              const score = session.result!.scores[s];
+              const percent = Math.round((score / totals[s]) * 100);
+              return (
+                <article className="diag-score-card" key={s}>
+                  <div className="diag-score-card-top">
+                    <span className="diag-score-icon">
+                      <Icon size={20} />
+                    </span>
+                    <p>{s}</p>
+                    <strong>
+                      {score}
+                      <small>/{totals[s]}</small>
+                    </strong>
+                  </div>
+                  <span className="diag-score-track">
+                    <i style={{ width: `${percent}%` }} />
+                  </span>
+                  <p className="diag-score-caption">
+                    {score === 0
+                      ? "Chưa có câu trả lời đúng ở phần này."
+                      : score / totals[s] >= 0.7
+                        ? "Bạn đã có nền tảng tốt và có thể tiếp tục phát huy."
+                        : "Hãy ưu tiên củng cố các nội dung còn chưa vững."}
+                  </p>
+                </article>
+              );
+            })}
           </div>
           {notice && (
             <p role="alert" className="diag-notice">
@@ -1854,43 +1889,56 @@ export default function Diagnostic() {
             </button>
           </div>
           {
-            <div className={resultTab === "report" ? "" : "diag-print-only"}>
-              <h2 className="mb-5 text-2xl font-bold text-brand">
-                {session.result.areas.some((a) => a.level === 0)
-                  ? "Điểm mạnh & nội dung cần cải thiện"
-                  : "Điểm mạnh & nội dung nên củng cố"}
-              </h2>
+            <div
+              className={
+                resultTab === "report"
+                  ? "diag-feedback"
+                  : "diag-feedback diag-print-only"
+              }
+            >
+              <div className="diag-feedback-heading">
+                <h2>
+                  {session.result.areas.some((a) => a.level === 0)
+                    ? "Điểm mạnh & nội dung cần cải thiện"
+                    : "Điểm mạnh & nội dung nên củng cố"}
+                </h2>
+                <p>Chọn từng mục để xem nhận xét và gợi ý ôn tập.</p>
+              </div>
               {!session.result.areas.some((a) => a.level === 2) && (
-                <p className="mb-4">
+                <p className="diag-feedback-empty">
                   Chưa có nhóm ở mức Tốt. Bạn có thể bắt đầu từ nhóm có kết quả
                   cao nhất và củng cố từng nội dung bên dưới.
                 </p>
               )}
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="diag-feedback-list">
                 {session.result.areas.map((a) => (
-                  <article className="diag-panel" key={a.id}>
-                    <p className="text-xs font-semibold text-brand">
-                      {a.section} · {names[2 - a.level]}
-                    </p>
-                    <h3 className="mt-2 text-lg font-bold">{a.name}</h3>
-                    <p className="my-3 font-mono text-xl text-brand">
-                      {a.correct}/{a.total}
-                    </p>
-                    <p className="text-sm leading-relaxed text-ink/75">
-                      {a.feedback}
-                    </p>
-                    {a.id === "R_VOCABULARY_OVERALL" && (
-                      <p className="mt-2 text-xs">
-                        Nhận xét suy ra từ toàn bộ bài Reading, không phải điểm
-                        từ vựng độc lập.
-                      </p>
-                    )}
-                    {a.review.length > 0 && (
-                      <details className="mt-4 text-sm">
-                        <summary className="cursor-pointer text-brand">
-                          {a.review.filter((q) => q.blank).length} câu chưa trả
-                          lời · Nội dung xem lại
-                        </summary>
+                  <details className="diag-feedback-row" key={a.id}>
+                    <summary>
+                      <span className="diag-feedback-section">{a.section}</span>
+                      <span className="diag-feedback-title">
+                        <b>{a.name}</b>
+                        <small>{names[2 - a.level]}</small>
+                      </span>
+                      <strong className="diag-feedback-score">
+                        {a.correct}
+                        <small>/{a.total}</small>
+                      </strong>
+                      <span className="diag-feedback-preview">
+                        {a.feedback}
+                      </span>
+                      <span className="diag-feedback-chevron" aria-hidden>
+                        ⌄
+                      </span>
+                    </summary>
+                    <div className="diag-feedback-detail">
+                      <p>{a.feedback}</p>
+                      {a.id === "R_VOCABULARY_OVERALL" && (
+                        <p className="diag-feedback-note">
+                          Nhận xét suy ra từ toàn bộ bài Reading, không phải
+                          điểm từ vựng độc lập.
+                        </p>
+                      )}
+                      {a.review.length > 0 && (
                         <ul className="mt-2 space-y-2">
                           {a.review.map((q) => (
                             <li key={q.id}>
@@ -1898,9 +1946,9 @@ export default function Diagnostic() {
                             </li>
                           ))}
                         </ul>
-                      </details>
-                    )}
-                  </article>
+                      )}
+                    </div>
+                  </details>
                 ))}
               </div>
             </div>

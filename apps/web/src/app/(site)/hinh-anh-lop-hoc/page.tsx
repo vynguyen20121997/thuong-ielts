@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
-import { classroomMedia, type ClassroomCategory } from "../../../components/ClassroomGallery";
+import {
+  classroomMedia,
+  type ClassroomCategory,
+} from "../../../components/ClassroomGallery";
 import Reveal from "../../../components/Reveal";
 
 export const metadata: Metadata = {
@@ -8,7 +11,11 @@ export const metadata: Metadata = {
   description: "Thư viện hình ảnh các lớp học tại Thương Hồ's Class.",
 };
 
-const gallerySections: { category: ClassroomCategory; title: string; description: string }[] = [
+const gallerySections: {
+  category: ClassroomCategory;
+  title: string;
+  description: string;
+}[] = [
   {
     category: "offline",
     title: "Lớp Offline",
@@ -22,7 +29,8 @@ const gallerySections: { category: ClassroomCategory; title: string; description
   {
     category: "one-to-one",
     title: "Lớp 1-1",
-    description: "Khoảnh khắc luyện tập và đồng hành cá nhân hoá cùng học viên.",
+    description:
+      "Khoảnh khắc luyện tập và đồng hành cá nhân hoá cùng học viên.",
   },
 ];
 
@@ -38,24 +46,36 @@ export default function ClassroomGalleryPage() {
             Hình Ảnh Lớp Học
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink/65 md:text-lg">
-            Những giờ học tập trung, những buổi thảo luận sôi nổi và các khoảnh khắc đáng nhớ của học viên.
+            Những giờ học tập trung, những buổi thảo luận sôi nổi và các khoảnh
+            khắc đáng nhớ của học viên.
           </p>
         </Reveal>
 
         <div className="space-y-16 md:space-y-20">
           {gallerySections.map((section) => {
-            const mediaItems = classroomMedia.filter((media) => media.category === section.category);
+            const mediaItems = classroomMedia.filter(
+              (media) => media.category === section.category,
+            );
 
             return (
               <section key={section.category}>
                 <div className="mb-7 border-l-4 border-leaf pl-5 md:mb-9">
-                  <h2 className="font-serif text-3xl font-bold text-brand md:text-4xl">{section.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-ink/65 md:text-base">{section.description}</p>
+                  <h2 className="font-serif text-3xl font-bold text-brand md:text-4xl">
+                    {section.title}
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-ink/65 md:text-base">
+                    {section.description}
+                  </p>
                 </div>
 
                 <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
                   {mediaItems.map((media, index) => (
-                    <Reveal key={media.src} delay={(index % 6) * 0.035} y={18} className="mb-5 break-inside-avoid">
+                    <Reveal
+                      key={media.src}
+                      delay={(index % 6) * 0.035}
+                      y={18}
+                      className="mb-5 break-inside-avoid"
+                    >
                       <figure className="group overflow-hidden rounded-[22px] border border-black/5 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
                         {media.type === "video" ? (
                           <iframe
@@ -73,6 +93,11 @@ export default function ClassroomGalleryPage() {
                             loading={index < 6 ? "eager" : "lazy"}
                             className="h-auto w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
                           />
+                        )}
+                        {media.type === "image" && media.caption && (
+                          <figcaption className="border-t border-black/5 bg-white px-4 py-3 text-sm font-medium leading-relaxed text-brand">
+                            {media.caption}
+                          </figcaption>
                         )}
                       </figure>
                     </Reveal>

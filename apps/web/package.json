@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.11.3",
+    "@faker-js/faker": "^10.6.0",
     "@gsap/react": "^2.1.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@thuong-ielts/db": "*",
