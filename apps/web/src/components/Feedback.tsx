@@ -18,20 +18,32 @@ interface FeedbackProps {
   variant?: "preview" | "full";
 }
 
-// Preview: 11 thẻ để masonry ba cột kín hơn ở trang chủ.
-const PREVIEW_COUNT = 11;
 const BATCH = 12;
-const PREVIEW_EXCLUDED_IDS = new Set([
-  "fb-sr487-2024-3",
-  "fb-di-hoc-me-chiu-sao-noi-4",
-  "fb-ke-chien-thang-ielts-reading-9-0-97",
-]);
+
+// Carousel trang chủ chỉ hiển thị các review Facebook đã được chọn trước,
+// để các feedback mới bổ sung ở trang đầy đủ không tự động chen vào.
+const HOMEPAGE_REVIEW_IDS = [
+  "fb-kien-thuc-sau-ma-vui-2",
+  "fb-he-9-10-day-hay-8-10-cho-nhieu-tips-voi--102",
+  "fb-tiep-them-nhieu-nang-luong-tich-cuc-tren-98",
+  "fb-phuong-phap-de-hieu-va-xoi-thit-87",
+  "fb-co-giup-minh-dinh-huong-viec-hoc-ielts-r-89",
+  "fb-co-8-5-ielts-con-full-diem-trong-long-em-53",
+  "fb-co-day-sieu-hay-sieu-de-thuong-96",
+  "fb-la-mot-nguoi-vui-tinh-va-hoa-dong-co-la--76",
+  "fb-co-thuc-su-biet-hoc-sinh-can-gi-du-la-gi-88",
+  "fb-co-day-dan-kinh-nghiem-truyen-dat-nhung--95",
+  "fb-1-co-giao-tan-tam-va-sieu-de-thuong-xinh-1",
+] as const;
 
 export default function Feedback({ variant = "full" }: FeedbackProps) {
   const isPreview = variant === "preview";
   const reduce = useReducedMotion();
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
-  const [lightbox, setLightbox] = useState<{ url: string; subject: string } | null>(null);
+  const [lightbox, setLightbox] = useState<{
+    url: string;
+    subject: string;
+  } | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
@@ -56,8 +68,12 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
     };
   }, []);
 
-  const previewItems = feedbackItems.filter((item) => !PREVIEW_EXCLUDED_IDS.has(item.id));
-  const visible = isPreview ? previewItems.slice(0, PREVIEW_COUNT) : feedbackItems.slice(0, visibleCount);
+  const previewItems = HOMEPAGE_REVIEW_IDS.map((id) =>
+    feedbackItems.find((item) => item.id === id),
+  ).filter((item): item is FeedbackItem => Boolean(item));
+  const visible = isPreview
+    ? previewItems
+    : feedbackItems.slice(0, visibleCount);
   const previewColumns = [
     visible.filter((_, index) => index % 2 === 0),
     visible.filter((_, index) => index % 2 !== 0),
@@ -125,8 +141,12 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
               Từ Học Viên
             </h2>
             <p className="max-w-xl text-base leading-relaxed text-ink/70">
-              Những chia sẻ chân thành về <strong className="font-semibold text-brand">hành trình học tập, sự đồng hành sát sao</strong> và{" "}
-              <strong className="font-semibold text-brand">niềm vui</strong> khi từng bước tiến bộ.
+              Những chia sẻ chân thành về{" "}
+              <strong className="font-semibold text-brand">
+                hành trình học tập, sự đồng hành sát sao
+              </strong>{" "}
+              và <strong className="font-semibold text-brand">niềm vui</strong>{" "}
+              khi từng bước tiến bộ.
             </p>
           </Reveal>
         )}
@@ -160,11 +180,19 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                         <button
                           key={`${item.id}-${copyIndex}`}
                           type="button"
-                          onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
+                          onClick={() =>
+                            setLightbox({
+                              url: item.imageUrl,
+                              subject: item.subject,
+                            })
+                          }
                           className="feedback-card group w-full shrink-0 overflow-hidden rounded-[20px] border border-black/5 bg-white p-3 text-left shadow-sm transition-all duration-300 hover:shadow-xl cursor-zoom-in md:rounded-[24px] md:p-5"
                         >
                           <span className="mb-3 flex items-center gap-2 md:mb-4">
-                            <Quote size={15} className="shrink-0 fill-brand-deep text-brand-deep" />
+                            <Quote
+                              size={15}
+                              className="shrink-0 fill-brand-deep text-brand-deep"
+                            />
                             <span className="text-xs font-bold leading-tight tracking-wide text-brand-deep">
                               {item.subject}
                             </span>
@@ -195,7 +223,10 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 className="group inline-flex items-center gap-2 px-8 py-3.5 bg-brand hover:bg-brand-deep text-white text-sm font-semibold rounded-full transition-colors duration-300 shadow-md"
               >
                 <NavigationButtonLabel>Xem Thêm Cảm Nhận</NavigationButtonLabel>
-                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
               </Link>
             </div>
           </>
@@ -207,11 +238,17 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
                 <motion.button
                   key={item.id}
                   type="button"
-                  onClick={() => setLightbox({ url: item.imageUrl, subject: item.subject })}
+                  onClick={() =>
+                    setLightbox({ url: item.imageUrl, subject: item.subject })
+                  }
                   initial={reduce ? false : { opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.15 }}
-                  transition={{ duration: 0.5, delay: (i % BATCH) * 0.03, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 0.5,
+                    delay: (i % BATCH) * 0.03,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className="feedback-card group mb-5 block w-full break-inside-avoid text-left bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-brand/30 transition-all duration-300 cursor-zoom-in"
                 >
                   <div className="px-5 pt-5 pb-3">

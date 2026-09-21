@@ -188,27 +188,27 @@ export type ClassroomCategory = "offline" | "online" | "one-to-one";
 
 export const classroomVideos = [
   {
-    src: "https://drive.google.com/file/d/1ANMlzXbuAN1ugRBQdaXjn3TO26cXY9ue/preview",
+    src: "/videos/classroom/classroom-01.mp4",
     alt: "Video hoạt động lớp học trực tiếp",
     category: "offline" as const,
   },
   {
-    src: "https://drive.google.com/file/d/1Mdv3V2WWkfU7e9Nzv0uk0cs5ItSkAUWc/preview",
+    src: "/videos/classroom/classroom-02.mp4",
     alt: "Video khoảnh khắc học tập tại lớp",
     category: "offline" as const,
   },
   {
-    src: "https://drive.google.com/file/d/1sbHLKqQ0-lqSIqvtHu9t2QpLzkka0ibe/preview",
+    src: "/videos/classroom/classroom-03.mp4",
     alt: "Video hoạt động trao đổi của học viên",
     category: "offline" as const,
   },
   {
-    src: "https://drive.google.com/file/d/1fafov2P5wCXm7dDK5aDuYGk-R9uDWbNw/preview",
+    src: "/videos/classroom/classroom-04.mp4",
     alt: "Video không khí lớp học trực tiếp",
     category: "offline" as const,
   },
   {
-    src: "https://drive.google.com/file/d/1oj-8fh_dMiUbdM_ZEb8WDJb8LkNi7DLk/preview",
+    src: "/videos/classroom/classroom-online-01.mp4",
     alt: "Video buổi học Online cùng học viên",
     category: "online" as const,
   },
@@ -303,13 +303,13 @@ export default function ClassroomGallery() {
                 className="group basis-[88%] shrink-0 snap-center overflow-hidden rounded-[24px] border border-black/5 bg-white shadow-sm sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)]"
               >
                 {media.type === "video" ? (
-                  <iframe
+                  <video
                     src={media.src}
-                    title={media.alt}
-                    loading="lazy"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    className="aspect-[4/3] w-full border-0"
+                    aria-label={media.alt}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="aspect-[4/3] w-full bg-black object-cover"
                   />
                 ) : (
                   <img

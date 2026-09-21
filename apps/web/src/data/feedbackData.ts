@@ -699,4 +699,10 @@ export const feedbackItems: FeedbackItem[] = [
     date: "06/10/2024",
     isClassSummary: true,
   },
+  {
+    id: "fb-hai-huoc-tao-bau-khong-khi-sang-khoai-2026",
+    subject: "Hài hước & tạo bầu không khí sảng khoái",
+    imageUrl: "/images/feedback/hai-huoc-tao-bau-khong-khi-sang-khoai.jpg",
+    date: "19/09/2026",
+  },
 ];

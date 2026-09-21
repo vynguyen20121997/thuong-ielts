@@ -78,13 +78,13 @@ export default function ClassroomGalleryPage() {
                     >
                       <figure className="group overflow-hidden rounded-[22px] border border-black/5 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
                         {media.type === "video" ? (
-                          <iframe
+                          <video
                             src={media.src}
-                            title={media.alt}
-                            loading="lazy"
-                            allow="autoplay; fullscreen; picture-in-picture"
-                            allowFullScreen
-                            className="aspect-video w-full border-0"
+                            aria-label={media.alt}
+                            controls
+                            playsInline
+                            preload="metadata"
+                            className="aspect-video w-full bg-black object-cover"
                           />
                         ) : (
                           <img
