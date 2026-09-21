@@ -2,37 +2,6 @@ import Link from "next/link";
 import { ArrowRight, GraduationCap, QrCode, Mail } from "lucide-react";
 import NavigationButtonLabel from "./NavigationButtonLabel";
 
-function FacebookIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className={className}
-      fill="currentColor"
-    >
-      <path d="M13.6 21v-7.7h2.6l.4-3h-3V8.4c0-.9.3-1.5 1.6-1.5h1.7V4.2c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2H7.5v3h2.9V21h3.2Z" />
-    </svg>
-  );
-}
-
-function ZaloIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5.1 5.5A3.5 3.5 0 0 1 8.5 2h7A3.5 3.5 0 0 1 19 5.5v7A3.5 3.5 0 0 1 15.5 16h-4.3L7 20v-4.3a3.5 3.5 0 0 1-1.9-3.2v-7Z" />
-      <path d="M9 7.5h5.6L9.4 12.8H15" />
-    </svg>
-  );
-}
-
 /**
  * Footer theo Figma: nền xanh nhạt, 4 cột (thương hiệu / thông tin / khởi đầu
  * lộ trình / social), dòng dưới là copyright.
@@ -148,7 +117,11 @@ export default function Footer() {
                 aria-label="Facebook Thương Hồ's Class"
                 className="h-11 w-11 rounded-full bg-sage-3 flex items-center justify-center text-brand transition-colors hover:bg-leaf"
               >
-                <FacebookIcon className="h-[18px] w-[18px]" />
+                <img
+                  src="https://cdn.simpleicons.org/facebook/0D5D36"
+                  alt=""
+                  className="h-5 w-5 object-contain"
+                />
               </a>
               <a
                 href="https://www.threads.com/@thuongho.class?igshid=NTc4MTIwNjQ2YQ=="
@@ -170,7 +143,11 @@ export default function Footer() {
                 aria-label="Nhắn tin qua Zalo 0783836912"
                 className="h-11 w-11 rounded-full bg-sage-3 flex items-center justify-center text-brand transition-colors hover:bg-leaf"
               >
-                <ZaloIcon className="h-[19px] w-[19px]" />
+                <img
+                  src="https://cdn.simpleicons.org/zalo/0D5D36"
+                  alt=""
+                  className="h-5 w-5 object-contain"
+                />
               </a>
             </div>
           </div>
