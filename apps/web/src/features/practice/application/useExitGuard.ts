@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { NAV_CANCELLED } from "../../../components/NavigationBusy";
+
 /**
  * Chặn thoát khi đang làm bài.
  *
@@ -67,6 +69,9 @@ export function useExitGuard(active: boolean) {
 
       event.preventDefault();
       setPending(target);
+      // Báo cho lớp phủ chuyển trang biết cú bấm này không dẫn đi đâu cả. Không
+      // có dòng này thì nó che mất chính hộp thoại vừa hiện ra ở trên.
+      window.dispatchEvent(new Event(NAV_CANCELLED));
     };
 
     // Pha capture: chặn trước khi Next kịp nghe cú click và chuyển trang.

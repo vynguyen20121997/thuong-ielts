@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, ReactNode } from "react";
+import { Suspense, useEffect, useRef, ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Header from "./Header";
 import Footer from "./Footer";
 import LoadingScreen from "./LoadingScreen";
+import NavigationBusy from "./NavigationBusy";
 import { PageReadyProvider } from "./PageReady";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -56,6 +57,15 @@ export default function ClientShell({ children }: { children: ReactNode }) {
       <div className="relative min-h-screen bg-white text-ink antialiased selection:bg-green-600/20 selection:text-green-950">
         {/* Màn chờ đầu trang — đứng trên mọi thứ, kể cả header (z-50). */}
         <LoadingScreen />
+
+        {/*
+          Lớp phủ trong lúc chuyển trang. Bọc `Suspense` vì bên trong có
+          `useSearchParams()`: thiếu ranh giới này thì Next bắt cả cây con render
+          phía client, mà cây con ở đây là toàn bộ site.
+        */}
+        <Suspense fallback={null}>
+          <NavigationBusy />
+        </Suspense>
 
         {/* Immersive Editorial Border Frame */}
         <div className="fixed inset-0 pointer-events-none border-[12px] border-white/60 z-40" />
