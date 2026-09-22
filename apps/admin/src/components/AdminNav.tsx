@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   // đây là thứ cô mở, còn sửa trang chủ thì để lúc rảnh.
   { label: "Giao bài", href: "/lop/giao" },
   { label: "Lớp đang làm", href: "/lop" },
+  { label: "Kiểm tra nền", href: "/chan-doan" },
   { label: "Trang chủ (Hero)", href: "/hero" },
   { label: "Kết quả học viên", href: "/testimonials" },
   { label: "Cảm nhận học viên", href: "/feedbacks" },
