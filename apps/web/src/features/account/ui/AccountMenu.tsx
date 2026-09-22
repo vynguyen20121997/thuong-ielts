@@ -37,14 +37,21 @@ function initials(full: string): string {
   return (parts[parts.length - 1]?.[0] ?? "?").toUpperCase();
 }
 
-export default function AccountMenu({ compact = false }: { compact?: boolean }) {
+export default function AccountMenu({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
   const [account, setAccount] = useState<Account | null>(null);
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let alive = true;
-    fetch("/api/account/me")
+    // `no-store` ở cả hai đầu. Server đã gửi `Cache-Control: no-store`, nhưng
+    // chip này là thứ nói "bạn đang đăng nhập" — một câu trả lời cũ ở đây là
+    // học sinh tưởng mình bị đăng xuất, nên thà xin lại mỗi lần mở trang.
+    fetch("/api/account/me", { cache: "no-store" })
       .then((res) => res.json())
       .then((data: { student: Account | null }) => {
         if (alive) setAccount(data.student);
@@ -63,7 +70,8 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
     const onDown = (event: MouseEvent) => {
       if (!boxRef.current?.contains(event.target as Node)) setOpen(false);
     };
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setOpen(false);
+    const onKey = (event: KeyboardEvent) =>
+      event.key === "Escape" && setOpen(false);
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
     return () => {
@@ -100,7 +108,9 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
         <div className="flex items-center gap-2.5 px-4 py-2">
           {avatar}
           <span className="min-w-0">
-            <span className="block text-sm font-semibold text-ink truncate">{ten}</span>
+            <span className="block text-sm font-semibold text-ink truncate">
+              {ten}
+            </span>
             {account.targetBand && (
               <span className="block text-2xs text-ink/50">
                 Mục tiêu {account.targetBand.toFixed(1)}
@@ -165,7 +175,9 @@ export default function AccountMenu({ compact = false }: { compact?: boolean }) 
           className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-black/5 bg-white p-1.5 shadow-xl"
         >
           <div className="px-3 py-2.5 border-b border-black/5 mb-1">
-            <p className="text-sm font-semibold text-ink truncate">{account.name ?? ten}</p>
+            <p className="text-sm font-semibold text-ink truncate">
+              {account.name ?? ten}
+            </p>
             {account.targetBand && (
               <p className="text-2xs text-ink/50 mt-0.5">
                 Mục tiêu Overall {account.targetBand.toFixed(1)}
