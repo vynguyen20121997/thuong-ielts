@@ -23,10 +23,49 @@ import type {
 import HighlightableText from "../../practice/ui/HighlightableText";
 import ExamQuestionNavigator from "../../practice/ui/ExamQuestionNavigator";
 import AudioPlayer from "./AudioPlayer";
+import BusyOverlay from "../../../components/BusyOverlay";
 import StudyPlan from "./StudyPlan";
+import Roadmap from "./Roadmap";
+import Verdict from "./Verdict";
+import { buildRoadmap, roadmapToText } from "../domain/roadmap";
+import { buildVerdict, verdictToText } from "../domain/verdict";
+import {
+  DAILY_MINUTES,
+  EXAM_TIMINGS,
+  LEVELS,
+  NEEDS_MONTH,
+  NEEDS_SCORE,
+  PURPOSES,
+  TARGETS,
+  emptyProfile,
+} from "../domain/profile";
 import "./diagnostic.css";
 
 const sections: Section[] = ["Listening", "Reading", "Grammar"];
+/*
+  Highlight lưu theo `blockId`, mà blockId luôn bắt đầu bằng mã câu (L01, R07,
+  G13) hoặc `R-passage-…`. Chữ cái đầu đủ để biết vệt highlight thuộc phần nào,
+  không cần lưu thêm trường mới vào workspace.
+*/
+const blockSection = (blockId: string): Section | null =>
+  blockId.startsWith("L")
+    ? "Listening"
+    : blockId.startsWith("R")
+      ? "Reading"
+      : blockId.startsWith("G")
+        ? "Grammar"
+        : null;
+/*
+  Mở lớp phủ thì focus vào chính hộp thoại, không vào nút bên trong: `autoFocus`
+  trên nút làm trình duyệt cuộn lớp phủ xuống tới nút, và trên màn thấp thì
+  tiêu đề bị đẩy khỏi tầm nhìn (đo được scrollTop 111px, đỉnh hộp ở -92px).
+  React không áp `autoFocus` cho <div>, nên phải gọi tay qua ref.
+*/
+const focusDialog = (el: HTMLDivElement | null) => {
+  if (el && !el.contains(document.activeElement)) el.focus();
+};
+const clock = (n: number) =>
+  `${Math.floor(n / 60)}:${String(Math.floor(n % 60)).padStart(2, "0")}`;
 const totals = { Listening: 20, Reading: 13, Grammar: 20 };
 const names = ["Tốt", "Khá", "Cần cải thiện"];
 const emptyWorkspace: Workspace = {
@@ -38,13 +77,15 @@ const emptyWorkspace: Workspace = {
   scroll: {},
   issues: [],
 };
-const initialProfile: Profile = {
-  name: "",
-  email: "",
-  target: "",
-  purpose: "",
-};
+const initialProfile: Profile = emptyProfile;
 const STORAGE = "thuong-diagnostic-v1";
+/*
+  Token của lượt đã nộp gần nhất trên thiết bị này, giữ tách khỏi bản nháp.
+  Bản nháp (STORAGE) bị xoá mỗi khi bắt đầu lượt mới; nếu chỉ dựa vào nó thì
+  bấm "Làm lượt mới" rồi F5 là kết quả cũ biến mất khỏi máy, không còn đường
+  quay lại. Con trỏ này sống lâu hơn, nên hộp thoại chọn lượt hiện lại được.
+*/
+const DONE = STORAGE + "-last";
 const isLocalDemo = process.env.NODE_ENV === "development";
 type Draft = {
   token: string;
@@ -95,6 +136,13 @@ export default function Diagnostic() {
   } | null>(null);
   const [activeQuestion, setActiveQuestion] = useState("L01");
   const [resetPrompt, setResetPrompt] = useState(false);
+  /*
+    Lượt cũ ĐÃ NỘP tìm thấy trên thiết bị: hỏi trước khi mở, thay vì nhảy thẳng
+    vào bảng kết quả của lần trước. Chỉ hỏi ở đúng trường hợp đó — bài đang làm
+    dở phải vào tiếp không hỏi han (đặc tả §13: mở lại trước hạn thì tiếp tục
+    với thời gian còn lại), còn vào bằng đường dẫn cá nhân thì ý định đã rõ.
+  */
+  const [oldAttempt, setOldAttempt] = useState<Session | null>(null);
   const token = useRef(""),
     editor = useRef(""),
     draftLoaded = useRef(false),
@@ -103,8 +151,20 @@ export default function Diagnostic() {
     deadline = useRef(0),
     pendingSubmit = useRef(false),
     lastWarn = useRef(0);
+  const progressState = useRef<Record<string, boolean>>({});
   const latest = useRef({ answers, workspace, stage, profile });
   latest.current = { answers, workspace, stage, profile };
+  /*
+    Đổi màn thì kéo về đầu trang. Các màn cao thấp rất khác nhau: bảng kết quả
+    dài gấp đôi màn giới thiệu, nên bấm "Bắt đầu lượt mới" ở cuối bảng điểm là
+    rơi xuống chân màn giới thiệu — đo được nút "Bắt đầu kiểm tra" nằm ở top
+    -159px, tức học sinh nhìn thấy một trang trống và tưởng hỏng.
+    `window.scrollTo` vẫn ăn khi Lenis đang chạy (đã đo), không cần chạm vào
+    instance Lenis nằm trong ClientShell.
+  */
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [stage]);
   const local = useCallback(() => {
     try {
       localStorage.setItem(
@@ -132,9 +192,23 @@ export default function Diagnostic() {
     const data = await response.json();
     if (!response.ok)
       throw new Error(data.error ?? "Không kết nối được hệ thống.");
+    /*
+      Server luôn trả về token của lượt nó vừa tra/ tạo. Nhận lại token đó thay
+      vì tin vào token phía client: nếu hai bên lệch nhau thì lời gọi kế tiếp
+      tra không ra hàng và trả 404 — đúng lỗi đã gặp ở nút demo.
+    */
+    if (/^[a-f0-9]{64}$/.test(data.token ?? "")) token.current = data.token;
     return data as Session & { token: string };
   }
+  function rememberDone() {
+    try {
+      if (token.current) localStorage.setItem(DONE, token.current);
+    } catch {
+      /* Hết chỗ lưu thì chỉ mất lối tắt, kết quả vẫn nguyên trên server. */
+    }
+  }
   function apply(data: Session) {
+    progressState.current = data.progress ?? {};
     setSession(data);
     setPaper(data.paper);
     setProfile(data.profile);
@@ -143,6 +217,7 @@ export default function Diagnostic() {
     if (data.submittedAt) {
       setStage("result");
       pendingSubmit.current = false;
+      rememberDone();
     } else setStage("exam");
   }
   const sync = useRef<(submit?: boolean) => Promise<void>>(async () => {});
@@ -203,9 +278,15 @@ export default function Diagnostic() {
         const raw = localStorage.getItem(STORAGE);
         const draft: Draft | null = raw ? JSON.parse(raw) : null;
         const linkToken = location.hash.replace("#result=", "");
+        const done = localStorage.getItem(DONE) ?? "";
         token.current = /^[a-f0-9]{64}$/.test(linkToken)
           ? linkToken
-          : (draft?.token ?? "");
+          : /^[a-f0-9]{64}$/.test(draft?.token ?? "")
+            ? draft!.token
+            : /* Không còn nháp thì dò lại lượt đã nộp gần nhất để hỏi. */
+              /^[a-f0-9]{64}$/.test(done)
+              ? done
+              : "";
         const savedProfile = localStorage.getItem(STORAGE + "-profile");
         if (savedProfile) setProfile(JSON.parse(savedProfile));
         if (token.current) {
@@ -219,7 +300,10 @@ export default function Diagnostic() {
             ...(useDraft ? draft!.workspace : data.workspace),
           });
           dirty.current = !!useDraft;
-          apply(data);
+          if (data.submittedAt && !linkToken) {
+            rememberDone();
+            setOldAttempt(data);
+          } else apply(data);
           if (data.submittedAt && draft?.dirty)
             setNotice(
               "Một số thay đổi trên thiết bị chưa được đồng bộ trước hạn. Kết quả hiển thị chỉ tính đáp án đã được hệ thống chấp nhận.",
@@ -362,11 +446,69 @@ export default function Diagnostic() {
     },
     [],
   );
+  /*
+    Rời phần Listening mà audio còn chạy thì học sinh không thấy player nữa và
+    tưởng tiếng đã tắt. Giữ trạng thái phát ở đây để dựng một thanh thu gọn
+    trên header — vẫn một thẻ <audio> duy nhất, chỉ là điều khiển từ xa.
+  */
+  const [clearAsk, setClearAsk] = useState(false);
+  const [live, setLive] = useState<{
+    index: number;
+    current: number;
+    duration: number;
+  } | null>(null);
+  useEffect(() => {
+    const onState = (event: Event) => {
+      const d = (event as CustomEvent).detail as {
+        index: number;
+        playing: boolean;
+        current: number;
+        duration: number;
+      };
+      setLive((old) =>
+        d.playing
+          ? { index: d.index, current: d.current, duration: d.duration }
+          : old && old.index === d.index
+            ? null
+            : old,
+      );
+    };
+    window.addEventListener("diagnostic-audio-state", onState);
+    return () => window.removeEventListener("diagnostic-audio-state", onState);
+  }, []);
   const audioIssue = useCallback((issue: string) => {
     updateWorkspace((w) =>
       w.issues.includes(issue) ? w : { ...w, issues: [...w.issues, issue] },
     );
   }, []);
+  /*
+    Lộ trình và kế hoạch 4 tuần cùng ghi vào một bản đồ tiến độ, và mỗi lần
+    tick là ghi đè cả bản đồ. Nhận vào một ô chứ không nhận cả bản đồ: hai ô
+    tick liền nhau trong cùng một nhịp render đều đọc ra `progress` cũ, gửi
+    lên thì lần sau xoá mất lần trước. `progressState` giữ bản mới nhất ngay
+    trong lúc gọi, không chờ React render lại.
+  */
+  /*
+    Đổi thời lượng tự học: chia lại khối lượng mỗi buổi và co giãn lộ trình,
+    KHÔNG đụng tới điểm hay nhận xét — điểm nằm trong `result` đã chấm xong.
+  */
+  function setDailyMinutes(dailyMinutes: number) {
+    setProfile((p) => ({ ...p, dailyMinutes }));
+    setSession((s) =>
+      s ? { ...s, profile: { ...s.profile, dailyMinutes } } : s,
+    );
+    void api("study-time", { dailyMinutes }).catch(() =>
+      setNotice("Chưa lưu được thời lượng học. Kiểm tra kết nối rồi chọn lại."),
+    );
+  }
+  function saveProgress(key: string, value: boolean) {
+    const progress = { ...progressState.current, [key]: value };
+    progressState.current = progress;
+    setSession((s) => (s ? { ...s, progress } : s));
+    void api("progress", { progress }).catch(() =>
+      setNotice("Chưa lưu được tiến độ. Kiểm tra kết nối rồi đánh dấu lại."),
+    );
+  }
   async function start() {
     setBusy(true);
     setMessage("");
@@ -631,6 +773,9 @@ export default function Diagnostic() {
     }
   }
   const totalAnswered = Object.values(answers).filter((a) => a.trim()).length;
+  const sectionHighlights = workspace.highlights.filter(
+    (h) => blockSection(h.blockId) === workspace.section,
+  ).length;
   const selectedHighlight =
     selection &&
     workspace.highlights.some(
@@ -661,13 +806,18 @@ export default function Diagnostic() {
           (listeningPart === 1 && q.id <= "L10") ||
           (listeningPart === 2 && q.id >= "L11")),
     ) ?? [];
-  const formField = (key: keyof Profile, label: string, options?: string[]) => (
+  const formField = (
+    key: keyof Profile,
+    label: string,
+    options?: readonly string[],
+    extra?: { optional?: boolean; type?: string; hint?: string },
+  ) => (
     <label className="grid gap-2 text-sm font-semibold">
       {label}
       {options ? (
         <select
           className="diag-input"
-          required
+          required={!extra?.optional}
           value={String(profile[key] ?? "")}
           onChange={(e) => setProfile((p) => ({ ...p, [key]: e.target.value }))}
         >
@@ -679,11 +829,14 @@ export default function Diagnostic() {
       ) : (
         <input
           className="diag-input"
-          required
-          type={key === "email" ? "email" : "text"}
+          required={!extra?.optional}
+          type={extra?.type ?? (key === "email" ? "email" : "text")}
           value={String(profile[key] ?? "")}
           onChange={(e) => setProfile((p) => ({ ...p, [key]: e.target.value }))}
         />
+      )}
+      {extra?.hint && (
+        <span className="text-2xs font-normal text-ink/60">{extra.hint}</span>
       )}
     </label>
   );
@@ -692,6 +845,17 @@ export default function Diagnostic() {
       data-lenis-prevent={stage === "exam" ? true : undefined}
       className={`diagnostic ${stage === "exam" ? "diagnostic-exam" : ""} ${stage === "exam" ? `diag-theme-${examTheme} diag-font-${fontFamily}` : ""}`}
     >
+      {/*
+        Tạo lượt làm là một cú POST ghi cả đề vào DB — đo ở máy dev mất khoảng
+        2,3 giây. Trước đây chỉ có chữ trên nút đổi thành "Đang tạo lượt làm…",
+        mà nút ấy thường nằm ngoài tầm nhìn sau khi cuộn, nên màn hình trông
+        như đứng im. `BusyOverlay` chỉ hiện sau 180ms nên mạng nhanh không thấy.
+      */}
+      <BusyOverlay
+        open={busy}
+        label="Đang tạo lượt làm…"
+        hint="Giữ trang này mở, sắp vào bài."
+      />
       {stage !== "exam" && stage !== "instructions" && (
         <div className="diag-intro-header">
           <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
@@ -843,23 +1007,102 @@ export default function Diagnostic() {
           <div className="grid gap-5">
             {formField("name", "Họ và tên *")}
             {formField("email", "Email *")}
-            {formField("target", "Mục tiêu *", [
-              "Chưa xác định",
-              "5.0",
-              "5.5",
-              "6.0",
-              "6.5",
-              "7.0",
-              "7.5",
-              "8.0",
-              "8.5+",
-            ])}
-            {formField("purpose", "Mục đích học IELTS *", [
-              "Nộp thi đại học",
-              "Đi du học",
-              "Đi xin việc",
-              "Khác",
-            ])}
+            {formField("phone", "Số điện thoại", undefined, {
+              optional: true,
+              type: "tel",
+            })}
+            {formField("level", "Trình độ hiện tại *", LEVELS)}
+            {/*
+              Điểm IELTS cũ chỉ hiện khi học sinh tự nhận đã thi. Đây là thông
+              tin tự khai, không tham gia chấm bài — nói rõ để không ai tưởng
+              khai điểm cao thì bài dễ hơn.
+            */}
+            {profile.level === NEEDS_SCORE && (
+              <div className="grid gap-5 md:grid-cols-2">
+                {formField("ieltsScore", "Điểm IELTS gần nhất", undefined, {
+                  optional: true,
+                  hint: "Tự khai, không ảnh hưởng kết quả bài kiểm tra.",
+                })}
+                {formField("ieltsDate", "Thời điểm thi", undefined, {
+                  optional: true,
+                  type: "month",
+                })}
+              </div>
+            )}
+            {formField("target", "Mục tiêu *", TARGETS)}
+            {formField("purpose", "Mục đích học IELTS *", PURPOSES)}
+            {formField("examTiming", "Thời gian dự kiến thi *", EXAM_TIMINGS)}
+            {profile.examTiming === NEEDS_MONTH &&
+              formField("examMonth", "Tháng/năm dự kiến thi *", undefined, {
+                type: "month",
+              })}
+            <label className="grid gap-2 text-sm font-semibold">
+              Bạn có thể dành bao nhiêu thời gian tự học mỗi ngày? *
+              <select
+                className="diag-input"
+                required
+                value={String(profile.dailyMinutes ?? "")}
+                onChange={(e) =>
+                  setProfile((p) => ({
+                    ...p,
+                    dailyMinutes: Number(e.target.value),
+                  }))
+                }
+              >
+                <option value="">Chọn một mục</option>
+                {DAILY_MINUTES.map((o) => (
+                  <option key={o.label} value={o.minutes}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <span className="text-2xs font-normal text-ink/60">
+                Chưa rõ thì kế hoạch lấy mặc định 30 phút/ngày, 6 ngày/tuần.
+              </span>
+            </label>
+          </div>
+          <div className="mt-6 grid gap-3 border-t border-brand/10 pt-5 text-sm">
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                required
+                className="mt-1 h-5 w-5 shrink-0 accent-brand"
+                checked={!!profile.consent}
+                onChange={(e) =>
+                  setProfile((p) => ({ ...p, consent: e.target.checked }))
+                }
+              />
+              <span>
+                Tôi đồng ý cho Thương Hồ’s Class lưu thông tin và kết quả bài
+                làm để chấm bài, tạo báo cáo và kế hoạch học.{" "}
+                <Link
+                  href="/kiem-tra-nen-tang-ielts/bao-mat"
+                  target="_blank"
+                  className="text-brand underline"
+                >
+                  Chính sách bảo mật
+                </Link>
+                .
+              </span>
+            </label>
+            {/*
+              Nhận tư vấn là lựa chọn RIÊNG và không tích sẵn: xem kết quả không
+              được đi kèm điều kiện phải đồng ý nhận quảng cáo.
+            */}
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                className="mt-1 h-5 w-5 shrink-0 accent-brand"
+                checked={!!profile.contactOptIn}
+                onChange={(e) =>
+                  setProfile((p) => ({ ...p, contactOptIn: e.target.checked }))
+                }
+              />
+              <span>
+                Tôi muốn nhận tư vấn lộ trình và thông tin khóa học. Không chọn
+                mục này vẫn xem được đầy đủ kết quả.
+              </span>
+            </label>
           </div>
           <div className="mt-7 flex gap-3">
             <button
@@ -1021,8 +1264,89 @@ export default function Diagnostic() {
                 </Link>
               </div>
             </div>
+            {live && workspace.section !== "Listening" && (
+              <div className="diag-live-audio" role="status">
+                <b>Đang phát · Part {live.index + 1}</b>
+                <span className="diag-live-time">
+                  {clock(live.current)} / {clock(live.duration)}
+                </span>
+                <button
+                  type="button"
+                  className="diag-secondary"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("diagnostic-audio", { detail: -1 }),
+                    )
+                  }
+                >
+                  Tạm dừng
+                </button>
+                <button
+                  type="button"
+                  className="diag-secondary"
+                  onClick={() =>
+                    updateWorkspace((w) => ({ ...w, section: "Listening" }))
+                  }
+                >
+                  Về phần nghe
+                </button>
+              </div>
+            )}
             <div className="diag-exam-meta">
               <span role="status">{saveStatus}</span>
+              <span className="diag-exam-progress">
+                {sections.map((s) => (
+                  <span key={s}>
+                    {s}{" "}
+                    <b>
+                      {
+                        paper.questions.filter(
+                          (q) => q.section === s && answers[q.id]?.trim(),
+                        ).length
+                      }
+                      /{totals[s]}
+                    </b>
+                  </span>
+                ))}
+              </span>
+              {/*
+                Xoá highlight là thao tác không hoàn lại nên phải hỏi, nhưng
+                hỏi bằng lớp phủ thì che mất câu đang làm — dùng xác nhận tại
+                chỗ ngay trên thanh.
+              */}
+              {sectionHighlights > 0 &&
+                (clearAsk ? (
+                  <span className="diag-clear-ask">
+                    Xoá {sectionHighlights} vệt highlight ở phần{" "}
+                    {workspace.section}?
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateWorkspace((w) => ({
+                          ...w,
+                          highlights: w.highlights.filter(
+                            (h) =>
+                              blockSection(h.blockId) !== workspace.section,
+                          ),
+                        }));
+                        setClearAsk(false);
+                      }}
+                    >
+                      Xoá
+                    </button>
+                    <button type="button" onClick={() => setClearAsk(false)}>
+                      Giữ lại
+                    </button>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    className="diag-clear-highlights"
+                    onClick={() => setClearAsk(true)}
+                  >
+                    Xoá highlight phần này
+                  </button>
+                ))}
               <label>
                 <input
                   type="checkbox"
@@ -1690,10 +2014,12 @@ export default function Diagnostic() {
             </button>
           )}
           {submitDialog && (
-            <div className="diag-modal">
+            <div className="diag-modal" data-lenis-prevent>
               <div
                 role="dialog"
                 aria-modal="true"
+                tabIndex={-1}
+                ref={focusDialog}
                 aria-label="Xác nhận nộp bài"
                 className="diag-panel max-w-lg"
               >
@@ -1719,7 +2045,6 @@ export default function Diagnostic() {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <button
-                    autoFocus
                     className="diag-secondary"
                     onClick={() => setSubmitDialog(false)}
                   >
@@ -1802,9 +2127,11 @@ export default function Diagnostic() {
                 onClick={() => setResultTab(t)}
               >
                 {
-                  ["Nhận xét chi tiết", "Đáp án & lời giải", "Kế hoạch 4 tuần"][
-                    i
-                  ]
+                  [
+                    "Nhận xét chi tiết",
+                    "Đáp án & lời giải",
+                    "Lộ trình & kế hoạch",
+                  ][i]
                 }
               </button>
             ))}
@@ -1832,7 +2159,18 @@ export default function Diagnostic() {
                       "\n" +
                       a.review.map((q) => q.id + ": " + q.text).join("\n"),
                   ),
-                  "KẾ HOẠCH TỰ HỌC 4 TUẦN",
+                  ...(() => {
+                    const roadmap = buildRoadmap(
+                      report,
+                      session.profile,
+                      new Date(session.startedAt),
+                    );
+                    return [
+                      verdictToText(buildVerdict(report, roadmap)),
+                      ...roadmapToText(roadmap),
+                    ];
+                  })(),
+                  "KẾ HOẠCH TỰ HỌC 4 TUẦN ĐẦU",
                   ...Array.from(
                     document.querySelectorAll("[data-study-plan] section"),
                   ).map((s) =>
@@ -1896,13 +2234,23 @@ export default function Diagnostic() {
                   : "diag-feedback diag-print-only"
               }
             >
+              <Verdict
+                report={session.result}
+                profile={profile}
+                startedAt={session.startedAt}
+              />
               <div className="diag-feedback-heading">
-                <h2>
-                  {session.result.areas.some((a) => a.level === 0)
-                    ? "Điểm mạnh & nội dung cần cải thiện"
-                    : "Điểm mạnh & nội dung nên củng cố"}
-                </h2>
-                <p>Chọn từng mục để xem nhận xét và gợi ý ôn tập.</p>
+                {/*
+                  Phần tổng hợp 3+3 đã đứng ngay trên, nên tiêu đề ở đây phải
+                  nói đúng vai của danh sách: đủ cả 16 nhóm, không phải một bản
+                  "điểm mạnh & điểm yếu" thứ hai.
+                */}
+                <h2>Chi tiết từng nhóm nội dung</h2>
+                <p>
+                  Đủ {session.result.areas.length} nhóm. Trong mỗi kỹ năng, nhóm
+                  yếu nhất nằm trên cùng. Chọn từng mục để xem nhận xét và gợi ý
+                  ôn tập.
+                </p>
               </div>
               {!session.result.areas.some((a) => a.level === 2) && (
                 <p className="diag-feedback-empty">
@@ -1910,46 +2258,85 @@ export default function Diagnostic() {
                   cao nhất và củng cố từng nội dung bên dưới.
                 </p>
               )}
-              <div className="diag-feedback-list">
-                {session.result.areas.map((a) => (
-                  <details className="diag-feedback-row" key={a.id}>
-                    <summary>
-                      <span className="diag-feedback-section">{a.section}</span>
-                      <span className="diag-feedback-title">
-                        <b>{a.name}</b>
-                        <small>{names[2 - a.level]}</small>
-                      </span>
-                      <strong className="diag-feedback-score">
-                        {a.correct}
-                        <small>/{a.total}</small>
-                      </strong>
-                      <span className="diag-feedback-preview">
-                        {a.feedback}
-                      </span>
-                      <span className="diag-feedback-chevron" aria-hidden>
-                        ⌄
-                      </span>
-                    </summary>
-                    <div className="diag-feedback-detail">
-                      <p>{a.feedback}</p>
-                      {a.id === "R_VOCABULARY_OVERALL" && (
-                        <p className="diag-feedback-note">
-                          Nhận xét suy ra từ toàn bộ bài Reading, không phải
-                          điểm từ vựng độc lập.
-                        </p>
-                      )}
-                      {a.review.length > 0 && (
-                        <ul className="mt-2 space-y-2">
-                          {a.review.map((q) => (
-                            <li key={q.id}>
-                              <b>{q.id}</b>: {q.text}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </details>
-                ))}
+              {/*
+                Chia theo ba kỹ năng, đúng cách học sinh nghĩ về bài thi và
+                khớp ba thẻ điểm ngay phía trên. Chỉ là cách BÀY: điểm, mức và
+                nhận xét vẫn lấy nguyên từ `result.areas`, không tính lại gì.
+              */}
+              <div className="diag-feedback-cols">
+                {sections.map((s) => {
+                  const group = session.result!.areas.filter(
+                    (a) => a.section === s,
+                  );
+                  return (
+                    <section className="diag-feedback-col" key={s}>
+                      <header>
+                        <b>{s}</b>
+                        <strong>
+                          {session.result!.scores[s]}
+                          <small>/{totals[s]}</small>
+                        </strong>
+                      </header>
+                      {[...group]
+                        .sort(
+                          (a, b) =>
+                            a.correct / a.total - b.correct / b.total ||
+                            b.total - a.total,
+                        )
+                        .map((a) => (
+                          <details className="diag-feedback-row" key={a.id}>
+                            <summary>
+                              <span className="diag-feedback-title">
+                                <b>{a.name}</b>
+                                <strong className="diag-feedback-score">
+                                  {a.correct}
+                                  <small>/{a.total}</small>
+                                </strong>
+                              </span>
+                              <span
+                                className="diag-feedback-track"
+                                data-level={a.level}
+                              >
+                                <i
+                                  style={{
+                                    width: `${Math.round((a.correct / a.total) * 100)}%`,
+                                  }}
+                                />
+                              </span>
+                              <span className="diag-feedback-meta">
+                                <small>{names[2 - a.level]}</small>
+                                <span
+                                  className="diag-feedback-chevron"
+                                  aria-hidden
+                                >
+                                  ⌄
+                                </span>
+                              </span>
+                            </summary>
+                            <div className="diag-feedback-detail">
+                              <p>{a.feedback}</p>
+                              {a.id === "R_VOCABULARY_OVERALL" && (
+                                <p className="diag-feedback-note">
+                                  Nhận xét suy ra từ toàn bộ bài Reading, không
+                                  phải điểm từ vựng độc lập.
+                                </p>
+                              )}
+                              {a.review.length > 0 && (
+                                <ul className="diag-feedback-review">
+                                  {a.review.map((q) => (
+                                    <li key={q.id}>
+                                      <b>{q.id}</b>
+                                      <span>{q.text}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          </details>
+                        ))}
+                    </section>
+                  );
+                })}
               </div>
             </div>
           }
@@ -2040,23 +2427,29 @@ export default function Diagnostic() {
           )}
           {
             <div className={resultTab === "plan" ? "" : "diag-print-only"}>
-              <div className="mb-5">
+              <Roadmap
+                report={session.result}
+                profile={profile}
+                startedAt={session.startedAt}
+                rulesVersion={session.rulesVersion}
+                progress={session.progress}
+                onProgress={saveProgress}
+              />
+              <div className="mb-5 mt-12 border-t border-brand/15 pt-8">
                 <h2 className="text-2xl font-bold text-brand">
-                  Kế hoạch tự học 4 tuần
+                  Bốn tuần đầu, chi tiết từng buổi
                 </h2>
+                <p className="mt-2 text-ink/70">
+                  Phần này chỉ dựa trên các câu bạn vừa làm, để bắt đầu chặng
+                  đầu tiên ngay hôm nay. Lộ trình dài tới mục tiêu nằm bên trên.
+                </p>
               </div>
               <StudyPlan
                 report={session.result}
                 profile={profile}
                 progress={session.progress}
-                onProgress={(progress) => {
-                  setSession((s) => (s ? { ...s, progress } : s));
-                  void api("progress", { progress }).catch(() =>
-                    setNotice(
-                      "Chưa lưu được tiến độ kế hoạch. Kiểm tra kết nối rồi đánh dấu lại.",
-                    ),
-                  );
-                }}
+                onProgress={saveProgress}
+                onDailyMinutes={setDailyMinutes}
               />
             </div>
           }
@@ -2082,12 +2475,77 @@ export default function Diagnostic() {
           </div>
         </div>
       )}
-      {resetPrompt && (
-        <div className="diag-modal">
+      {/*
+        Trên thiết bị này đã có một lượt đã nộp. Hỏi trước, vì hai ý định rất
+        khác nhau: xem lại kết quả cũ, hay làm lại từ đầu. Nhảy thẳng vào bảng
+        điểm của lần trước làm người mới tưởng đó là bài mình vừa làm.
+      */}
+      {oldAttempt && (
+        <div className="diag-modal" data-lenis-prevent>
           <div
             className="diag-panel max-w-lg"
             role="dialog"
             aria-modal="true"
+            tabIndex={-1}
+            ref={focusDialog}
+            aria-label="Đã có lượt làm trước đó"
+          >
+            <h2 className="text-xl font-bold text-brand">
+              Bạn đã làm bài này rồi
+            </h2>
+            <p className="mt-4 text-sm text-ink/70">
+              {oldAttempt.profile.name} ·{" "}
+              {new Date(oldAttempt.submittedAt!).toLocaleString("vi-VN")}
+              {oldAttempt.autoSubmitted && " · tự nộp khi hết giờ"}
+            </p>
+            {oldAttempt.result && (
+              <ul className="diag-old-scores">
+                {sections.map((s) => (
+                  <li key={s}>
+                    <span>{s}</span>
+                    <b>
+                      {oldAttempt.result!.scores[s]}
+                      <small>/{totals[s]}</small>
+                    </b>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="my-5 text-sm">
+              Làm lượt mới không xoá kết quả cũ: chừng nào chưa bắt đầu lượt
+              mới, mở lại trang là hộp thoại này hiện lên để bạn chọn lần nữa.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                className="diag-primary"
+                onClick={() => {
+                  apply(oldAttempt);
+                  setOldAttempt(null);
+                }}
+              >
+                Xem lại kết quả cũ
+              </button>
+              <button
+                className="diag-secondary"
+                onClick={() => {
+                  setOldAttempt(null);
+                  newAttempt();
+                }}
+              >
+                Làm lượt mới
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {resetPrompt && (
+        <div className="diag-modal" data-lenis-prevent>
+          <div
+            className="diag-panel max-w-lg"
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            ref={focusDialog}
             aria-label="Bắt đầu lượt mới"
           >
             <h2 className="text-xl font-bold text-brand">Bắt đầu lượt mới?</h2>
@@ -2098,7 +2556,6 @@ export default function Diagnostic() {
             <div className="flex gap-3">
               <button
                 className="diag-secondary"
-                autoFocus
                 onClick={() => setResetPrompt(false)}
               >
                 Quay lại lưu báo cáo

@@ -53,6 +53,12 @@
   --color-mist: #F3F4EF;
   --color-mist-2: #F0F2EC;
   --color-mist-3: #F7F8F1;
+  /* Màu cảnh báo/ưu tiên. Token hoá thay vì rải hex: bảng nhận xét và lộ
+     trình đều cần một sắc "chưa đạt" đọc được trên nền sáng, và đây là mục
+     CLAUDE.md đã ghi là còn thiếu. Cam đất 4.9:1 trên trắng. */
+  --color-warn: #B45309;
+  --color-warn-soft: #FDF6EE;
+
   --color-sage: #EDEFE8;
   --color-sage-2: #E4EDDE;
   --color-sage-3: #DCE8D5;
