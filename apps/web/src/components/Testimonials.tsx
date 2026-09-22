@@ -87,7 +87,24 @@ function scoreKey(score: string): number {
   return m ? Number(m[1]) : 0;
 }
 
-export default function Testimonials({ variant = "full" }: TestimonialsProps) {
+
+/**
+ * `initialItems` = dữ liệu server đã lấy sẵn. Có nó thì component KHÔNG fetch
+ * nữa và render đủ nội dung ngay từ khung hình đầu.
+ *
+ * Vì sao quan trọng: trang này trước đây luôn render rỗng rồi mới gọi API, nên
+ * hiệu ứng vào trang chạy trên một cái khung trống, tới lúc dữ liệu về thì nội
+ * dung nhảy vào giữa chừng. Đẩy việc lấy dữ liệu lên server thì Next giữ
+ * nguyên trang CŨ cho tới khi có dữ liệu — không có khung rỗng nào để nhìn, và
+ * hiệu ứng vào trang chạy đúng một lần trên nội dung thật.
+ *
+ * Vẫn giữ nhánh tự fetch: chỗ khác còn dùng component này mà không có server
+ * component ở trên (ví dụ khối xem trước ở trang chủ).
+ */
+export default function Testimonials({
+  variant = "full",
+  initialItems,
+}: TestimonialsProps & { initialItems?: ExtendedTestimonialItem[] }) {
   const isPreview = variant === "preview";
   const shouldReduceMotion = useReducedMotion();
 
@@ -100,10 +117,13 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
 
-  const [testimonials, setTestimonials] = useState<ExtendedTestimonialItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [testimonials, setTestimonials] = useState<ExtendedTestimonialItem[]>(
+    initialItems ?? [],
+  );
+  const [isLoading, setIsLoading] = useState(!initialItems);
 
   useEffect(() => {
+    if (initialItems) return;
     let cancelled = false;
     fetch("/api/testimonials")
       .then((res) => {
@@ -123,7 +143,7 @@ export default function Testimonials({ variant = "full" }: TestimonialsProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialItems]);
 
   // Sort newest-first by year/date
   const sorted = useMemo(

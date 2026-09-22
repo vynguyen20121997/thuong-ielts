@@ -36,7 +36,24 @@ const HOMEPAGE_REVIEW_IDS = [
   "fb-1-co-giao-tan-tam-va-sieu-de-thuong-xinh-1",
 ] as const;
 
-export default function Feedback({ variant = "full" }: FeedbackProps) {
+
+/**
+ * `initialItems` = dữ liệu server đã lấy sẵn. Có nó thì component KHÔNG fetch
+ * nữa và render đủ nội dung ngay từ khung hình đầu.
+ *
+ * Vì sao quan trọng: trang này trước đây luôn render rỗng rồi mới gọi API, nên
+ * hiệu ứng vào trang chạy trên một cái khung trống, tới lúc dữ liệu về thì nội
+ * dung nhảy vào giữa chừng. Đẩy việc lấy dữ liệu lên server thì Next giữ
+ * nguyên trang CŨ cho tới khi có dữ liệu — không có khung rỗng nào để nhìn, và
+ * hiệu ứng vào trang chạy đúng một lần trên nội dung thật.
+ *
+ * Vẫn giữ nhánh tự fetch: chỗ khác còn dùng component này mà không có server
+ * component ở trên (ví dụ khối xem trước ở trang chủ).
+ */
+export default function Feedback({
+  variant = "full",
+  initialItems,
+}: FeedbackProps & { initialItems?: FeedbackItem[] }) {
   const isPreview = variant === "preview";
   const reduce = useReducedMotion();
   const [visibleCount, setVisibleCount] = useState<number>(BATCH);
@@ -46,10 +63,11 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
   } | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>(initialItems ?? []);
+  const [isLoading, setIsLoading] = useState(!initialItems);
 
   useEffect(() => {
+    if (initialItems) return;
     let cancelled = false;
     fetch("/api/feedbacks")
       .then((res) => {
@@ -66,7 +84,7 @@ export default function Feedback({ variant = "full" }: FeedbackProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initialItems]);
 
   const previewItems = HOMEPAGE_REVIEW_IDS.map((id) =>
     feedbackItems.find((item) => item.id === id),
