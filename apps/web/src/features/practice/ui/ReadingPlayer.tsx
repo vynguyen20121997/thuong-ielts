@@ -12,6 +12,7 @@ import type { ReadingPaper } from "../domain/types";
 import { useAnnotations } from "../application/useAnnotations";
 import { useExitGuard } from "../application/useExitGuard";
 import { highlightsFor } from "../domain/annotations";
+import BusyOverlay from "../../../components/BusyOverlay";
 import ExitWarningDialog from "./ExitWarningDialog";
 import HighlightableText from "./HighlightableText";
 import PaperQuestion from "./PaperQuestion";
@@ -375,6 +376,14 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
         onStay={exit.stay}
         onLeave={exit.leave}
         detail={`Đồng hồ vẫn đang chạy. Thoát bây giờ thì ${session.answeredCount}/${session.totalQuestions} câu đã điền sẽ mất và bài không được chấm.`}
+      />
+
+      {/* Nộp xong là hết lượt, nên chặn luôn cả phòng thi trong lúc chờ server
+          chấm — gõ thêm lúc này không vào đâu cả, xem chú thích ở BusyOverlay. */}
+      <BusyOverlay
+        open={session.status === "submitting"}
+        label="Đang chấm bài…"
+        hint="Đừng đóng tab, kết quả hiện ngay sau đây."
       />
     </div>
   );

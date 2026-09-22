@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { AlertTriangle, ArrowRight, Loader2, MessageCircle, Phone } from "lucide-react";
 
+import BusyOverlay from "../../../components/BusyOverlay";
 import { OTP_LENGTH } from "../domain/otp";
 import { formatPhone, normalizePhone } from "../domain/types";
 
@@ -29,7 +30,26 @@ export default function LoginPanel({
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  /**
+   * Việc đang chạy, viết sẵn thành câu — `null` là rảnh. Cố ý không phải
+   * boolean kèm một biến nhãn riêng: hai state cho cùng một sự thật thì sẽ có
+   * ngày nút quay tít mà lớp phủ ghi nhãn của lần bấm trước. Một nguồn thôi.
+   */
+  const [busy, setBusy] = useState<string | null>(null);
+
+  /*
+   * Ba nút OAuth rời khỏi trang này, nên `busy` cố ý không được dọn — trang
+   * đang đi thì lớp phủ phải ở lại. Nhưng bấm Back thì Safari/Firefox dựng lại
+   * trang từ bfcache nguyên trạng, tức là nguyên cả lớp phủ đang chặn. Sự kiện
+   * duy nhất bắn ra trong trường hợp đó là `pageshow` với `persisted = true`.
+   */
+  useEffect(() => {
+    const onShow = (event: PageTransitionEvent) => {
+      if (event.persisted) setBusy(null);
+    };
+    window.addEventListener("pageshow", onShow);
+    return () => window.removeEventListener("pageshow", onShow);
+  }, []);
 
   const normalized = normalizePhone(phone);
 
@@ -38,7 +58,7 @@ export default function LoginPanel({
       setError("Số điện thoại không hợp lệ. Nhập số di động, ví dụ 0912 345 678.");
       return;
     }
-    setBusy(true);
+    setBusy("Đang gửi mã qua Zalo…");
     setError(null);
     setNotice(null);
 
@@ -64,7 +84,7 @@ export default function LoginPanel({
     } catch {
       setError("Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.");
     } finally {
-      setBusy(false);
+      setBusy(null);
     }
   };
 
@@ -73,7 +93,7 @@ export default function LoginPanel({
       setError(`Mã gồm ${OTP_LENGTH} chữ số.`);
       return;
     }
-    setBusy(true);
+    setBusy("Đang đăng nhập…");
     setError(null);
 
     const res = await signIn("phone", {
@@ -82,7 +102,7 @@ export default function LoginPanel({
       redirect: false,
     });
 
-    setBusy(false);
+    setBusy(null);
     if (res?.error) {
       setError("Mã không đúng hoặc đã hết hạn. Kiểm tra lại tin Zalo, hoặc gửi mã mới.");
       return;
@@ -100,7 +120,10 @@ export default function LoginPanel({
             {providers.google && (
               <button
                 type="button"
-                onClick={() => signIn("google", { redirectTo: next })}
+                onClick={() => {
+                  setBusy("Đang chuyển sang Google…");
+                  void signIn("google", { redirectTo: next });
+                }}
                 className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-ink hover:border-brand/40 hover:bg-brand/[0.03] cursor-pointer transition-colors"
               >
                 <GoogleMark />
@@ -110,7 +133,10 @@ export default function LoginPanel({
             {providers.facebook && (
               <button
                 type="button"
-                onClick={() => signIn("facebook", { redirectTo: next })}
+                onClick={() => {
+                  setBusy("Đang chuyển sang Facebook…");
+                  void signIn("facebook", { redirectTo: next });
+                }}
                 className="flex items-center justify-center gap-3 w-full rounded-full border border-black/10 bg-white px-4 py-3.5 text-sm font-semibold text-ink hover:border-brand/40 hover:bg-brand/[0.03] cursor-pointer transition-colors"
               >
                 <FacebookMark />
@@ -155,7 +181,7 @@ export default function LoginPanel({
           <button
             type="button"
             onClick={requestCode}
-            disabled={busy}
+            disabled={busy !== null}
             className="flex items-center justify-center gap-2 w-full rounded-full bg-brand hover:bg-brand-deep disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
           >
             {busy ? (
@@ -192,7 +218,7 @@ export default function LoginPanel({
           <button
             type="button"
             onClick={submitCode}
-            disabled={busy}
+            disabled={busy !== null}
             className="flex items-center justify-center gap-2 w-full rounded-full bg-brand hover:bg-brand-deep disabled:cursor-wait px-4 py-3.5 text-sm font-semibold text-white cursor-pointer transition-colors"
           >
             {busy ? (
@@ -219,7 +245,7 @@ export default function LoginPanel({
             <button
               type="button"
               onClick={requestCode}
-              disabled={busy}
+              disabled={busy !== null}
               className="text-2xs font-medium text-brand hover:underline cursor-pointer"
             >
               Gửi lại mã
@@ -236,6 +262,15 @@ export default function LoginPanel({
           <span>{error}</span>
         </p>
       )}
+
+      {/* Spinner trong nút vẫn giữ: lớp phủ chỉ hiện sau 180ms, nên đường mạng
+          tốt thì nút mới là thứ học sinh thấy. Hai cái không đá nhau — cái này
+          nối tiếp cái kia. */}
+      <BusyOverlay
+        open={busy !== null}
+        label={busy ?? ""}
+        hint="Đừng bấm Back hay tải lại trang lúc này."
+      />
     </div>
   );
 }

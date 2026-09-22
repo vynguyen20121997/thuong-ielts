@@ -22,6 +22,7 @@ import {
 } from "../application/useReadingSession";
 import { LEVEL_LABELS } from "../domain/catalog";
 import type { ExamOutline, ReadingPaper } from "../domain/types";
+import BusyOverlay from "../../../components/BusyOverlay";
 import { fetchReadingPaper } from "../infrastructure/readingApi";
 import ReadingPlayer from "./ReadingPlayer";
 
@@ -257,24 +258,26 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
               Bỏ bài dở, làm lại từ đầu
             </button>
           )}
-
-          {/*
-            Thanh chạy trong lúc chờ request thật. Không có phần trăm vì không
-            đo được thật — vạch chạy qua lại nói đúng những gì mình biết.
-          */}
-          {loading && (
-            <div className="mt-4">
-              <div className="h-1 w-full bg-black/[0.06] rounded-full overflow-hidden">
-                <div className="h-full w-1/3 bg-brand rounded-full animate-[gate-sweep_1.1s_ease-in-out_infinite] motion-reduce:w-full motion-reduce:animate-none" />
-              </div>
-              <p className="mt-3 text-center text-2xs text-ink/40 font-medium">
-                Đang tải {outline.questionCount} câu hỏi và{" "}
-                {outline.parts.length > 1 ? `${outline.parts.length} bài đọc` : "bài đọc"}
-              </p>
-            </div>
-          )}
         </div>
       </div>
+
+      {/*
+        Trước đây chỗ này là một vạch chạy qua lại nằm trong thẻ. Đổi sang lớp
+        phủ vì cú bấm "Bắt đầu" không chỉ là tải dữ liệu — nó mở đồng hồ. Vạch
+        trong thẻ để nguyên phần còn lại của màn chờ bấm được: đổi ý bấm "làm
+        lại từ đầu" lúc request đang bay thì có hai lượt cùng khởi động, và
+        `sessionStorage` vừa bị xoá trong khi lượt kia đang dựa vào nó.
+
+        Nhãn vẫn nói số câu và số bài đọc như cũ — biết mình đang chờ cái gì thì
+        chờ dễ hơn nhiều so với một vòng xoay không chú thích.
+      */}
+      <BusyOverlay
+        open={loading}
+        label="Đang mở đề…"
+        hint={`Tải ${outline.questionCount} câu hỏi và ${
+          outline.parts.length > 1 ? `${outline.parts.length} bài đọc` : "bài đọc"
+        }. Đồng hồ chỉ chạy khi đề đã hiện.`}
+      />
     </div>
   );
 }

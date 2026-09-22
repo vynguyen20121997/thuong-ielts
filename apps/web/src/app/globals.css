@@ -185,15 +185,9 @@ html {
 }
 
 /*
- * Vạch chạy của màn chờ trước phòng thi. Không dùng phần trăm vì không đo được
- * tiến độ thật của một request — vạch chạy qua lại nói đúng "đang chờ", không
- * hứa hẹn con số nào. `prefers-reduced-motion` được xử lý ở component bằng
- * `motion-reduce:` (vạch đứng yên, đầy khung).
- */
-/*
  * Màn chờ đầu trang. Ba chấm nhảy lệch pha nhau (độ trễ đặt ở component),
- * không phải thanh tiến độ — cũng vì lý do đã ghi ở `gate-sweep` bên dưới:
- * không đo được tiến độ thật thì đừng hứa con số nào.
+ * không phải thanh tiến độ: không đo được tiến độ thật của một request thì
+ * đừng hứa con số nào. Cùng lý do khiến `BusyOverlay` chỉ có một vòng xoay.
  */
 @keyframes site-loader-dot {
   0%,
@@ -275,15 +269,6 @@ html.site-loading body {
  */
 html.site-loading #logo-wordmark {
   opacity: 0;
-}
-
-@keyframes gate-sweep {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(300%);
-  }
 }
 
 @keyframes flow-arrow {

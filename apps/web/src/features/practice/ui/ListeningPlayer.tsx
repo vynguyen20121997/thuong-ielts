@@ -17,6 +17,7 @@ import {
 import { useAnnotations } from "../application/useAnnotations";
 import { useExitGuard } from "../application/useExitGuard";
 import { highlightsFor } from "../domain/annotations";
+import BusyOverlay from "../../../components/BusyOverlay";
 import ExitWarningDialog from "./ExitWarningDialog";
 import GapText, { GapInput, hasInlineGap, type GapField } from "./GapText";
 import HighlightableText from "./HighlightableText";
@@ -706,6 +707,14 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         onStay={exit.stay}
         onLeave={exit.leave}
         detail="Băng đang chạy và chỉ phát một lần. Thoát bây giờ thì bài không được chấm, và muốn làm lại phải nghe lại từ đầu."
+      />
+
+      {/* Xem chú thích ở BusyOverlay: `data-exam` của nó là thứ giữ lớp phủ
+          sống sót qua `body.exam-mode` mà màn này đang bật. */}
+      <BusyOverlay
+        open={session.status === "submitting"}
+        label="Đang chấm bài…"
+        hint="Đừng đóng tab, kết quả hiện ngay sau đây."
       />
     </div>
   );
