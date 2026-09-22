@@ -1,5 +1,5 @@
 import exam from './exam.json';
-import type { Paper, Report, Section, ItemResult } from '../types';
+import type { Paper, Report, Section, ItemResult } from './types';
 export type Exam = typeof exam;
 export { exam };
 export const normalize = (value:string) => value.trim().replace(/\s+/g,' ').toLowerCase();
@@ -14,4 +14,16 @@ export function grade(answers:Record<string,string>, source:Exam=exam):Report {
   const areas=source.areas.map(a=>{const subset=items.filter(q=>a.id==='R_VOCABULARY_OVERALL'?q.section==='Reading':q.area===a.id); const correct=subset.filter(q=>q.correct).length;const level=correct>=a.thresholds[1]?2:correct>=a.thresholds[0]?1:0;
     return {id:a.id,name:a.name,section:a.section as Section,correct,total:subset.length,level,feedback:a.feedback[level],review:subset.filter(q=>!q.correct).map(q=>({id:q.id,text:q.review,blank:!q.answer.trim()}))};});
   return {items,areas,scores:{Listening:items.filter(q=>q.section==='Listening'&&q.correct).length,Reading:items.filter(q=>q.section==='Reading'&&q.correct).length,Grammar:items.filter(q=>q.section==='Grammar'&&q.correct).length},blanks:items.filter(q=>!q.answer.trim()).length};
+}
+
+/*
+  Những mã câu học sinh đã trả lời nhưng đề `source` không còn.
+
+  Dùng trước khi chấm lại: `grade()` tra đáp án theo id, nên đề đã đánh lại mã
+  sẽ biến mọi câu thành "chưa trả lời" và điểm về 0 — mà vẫn ghi đè êm ru lên
+  một kết quả vốn đúng.
+*/
+export function mismatchedAnswerIds(answers: Record<string,string>, source: Exam = exam): string[] {
+  const known = new Set(source.questions.map(q => q.id));
+  return Object.keys(answers).filter(id => answers[id]?.trim() && !known.has(id));
 }

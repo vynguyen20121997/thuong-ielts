@@ -9,6 +9,8 @@ import {
   publicPaper,
   type Exam,
 } from "../../../features/diagnostic/server/scoring";
+import { checkProfile } from "../../../features/diagnostic/domain/profile";
+import { RULES_VERSION } from "../../../features/diagnostic/domain/rules";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const json = (data: unknown, status = 200) =>
@@ -20,18 +22,27 @@ const demoProfiles = {
     label: "4.5",
     target: "5.5",
     purpose: "Nộp thi đại học",
+    level: "Chưa học IELTS, nền tảng tiếng Anh còn yếu",
+    examTiming: "Trong 3–6 tháng",
+    dailyMinutes: 30,
     correctRate: 45,
   },
   intermediate: {
     label: "5.5",
     target: "6.5",
     purpose: "Đi du học",
+    level: "Đang học IELTS, chưa có điểm thi",
+    examTiming: "Trong 1–3 tháng",
+    dailyMinutes: 45,
     correctRate: 62,
   },
   advanced: {
     label: "6.5",
     target: "7.0",
     purpose: "Đi xin việc",
+    level: "Đã có điểm IELTS",
+    examTiming: "Sau hơn 6 tháng",
+    dailyMinutes: 60,
     correctRate: 80,
   },
 } as const;
@@ -46,6 +57,12 @@ function randomDemoProfile(preset: DemoPreset) {
     ...details,
     name: `${name} · Demo ${label}`,
     email: faker.internet.exampleEmail(),
+    phone: "",
+    ieltsScore: preset === "advanced" ? label : "",
+    ieltsDate: "",
+    examMonth: "",
+    consent: true,
+    contactOptIn: false,
   };
 }
 function demoAnswers(preset: DemoPreset) {
@@ -123,9 +140,12 @@ export async function POST(request: Request) {
       const profile = randomDemoProfile(preset);
       const answers = demoAnswers(preset);
       const result = grade(answers, exam);
-      token = randomBytes(32).toString("hex");
+      // Giữ token do trình duyệt sinh, y như nhánh "start": nếu server tự đặt
+      // token khác thì mọi lời gọi sau đó (progress, resume) trỏ vào hư không.
+      if (!/^[a-f0-9]{64}$/.test(token))
+        token = randomBytes(32).toString("hex");
       await client.query(
-        `INSERT INTO diagnostic_attempts(token_hash,version,exam,profile,answers,workspace,result,submitted_at,editor,editor_until) VALUES($1,$2,$3,$4,$5,$6,$7,now(),$8,now())`,
+        `INSERT INTO diagnostic_attempts(token_hash,version,exam,profile,answers,workspace,result,submitted_at,editor,editor_until,rules_version) VALUES($1,$2,$3,$4,$5,$6,$7,now(),$8,now(),$9) ON CONFLICT DO NOTHING`,
         [
           hash(token),
           exam.version,
@@ -135,33 +155,18 @@ export async function POST(request: Request) {
           JSON.stringify({}),
           JSON.stringify(result),
           editor,
+          RULES_VERSION,
         ],
       );
     }
     if (body.action === "start") {
-      const p = body.profile;
-      const purposes = ["Nộp thi đại học", "Đi du học", "Đi xin việc", "Khác"];
-      if (
-        !p ||
-        typeof p.name !== "string" ||
-        !p.name.trim() ||
-        typeof p.email !== "string" ||
-        !/^\S+@\S+\.\S+$/.test(p.email) ||
-        !p.target ||
-        !purposes.includes(p.purpose)
-      ) {
+      // Luật kiểm tra dùng chung với form, xem `domain/profile.ts`.
+      const checked = checkProfile(body.profile);
+      if (!checked.ok) {
         await client.query("ROLLBACK");
-        return json(
-          { error: "Vui lòng điền đủ thông tin trước khi tiếp tục." },
-          400,
-        );
+        return json({ error: checked.error }, 400);
       }
-      const profile = {
-        name: p.name.trim().slice(0, 150),
-        email: p.email.trim().slice(0, 254),
-        target: String(p.target).slice(0, 100),
-        purpose: String(p.purpose).slice(0, 100),
-      };
+      const profile = checked.profile;
       // A browser-generated random token makes retries idempotent if the start response is lost.
       if (!/^[a-f0-9]{64}$/.test(token))
         token = randomBytes(32).toString("hex");
@@ -228,15 +233,36 @@ export async function POST(request: Request) {
         row.result = grade(row.answers, source);
         row.auto_submitted = remaining <= 0;
         row.submitted_at = new Date().toISOString();
+        row.rules_version = RULES_VERSION;
         await client.query(
-          "UPDATE diagnostic_attempts SET result=$2,submitted_at=now(),auto_submitted=$3 WHERE token_hash=$1",
-          [hash(token), JSON.stringify(row.result), row.auto_submitted],
+          "UPDATE diagnostic_attempts SET result=$2,submitted_at=now(),auto_submitted=$3,rules_version=$4 WHERE token_hash=$1",
+          [
+            hash(token),
+            JSON.stringify(row.result),
+            row.auto_submitted,
+            RULES_VERSION,
+          ],
         );
       } else
         await client.query(
           `UPDATE diagnostic_attempts SET editor=$2,editor_until=now()+interval '15 seconds' WHERE token_hash=$1`,
           [hash(token), editor],
         );
+    }
+    /*
+      Đổi thời lượng tự học sau khi đã nộp: chỉ chạm đúng một trường của hồ sơ.
+      Không cho ghi đè cả `profile` để một request không thể sửa tên, email hay
+      mục tiêu của lượt làm đã chấm.
+    */
+    if (body.action === "study-time" && row.submitted_at) {
+      const minutes = Number(body.dailyMinutes);
+      if (Number.isFinite(minutes) && minutes > 0 && minutes <= 600) {
+        row.profile = { ...row.profile, dailyMinutes: Math.round(minutes) };
+        await client.query(
+          "UPDATE diagnostic_attempts SET profile=$2 WHERE token_hash=$1",
+          [hash(token), JSON.stringify(row.profile)],
+        );
+      }
     }
     if (body.action === "progress" && row.submitted_at) {
       const progress: Record<string, boolean> = {};
@@ -262,6 +288,11 @@ export async function POST(request: Request) {
       result: row.submitted_at ? row.result : null,
       progress: row.plan_progress,
       startedAt: row.started_at,
+      /*
+        Phiên bản quy tắc lúc chấm. Trang so với hằng hiện tại để nói rõ khi
+        báo cáo cũ đang được đọc bằng bộ quy tắc đã đổi.
+      */
+      rulesVersion: row.rules_version ?? null,
       locked,
     });
   } catch (error) {

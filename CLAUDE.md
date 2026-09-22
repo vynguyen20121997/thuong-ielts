@@ -47,6 +47,57 @@ rời.** `bg-brand`, `text-leaf`, `bg-mist`... — đổi tông cả site chỉ 
 từng có 798 chỗ hex rải trong 43 file, gộp về 12 token; đừng để mọc lại. Màu trạng
 thái (đúng/sai/cảnh báo) chưa token hoá, thấy tiện thì gộp nốt.
 
+**Lộ trình ôn tập: bài kiểm tra định vị điểm khởi hành, mục tiêu band định đích.**
+`packages/diagnostic/src/roadmap.ts` dùng kết quả 53 câu chỉ để xếp `startTier`
+(nền yếu / trung bình / khá vững) và chọn nhóm nội dung cần vá trước; còn các chặng thì
+đi theo kỳ thi thật — đủ bốn kỹ năng, luôn có chặng Writing/Speaking dù bài kiểm tra
+không đo hai kỹ năng đó một câu nào. Đơn vị của lộ trình là THÁNG, không phải tuần: tổng
+thời lượng lấy từ `BASE_MONTHS` (theo mục tiêu) nhân hệ số của `startTier`, rồi chia
+cho từng chặng theo tỉ trọng bằng phép chia phần dư lớn nhất — mỗi chặng tối thiểu một
+tháng, nên lộ trình không thể ngắn hơn số chặng. Sửa độ dài thì sửa `BASE_MONTHS` và
+`weight` của từng chặng, đừng rải số tháng trong UI. Tuyệt đối không viết "bạn đang 5.0, sẽ lên 6.5": thiếu Writing/Speaking nên
+không có cơ sở quy đổi band đầu vào.
+
+**Form đầu vào của bài kiểm tra nền có một nguồn duy nhất.**
+`packages/diagnostic/src/profile.ts` giữ cả danh sách lựa chọn lẫn luật kiểm tra, cho
+client và server dùng chung. Trước đây form liệt kê lựa chọn trong `Diagnostic.tsx` còn
+`route.ts` tự viết lại mảng `purposes` của nó — thêm một mục ở form là server lặng lẽ từ
+chối. Thêm lựa chọn mới chỉ sửa ở file đó.
+
+**Thời gian tự học và ngày thi chỉ đổi LỊCH, không đổi chẩn đoán.** Học ít giờ/tuần hơn
+mức khuyến nghị thì lộ trình dài ra (`paceFactor`, chặn ở gấp đôi); ngày thi tới sớm hơn
+lộ trình thì **cảnh báo chứ không cắt chặng** — cắt thì Writing/Speaking rơi trước, mà đó
+đúng là phần kéo band xuống. Số giờ/tuần cần thiết phải tính từ khối lượng ở nhịp khuyến
+nghị, không phải từ nhịp học sinh đang khai: lấy nhịp hiện tại nhân lên sẽ ra nghịch lý
+"đang học 1.5 giờ/tuần, học 6 giờ/tuần là kịp" trong khi 6 giờ vẫn dưới mức cần.
+
+**Bộ chấm VÀ bộ nhận xét của bài kiểm tra nền đều nằm ở `packages/diagnostic`, không ở
+`apps/web`.** `apps/admin` chấm lại bằng đúng hàm `grade()` và đúng `exam.json` mà trang
+học sinh dùng — hai bản cài đặt song song thì sẽ có ngày điểm học sinh thấy khác điểm cô
+thấy, mà không biết bên nào đúng.
+
+Phần suy ra từ điểm (`profile.ts` → `roadmap.ts` → `verdict.ts`) đi theo cùng lý do, và
+thêm một lý do nữa: `RULES_VERSION` đánh số cho chính các ngưỡng trong hai file sau. Để
+con số ở package mà để ngưỡng ở `apps/web` thì lời dặn "đổi ngưỡng thì tăng version" trỏ
+sang một thư mục khác, và admin cũng không dựng lại được nhận xét của một lượt cũ.
+
+Bên web, `features/diagnostic/types.ts`, `server/scoring.ts` và `domain/{profile,roadmap,
+verdict}.ts` giờ chỉ là cầu nối re-export, giữ nguyên import cũ. Các cầu nối liệt kê
+từng tên chứ không `export *`: ba file cùng trỏ vào một package, dùng `export *` thì
+`import { checkProfile } from "../domain/roadmap"` cũng chạy, và thư mục `domain/` hết
+là bản đồ của chính nó.
+
+**Chấm lại là thao tác có chủ đích, không tự động.** `/chan-doan` bên admin bắt nhập lý
+do, ghi một dòng vào `diagnostic_regrades` (kèm bản `result` cũ nguyên vẹn) trong cùng
+transaction rồi mới ghi đè. Trước khi ghi đè còn chặn bằng `mismatchedAnswerIds`: đề mới
+đánh lại mã câu thì `grade()` coi mọi câu là chưa trả lời và điểm về 0 — thà không chấm
+lại được còn hơn xoá mất một kết quả đúng.
+
+**Đổi ngưỡng nhận xét thì tăng `RULES_VERSION`** (`packages/diagnostic/src/rules.ts`). Đề và đáp án của
+mỗi lượt đã được chụp nguyên vào cột `exam` nên sửa đề không đụng kết quả cũ, nhưng
+`NEED`/`BASE_MONTHS`/mốc 60% nằm trong code — mỗi lượt lưu `rules_version` lúc chấm, đọc
+lại bằng bộ quy tắc khác thì trang nói ra thay vì im lặng.
+
 **Kiến trúc phân lớp** trong `features/practice`: `domain/` thuần (không React, không
 fetch, không `pg`) ← `application/` (hook, không JSX) ← `infrastructure/` (fetch) /
 `server/` (SQL) / `ui/` (chỉ vẽ). Giữ hướng phụ thuộc một chiều này.

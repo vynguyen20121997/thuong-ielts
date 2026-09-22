@@ -13,6 +13,7 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@thuong-ielts/db": "*",
+    "@thuong-ielts/diagnostic": "*",
     "bcryptjs": "^3.0.3",
     "next": "^16.2.10",
     "react": "^19.0.1",

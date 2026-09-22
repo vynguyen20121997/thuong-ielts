@@ -25,7 +25,8 @@
     "clean:guests": "tsx scripts/clean-guests.ts",
     "zalo:token": "tsx scripts/zalo-token.ts",
     "zalo:test": "tsx scripts/zalo-test.ts",
-    "import:feedback-images": "tsx --env-file=apps/web/.env.local scripts/import-feedback-images.ts"
+    "import:feedback-images": "tsx --env-file=apps/web/.env.local scripts/import-feedback-images.ts",
+    "check:diagnostic-plan": "tsx scripts/check-diagnostic-plan.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",
