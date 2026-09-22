@@ -1,0 +1,144 @@
+{
+  "_comment": "Bằng chứng Playwright quan sát được khi cho persona học sinh + giáo viên dùng bài kiểm tra nền sau đợt thêm form đầu vào, lộ trình theo tháng và trang chấm lại. Chỉ ghi thứ đo được, không ghi ý kiến.",
+  "ngay": "2026-09-22",
+  "moiTruong": {
+    "web": "http://localhost:2000/kiem-tra-nen-tang-ielts",
+    "admin": "http://localhost:2100/chan-doan",
+    "deHienHanh": "2026-09-09-v1",
+    "quyTacHienHanh": "2026-09-22-v1"
+  },
+  "kichBan": [
+    {
+      "persona": "quay-lai",
+      "viec": "Điền đủ form rồi bấm Quay lại, sau đó Tiếp tục",
+      "quanSat": {
+        "giuLaiHoTen": true,
+        "giuLaiEmail": true,
+        "giuLaiMoiSelect": true,
+        "giuLaiDongY": true
+      },
+      "ketLuan": "Đạt — đặc tả §5 yêu cầu giữ lại thông tin đã điền."
+    },
+    {
+      "persona": "ban-phim",
+      "viec": "Đi hết form chỉ bằng phím Tab",
+      "quanSat": {
+        "thuTu": [
+          "Họ và tên",
+          "Email",
+          "Số điện thoại",
+          "Trình độ hiện tại",
+          "Mục tiêu",
+          "Mục đích",
+          "Thời gian dự kiến thi",
+          "Thời gian tự học",
+          "Đồng ý lưu",
+          "Link chính sách bảo mật",
+          "Nhận tư vấn",
+          "Quay lại",
+          "Tiếp tục"
+        ],
+        "hopLeKhiRong": false
+      },
+      "ketLuan": "Đạt — thứ tự đi đúng từ trên xuống, form rỗng bị chặn."
+    },
+    {
+      "persona": "dien-thoai",
+      "viec": "Mở form và màn kết quả ở 390px",
+      "quanSat": {
+        "tranNgang": 0,
+        "oTickTrongForm": "13x20 (trước khi sửa)",
+        "vungChamTickChang": "21x21 (trước khi sửa)"
+      },
+      "loi": ["checkbox-bi-co", "vung-cham-nho"],
+      "ketLuan": "Hỏng — xem mục `loiDaSua`."
+    },
+    {
+      "persona": "mat-goc",
+      "viec": "Xem lộ trình của học sinh nền yếu, 30 phút/ngày, thi trong 6 tháng",
+      "quanSat": {
+        "loTrinh": "8 tháng · 3 giờ mỗi tuần · 6 chặng",
+        "cauTong": "Vững nhất ở Reading (7/13), hụt nhất ở Listening (7/20)",
+        "cotDiemManh": ["Relative clauses", "Câu bị động", "Thì và hòa hợp chủ ngữ"],
+        "canhBaoNgayThi": "sớm hơn lộ trình 2 tháng, cần khoảng 4 giờ/tuần",
+        "canhBaoNhipHoc": "khai 3 giờ/tuần trong khi mục tiêu cần 6 giờ/tuần"
+      },
+      "loi": ["cau-tong-lech-don-vi"],
+      "ketLuan": "Hỏng phần chữ — câu tổng so theo kỹ năng còn hai cột so theo nhóm nội dung, đọc ra như mâu thuẫn."
+    },
+    {
+      "persona": "mat-goc",
+      "viec": "Tải báo cáo & kế hoạch",
+      "quanSat": {
+        "dungLuong": 26922,
+        "coPhanDiemManhDiemYeu": true,
+        "coPhanLoTrinh": true,
+        "coDiemKhoiHanhVaGioMoiTuan": true
+      },
+      "ketLuan": "Đạt."
+    },
+    {
+      "persona": "co-cham-lai",
+      "viec": "Chấm lại một lượt, thử cả trường hợp bấm đúp",
+      "quanSat": {
+        "thieuLyDo": "400 — Ghi lý do chấm lại (ít nhất 5 ký tự)",
+        "chamLaiHopLe": "200, ghi 1 dòng lịch sử kèm giáo viên + lý do + điểm trước/sau",
+        "bamDupTruocKhiSua": "2 dòng lịch sử trùng nhau",
+        "bamDupSauKhiSua": "1 dòng, request thứ hai trả trungLap=true",
+        "lyDoKhacNhau": "vẫn ghi thành 2 lần riêng biệt",
+        "luotKhongTonTai": "404"
+      },
+      "loi": ["cham-lai-trung-lap"],
+      "ketLuan": "Hỏng — xem mục `loiDaSua`."
+    },
+    {
+      "persona": "co-doi-chieu",
+      "viec": "Đối chiếu hồ sơ và điểm trên trang quản trị",
+      "quanSat": {
+        "hoSoHienDu": [
+          "email",
+          "điện thoại",
+          "trình độ tự khai",
+          "mục tiêu",
+          "dự kiến thi",
+          "tự học mỗi ngày",
+          "nhận tư vấn",
+          "câu bỏ trống"
+        ],
+        "coCoBanCu": "25 lượt (tạo trước khi có cột rules_version)",
+        "khoaDinhDanh": "token_hash, không phải token cá nhân của học sinh"
+      },
+      "ketLuan": "Đạt."
+    }
+  ],
+  "loiDaSua": [
+    {
+      "id": "checkbox-bi-co",
+      "moTa": "Ô tick trong form bị flex co từ 20px xuống 13px vì nằm cạnh đoạn chữ dài và thiếu shrink-0.",
+      "anhHuong": "Người dùng điện thoại bấm trượt ô đồng ý và ô nhận tư vấn.",
+      "sua": "Thêm `shrink-0` cho mọi checkbox nằm trong hàng flex (Diagnostic.tsx, StudyPlan.tsx)."
+    },
+    {
+      "id": "vung-cham-nho",
+      "moTa": "Nhãn của ô tick chặng trong lộ trình chỉ bọc đúng ô tick nên vùng chạm bằng 21x21.",
+      "anhHuong": "Đánh dấu xong một chặng trên điện thoại hay bấm trượt.",
+      "sua": "`.diag-rm-check` nới lên tối thiểu 44x44, ô vẽ vẫn nằm giữa. Đã bấm thử vào rìa vùng chạm: đổi trạng thái đúng."
+    },
+    {
+      "id": "cau-tong-lech-don-vi",
+      "moTa": "Câu tổng so theo kỹ năng (Listening/Reading/Grammar) trong khi hai cột dưới liệt kê theo nhóm nội dung, đọc liền nhau thành mâu thuẫn.",
+      "anhHuong": "Giáo viên rà báo cáo sẽ nghĩ hệ thống tính sai.",
+      "sua": "Ghi rõ 'theo nhóm nội dung' ở tiêu đề hai cột."
+    },
+    {
+      "id": "cham-lai-trung-lap",
+      "moTa": "Bấm chấm lại hai lần liên tiếp tạo hai dòng lịch sử y hệt.",
+      "anhHuong": "Lịch sử chấm lại nhiễu, khó lần ra lần nào thật sự đổi điểm.",
+      "sua": "Trong cùng transaction đã khoá hàng, bỏ qua nếu vừa có bản ghi cùng giáo viên + cùng lý do trong 10 giây; lý do khác thì vẫn ghi riêng."
+    }
+  ],
+  "chuaKiemDuoc": [
+    "Chất lượng âm thanh và độ khó thật của đề — công cụ chỉ biết file tải được hay không.",
+    "Nhánh 'đề đã đánh lại mã câu' trên dữ liệu thật; mới kiểm bằng unit test `mismatchedAnswerIds`."
+  ]
+}

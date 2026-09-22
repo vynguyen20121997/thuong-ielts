@@ -1,5 +1,5 @@
 {
-  "_comment": "Persona học sinh dùng cho cả hai nửa: Playwright lấy `scenario` để biết phải làm gì trên web, TinyTroupe lấy phần tiểu sử để biết phải phản ứng thế nào. Giữ chung một file để hai nửa không lệch nhau. Mỗi persona nhắm vào một bề mặt hỏng khác nhau, không phải cho đông cho vui.",
+  "_comment": "Persona học sinh dùng cho cả hai nửa: Playwright lấy `scenario` để biết phải làm gì trên web, TinyTroupe lấy phần tiểu sử để biết phải phản ứng thế nào. Giữ chung một file để hai nửa không lệch nhau. Mỗi persona nhắm vào một bề mặt hỏng khác nhau, không phải cho đông cho vui. Từ 09/2026 có thêm persona GIÁO VIÊN (`role: teacher`) cho trang quản trị: bài kiểm tra nền có hai phía dùng, chỉ giả lập học sinh thì bỏ sót cả nửa còn lại.",
   "personas": [
     {
       "id": "mat-goc",
@@ -37,7 +37,6 @@
       "goal": "Mở đề Listening bị thiếu audio, bấm lung tung, tải lại trang giữa chừng.",
       "scenario": "curious-break"
     },
-
     {
       "id": "ban-phim",
       "name": "Quang Vinh",
@@ -91,6 +90,26 @@
       "bio": "Nhân viên văn phòng ôn IELTS để xin định cư. Chưa từng thi trên máy, quen làm đề trên giấy. Không rành máy tính, đọc hướng dẫn rất kỹ và sợ bấm nhầm làm hỏng bài.",
       "goal": "Lần đầu vào làm bài trên máy, đọc kỹ hướng dẫn trước khi bắt đầu.",
       "scenario": "first-timer"
+    },
+    {
+      "id": "co-cham-lai",
+      "name": "Cô Thương",
+      "role": "teacher",
+      "age": 34,
+      "level": "Giáo viên IELTS, dùng trang quản trị mỗi tối",
+      "bio": "Dạy 6 lớp, mở trang quản trị giữa hai ca để xem em nào vừa làm bài kiểm tra nền. Vừa sửa một đáp án chấp nhận trong đề nên muốn chấm lại vài lượt cũ. Thao tác nhanh, hay bấm đúp khi trang phản hồi chậm, và rất ngại thứ gì âm thầm đổi điểm của học sinh.",
+      "goal": "Tìm các lượt đang chấm theo đề cũ, chấm lại kèm lý do, kiểm tra lịch sử có ghi đúng không.",
+      "scenario": "admin-regrade"
+    },
+    {
+      "id": "co-doi-chieu",
+      "name": "Cô Hà",
+      "role": "teacher",
+      "age": 41,
+      "level": "Giáo viên phụ trách chất lượng",
+      "bio": "Không dạy trực tiếp mà rà lại báo cáo trước khi gửi phụ huynh. Đọc kỹ từng câu chữ, sẽ bắt lỗi nếu phần nhận xét nói một đằng còn bảng điểm nói một nẻo. Không tin con số nào không kèm căn cứ.",
+      "goal": "Mở một lượt bất kỳ, đối chiếu hồ sơ, điểm, nhận xét mạnh/yếu và lộ trình xem có mâu thuẫn nhau không.",
+      "scenario": "admin-review-report"
     }
   ]
 }
