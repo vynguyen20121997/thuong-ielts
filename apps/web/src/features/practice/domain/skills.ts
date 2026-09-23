@@ -2,7 +2,7 @@ import type { PracticeSkill } from "./types";
 
 /**
  * The four IELTS skills shown in "Kiểm tra kiến thức IELTS".
- * Only Reading is `available` today; the rest render as disabled cards.
+ * Reading, Listening và Writing đang mở; Speaking còn là thẻ mờ.
  * Flipping one on is a one-word change here — no UI edit required, because the
  * cards read their enabled/disabled state from this list.
  */
@@ -32,10 +32,10 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     name: "Writing",
     label: "Viết",
     description:
-      "Task 1 & Task 2 kèm dàn ý mẫu, band descriptors và nhận xét chi tiết cho từng bài viết.",
+      "Đề Task 2 có bấm giờ và đếm từ. Viết xong bấm một nút để soi trước lỗi bố cục, lạc đề, thiếu ví dụ — trước khi gửi cô chấm theo barem.",
     href: "/kiem-tra-kien-thuc/writing",
-    status: "coming-soon",
-    hint: "Sắp ra mắt",
+    status: "available",
+    hint: "Checklist trước khi nộp",
   },
   {
     id: "speaking",

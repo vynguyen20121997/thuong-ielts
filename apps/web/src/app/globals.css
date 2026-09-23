@@ -113,6 +113,42 @@ html.lenis, html.lenis body {
   overflow: clip;
 }
 
+/*
+ * Vùng cuộn trong bảng gợi ý Writing — NGOẠI LỆ có chủ ý của luật "không dùng
+ * vùng cuộn lồng nhau" trong CLAUDE.md.
+ *
+ * Lý do phải có: cột phải dính theo màn hình, mà ghi chú kiến thức nền dài
+ * hơn cả màn hình. Không chặn chiều cao thì phần cuối ghi chú nằm dưới đáy
+ * viewport và không cách nào đọc tới — cột đang `sticky` nên nó không trôi
+ * theo trang.
+ *
+ * Lý do cần lớp vá này: Lenis tự đặt `overflow: clip` cho mọi
+ * `[data-lenis-prevent]` trong lúc trang đang trôi, nên vùng cuộn con mất tư
+ * cách vùng cuộn đúng lúc người ta cuộn. Dòng dưới giành lại `overflow` bằng
+ * độ cụ thể cao hơn, và CHỈ cho đúng lớp này — không mở lại cho cả trang.
+ *
+ * Thêm vùng cuộn mới ở chỗ khác là mời lại đúng lỗi đã gỡ; đọc kỹ CLAUDE.md
+ * trước khi dùng lớp `.panel-scroll` ngoài bảng này.
+ */
+.panel-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth .panel-scroll[data-lenis-prevent] {
+  overflow-y: auto;
+}
+
+/* Thanh cuộn mảnh, chỉ hiện khi cần — bảng gợi ý vốn đã nhiều thứ. */
+.panel-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panel-scroll::-webkit-scrollbar-thumb {
+  background: rgba(5, 46, 22, 0.18);
+  border-radius: 999px;
+}
+
 .lenis.lenis-stopped {
   overflow: hidden;
 }
@@ -275,6 +311,270 @@ html.site-loading body {
  */
 html.site-loading #logo-wordmark {
   opacity: 0;
+}
+
+/*
+ * Hộp gợi ý ở màn Writing. Bấm một ý là một CHU TRÌNH hai pha, không phải một
+ * cú thay nội dung: hộp cũ thu lại và biến mất, rồi hộp mới tự RÁP từng mảnh.
+ *
+ * Vì sao phải có pha tháo: đổi thẳng nội dung trong cùng một hộp thì mắt không
+ * kịp nhận ra đây là câu trả lời cho ý VỪA BẤM — trông như chữ tự nhiên nhảy.
+ * Thấy hộp cũ đi rồi hộp mới tới thì cú bấm mới có nhân quả.
+ *
+ * Mở bằng `clip-path` chứ không bằng `height`: chiều cao phụ thuộc số câu hỏi
+ * của từng ý, animate `height` thì phải đo bằng JS mỗi lần. `clip-path` chạy
+ * trên compositor nên cũng không đụng tới layout cột bài viết bên cạnh.
+ */
+@keyframes hint-open {
+  from {
+    clip-path: inset(0 0 100% 0 round 12px);
+    opacity: 0.3;
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 12px);
+    opacity: 1;
+  }
+}
+
+/* Pha tháo: hộp cũ xẹp xuống và mờ đi, nhanh hơn pha ráp. */
+@keyframes hint-close {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes hint-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*
+ * Ba mảnh của sơ đồ bay vào từ ba phía rồi khớp lại — đó là phần "ráp".
+ * Cùng bay từ một phía thì thành một danh sách trượt xuống, không ra cảm giác
+ * lắp ghép.
+ */
+@keyframes hint-snap-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hint-snap-left {
+  from {
+    opacity: 0;
+    transform: translateX(-16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes hint-snap-right {
+  from {
+    opacity: 0;
+    transform: translateX(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Đường nối chỉ vẽ SAU khi ba mảnh đã vào chỗ — nối cái đã có, không nối chỗ trống. */
+@keyframes hint-rail {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Chấm mốc bật ra cuối cùng, như đinh tán đóng vào chỗ nối. */
+@keyframes hint-dot {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+.hint-box {
+  animation: hint-open 320ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.hint-box--out {
+  animation: hint-close 180ms cubic-bezier(0.4, 0, 1, 1) both;
+  pointer-events: none;
+}
+
+.hint-step {
+  animation: hint-rise 260ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+.hint-piece {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.34, 1.3, 0.64, 1);
+  animation-fill-mode: both;
+  animation-delay: calc(var(--d, 0) * 1ms);
+}
+
+.hint-piece--down {
+  animation-name: hint-snap-down;
+}
+.hint-piece--left {
+  animation-name: hint-snap-left;
+}
+.hint-piece--right {
+  animation-name: hint-snap-right;
+}
+
+.hint-rail {
+  transform-origin: top;
+  animation: hint-rail 300ms cubic-bezier(0.4, 0, 0.2, 1) 460ms both;
+}
+
+.hint-dot {
+  animation: hint-dot 240ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  animation-delay: calc(560ms + var(--i, 0) * 70ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hint-box,
+  .hint-box--out,
+  .hint-step,
+  .hint-piece,
+  .hint-rail,
+  .hint-dot {
+    animation: none;
+  }
+}
+
+/*
+ * Báo "đang đọc bài" bằng chính VIỀN của bảng gợi ý, không bằng một con quay
+ * trong tiêu đề.
+ *
+ * Con quay là một vật thể mới xuất hiện rồi biến mất, nên mắt phải rời khỏi
+ * bài viết để nhìn nó. Viền thì vốn đã ở đó — nó chỉ sáng lên rồi tối đi, đủ
+ * để thấy bằng khoé mắt trong lúc vẫn đang gõ.
+ *
+ * Hai nhịp khác nhau để phân biệt hai việc: chờ học sinh dừng bút thì thở
+ * chậm và nhạt, đang gọi model thì nhanh và rõ hơn.
+ */
+@keyframes panel-waiting {
+  0%,
+  100% {
+    border-color: rgba(20, 83, 45, 0.1);
+  }
+  50% {
+    border-color: rgba(20, 83, 45, 0.3);
+  }
+}
+
+@keyframes panel-reading {
+  0%,
+  100% {
+    border-color: rgba(20, 83, 45, 0.28);
+  }
+  50% {
+    border-color: rgba(20, 83, 45, 0.55);
+  }
+}
+
+/*
+ * Vệt sáng chạy hết một vòng quanh viền, dùng khi ĐANG gọi model.
+ *
+ * `--panel-angle` phải khai bằng `@property` thì trình duyệt mới nội suy được
+ * một góc; `@keyframes` trên một biến CSS thường chỉ nhảy cóc 0 → 360 chứ
+ * không quay. Trình duyệt nào chưa hỗ trợ `@property` thì vệt sáng đứng yên,
+ * nhưng viền vẫn thở nhờ `panel-reading` ở trên — vẫn biết là đang bận.
+ *
+ * Vẽ bằng một lớp phủ được KHOÉT RUỘT (`mask` + `exclude`) nên chỉ còn đúng
+ * vành 1px; không đụng tới nền hay chữ bên trong, và `pointer-events: none`
+ * để nó không nuốt cú bấm nào.
+ */
+@property --panel-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes panel-sweep {
+  to {
+    --panel-angle: 360deg;
+  }
+}
+
+.panel-reading {
+  animation: panel-reading 1.1s ease-in-out infinite;
+  position: relative;
+}
+
+.panel-reading::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--panel-angle),
+    transparent 0deg,
+    transparent 280deg,
+    rgba(20, 83, 45, 0.15) 320deg,
+    #14532d 352deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: panel-sweep 1.2s linear infinite;
+}
+
+.panel-waiting {
+  animation: panel-waiting 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Không nhấp nháy, không vệt chạy — nhưng vẫn phải phân biệt được. */
+  .panel-waiting {
+    animation: none;
+    border-color: rgba(20, 83, 45, 0.22);
+  }
+  .panel-reading {
+    animation: none;
+    border-color: rgba(20, 83, 45, 0.6);
+  }
+  .panel-reading::before {
+    animation: none;
+    background: none;
+  }
 }
 
 @keyframes flow-arrow {
