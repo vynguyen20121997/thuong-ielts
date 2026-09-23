@@ -108,6 +108,8 @@ export default function Diagnostic() {
     [saveStatus, setSaveStatus] = useState("Đã lưu");
   const [ready, setReady] = useState([false, false]),
     [heard, setHeard] = useState(false),
+    /* Tăng lên một là dựng lại thẻ <audio>; xem `retryAudio`. */
+    [audioAttempt, setAudioAttempt] = useState(0),
     [confirmed, setConfirmed] = useState(false),
     [submitDialog, setSubmitDialog] = useState(false);
   const [resultTab, setResultTab] = useState<"report" | "answers" | "plan">(
@@ -476,6 +478,24 @@ export default function Diagnostic() {
     window.addEventListener("diagnostic-audio-state", onState);
     return () => window.removeEventListener("diagnostic-audio-state", onState);
   }, []);
+  /*
+    Tải lại hai bài nghe mà không tải lại trang.
+
+    Drive rớt kết nối khá thường (chú thích trong route proxy đo được cỡ một
+    lần hỏng trên hai lần gọi nguội). Hỏng một lần là `ready` kẹt ở false và
+    nút "Bắt đầu tính giờ" tắt vĩnh viễn — lối thoát duy nhất trước đây là F5,
+    mà F5 ở màn hướng dẫn thì mất cả form vừa điền.
+
+    Đổi `key` của <AudioPlayer> là React tháo thẻ <audio> cũ ra dựng thẻ mới,
+    nên trình duyệt xin lại file từ đầu. Đặt lại `ready` về false trước, vì
+    thẻ mới sẽ tự bắn `onReady` khi tải xong.
+  */
+  function retryAudio() {
+    setReady([false, false]);
+    updateWorkspace((w) => (w.issues.length ? { ...w, issues: [] } : w));
+    setAudioAttempt((n) => n + 1);
+    setMessage("");
+  }
   const audioIssue = useCallback((issue: string) => {
     updateWorkspace((w) =>
       w.issues.includes(issue) ? w : { ...w, issues: [...w.issues, issue] },
@@ -1183,7 +1203,7 @@ export default function Diagnostic() {
           <div className="hidden">
             {paper.audio.map((id, i) => (
               <AudioPlayer
-                key={id}
+                key={`${id}-${audioAttempt}`}
                 id={id}
                 index={i}
                 initial={workspace.audio[i]}
@@ -1199,11 +1219,21 @@ export default function Diagnostic() {
           {stage === "instructions" && (
             <>
               {!ready.every(Boolean) && (
-                <p className="mb-4 text-sm" role="status">
-                  {workspace.issues.length
-                    ? "Chưa tải được bài nghe. Hãy kiểm tra kết nối rồi tải lại trang; thông tin đã điền được giữ lại."
-                    : "Đang tải hai bài nghe trước khi bắt đầu…"}
-                </p>
+                <div className="mb-4">
+                  <p className="text-sm" role="status">
+                    {workspace.issues.length
+                      ? "Chưa tải được bài nghe. Kết nối tới kho file chập chờn, thường thử lại một lượt là được."
+                      : "Đang tải hai bài nghe trước khi bắt đầu…"}
+                  </p>
+                  {workspace.issues.length > 0 && (
+                    <button
+                      className="diag-secondary mt-3"
+                      onClick={retryAudio}
+                    >
+                      Thử tải lại bài nghe
+                    </button>
+                  )}
+                </div>
               )}
               <div className="flex flex-wrap gap-3">
                 <button
