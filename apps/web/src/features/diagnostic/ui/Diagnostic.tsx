@@ -106,6 +106,8 @@ type Draft = {
   token: string;
   answers: Record<string, string>;
   workspace: Workspace;
+  /* Thiếu ở bản nháp cũ nên có thể không có; đọc ra thì coi như rỗng. */
+  essay?: string;
   dirty: boolean;
 };
 export default function Diagnostic() {
@@ -194,6 +196,13 @@ export default function Diagnostic() {
           token: token.current,
           answers: latest.current.answers,
           workspace: latest.current.workspace,
+          /*
+            Bài viết phải nằm trong bản nháp như đáp án.
+            Thiếu nó thì mất mạng rồi tải lại trang là mất đoạn vừa gõ, trong
+            khi đáp án trắc nghiệm vẫn còn — đo được: gõ một câu rồi F5 ngay,
+            câu đó biến mất còn các ô đáp án thì không.
+          */
+          essay: latest.current.essay,
           dirty: dirty.current,
         }),
       );
@@ -319,6 +328,7 @@ export default function Diagnostic() {
           const useDraft =
             draft?.token === token.current && draft?.dirty && !data.submittedAt;
           setAnswers(useDraft ? draft!.answers : data.answers);
+          setEssay(useDraft ? (draft!.essay ?? "") : (data.essay ?? ""));
           setWorkspace({
             ...emptyWorkspace,
             ...(useDraft ? draft!.workspace : data.workspace),
@@ -365,10 +375,15 @@ export default function Diagnostic() {
       release();
     };
   }, []);
+  /*
+    Ghi bản nháp mỗi khi bài làm đổi. `essay` phải nằm trong danh sách phụ
+    thuộc: thiếu nó thì gõ bài viết không kích hoạt hiệu ứng này, bản nháp đứng
+    yên ở lần đổi đáp án gần nhất, và đoạn vừa gõ mất khi tải lại trang.
+  */
   useEffect(() => {
     if (!draftLoaded.current) return;
     local();
-  }, [answers, workspace, local]);
+  }, [answers, workspace, essay, local]);
   useEffect(() => {
     if (draftLoaded.current)
       try {
@@ -2086,8 +2101,8 @@ export default function Diagnostic() {
           </fieldset>
           <div className="diag-nav-summary">
             <span>
-              {totalAnswered}/53 câu đã trả lời · {workspace.bookmarks.length}{" "}
-              câu xem lại
+              {totalAnswered}/53 câu đã trả lời · {essayWords} từ ở phần viết ·{" "}
+              {workspace.bookmarks.length} câu xem lại
             </span>
             <span>
               <i className="diag-legend-answered" /> Đã trả lời{" "}
@@ -2108,6 +2123,8 @@ export default function Diagnostic() {
                     */
                     answered: essayWords >= writingTask.minWords ? 1 : 0,
                     total: 1,
+                    /* "0 of 1" không nói gì về một bài viết; đếm chữ thì có. */
+                    hint: `${essayWords}/${writingTask.minWords} từ`,
                     questions: [],
                   }
                 : {
@@ -2395,14 +2412,18 @@ export default function Diagnostic() {
                 dung: nó là một kỹ năng riêng chấm bằng thang riêng, để lẫn vào
                 giữa các nhóm trắc nghiệm là mời người đọc so hai thang khác nhau.
               */}
-              {essay.trim() && (
-                <WritingReport
-                  state={writing}
-                  essay={essay}
-                  onRetry={askWritingGrade}
-                  retrying={gradingWriting}
-                />
-              )}
+              <WritingReport
+                /*
+                  Bỏ trống phần 4 thì vẫn phải hiện khối này, và hiện ngay trạng
+                  thái "chưa viết gì" thay vì chờ bộ chấm. Trước đây cả khối bị
+                  ẩn khi bài rỗng, mà dòng chú thích phía trên vẫn bảo "xem
+                  Writing ở tab nhận xét" — học sinh đi tìm một thứ không có.
+                */
+                state={essay.trim() ? writing : { kind: "empty" }}
+                essay={essay}
+                onRetry={askWritingGrade}
+                retrying={gradingWriting}
+              />
               <div className="diag-feedback-heading">
                 {/*
                   Phần tổng hợp 3+3 đã đứng ngay trên, nên tiêu đề ở đây phải

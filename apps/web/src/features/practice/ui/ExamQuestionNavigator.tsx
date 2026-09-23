@@ -16,6 +16,8 @@ export type ExamNavigatorSection = {
   label: string;
   answered: number;
   total: number;
+  /** Thay cho "x of y" khi phần đó không đếm bằng số câu (ví dụ bài viết). */
+  hint?: string;
   questions: ExamNavigatorQuestion[];
 };
 
@@ -77,11 +79,18 @@ export default function ExamQuestionNavigator({
                         : "text-ink/55 group-hover:text-brand"
                     }`}
                   >
-                    SECTION {index + 1}
+                    {/*
+                      Tên phần, không phải số thứ tự. "SECTION 4" không nói cho
+                      học sinh biết phần đó là Writing, mà tên thì đã truyền
+                      vào sẵn ở `label` — trước đây bị bỏ không dùng.
+                    */}
+                    {section.label || `SECTION ${index + 1}`}
                   </span>
                   {!isCurrent && (
                     <span className="text-xs text-ink/45">
-                      {section.answered} of {section.total}
+                      {/* Phần không có câu hỏi thì "0 of 1" vô nghĩa; dùng `hint`. */}
+                      {section.hint ??
+                        `${section.answered} of ${section.total}`}
                     </span>
                   )}
                 </button>

@@ -1,0 +1,89 @@
+{
+  "_comment": "Bằng chứng đo trên trình duyệt thật (Playwright) cho Section 4 Writing. Chỉ ghi số đo và chuỗi đọc được từ DOM/DB — không có ý kiến persona nào trong file này; ý kiến phải đọc kèm bằng chứng, xem README.",
+  "ngay": "2026-09-23",
+  "duong_dan": "/kiem-tra-nen-tang-ielts",
+  "phien_ban_de": "2026-09-23-w1",
+  "loi_tim_duoc": [
+    {
+      "id": "nhap-thieu-bai-viet",
+      "persona": "dien-thoai (Thu Hà) — mạng chập chờn, hay tải lại trang",
+      "trieu_chung": "Gõ bài viết rồi F5 là mất đoạn vừa gõ, trong khi đáp án trắc nghiệm vẫn còn.",
+      "bang_chung_truoc": {
+        "khoa_trong_localStorage": ["token", "answers", "workspace", "dirty"],
+        "nhap_co_truong_essay": false,
+        "sau_khi_tai_lai_giu_duoc_cau": false
+      },
+      "nguyen_nhan": "local() không ghi essay, VÀ useEffect ghi nháp không có essay trong danh sách phụ thuộc nên gõ bài viết không kích hoạt ghi nháp lần nào.",
+      "bang_chung_sau": {
+        "nhap_co_truong_essay": true,
+        "ghi_duoc_sau_ms": 120,
+        "sau_khi_tai_lai_giu_duoc_cau": true
+      }
+    },
+    {
+      "id": "tab-khong-co-ten",
+      "persona": "dien-thoai + to-mo — không đọc kỹ hướng dẫn",
+      "trieu_chung": "Thanh điều hướng ghi SECTION 1/2/3/4, không chỗ nào nói phần 4 là Writing. Không nút nào trên trang chứa chữ 'Writing'.",
+      "bang_chung_truoc": {
+        "nhan_tab": [
+          "SECTION 10 of 20",
+          "SECTION 20 of 13",
+          "SECTION 30 of 20",
+          "SECTION 40 of 1"
+        ],
+        "so_nut_chua_chu_writing": 0
+      },
+      "nguyen_nhan": "ExamQuestionNavigator in cứng `SECTION {index+1}`, không dùng `section.label` vốn đã được truyền vào.",
+      "bang_chung_sau": {
+        "nhan_tab": [
+          "Listening0 of 20",
+          "Reading0 of 13",
+          "Grammar0 of 20",
+          "Writing"
+        ]
+      }
+    },
+    {
+      "id": "0-of-1-vo-nghia",
+      "trieu_chung": "Phần viết hiện '0 of 1' — một bài luận không đếm bằng số câu.",
+      "sua": "Thêm `hint` tuỳ chọn cho phần không có câu hỏi; phần viết hiện số từ trên mức tối thiểu.",
+      "bang_chung_sau": {
+        "dong_tong_ket": "0/53 câu đã trả lời · 11 từ ở phần viết · 0 câu xem lại"
+      }
+    },
+    {
+      "id": "bo-trong-phan-4",
+      "persona": "voi-vang (Minh Khoa) — nộp sớm, bấm nút liên tục",
+      "trieu_chung": "Bỏ trống phần viết thì cả khối kết quả Writing bị ẩn, trong khi dòng chú thích phía trên vẫn bảo 'xem Writing ở tab nhận xét'.",
+      "bang_chung_sau": {
+        "khoi_writing_hien": true,
+        "noi_dung": "Bạn chưa viết gì ở phần 4, nên không có gì để chấm. Ba phần còn lại vẫn được chấm đầy đủ.",
+        "bam_nop_ba_lan_lien_tiep": "một lượt nộp, không sinh bản ghi thừa"
+      }
+    }
+  ],
+  "duong_di_da_chay_qua": [
+    {
+      "truong_hop": "bài đủ dài",
+      "so_tu": 194,
+      "ket_qua": { "TR": 7.0, "CC": 7.0, "LR": 8.0, "GRA": 8.0, "tong": 7.5 },
+      "trong_db": { "kind": "graded", "do_dai_essay": 1235 }
+    },
+    {
+      "truong_hop": "bài quá ngắn",
+      "so_tu": 24,
+      "hien_thi": "Bài chỉ có 24 từ — quá ngắn để chấm theo bốn tiêu chí.",
+      "trong_db": { "kind": "too-short", "do_dai_essay": 134 }
+    },
+    {
+      "truong_hop": "bỏ trống",
+      "so_tu": 0,
+      "trong_db": { "kind": null, "do_dai_essay": 0 },
+      "ghi_chu": "Không gọi dịch vụ chấm, đúng ý: bài rỗng thì không có gì để trả tiền."
+    }
+  ],
+  "chua_do_duoc": [
+    "Nhánh `ungraded` (dịch vụ chấm rớt) và nút 'Chấm lại bài viết' — chưa có cách ép TypeSafe hỏng từ trình duyệt.",
+    "Tự nộp khi hết 60 phút với bài viết đang gõ dở."
+  ]
+}
