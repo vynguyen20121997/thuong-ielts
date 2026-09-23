@@ -2513,3 +2513,249 @@
   font-size: 0.55em;
   letter-spacing: 0;
 }
+
+/* ── Phần 4: Writing ────────────────────────────────────────────────────────
+   Ô viết bài trong phòng thi. Không đặt `max-height` + `overflow` cho khung
+   ngoài: cả trang cuộn, xem lý do trong CLAUDE.md. Riêng <textarea> thì tự
+   cuộn là đúng — nó là ô nhập, không phải một vùng nội dung của trang.       */
+.diag-writing-task {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-left: 3px solid var(--color-brand);
+  border-radius: 4px 14px 14px 4px;
+  background: var(--color-mist-3);
+}
+.diag-writing-task p + p {
+  margin-top: 10px;
+}
+.diag-writing-kind {
+  margin-bottom: 10px;
+  color: var(--color-brand-soft);
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.diag-writing-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.diag-writing-input {
+  display: block;
+  width: 100%;
+  /* Đủ chỗ cho khoảng 150 từ mà không phải cuộn ngay từ dòng đầu. */
+  min-height: 340px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-sage-3);
+  border-radius: 14px;
+  background: #fff;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.75;
+  resize: vertical;
+}
+.diag-writing-input:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
+}
+.diag-writing-count {
+  margin-top: 10px;
+  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+}
+/* Chưa đủ chữ thì nói bằng màu cảnh báo, không phải màu lỗi: chưa xong không phải là sai. */
+.diag-writing-count[data-short] {
+  color: var(--color-warn);
+}
+
+/* ── Bảng điểm Writing ở màn kết quả ─────────────────────────────────────── */
+.diag-wr {
+  margin: 26px 0;
+  padding: 22px 24px;
+  border: 1px solid var(--color-sage-3);
+  border-radius: 18px;
+  background: #fff;
+}
+.diag-wr-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+.diag-wr-head h3 {
+  color: var(--color-brand);
+  font-size: 18px;
+  font-weight: 800;
+}
+.diag-wr-kind {
+  border-radius: 99px;
+  padding: 3px 10px;
+  background: var(--color-mist);
+  color: var(--color-brand);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+}
+.diag-wr-overall {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-left: auto;
+}
+.diag-wr-overall b {
+  color: var(--color-brand);
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.diag-wr-overall span {
+  max-width: 15ch;
+  color: color-mix(in srgb, var(--color-ink) 58%, transparent);
+  font-size: var(--text-2xs);
+  line-height: 1.35;
+}
+.diag-wr-note {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--color-mist-3);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+}
+.diag-wr-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.diag-wr-cards > li {
+  padding: 12px 14px;
+  border: 1px solid var(--color-sage-3);
+  border-radius: 13px;
+}
+.diag-wr-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.diag-wr-card-top b {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.diag-wr-card-top span {
+  color: var(--color-brand);
+  font-family: var(--font-mono);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.diag-wr-bar {
+  display: block;
+  position: relative;
+  height: 6px;
+  margin: 9px 0 8px;
+  border-radius: 99px;
+  background: var(--color-sage-2);
+}
+.diag-wr-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 99px;
+  background: var(--color-brand);
+}
+.diag-wr-card-name {
+  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  font-size: var(--text-2xs);
+  line-height: 1.35;
+}
+.diag-wr-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 14px;
+}
+.diag-wr-detail,
+.diag-wr-advice {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.diag-wr-detail > li,
+.diag-wr-advice > li {
+  padding: 13px 15px;
+  border-radius: 12px;
+  background: var(--color-mist-3);
+}
+.diag-wr-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+.diag-wr-detail-head b {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.diag-wr-detail-head em {
+  color: color-mix(in srgb, var(--color-ink) 52%, transparent);
+  font-size: var(--text-2xs);
+  font-style: normal;
+}
+.diag-wr-detail-head span {
+  margin-left: auto;
+  color: var(--color-brand);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 800;
+}
+.diag-wr-detail-level,
+.diag-wr-advice p {
+  margin-top: 6px;
+  color: color-mix(in srgb, var(--color-ink) 68%, transparent);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+.diag-wr-advice b {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+.diag-wr-essay {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--color-mist-3);
+  font-size: var(--text-sm);
+  line-height: 1.75;
+}
+.diag-wr-essay p + p {
+  margin-top: 12px;
+}
+.diag-wr-words {
+  margin-bottom: 12px;
+  color: color-mix(in srgb, var(--color-ink) 58%, transparent);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+}
+.diag-wr-foot {
+  margin-top: 16px;
+  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  font-size: var(--text-2xs);
+  line-height: 1.6;
+}
+@media (max-width: 720px) {
+  .diag-wr-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .diag-wr-overall {
+    margin-left: 0;
+  }
+}

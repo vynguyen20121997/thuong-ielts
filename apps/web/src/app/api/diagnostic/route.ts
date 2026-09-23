@@ -11,6 +11,10 @@ import {
 } from "../../../features/diagnostic/server/scoring";
 import { checkProfile } from "../../../features/diagnostic/domain/profile";
 import { RULES_VERSION } from "../../../features/diagnostic/domain/rules";
+import { WRITING_TASK } from "@thuong-ielts/diagnostic";
+import { gradeWriting } from "../../../features/diagnostic/server/writingGrader";
+/* Bài viết dài nhất trong 15 phút cũng quanh 300 từ; trần này chỉ để chặn cú dán khổng lồ. */
+const MAX_ESSAY_CHARS = 8000;
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const json = (data: unknown, status = 200) =>
@@ -113,6 +117,46 @@ export async function POST(request: Request) {
   const editor =
     typeof body.editor === "string" ? body.editor.slice(0, 80) : "";
   if (!editor) return json({ error: "Thiếu mã phiên trình duyệt." }, 400);
+  /*
+    Chấm phần Writing — cố ý nằm NGOÀI transaction của mọi hành động khác.
+
+    Bộ chấm là dịch vụ ngoài, trần chờ 25 giây. Gọi nó trong lúc đang giữ khoá
+    `FOR UPDATE` trên dòng bài làm là giam một kết nối DB và chặn mọi tab khác
+    của chính học sinh đó suốt ngần ấy thời gian.
+
+    Tách khỏi `submit` cũng vì vậy: nộp bài phải trả về ngay với điểm ba phần
+    trắc nghiệm, rồi trang mới hỏi tiếp điểm Writing. Dịch vụ chấm hỏng thì học
+    sinh mất phần Writing chứ không mất cả lượt làm.
+  */
+  if (body.action === "grade-writing") {
+    const token =
+      request.headers.get("authorization")?.replace(/^Bearer /, "") ?? "";
+    if (!/^[a-f0-9]{64}$/.test(token))
+      return json({ error: "Không tìm thấy lượt làm bài." }, 401);
+
+    const found = await pool.query(
+      "SELECT essay,writing,submitted_at FROM diagnostic_attempts WHERE token_hash=$1",
+      [hash(token)],
+    );
+    const row = found.rows[0];
+    if (!row) return json({ error: "Không tìm thấy lượt làm bài." }, 404);
+    if (!row.submitted_at) return json({ error: "Chưa nộp bài." }, 400);
+
+    /*
+      Đã chấm rồi thì trả lại bản cũ, không gọi lại dịch vụ. Mỗi lần gọi là một
+      lần tính tiền, mà bấm F5 ở màn kết quả thì không có lý do gì phải trả
+      tiền lần nữa — và điểm cũng không nên nhảy khi học sinh chỉ tải lại trang.
+    */
+    if (row.writing?.kind === "graded") return json({ writing: row.writing });
+
+    const state = await gradeWriting(String(row.essay ?? ""));
+    await pool.query(
+      "UPDATE diagnostic_attempts SET writing=$2 WHERE token_hash=$1",
+      [hash(token), JSON.stringify(state)],
+    );
+    return json({ writing: state });
+  }
+
   let client;
   try {
     client = await pool.connect();
@@ -216,16 +260,19 @@ export async function POST(request: Request) {
             valid[q.id] = a;
         }
         row.answers = valid;
+        if (typeof body.essay === "string")
+          row.essay = body.essay.slice(0, MAX_ESSAY_CHARS);
         row.workspace =
           body.workspace && typeof body.workspace === "object"
             ? body.workspace
             : row.workspace;
         await client.query(
-          "UPDATE diagnostic_attempts SET answers=$2,workspace=$3,updated_at=now() WHERE token_hash=$1",
+          "UPDATE diagnostic_attempts SET answers=$2,workspace=$3,essay=$4,updated_at=now() WHERE token_hash=$1",
           [
             hash(token),
             JSON.stringify(row.answers),
             JSON.stringify(row.workspace),
+            String(row.essay ?? ""),
           ],
         );
       }
@@ -286,6 +333,19 @@ export async function POST(request: Request) {
       submittedAt: row.submitted_at,
       autoSubmitted: row.auto_submitted,
       result: row.submitted_at ? row.result : null,
+      essay: row.essay ?? "",
+      /*
+        `null` nghĩa là CHƯA gọi bộ chấm lần nào — khác hẳn với trạng thái
+        "đã gọi nhưng chưa chấm được". Trang dựa vào đúng chỗ này để biết có
+        phải hỏi `grade-writing` hay không.
+      */
+      writing: row.submitted_at ? (row.writing ?? null) : null,
+      writingTask: {
+        prompt: WRITING_TASK.prompt,
+        minWords: WRITING_TASK.minWords,
+        seconds: WRITING_TASK.seconds,
+        type: WRITING_TASK.type,
+      },
       progress: row.plan_progress,
       startedAt: row.started_at,
       /*

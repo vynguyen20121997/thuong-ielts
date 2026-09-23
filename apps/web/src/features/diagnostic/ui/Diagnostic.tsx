@@ -13,6 +13,8 @@ import {
   X,
 } from "lucide-react";
 import type {
+  Tab,
+  WritingState,
   Paper,
   Profile,
   Question,
@@ -20,10 +22,15 @@ import type {
   Session,
   Workspace,
 } from "../types";
+import {
+  WRITING_TASK as writingTask,
+  countWords,
+} from "@thuong-ielts/diagnostic";
 import HighlightableText from "../../practice/ui/HighlightableText";
 import ExamQuestionNavigator from "../../practice/ui/ExamQuestionNavigator";
 import AudioPlayer from "./AudioPlayer";
 import BusyOverlay from "../../../components/BusyOverlay";
+import WritingReport from "./WritingReport";
 import StudyPlan from "./StudyPlan";
 import Roadmap from "./Roadmap";
 import Verdict from "./Verdict";
@@ -42,6 +49,14 @@ import {
 import "./diagnostic.css";
 
 const sections: Section[] = ["Listening", "Reading", "Grammar"];
+/*
+  Thanh điều hướng có bốn mục, nhưng CHẤM ĐIỂM vẫn chỉ có ba.
+
+  `Section` là đơn vị của `scores`, của nhóm nội dung và của phần xem lại —
+  nhét "Writing" vào đó là mọi chỗ cộng điểm phải xử lý một phần không có câu
+  hỏi nào. Nên Writing chỉ là một TAB, và `sections` giữ nguyên nghĩa cũ.
+*/
+const tabs: Tab[] = [...sections, "Writing"];
 /*
   Highlight lưu theo `blockId`, mà blockId luôn bắt đầu bằng mã câu (L01, R07,
   G13) hoặc `R-passage-…`. Chữ cái đầu đủ để biết vệt highlight thuộc phần nào,
@@ -102,7 +117,8 @@ export default function Diagnostic() {
   >("intro");
   const [answers, setAnswers] = useState<Record<string, string>>({}),
     [workspace, setWorkspace] = useState<Workspace>(emptyWorkspace);
-  const [remaining, setRemaining] = useState(2700),
+  const [essay, setEssay] = useState(""),
+    [remaining, setRemaining] = useState(3600),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
     [saveStatus, setSaveStatus] = useState("Đã lưu");
@@ -154,8 +170,11 @@ export default function Diagnostic() {
     pendingSubmit = useRef(false),
     lastWarn = useRef(0);
   const progressState = useRef<Record<string, boolean>>({});
-  const latest = useRef({ answers, workspace, stage, profile });
-  latest.current = { answers, workspace, stage, profile };
+  const essayWords = countWords(essay);
+  const [writing, setWriting] = useState<WritingState | null>(null),
+    [gradingWriting, setGradingWriting] = useState(false);
+  const latest = useRef({ answers, workspace, stage, profile, essay });
+  latest.current = { answers, workspace, stage, profile, essay };
   /*
     Đổi màn thì kéo về đầu trang. Các màn cao thấp rất khác nhau: bảng kết quả
     dài gấp đôi màn giới thiệu, nên bấm "Bắt đầu lượt mới" ở cuối bảng điểm là
@@ -211,6 +230,8 @@ export default function Diagnostic() {
   }
   function apply(data: Session) {
     progressState.current = data.progress ?? {};
+    setEssay(data.essay ?? "");
+    setWriting(data.writing ?? null);
     setSession(data);
     setPaper(data.paper);
     setProfile(data.profile);
@@ -233,6 +254,7 @@ export default function Diagnostic() {
       const data = await api(submit ? "submit" : "save", {
         answers: current.answers,
         workspace: current.workspace,
+        essay: current.essay,
       });
       const unsynced =
         data.submittedAt &&
@@ -490,6 +512,40 @@ export default function Diagnostic() {
     nên trình duyệt xin lại file từ đầu. Đặt lại `ready` về false trước, vì
     thẻ mới sẽ tự bắn `onReady` khi tải xong.
   */
+  /*
+    Xin điểm phần Writing. Tách khỏi `submit` vì bộ chấm là dịch vụ ngoài, trần
+    chờ 25 giây: gộp vào nộp bài là bắt học sinh nhìn màn trắng ngần ấy lâu
+    trước khi thấy điểm ba phần trắc nghiệm vốn đã chấm xong từ lâu.
+
+    Server tự bỏ qua nếu đã chấm rồi, nên gọi lại không tốn thêm tiền.
+  */
+  async function askWritingGrade() {
+    if (gradingWriting) return;
+    setGradingWriting(true);
+    try {
+      const data = (await api("grade-writing")) as unknown as {
+        writing?: WritingState;
+      };
+      if (data.writing) setWriting(data.writing);
+    } catch {
+      /* Hỏng thì giữ nguyên trạng thái cũ; nút "Chấm lại bài viết" vẫn còn đó. */
+    } finally {
+      setGradingWriting(false);
+    }
+  }
+  /*
+    Vào màn kết quả mà chưa có điểm Writing thì hỏi ngay một lần.
+
+    Điều kiện `writing === null` là "chưa gọi lần nào" — đã gọi mà hỏng thì
+    server lưu `{kind:"ungraded"}`, và lúc đó phải để học sinh tự bấm chấm lại
+    chứ không tự gọi vòng lại: dịch vụ đang hỏng thì gọi lại tự động chỉ tạo ra
+    một vòng lặp tốn tiền.
+  */
+  useEffect(() => {
+    if (stage !== "result" || writing !== null || !essay.trim()) return;
+    void askWritingGrade();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, writing, essay]);
   function retryAudio() {
     setReady([false, false]);
     updateWorkspace((w) => (w.issues.length ? { ...w, issues: [] } : w));
@@ -597,7 +653,8 @@ export default function Diagnostic() {
     setSession(null);
     setAnswers({});
     setWorkspace(emptyWorkspace);
-    setRemaining(2700);
+    setEssay("");
+    setRemaining(3600);
     setNotice("");
     setMessage("");
     setReady([false, false]);
@@ -936,7 +993,7 @@ export default function Diagnostic() {
             <div className="flex items-center justify-between border-b border-brand/20 pb-5">
               <span className="flex items-center gap-2 font-semibold">
                 <Clock3 size={20} />
-                45 phút
+                60 phút
               </span>
               <span className="font-mono">53 câu</span>
             </div>
@@ -1005,8 +1062,8 @@ export default function Diagnostic() {
             <p className="font-semibold text-brand">Lưu ý:</p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
               <li>
-                Đây là bài đánh giá sơ bộ, chưa bao gồm Writing và Speaking. Kết
-                quả không phải điểm IELTS chính thức.
+                Đây là bài đánh giá sơ bộ, chưa bao gồm Speaking. Kết quả không
+                phải điểm IELTS chính thức.
               </li>
               <li>
                 Học sinh cần làm bài trên máy tính &amp; sử dụng tai nghe.
@@ -1148,7 +1205,7 @@ export default function Diagnostic() {
               </h2>
               <ol className="my-7 ml-5 list-decimal space-y-3 text-sm leading-relaxed text-ink/75">
                 <li>
-                  Bạn có 45 phút cho toàn bài kiểm tra 3 phần (Listening /
+                  Bạn có 60 phút cho toàn bài kiểm tra 4 phần (Listening /
                   Reading / Grammar). Bạn được quyền di chuyển qua lại trong 3
                   phần.
                 </li>
@@ -1978,6 +2035,54 @@ export default function Diagnostic() {
                 </div>
               </div>
             ))}
+            {/*
+              Phần 4. Nằm ngoài `sections.map` vì nó không có câu hỏi nào: mọi
+              thứ bên trong vòng lặp kia đều dựng từ `paper.questions`.
+            */}
+            <div
+              className={`diag-section ${workspace.section === "Writing" ? "" : "is-hidden"}`}
+            >
+              <div className="diag-questions diag-scroll" style={{ fontSize }}>
+                <h2 className="diag-section-heading">PHẦN 4: WRITING</h2>
+                <div className="diag-writing-task">
+                  <p className="diag-writing-kind">
+                    {writingTask.type} · khoảng{" "}
+                    {Math.round(writingTask.seconds / 60)} phút · tối thiểu{" "}
+                    {writingTask.minWords} từ
+                  </p>
+                  {writingTask.prompt.split(/\n{2,}/).map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
+                </div>
+                <label className="diag-writing-label" htmlFor="essay">
+                  Bài làm của bạn
+                </label>
+                <textarea
+                  id="essay"
+                  className="diag-writing-input"
+                  value={essay}
+                  spellCheck={false}
+                  placeholder="Viết bài của bạn ở đây…"
+                  onChange={(e) => {
+                    dirty.current = true;
+                    setEssay(e.target.value);
+                    setSaveStatus("Đang lưu…");
+                  }}
+                />
+                <p
+                  className="diag-writing-count"
+                  data-short={
+                    essayWords < writingTask.minWords ? "" : undefined
+                  }
+                  aria-live="polite"
+                >
+                  {essayWords} từ
+                  {essayWords < writingTask.minWords
+                    ? ` · còn thiếu ${writingTask.minWords - essayWords} từ so với mức tối thiểu`
+                    : " · đã đủ số chữ tối thiểu"}
+                </p>
+              </div>
+            </div>
           </fieldset>
           <div className="diag-nav-summary">
             <span>
@@ -1991,38 +2096,53 @@ export default function Diagnostic() {
           </div>
           <ExamQuestionNavigator
             className="diag-question-nav"
-            sections={sections.map((section) => ({
-              id: section,
-              label: section,
-              answered: paper.questions.filter(
-                (q) => q.section === section && answers[q.id]?.trim(),
-              ).length,
-              total: totals[section],
-              questions: paper.questions
-                .filter((q) => q.section === section)
-                .map((q) => ({
-                  id: q.id,
-                  number: Number(q.id.slice(1)),
-                  answered: Boolean(answers[q.id]?.trim()),
-                  bookmarked: workspace.bookmarks.includes(q.id),
-                  active: activeQuestion === q.id,
-                })),
-            }))}
-            activeIndex={sections.indexOf(workspace.section)}
+            sections={tabs.map((tab) =>
+              tab === "Writing"
+                ? {
+                    id: tab,
+                    label: tab,
+                    /*
+                      Writing không có câu hỏi để đánh số, nên đếm theo "đã đủ
+                      số chữ tối thiểu hay chưa" — đó là mốc duy nhất ở phần này
+                      mà học sinh tự kiểm được, và cũng là mốc bộ chấm dùng.
+                    */
+                    answered: essayWords >= writingTask.minWords ? 1 : 0,
+                    total: 1,
+                    questions: [],
+                  }
+                : {
+                    id: tab,
+                    label: tab,
+                    answered: paper.questions.filter(
+                      (q) => q.section === tab && answers[q.id]?.trim(),
+                    ).length,
+                    total: totals[tab],
+                    questions: paper.questions
+                      .filter((q) => q.section === tab)
+                      .map((q) => ({
+                        id: q.id,
+                        number: Number(q.id.slice(1)),
+                        answered: Boolean(answers[q.id]?.trim()),
+                        bookmarked: workspace.bookmarks.includes(q.id),
+                        active: activeQuestion === q.id,
+                      })),
+                  },
+            )}
+            activeIndex={tabs.indexOf(workspace.section)}
             onSelectSection={(index) =>
-              updateWorkspace((w) => ({ ...w, section: sections[index] }))
+              updateWorkspace((w) => ({ ...w, section: tabs[index] }))
             }
             onSelectQuestion={(question) => jump(question.id)}
             onPrevious={() =>
               updateWorkspace((w) => ({
                 ...w,
-                section: sections[sections.indexOf(w.section) - 1],
+                section: tabs[tabs.indexOf(w.section) - 1],
               }))
             }
             onNext={() =>
               updateWorkspace((w) => ({
                 ...w,
-                section: sections[sections.indexOf(w.section) + 1],
+                section: tabs[tabs.indexOf(w.section) + 1],
               }))
             }
             onSubmit={() => setSubmitDialog(true)}
@@ -2109,8 +2229,9 @@ export default function Diagnostic() {
               </p>
             </div>
             <p className="diag-report-disclaimer">
-              Đánh giá sơ bộ theo các câu trong bài, chưa bao gồm Writing và
-              Speaking.
+              Ba con số dưới đây đếm theo số câu đúng, KHÔNG gồm Writing —
+              Writing chấm bằng bốn tiêu chí band riêng, xem ở tab nhận xét. Bài
+              kiểm tra không đo Speaking.
             </p>
           </div>
           <div className="diag-score-grid">
@@ -2269,6 +2390,19 @@ export default function Diagnostic() {
                 profile={profile}
                 startedAt={session.startedAt}
               />
+              {/*
+                Phần 4 nằm ngay dưới khối tổng hợp, trước danh sách 16 nhóm nội
+                dung: nó là một kỹ năng riêng chấm bằng thang riêng, để lẫn vào
+                giữa các nhóm trắc nghiệm là mời người đọc so hai thang khác nhau.
+              */}
+              {essay.trim() && (
+                <WritingReport
+                  state={writing}
+                  essay={essay}
+                  onRetry={askWritingGrade}
+                  retrying={gradingWriting}
+                />
+              )}
               <div className="diag-feedback-heading">
                 {/*
                   Phần tổng hợp 3+3 đã đứng ngay trên, nên tiêu đề ở đây phải

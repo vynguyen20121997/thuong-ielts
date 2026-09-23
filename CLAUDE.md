@@ -58,6 +58,31 @@ tháng, nên lộ trình không thể ngắn hơn số chặng. Sửa độ dài
 `weight` của từng chặng, đừng rải số tháng trong UI. Tuyệt đối không viết "bạn đang 5.0, sẽ lên 6.5": thiếu Writing/Speaking nên
 không có cơ sở quy đổi band đầu vào.
 
+**Section 4 là Writing, 15 phút, chấm bằng AI theo bốn tiêu chí — và band đó
+KHÔNG cộng vào Overall.** Bài viết đi qua `packages/diagnostic/src/writing.ts`
+(đề, thang sáu mức cho TR/CC/LR/GRA, cách quy band) rồi `features/diagnostic/
+server/writingGrader.ts` gọi TypeSafe. Ba điều đã chốt:
+
+- **15 phút thì phải nói ra là 15 phút.** Task 2 thật là 40 phút / 250 từ; ở
+  đây mức tối thiểu là 150 từ và `GRADER_CONTEXT` báo trước cho model để nó
+  không trừ điểm vì bài ngắn. Giao diện cũng ghi "band tham khảo cho bài 15
+  phút" ngay cạnh con số — bỏ câu đó đi là để học sinh đọc nhầm thành band thi.
+- **Vẫn không có điểm Overall.** Bài kiểm tra không đo Speaking, nên chưa đủ
+  bốn kỹ năng để quy đổi; luật cũ ở mục lộ trình giữ nguyên. Writing có band
+  riêng vì đó là thứ đo được thật, không phải để cộng trung bình.
+- **Không có mục "lỗi chi tiết" như bản mẫu ai4ielts.** Bộ chấm dạng `score`
+  chỉ trả về một con số cho mỗi tiêu chí, không trả văn bản tự do. Dựng danh
+  sách lỗi từ đó là bịa vị trí lỗi, nên thà thiếu một mục.
+
+**Bài viết để cột `essay` riêng, và chấm NGOÀI transaction.** Nhét bài viết vào
+`answers` là phá chốt `mismatchedAnswerIds` (mã câu lạ thì admin không chấm lại
+được). Còn `grade-writing` là một action riêng vì bộ chấm là dịch vụ ngoài chờ
+tới 25 giây: gọi nó trong lúc đang giữ `FOR UPDATE` là giam một kết nối DB và
+chặn mọi tab khác của chính học sinh đó. Nộp bài trả về ngay với điểm ba phần
+trắc nghiệm, trang mới hỏi tiếp điểm Writing — dịch vụ chấm hỏng thì mất phần
+Writing chứ không mất cả lượt làm. Server bỏ qua nếu đã chấm rồi, nên F5 ở màn
+kết quả không tính tiền lần nữa.
+
 **Form đầu vào của bài kiểm tra nền có một nguồn duy nhất.**
 `packages/diagnostic/src/profile.ts` giữ cả danh sách lựa chọn lẫn luật kiểm tra, cho
 client và server dùng chung. Trước đây form liệt kê lựa chọn trong `Diagnostic.tsx` còn

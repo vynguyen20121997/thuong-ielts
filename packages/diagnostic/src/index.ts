@@ -59,5 +59,23 @@ export {
   type Verdict,
 } from "./verdict";
 
+/* Phần Writing: đề, thang bốn tiêu chí và cách quy band. */
+export {
+  GRADER_CONTEXT,
+  WRITING_CRITERIA,
+  WRITING_TASK,
+  adviceFor,
+  bandFromLevel,
+  countWords,
+  overallBand,
+  roundBand,
+  tooShortToGrade,
+  type Criterion,
+  type CriterionId,
+  type CriterionScore,
+  type WritingResult,
+  type WritingState,
+} from "./writing";
+
 export { RULES_VERSION } from "./rules";
 export type * from "./types";

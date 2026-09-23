@@ -291,7 +291,7 @@ export function buildRoadmap(
     weight: 0.13,
     aim: "Làm trọn bộ đề Cambridge trong đúng thời gian thật, sai ở đâu biết ngay là do kiến thức hay do hết giờ.",
     because:
-      "Sức bền và cách chia thời gian chỉ hiện ra khi làm nguyên bài thi, không hiện ra trong bài kiểm tra nền 45 phút.",
+      "Sức bền và cách chia thời gian chỉ hiện ra khi làm nguyên bài thi, không hiện ra trong bài kiểm tra nền.",
     areas: [],
     steps: [
       "Mỗi tuần một full test Listening + Reading đúng giờ, không tạm dừng.",

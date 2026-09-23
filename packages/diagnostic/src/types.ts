@@ -1,4 +1,12 @@
+import type { WritingState } from "./writing";
+
 export type Section = "Listening" | "Reading" | "Grammar";
+/*
+  Mục trên thanh điều hướng phòng thi. Rộng hơn `Section` đúng một giá trị:
+  Writing có mặt trong bài làm nhưng không tham gia `scores`, vì nó không được
+  chấm bằng số câu đúng mà bằng bốn tiêu chí band riêng.
+*/
+export type Tab = Section | "Writing";
 export type Question = {
   id: string;
   section: Section;
@@ -35,7 +43,7 @@ export type Profile = {
 export type Workspace = {
   bookmarks: string[];
   highlights: { blockId: string; start: number; end: number }[];
-  section: Section;
+  section: Tab;
   audio: number[];
   audioDone: boolean[];
   scroll: Record<string, number>;
@@ -74,6 +82,13 @@ export type Session = {
   submittedAt: string | null;
   autoSubmitted: boolean;
   result: Report | null;
+  /* Bài viết phần 4, thô như học sinh gõ. Cột riêng trong DB, không nằm trong `answers`. */
+  essay: string;
+  /*
+    `null` = chưa gọi bộ chấm lần nào. Khác hẳn `{kind:"ungraded"}` là đã gọi
+    và hỏng — trang dựa vào đúng chỗ này để biết có phải hỏi chấm hay không.
+  */
+  writing: WritingState | null;
   progress: Record<string, boolean>;
   startedAt: string;
   rulesVersion: string | null;
