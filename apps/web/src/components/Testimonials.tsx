@@ -310,7 +310,7 @@ export default function Testimonials({
               <h4 className="font-bold text-sm text-ink leading-tight">
                 {test.studentName}
               </h4>
-              <p className="text-2xs text-ink/50 mt-0.5 font-bold leading-none">
+              <p className="text-2xs text-ink/65 mt-0.5 font-bold leading-none">
                 {test.schoolOrJob}
               </p>
             </div>
@@ -443,12 +443,12 @@ export default function Testimonials({
 
         {/* Cards: hai dải điểm chạy ngược chiều ở trang chủ, grid đầy đủ ở trang riêng */}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/40 font-medium">
+          <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/65 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
             Đang tải dữ liệu...
           </div>
         ) : testimonials.length === 0 ? (
-          <div className="text-center py-16 text-sm text-ink/50">
+          <div className="text-center py-16 text-sm text-ink/65">
             Chưa có dữ liệu học viên.
           </div>
         ) : isPreview ? (
@@ -499,7 +499,7 @@ export default function Testimonials({
             {showHighAchievers && highAchievers.length > 0 && (
               <Reveal className="mb-8 md:mb-10">
                 <div className="mb-7 flex flex-col gap-2 border-l-4 border-leaf pl-5">
-                  <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">
+                  <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand/80">
                     High Achievers
                   </span>
                   <h2 className="text-3xl font-bold tracking-tight text-brand md:text-4xl">
@@ -521,7 +521,7 @@ export default function Testimonials({
             {hasMore && (
               <div
                 ref={loadMoreRef}
-                className="mt-12 flex items-center justify-center gap-2 text-xs text-ink/40 font-medium"
+                className="mt-12 flex items-center justify-center gap-2 text-xs text-ink/65 font-medium"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
                 Đang tải thêm...

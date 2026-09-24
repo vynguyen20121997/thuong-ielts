@@ -31,8 +31,18 @@ export const stubGrader: SpeakingGrader = {
     return {
       kind: "ungraded",
       reason:
-        "Bộ chấm Speaking chưa được nối — cần dịch vụ nhận dạng lời nói và một model nghe được audio cho tiêu chí Phát âm.",
+        "Chấm từ file thu âm chưa nối — cần một model NGHE được audio. Nói lại và dùng bản ghi chữ thì chấm được ba tiêu chí.",
     };
+  },
+
+  /*
+    Đường chấm từ bản ghi chữ đã nối thật (`speakingApi.ts`). Giữ một bản tạm
+    ở đây cho đủ cổng, để ai đó tắt bản thật đi thì màn hình vẫn nói ra lý do
+    thay vì im lặng.
+  */
+  async gradeTranscript(): Promise<SpeakingState> {
+    await wait(300);
+    return { kind: "ungraded", reason: "Bộ chấm bản ghi chữ đang tắt." };
   },
 };
 

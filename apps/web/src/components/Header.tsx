@@ -66,7 +66,7 @@ export default function Header() {
   ];
 
   const linkClass = (isActive: boolean) =>
-    `relative py-2 text-xs lg:text-sm transition-colors cursor-pointer group whitespace-nowrap ${isActive ? "text-brand font-bold" : "text-brand/70 font-semibold hover:text-brand"}`;
+    `relative py-2 text-xs lg:text-sm transition-colors cursor-pointer group whitespace-nowrap ${isActive ? "text-brand font-bold" : "text-brand/80 font-semibold hover:text-brand"}`;
 
   return (
     <header
@@ -105,7 +105,7 @@ export default function Header() {
             return (
               <div key={group.label} className="relative group py-2">
                 <button
-                  className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${active ? "text-brand font-bold" : "text-brand/70 font-semibold group-hover:text-brand"}`}
+                  className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${active ? "text-brand font-bold" : "text-brand/80 font-semibold group-hover:text-brand"}`}
                 >
                   {group.label}
                   <ChevronDown
@@ -129,7 +129,7 @@ export default function Header() {
                               <Link
                                 key={child.to}
                                 href={child.to}
-                                className="block rounded-lg px-3 py-2 text-sm font-medium text-brand/65 transition-colors hover:bg-sage hover:text-brand"
+                                className="block rounded-lg px-3 py-2 text-sm font-medium text-brand/80 transition-colors hover:bg-sage hover:text-brand"
                               >
                                 {child.label}
                               </Link>
@@ -190,7 +190,7 @@ export default function Header() {
           </Link>
           {navGroups.map((group) => (
             <div key={group.label}>
-              <span className="text-2xs text-brand/40 font-medium block mb-3">
+              <span className="text-2xs text-brand/80 font-medium block mb-3">
                 {group.label}
               </span>
               <div className="flex flex-col gap-4 pl-1">
@@ -208,7 +208,7 @@ export default function Header() {
                           <Link
                             key={child.to}
                             href={child.to}
-                            className="text-lg font-semibold text-brand/70 hover:text-brand"
+                            className="text-lg font-semibold text-brand/80 hover:text-brand"
                           >
                             {child.label}
                           </Link>
@@ -232,7 +232,7 @@ export default function Header() {
           <AccountMenu compact />
 
           <div className="text-center">
-            <p className="text-xs text-brand/40">
+            <p className="text-xs text-brand/80">
               © 2026 Hồ Ngọc Thương. All rights reserved.
             </p>
           </div>

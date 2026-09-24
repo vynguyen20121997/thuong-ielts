@@ -112,7 +112,7 @@ export default function AccountMenu({
               {ten}
             </span>
             {account.targetBand && (
-              <span className="block text-2xs text-ink/50">
+              <span className="block text-2xs text-ink/65">
                 Mục tiêu {account.targetBand.toFixed(1)}
               </span>
             )}
@@ -165,7 +165,7 @@ export default function AccountMenu({
         )}
         <ChevronDown
           size={13}
-          className={`text-ink/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`text-ink/65 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -179,7 +179,7 @@ export default function AccountMenu({
               {account.name ?? ten}
             </p>
             {account.targetBand && (
-              <p className="text-2xs text-ink/50 mt-0.5">
+              <p className="text-2xs text-ink/65 mt-0.5">
                 Mục tiêu Overall {account.targetBand.toFixed(1)}
               </p>
             )}

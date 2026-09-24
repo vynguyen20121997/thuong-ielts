@@ -68,7 +68,7 @@ export default function ProfileForm({
     }
   };
 
-  const fieldLabel = "text-2xs font-medium text-ink/50";
+  const fieldLabel = "text-2xs font-medium text-ink/65";
 
   return (
     <div className="flex flex-col gap-7">

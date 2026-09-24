@@ -76,7 +76,7 @@ export default function ExamQuestionNavigator({
                     className={`text-xs font-bold transition-colors ${
                       isCurrent
                         ? "text-ink"
-                        : "text-ink/55 group-hover:text-brand"
+                        : "text-ink/65 group-hover:text-brand"
                     }`}
                   >
                     {/*
@@ -87,7 +87,7 @@ export default function ExamQuestionNavigator({
                     {section.label || `SECTION ${index + 1}`}
                   </span>
                   {!isCurrent && (
-                    <span className="text-xs text-ink/45">
+                    <span className="text-xs text-ink/65">
                       {/* Phần không có câu hỏi thì "0 of 1" vô nghĩa; dùng `hint`. */}
                       {section.hint ??
                         `${section.answered} of ${section.total}`}

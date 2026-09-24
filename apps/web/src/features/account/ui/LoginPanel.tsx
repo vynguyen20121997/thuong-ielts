@@ -148,7 +148,7 @@ export default function LoginPanel({
           {providers.phone && (
             <div className="flex items-center gap-3">
               <span className="h-px flex-1 bg-black/10" />
-              <span className="text-2xs font-medium text-ink/40">hoặc</span>
+              <span className="text-2xs font-medium text-ink/65">hoặc</span>
               <span className="h-px flex-1 bg-black/10" />
             </div>
           )}
@@ -157,7 +157,7 @@ export default function LoginPanel({
 
       {providers.phone && (step === "phone" ? (
         <div className="flex flex-col gap-3">
-          <label htmlFor="phone" className="text-2xs font-medium text-ink/50">
+          <label htmlFor="phone" className="text-2xs font-medium text-ink/65">
             Số điện thoại — mã xác thực gửi qua Zalo
           </label>
           <div className="relative">
@@ -199,7 +199,7 @@ export default function LoginPanel({
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          <label htmlFor="code" className="text-2xs font-medium text-ink/50">
+          <label htmlFor="code" className="text-2xs font-medium text-ink/65">
             Nhập {OTP_LENGTH} số vừa nhận
           </label>
           <input
@@ -238,7 +238,7 @@ export default function LoginPanel({
                 setError(null);
                 setNotice(null);
               }}
-              className="text-2xs font-medium text-ink/50 hover:text-brand cursor-pointer"
+              className="text-2xs font-medium text-ink/65 hover:text-brand cursor-pointer"
             >
               Đổi số khác
             </button>
@@ -254,7 +254,7 @@ export default function LoginPanel({
         </div>
       ))}
 
-      {providers.phone && notice && <p className="text-2xs text-ink/55 leading-relaxed">{notice}</p>}
+      {providers.phone && notice && <p className="text-2xs text-ink/65 leading-relaxed">{notice}</p>}
 
       {error && (
         <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-700">

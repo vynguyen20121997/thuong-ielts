@@ -78,12 +78,12 @@ export default function VaoBangTen({
         <>
           <div className="flex items-center gap-3">
             <span className="h-px flex-1 bg-black/10" />
-            <span className="text-2xs font-medium text-ink/40">hoặc</span>
+            <span className="text-2xs font-medium text-ink/65">hoặc</span>
             <span className="h-px flex-1 bg-black/10" />
           </div>
 
           <div className="flex flex-col gap-2.5">
-            <label htmlFor="ten" className="text-2xs font-medium text-ink/50">
+            <label htmlFor="ten" className="text-2xs font-medium text-ink/65">
               Gõ tên để vào ngay — kết quả buổi này chỉ giữ trong 1 ngày
             </label>
             <input

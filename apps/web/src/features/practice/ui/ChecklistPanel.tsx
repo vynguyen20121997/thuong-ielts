@@ -51,7 +51,7 @@ function CheckRow({ check }: { check: CheckResult }) {
         ? { icon: X, ring: "bg-warn-soft text-warn", text: "text-ink" }
         : {
             icon: CircleHelp,
-            ring: "bg-black/[0.05] text-ink/65",
+            ring: "bg-black/[0.05] text-ink/75",
             text: "text-ink/70",
           };
   const Icon = tone.icon;

@@ -217,7 +217,7 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center rounded-3xl border border-sage-3 bg-mist-3">
-        <p className="text-sm font-medium text-ink/55">Đang xếp bài…</p>
+        <p className="text-sm font-medium text-ink/65">Đang xếp bài…</p>
       </div>
     );
   }
@@ -283,17 +283,17 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
             {deck.topic}
           </span>
         )}
-        <span className="max-w-[240px] truncate text-2xs font-semibold text-ink/50">
+        <span className="max-w-[240px] truncate text-2xs font-semibold text-ink/65">
           {deck.name}
         </span>
-        <span className="ml-auto font-mono text-2xs font-bold text-ink/55">
+        <span className="ml-auto font-mono text-2xs font-bold text-ink/65">
           {index + 1} / {stack.length}
         </span>
         <button
           type="button"
           onClick={onClose}
           aria-label="Dừng buổi ôn"
-          className="rounded-lg border border-sage-3 p-1.5 text-ink/45 hover:text-brand"
+          className="rounded-lg border border-sage-3 p-1.5 text-ink/65 hover:text-brand"
         >
           <X size={15} />
         </button>
@@ -313,14 +313,14 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
         <div className="flex flex-col gap-6">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <span className="text-2xs font-extrabold uppercase tracking-[0.14em] text-ink/45">
+              <span className="text-2xs font-extrabold uppercase tracking-[0.14em] text-ink/65">
                 Nhớ lại nghĩa trước khi lật
               </span>
               <h1 className="mt-2 break-words text-4xl font-semibold tracking-tight text-brand md:text-5xl">
                 {card.word}
               </h1>
               {card.ipa && (
-                <p className="mt-1 font-mono text-base text-ink/50">
+                <p className="mt-1 font-mono text-base text-ink/65">
                   {card.ipa}
                 </p>
               )}
@@ -330,7 +330,7 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
 
           {card.examples.length > 0 && (
             <div className="flex flex-col gap-3 border-t border-sage pt-5">
-              <h4 className="text-2xs font-extrabold uppercase tracking-[0.14em] text-ink/45">
+              <h4 className="text-2xs font-extrabold uppercase tracking-[0.14em] text-ink/65">
                 Câu ví dụ
               </h4>
               <ul className="flex flex-col gap-3">

@@ -140,7 +140,7 @@ export default function TopicDraw() {
 
           <div className="grid gap-5 md:grid-cols-[1.2fr_1fr]">
             <section className="flex flex-col gap-3 rounded-2xl border border-sage-3 bg-white p-5">
-              <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/55">
+              <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                 Kiến thức nền · đọc trong lúc chờ
               </p>
               <h2 className="text-base font-extrabold">{pack.headline}</h2>
@@ -164,7 +164,7 @@ export default function TopicDraw() {
                     <span>
                       <b className="text-sm">{v.word}</b>{" "}
                       {v.ipa && (
-                        <span className="text-2xs text-ink/55">{v.ipa}</span>
+                        <span className="text-2xs text-ink/65">{v.ipa}</span>
                       )}
                     </span>
                     <span className="text-2xs text-ink/60">{v.meaning}</span>
@@ -182,7 +182,7 @@ export default function TopicDraw() {
 
       {pack && phase === "qa" && (
         <section className="flex flex-col gap-4 rounded-2xl border border-sage-3 bg-white p-6">
-          <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/55">
+          <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/65">
             Q&amp;A · {pack.topic} · câu {qIndex + 1} / {pack.questions.length}
           </p>
           <h1 className="text-2xl font-extrabold leading-snug text-brand">

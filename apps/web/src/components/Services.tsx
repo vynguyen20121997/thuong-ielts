@@ -183,7 +183,7 @@ export default function Services() {
                   >
                     {getIcon(course.id)}
                   </div>
-                  <span className="text-2xs text-ink/50 bg-black/5 border border-black/5 px-2.5 py-1 rounded-full font-medium">
+                  <span className="text-2xs text-ink/65 bg-black/5 border border-black/5 px-2.5 py-1 rounded-full font-medium">
                     {course.duration}
                   </span>
                 </div>

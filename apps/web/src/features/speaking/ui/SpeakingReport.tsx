@@ -117,7 +117,35 @@ export default function SpeakingReport({
           <ol className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
             {SPEAKING_CRITERIA.map((c) => {
               const s = graded.criteria.find((x) => x.id === c.id);
-              if (!s) return null;
+              /*
+                Tiêu chí không chấm được (Phát âm, khi chỉ có bản ghi chữ) vẫn
+                phải có ô riêng. Bỏ hẳn ô đi thì bảng còn ba thẻ và học sinh
+                đọc như thể mình được chấm đủ — mà điền vào đó một con số đoán
+                ra còn tệ hơn.
+              */
+              if (!s)
+                return (
+                  <li
+                    key={c.id}
+                    className="rounded-[13px] border border-dashed border-sage-3 bg-mist-3 p-3.5"
+                  >
+                    <p className="flex items-baseline justify-between gap-2">
+                      <b className="font-mono text-2xs font-extrabold tracking-wider">
+                        {c.id}
+                      </b>
+                      <span className="text-2xs font-bold text-ink/45">
+                        chưa chấm
+                      </span>
+                    </p>
+                    <span
+                      className="my-2 block h-1.5 rounded-full bg-sage-2"
+                      aria-hidden
+                    />
+                    <p className="text-2xs leading-snug text-ink/60">
+                      {c.label} · {c.needsAudio ? "cần nghe" : "thiếu dữ liệu"}
+                    </p>
+                  </li>
+                );
               const weak = s.band < 6;
               return (
                 <li
@@ -181,7 +209,7 @@ export default function SpeakingReport({
                   <li key={c.id} className="rounded-xl bg-mist-3 px-4 py-3">
                     <p className="flex flex-wrap items-baseline gap-2">
                       <b className="text-sm font-bold">{c.label}</b>
-                      <em className="text-2xs not-italic text-ink/50">
+                      <em className="text-2xs not-italic text-ink/65">
                         {c.english}
                       </em>
                       <span className="ml-auto font-mono text-base font-extrabold text-brand">
@@ -212,7 +240,7 @@ export default function SpeakingReport({
                   preload="metadata"
                 />
               )}
-              <p className="mb-2 text-2xs font-extrabold uppercase tracking-wider text-ink/55">
+              <p className="mb-2 text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                 Máy nhận dạng, có thể sai vài từ ·{" "}
                 {formatClock(graded.durationSeconds)}
               </p>
@@ -247,9 +275,16 @@ export default function SpeakingReport({
             </ul>
           )}
 
-          <p className="mt-4 text-2xs leading-relaxed text-ink/55">
+          <p className="mt-4 text-2xs leading-relaxed text-ink/65">
             Band trên đây chỉ tính riêng một câu trả lời, không phải band
             Speaking thi thật — một bài thi thật gồm ba part và mười mấy câu.
+            {graded.overall == null && (
+              <>
+                {" "}
+                Chưa có band tổng vì còn thiếu một tiêu chí: trung bình của ba
+                tiêu chí không phải band bốn tiêu chí, nên thà để trống.
+              </>
+            )}
           </p>
         </>
       )}

@@ -3,14 +3,17 @@ import type {
   SpeakingGrader,
   TopicProvider,
 } from "../application/ports";
-import { stubGrader, stubIdeaCoach, stubTopicProvider } from "./stubs";
+import { apiGrader } from "./speakingApi";
+import { stubIdeaCoach, stubTopicProvider } from "./stubs";
 
 /*
   Điểm nối duy nhất giữa UI và "cục logic".
 
-  Nối bộ chấm thật: viết `speakingApi.ts` cài đặt cùng ba cổng (gọi route
-  server), rồi đổi ba dòng dưới. Không file UI nào import thẳng từ `stubs.ts`.
+  `grader` đã nối thật (`speakingApi.ts` → `/api/speaking/grade`) cho phần
+  chấm được từ bản ghi chữ. Hai cổng còn lại vẫn là bản tạm; nối chúng cũng
+  theo cách đó — viết một file cài đặt cùng cổng rồi đổi một dòng dưới đây.
+  Không file UI nào import thẳng từ `stubs.ts`.
 */
-export const grader: SpeakingGrader = stubGrader;
+export const grader: SpeakingGrader = apiGrader;
 export const ideaCoach: IdeaCoach = stubIdeaCoach;
 export const topicProvider: TopicProvider = stubTopicProvider;

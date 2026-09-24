@@ -96,7 +96,7 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
           >
             <span
               className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                section === id ? "bg-brand text-white" : "bg-mist text-ink/50"
+                section === id ? "bg-brand text-white" : "bg-mist text-ink/65"
               }`}
             >
               <Icon size={15} />
@@ -110,13 +110,13 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
         {section === "analysis" && (
           <div className="flex flex-col gap-4">
             <section className="rounded-2xl border border-sage-3 bg-white p-5">
-              <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/45">
+              <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                 Dạng đề
               </p>
               <h3 className="mt-1 text-lg font-extrabold text-brand">
                 {analysis.type.label}
               </h3>
-              <p className="mt-3 text-2xs font-extrabold uppercase tracking-wider text-ink/45">
+              <p className="mt-3 text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                 Bài phải có đủ
               </p>
               <ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm leading-relaxed">
@@ -131,7 +131,7 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
             </section>
 
             <section className="rounded-2xl border border-sage-3 bg-white p-5">
-              <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/45">
+              <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                 Từng yêu cầu của đề
               </p>
               <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm leading-relaxed">
@@ -141,7 +141,7 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
               </ol>
               {analysis.keyPhrases.length > 0 && (
                 <>
-                  <p className="mt-4 text-2xs font-extrabold uppercase tracking-wider text-ink/45">
+                  <p className="mt-4 text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                     Từ khoá — phải nhắc lại trong bài, bằng cách diễn đạt khác
                   </p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
@@ -188,19 +188,19 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
                     </p>
                     <dl className="mt-3 grid gap-2.5 text-sm leading-relaxed">
                       <div>
-                        <dt className="text-2xs font-bold text-ink/50">
+                        <dt className="text-2xs font-bold text-ink/65">
                           Point — câu mở ý
                         </dt>
                         <dd className="mt-0.5">{idea.starter}</dd>
                       </div>
                       <div>
-                        <dt className="text-2xs font-bold text-ink/50">
+                        <dt className="text-2xs font-bold text-ink/65">
                           Explain — giải thích
                         </dt>
                         <dd className="mt-0.5">{idea.explain}</dd>
                       </div>
                       <div>
-                        <dt className="text-2xs font-bold text-ink/50">
+                        <dt className="text-2xs font-bold text-ink/65">
                           Example — ví dụ
                         </dt>
                         <dd className="mt-0.5">{idea.example}</dd>
@@ -208,7 +208,7 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
                     </dl>
                     {idea.questions.length > 0 && (
                       <div className="mt-3 rounded-xl bg-mist-3 px-4 py-3">
-                        <p className="text-2xs font-bold text-ink/55">
+                        <p className="text-2xs font-bold text-ink/65">
                           Tự hỏi để ý thành của mình
                         </p>
                         <ul className="mt-1 list-disc space-y-1 pl-4 text-sm leading-relaxed text-ink/75">
@@ -225,7 +225,7 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
 
             {data.knowledge.length > 0 && (
               <section className="rounded-2xl border border-sage-3 bg-white p-5">
-                <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/45">
+                <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                   Kiến thức nền cho chủ đề này
                 </p>
                 <ul className="mt-2 flex flex-col gap-2">
@@ -258,7 +258,7 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
                   key={i}
                   className="rounded-2xl border border-sage-3 bg-white p-5"
                 >
-                  <p className="text-2xs font-bold text-ink/50">Câu của bạn</p>
+                  <p className="text-2xs font-bold text-ink/65">Câu của bạn</p>
                   <p className="mt-1 text-sm leading-relaxed text-ink/70">
                     {u.original}
                   </p>
@@ -289,7 +289,7 @@ export default function EssayCoachPanel({ data }: { data: CoachData }) {
                   <p className="flex flex-wrap items-baseline gap-2">
                     <b className="text-[15px]">{v.word}</b>
                     {v.ipa && (
-                      <span className="font-mono text-2xs text-ink/50">
+                      <span className="font-mono text-2xs text-ink/65">
                         {v.ipa}
                       </span>
                     )}

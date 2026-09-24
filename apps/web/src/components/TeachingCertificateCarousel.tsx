@@ -52,7 +52,7 @@ export default function TeachingCertificateCarousel({ certificates }: { certific
 
         <div key={certificate.title} className="px-1 pb-1 pt-6 sm:p-0" aria-live="polite">
           <h3 className="text-xl font-bold text-brand md:text-2xl">{certificate.title}</h3>
-          <p className="mt-4 text-sm leading-relaxed text-brand/75 md:text-base">{certificate.description}</p>
+          <p className="mt-4 text-sm leading-relaxed text-brand/80 md:text-base">{certificate.description}</p>
         </div>
       </article>
 

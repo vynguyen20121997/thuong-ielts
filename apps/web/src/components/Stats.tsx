@@ -249,7 +249,7 @@ export default function Stats() {
 
         {/* Small quote inside stats */}
         <div className="divider-line h-px bg-black/10 w-full mt-16 mb-8" />
-        <p className="text-2xs text-ink/40 text-center font-medium">
+        <p className="text-2xs text-ink/65 text-center font-medium">
           * Điểm số được kiểm chứng thực tế và cập nhật định kỳ hàng năm.
         </p>
       </div>

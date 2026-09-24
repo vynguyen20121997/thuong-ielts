@@ -404,12 +404,12 @@ export default function TeachingMethodPage() {
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-brand leading-[1.15] mb-6">
             Phương Pháp Giảng Dạy
           </h1>
-          <p className="text-brand/75 text-base leading-relaxed mb-4">
+          <p className="text-brand/80 text-base leading-relaxed mb-4">
             IELTS không chỉ là một bài kiểm tra kiến thức tiếng Anh. Để đạt được band điểm mong
             muốn, học sinh cần đồng thời phát triển năng lực ngôn ngữ, kỹ năng xử lý từng dạng bài
             và khả năng nhận ra – sửa chữa lỗi của chính mình.
           </p>
-          <p className="text-brand/75 text-base leading-relaxed mb-6">
+          <p className="text-brand/80 text-base leading-relaxed mb-6">
             Vì vậy, các khóa học của mình không được xây dựng xoay quanh việc làm thật nhiều đề
             hay ghi nhớ càng nhiều tips càng tốt. Thay vào đó, mỗi kỹ năng đều đi theo một quá
             trình:
@@ -433,7 +433,7 @@ export default function TeachingMethodPage() {
                     </span>
                   </div>
                   {!last && (
-                    <span className="flex h-6 w-8 shrink-0 items-center justify-center text-brand/65 md:w-7">
+                    <span className="flex h-6 w-8 shrink-0 items-center justify-center text-brand/80 md:w-7">
                       <ArrowRight
                         aria-hidden="true"
                         size={22}
@@ -448,7 +448,7 @@ export default function TeachingMethodPage() {
               );
             })}
           </ol>
-          <p className="text-brand/75 text-base leading-relaxed">
+          <p className="text-brand/80 text-base leading-relaxed">
             Mục tiêu cuối cùng là để học sinh hiểu mình đang làm gì, tại sao mình làm như vậy và
             phải điều chỉnh như thế nào khi gặp một bài mới.
           </p>
@@ -456,7 +456,7 @@ export default function TeachingMethodPage() {
 
         <section aria-label="Khám phá phương pháp theo kỹ năng" className="mb-16">
           <div className="border-t-2 border-brand/15 pt-8">
-            <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Khám phá theo kỹ năng</p>
+            <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/80">Khám phá theo kỹ năng</p>
             <h2 className="mt-2 text-2xl font-bold text-brand md:text-3xl">Chọn kỹ năng bạn muốn tìm hiểu</h2>
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               {SKILL_SECTIONS.map((section) => {

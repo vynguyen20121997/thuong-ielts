@@ -81,16 +81,27 @@ export default function VocabHome() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-end gap-4">
         <div>
-          <p className="mb-1 text-2xs font-extrabold uppercase tracking-[0.14em] text-brand-soft">
+          {/*
+            `h1` là TÊN TRANG, dòng to bên dưới là TRẠNG THÁI.
+
+            Trước đây ngược lại: `h1` mang câu "Đang xem lịch ôn…" rồi đổi
+            thành "Hôm nay có N thẻ đến hạn" khi dữ liệu về. Người dùng screen
+            reader mở trang nghe được đúng một câu chờ, và heading của trang
+            đổi chữ giữa chừng — không còn là cái mốc để nhảy tới.
+
+            Nhìn thì y hệt bản cũ. Chỉ khác: dòng trạng thái mang `aria-live`
+            nên lịch ôn tải xong là screen reader đọc luôn con số mới.
+          */}
+          <h1 className="mb-1 text-2xs font-extrabold uppercase tracking-[0.14em] text-brand-soft">
             Học từ vựng
-          </p>
-          <h1 className="text-3xl font-extrabold text-brand">
+          </h1>
+          <p aria-live="polite" className="text-3xl font-extrabold text-brand">
             {loading
               ? "Đang xem lịch ôn…"
               : stats.dueCount > 0
                 ? `Hôm nay có ${stats.dueCount} thẻ đến hạn`
                 : "Hôm nay không có thẻ nào đến hạn"}
-          </h1>
+          </p>
         </div>
         <div className="ml-auto flex flex-wrap gap-3">
           <button
@@ -136,7 +147,7 @@ export default function VocabHome() {
             key={s.label}
             className="rounded-2xl border border-sage-3 bg-white p-4"
           >
-            <p className="flex items-center gap-1.5 text-2xs font-bold text-ink/55">
+            <p className="flex items-center gap-1.5 text-2xs font-bold text-ink/65">
               {s.Icon && <s.Icon size={13} />}
               {s.label}
             </p>
@@ -151,7 +162,7 @@ export default function VocabHome() {
 
       {stats.dailyReviews.length > 0 && (
         <section className="rounded-2xl border border-sage-3 bg-white p-5">
-          <p className="mb-4 text-2xs font-extrabold uppercase tracking-[0.14em] text-ink/45">
+          <p className="mb-4 text-2xs font-extrabold uppercase tracking-[0.14em] text-ink/65">
             Bảy ngày gần nhất · {stats.totalLogsCount} lượt ôn tất cả
           </p>
           <ul className="flex items-end gap-2" style={{ height: 96 }}>
@@ -164,7 +175,7 @@ export default function VocabHome() {
                   }}
                   aria-hidden
                 />
-                <span className="text-2xs font-semibold text-ink/50">
+                <span className="text-2xs font-semibold text-ink/65">
                   {d.date}
                 </span>
                 <span className="font-mono text-2xs font-bold text-ink/70">
@@ -204,7 +215,7 @@ export default function VocabHome() {
                     </span>
                   </div>
                   {deck.description && (
-                    <p className="text-2xs text-ink/55">{deck.description}</p>
+                    <p className="text-2xs text-ink/65">{deck.description}</p>
                   )}
                   <span
                     className="block h-1.5 rounded-full bg-sage-2"
@@ -215,7 +226,7 @@ export default function VocabHome() {
                       style={{ width: `${percentage}%` }}
                     />
                   </span>
-                  <p className="text-2xs text-ink/55">
+                  <p className="text-2xs text-ink/65">
                     {learnedCount} / {totalCards} thẻ đã ôn
                   </p>
                   <div className="mt-1 flex flex-wrap gap-2">
@@ -312,7 +323,7 @@ function CreateDeck({
         />
         <label className="mt-3 block text-sm font-bold" htmlFor="deck-topic">
           Chủ đề{" "}
-          <span className="font-normal text-ink/50">(không bắt buộc)</span>
+          <span className="font-normal text-ink/65">(không bắt buộc)</span>
         </label>
         <input
           id="deck-topic"

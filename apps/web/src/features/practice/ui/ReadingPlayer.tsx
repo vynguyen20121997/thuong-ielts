@@ -174,7 +174,7 @@ export default function ReadingPlayer({
             </div>
 
             <span
-              className={`flex items-center gap-1.5 font-mono text-sm font-bold px-3 py-1.5 rounded-full tabular-nums ${isReview ? "bg-black/[0.05] text-ink/65" : lowTime ? "bg-red-50 text-red-600 border border-red-200" : "bg-white border border-black/10 text-brand"}`}
+              className={`flex items-center gap-1.5 font-mono text-sm font-bold px-3 py-1.5 rounded-full tabular-nums ${isReview ? "bg-black/[0.05] text-ink/75" : lowTime ? "bg-red-50 text-red-600 border border-red-200" : "bg-white border border-black/10 text-brand"}`}
             >
               <Timer size={14} />
               {timed ? formatClock(session.remainingSeconds) : "Không giới hạn"}

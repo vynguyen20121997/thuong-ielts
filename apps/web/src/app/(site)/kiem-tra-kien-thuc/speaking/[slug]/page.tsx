@@ -53,7 +53,7 @@ export default async function SpeakingRecordPage({
   return (
     <main className="relative z-10 min-h-screen bg-white pb-20 pt-24 md:pt-28">
       <div className="mx-auto max-w-7xl gutter">
-        <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-2xs font-medium text-ink/40">
+        <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-2xs font-medium text-ink/65">
           <Link
             href="/kiem-tra-kien-thuc"
             className="transition-colors hover:text-brand"
@@ -71,7 +71,7 @@ export default async function SpeakingRecordPage({
           <span className="text-brand">
             Part {q.part} · {q.topic}
           </span>
-          <span className="ml-auto font-mono font-bold text-ink/50">
+          <span className="ml-auto font-mono font-bold text-ink/65">
             Bộ đề {q.set}
           </span>
         </nav>

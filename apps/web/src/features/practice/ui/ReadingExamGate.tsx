@@ -179,7 +179,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
               key={label}
               className="px-4 py-5 flex flex-col items-center gap-1"
             >
-              <Icon size={15} className="text-brand/50" />
+              <Icon size={15} className="text-brand/80" />
               <span className="text-2xl font-bold text-ink leading-none tabular-nums">
                 {value}
               </span>
@@ -253,7 +253,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
                     key={part.label}
                     className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FAFAF8] px-3 py-2.5"
                   >
-                    <span className="font-mono text-2xs font-bold text-brand/40 tabular-nums">
+                    <span className="font-mono text-2xs font-bold text-brand/80 tabular-nums">
                       {index + 1}
                     </span>
                     <span className="flex-1 min-w-0 text-xs font-bold text-ink truncate">
@@ -274,7 +274,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
           </span>
           <ul className="mt-3 flex flex-col gap-2.5 text-sm text-ink/70">
             <li className="flex gap-2.5">
-              <Timer size={15} className="shrink-0 mt-0.5 text-brand/50" />
+              <Timer size={15} className="shrink-0 mt-0.5 text-brand/80" />
               <span>
                 {multi || practiceMode === "exam" ? (
                   <>
@@ -295,7 +295,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
             <li className="flex gap-2.5">
               <Highlighter
                 size={15}
-                className="shrink-0 mt-0.5 text-brand/50"
+                className="shrink-0 mt-0.5 text-brand/80"
               />
               <span>
                 Bôi đen chữ trong bài để tô màu hoặc đánh dấu câu cần quay lại,
@@ -303,7 +303,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
               </span>
             </li>
             <li className="flex gap-2.5">
-              <ListChecks size={15} className="shrink-0 mt-0.5 text-brand/50" />
+              <ListChecks size={15} className="shrink-0 mt-0.5 text-brand/80" />
               <span>
                 Nộp sớm lúc nào cũng được. Nộp xong mới hiện đáp án đúng
                 {multi ? " của cả ba passage" : ""}, kèm giải thích nếu đề có.

@@ -211,7 +211,7 @@ export default function TeachingTools({
                   className="mt-5 border-t border-brand/10 pt-5"
                 >
                   <p className="text-xl font-bold leading-snug text-brand">{shot.title}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-brand/60">{shot.detail}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-brand/80">{shot.detail}</p>
                 </motion.div>
               </AnimatePresence>
             </div>

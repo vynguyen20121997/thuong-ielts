@@ -171,12 +171,12 @@ export default function Feedback({
 
         {/* Cards: hai cột feedback chạy ngược chiều ở trang chủ, masonry ở trang riêng */}
         {isLoading ? (
-          <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/40 font-medium">
+          <div className="flex items-center justify-center gap-2 py-16 text-xs text-ink/65 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />
             Đang tải dữ liệu...
           </div>
         ) : feedbackItems.length === 0 ? (
-          <div className="text-center py-16 text-sm text-ink/50">
+          <div className="text-center py-16 text-sm text-ink/65">
             Chưa có dữ liệu cảm nhận.
           </div>
         ) : isPreview ? (
@@ -275,7 +275,7 @@ export default function Feedback({
                       {item.subject}
                     </p>
                     {item.date && (
-                      <span className="text-2xs text-ink/40 font-medium mt-2 block">
+                      <span className="text-2xs text-ink/65 font-medium mt-2 block">
                         {item.date}
                       </span>
                     )}
@@ -299,7 +299,7 @@ export default function Feedback({
             {hasMore && (
               <div
                 ref={loadMoreRef}
-                className="mt-12 flex items-center justify-center gap-2 text-xs text-ink/40 font-medium"
+                className="mt-12 flex items-center justify-center gap-2 text-xs text-ink/65 font-medium"
                 id="feedback-load-more"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-brand/40 animate-pulse" />

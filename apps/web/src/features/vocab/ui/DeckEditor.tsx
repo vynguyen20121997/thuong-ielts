@@ -139,7 +139,7 @@ export default function DeckEditor({
           <ArrowLeft size={15} /> Về trang từ vựng
         </button>
         <h1 className="text-xl font-extrabold text-brand">{deck.name}</h1>
-        <span className="ml-auto text-2xs font-semibold text-ink/55">
+        <span className="ml-auto text-2xs font-semibold text-ink/65">
           {cards.length} thẻ
         </span>
       </div>
@@ -231,7 +231,7 @@ export default function DeckEditor({
 
         <section className="flex flex-col gap-3">
           {loading ? (
-            <p className="rounded-2xl border border-sage-3 bg-mist-3 px-5 py-8 text-center text-sm text-ink/55">
+            <p className="rounded-2xl border border-sage-3 bg-mist-3 px-5 py-8 text-center text-sm text-ink/65">
               Đang tải thẻ…
             </p>
           ) : cards.length === 0 ? (
@@ -250,7 +250,7 @@ export default function DeckEditor({
                     <p className="flex flex-wrap items-baseline gap-2">
                       <b className="text-[15px]">{card.word}</b>
                       {card.ipa && (
-                        <span className="font-mono text-2xs text-ink/50">
+                        <span className="font-mono text-2xs text-ink/65">
                           {card.ipa}
                         </span>
                       )}
@@ -286,7 +286,7 @@ export default function DeckEditor({
                     type="button"
                     onClick={() => remove(card.id)}
                     aria-label={`Xoá thẻ ${card.word}`}
-                    className="h-fit rounded-lg border border-sage-3 p-2 text-ink/40 hover:border-warn/40 hover:text-warn"
+                    className="h-fit rounded-lg border border-sage-3 p-2 text-ink/65 hover:border-warn/40 hover:text-warn"
                   >
                     <Trash2 size={15} />
                   </button>

@@ -40,14 +40,14 @@ export default async function TrangLichSu() {
       <PageArch />
       <div className="relative z-10 mx-auto max-w-3xl gutter">
         <h1 className="text-4xl font-bold text-ink mb-2">Bài đã làm</h1>
-        <p className="text-sm text-ink/55 mb-8">
+        <p className="text-sm text-ink/65 mb-8">
           Toàn bộ bài Reading và Listening em đã làm trên trang này.
         </p>
 
         {luot.length === 0 ? (
           <div className="rounded-3xl border border-black/10 bg-white p-10 text-center">
             <p className="font-bold text-ink mb-1">Chưa có bài nào</p>
-            <p className="text-sm text-ink/50 mb-5">
+            <p className="text-sm text-ink/65 mb-5">
               Làm một đề rồi quay lại đây xem tiến bộ của mình nhé.
             </p>
             <Link
@@ -80,7 +80,7 @@ export default async function TrangLichSu() {
                 >
                   <span className="min-w-0 mr-auto">
                     <span className="block text-sm font-bold text-ink">{l.title}</span>
-                    <span className="block text-xs text-ink/45 mt-0.5">
+                    <span className="block text-xs text-ink/65 mt-0.5">
                       {l.skill === "listening" ? "Nghe" : "Đọc"} ·{" "}
                       {new Date(l.submittedAt).toLocaleDateString("vi-VN")} ·{" "}
                       {Math.round(l.elapsedSeconds / 60)} phút
@@ -88,13 +88,13 @@ export default async function TrangLichSu() {
                   </span>
 
                   {l.correct === null ? (
-                    <span className="rounded-lg bg-black/[0.05] px-2.5 py-1 text-xs font-semibold text-ink/50">
+                    <span className="rounded-lg bg-black/[0.05] px-2.5 py-1 text-xs font-semibold text-ink/65">
                       Chờ thầy cô trả điểm
                     </span>
                   ) : (
                     <span className="text-base font-bold tabular-nums text-ink">
                       {l.correct}
-                      <span className="text-ink/40 font-medium text-sm">/{l.total}</span>
+                      <span className="text-ink/65 font-medium text-sm">/{l.total}</span>
                     </span>
                   )}
 
@@ -107,7 +107,7 @@ export default async function TrangLichSu() {
               ))}
             </div>
 
-            <p className="text-xs text-ink/40 mt-5">
+            <p className="text-xs text-ink/65 mt-5">
               Band là ước tính quy đổi từ số câu đúng, không phải điểm thi thật.
             </p>
           </>
@@ -123,7 +123,7 @@ function Stat({ so, nhan }: { so: string; nhan: string }) {
       <b className="block text-2xl font-bold text-brand tabular-nums leading-tight">
         {so}
       </b>
-      <span className="block text-[10px] uppercase tracking-wider font-bold text-ink/40">
+      <span className="block text-[10px] uppercase tracking-wider font-bold text-ink/65">
         {nhan}
       </span>
     </span>

@@ -54,7 +54,7 @@ export default async function TrangVaoBangLink({
         <Khung tieuDe="Em đã làm bài này rồi">
           <p className="text-lg">
             Kết quả: <b className="tabular-nums">{cu.correct}</b>
-            <span className="text-ink/45">/{cu.total} câu</span>
+            <span className="text-ink/65">/{cu.total} câu</span>
             {cu.band !== null && (
               <>
                 {" "}
@@ -62,7 +62,7 @@ export default async function TrangVaoBangLink({
               </>
             )}
           </p>
-          <p className="text-sm text-ink/55">
+          <p className="text-sm text-ink/65">
             Buổi này thầy cô đặt mỗi bạn làm một lần. Muốn luyện thêm thì vào mục Kiểm tra kiến
             thức chọn đề khác.
           </p>

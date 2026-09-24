@@ -41,7 +41,7 @@ export default function QuestionField({
     >
       <div className="flex items-start gap-3">
         <span
-          className={`h-7 w-7 shrink-0 rounded-full flex items-center justify-center font-mono text-2xs font-bold ${state === "correct" ? "bg-leaf text-brand" : state === "wrong" ? "bg-red-100 text-red-600" : value.trim() ? "bg-brand text-white" : "bg-black/[0.06] text-ink/65"}`}
+          className={`h-7 w-7 shrink-0 rounded-full flex items-center justify-center font-mono text-2xs font-bold ${state === "correct" ? "bg-leaf text-brand" : state === "wrong" ? "bg-red-100 text-red-600" : value.trim() ? "bg-brand text-white" : "bg-black/[0.06] text-ink/75"}`}
         >
           {state === "correct" ? (
             <Check size={14} />

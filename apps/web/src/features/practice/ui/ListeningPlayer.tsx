@@ -350,6 +350,15 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
 
         {current && (
           <>
+            {/*
+              `h1` của phòng thi, chỉ screen reader đọc.
+
+              Vào bài là `body.exam-mode` giấu hết phần còn lại của trang, nên
+              tiêu đề đề bài biến mất và cả trang không còn heading cấp một —
+              người dùng nhảy theo heading không biết mình đang ở đề nào. Chữ
+              hiện ra không đổi.
+            */}
+            <h1 className="sr-only">{test.title}</h1>
             <div className="mt-5 rounded-xl bg-[#EFEFEA] px-5 py-5">
               <h2 className="text-2xl font-bold tracking-tight text-ink">
                 Part {current.section}

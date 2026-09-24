@@ -28,11 +28,11 @@ function StorySection({ id, number, title, eyebrow, paragraphs, icon: Icon }: { 
   return (
     <section id={id} className="scroll-mt-28 border-t-2 border-brand/15 py-16 md:py-20">
       <div className="grid gap-8 lg:grid-cols-[190px_1fr]">
-        <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/45">{number}</span><span className="mt-5 flex h-11 w-11 items-center justify-center rounded-full bg-leaf text-brand"><Icon size={20} /></span></div>
+        <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/80">{number}</span><span className="mt-5 flex h-11 w-11 items-center justify-center rounded-full bg-leaf text-brand"><Icon size={20} /></span></div>
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">{eyebrow}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/80">{eyebrow}</p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-brand md:text-4xl">{title}</h2>
-          <div className="mt-8 space-y-5 text-base leading-relaxed text-brand/75 md:text-lg">{paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+          <div className="mt-8 space-y-5 text-base leading-relaxed text-brand/80 md:text-lg">{paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
         </div>
       </div>
     </section>
@@ -47,10 +47,10 @@ export default function About() {
         <div className="absolute -right-24 top-8 h-80 w-80 rounded-full bg-leaf/35 blur-3xl" />
         <div className="relative z-10 mx-auto grid max-w-7xl gap-12 pb-16 pt-28 md:pb-24 md:pt-32 lg:grid-cols-[1.05fr_0.95fr] lg:items-center gutter">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Về giáo viên</p>
+            <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/80">Về giáo viên</p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight text-brand md:text-6xl">Hồ Ngọc Thương</h1>
-            <p className="mt-4 text-lg font-semibold text-brand/75">IELTS Teacher · CELTA-certified</p>
-            <div className="mt-8 max-w-xl space-y-4 text-base leading-relaxed text-brand/75 md:text-lg">
+            <p className="mt-4 text-lg font-semibold text-brand/80">IELTS Teacher · CELTA-certified</p>
+            <div className="mt-8 max-w-xl space-y-4 text-base leading-relaxed text-brand/80 md:text-lg">
               <p>Mình là Hồ Ngọc Thương, giáo viên IELTS với định hướng giảng dạy tập trung vào hiểu bản chất – luyện tập có mục tiêu – theo dõi tiến bộ bằng dữ liệu.</p>
               <p>Thay vì chỉ cung cấp mẹo làm bài hoặc những công thức có sẵn, mình muốn học viên hiểu mình đang sai ở đâu, vì sao sai và cần làm gì tiếp theo để tiến bộ.</p>
             </div>
@@ -72,22 +72,22 @@ export default function About() {
 
         <section className="scroll-mt-28 border-t-2 border-brand/15 py-16 md:py-20">
           <div className="grid gap-8 lg:grid-cols-[190px_1fr]">
-            <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/45">03</span></div>
+            <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/80">03</span></div>
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Quan điểm giảng dạy</p>
+              <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/80">Quan điểm giảng dạy</p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-brand md:text-4xl">Hiệu quả – Đồng hành – Không ngừng cải thiện</h2>
-              <div className="mt-8 grid gap-4">{PRINCIPLES.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-brand/10 bg-mist p-6"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-leaf text-brand"><Icon size={19} /></span><h3 className="mt-4 text-lg font-bold text-brand">{title}</h3><p className="mt-2 text-sm leading-relaxed text-brand/75 md:text-base">{text}</p></article>)}</div>
+              <div className="mt-8 grid gap-4">{PRINCIPLES.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-brand/10 bg-mist p-6"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-leaf text-brand"><Icon size={19} /></span><h3 className="mt-4 text-lg font-bold text-brand">{title}</h3><p className="mt-2 text-sm leading-relaxed text-brand/80 md:text-base">{text}</p></article>)}</div>
             </div>
           </div>
         </section>
 
         <section className="border-t-2 border-brand/15 py-16 md:py-20">
           <div className="grid gap-8 lg:grid-cols-[190px_1fr]">
-            <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/45">04</span></div>
+            <div><span className="font-mono text-sm font-bold tracking-[0.12em] text-brand/80">04</span></div>
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Lời khuyên dành cho học viên</p>
+              <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/80">Lời khuyên dành cho học viên</p>
               <blockquote className="mt-5 border-l-4 border-leaf pl-6"><p className="text-2xl font-bold italic leading-snug text-brand md:text-3xl">“It’s all about the journey, not the destination.”</p></blockquote>
-              <div className="mt-7 space-y-4 text-base leading-relaxed text-brand/75 md:text-lg"><p>Đừng chỉ nhìn vào band điểm cuối cùng. Hãy cố gắng tiến bộ hơn chính mình một chút mỗi ngày, trân trọng những thành quả nhỏ và xem mỗi lỗi sai hay lần thất bại là một cơ hội để học thêm điều gì đó.</p><p>Chỉ cần tiếp tục tiến về phía trước, kết quả sẽ đến như một hệ quả của cả quá trình.</p></div>
+              <div className="mt-7 space-y-4 text-base leading-relaxed text-brand/80 md:text-lg"><p>Đừng chỉ nhìn vào band điểm cuối cùng. Hãy cố gắng tiến bộ hơn chính mình một chút mỗi ngày, trân trọng những thành quả nhỏ và xem mỗi lỗi sai hay lần thất bại là một cơ hội để học thêm điều gì đó.</p><p>Chỉ cần tiếp tục tiến về phía trước, kết quả sẽ đến như một hệ quả của cả quá trình.</p></div>
             </div>
           </div>
         </section>

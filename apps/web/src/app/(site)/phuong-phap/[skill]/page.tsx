@@ -75,7 +75,7 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
       <div className="relative z-10 mx-auto max-w-4xl gutter">
         <Link
           href="/phuong-phap"
-          className="group inline-flex items-center gap-2 text-sm font-bold text-brand/70 transition-colors hover:text-brand"
+          className="group inline-flex items-center gap-2 text-sm font-bold text-brand/80 transition-colors hover:text-brand"
         >
           <ArrowLeft size={17} className="transition-transform group-hover:-translate-x-1" />
           Phương pháp giảng dạy
@@ -103,21 +103,21 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
                 )}
                 <div className="min-w-0 flex-1">
                   <h2 className="mb-4 text-lg font-bold text-brand md:text-xl">
-                    <span className="mr-2 text-brand/60">{itemIndex + 1}.</span>
+                    <span className="mr-2 text-brand/80">{itemIndex + 1}.</span>
                     {item.title}
                   </h2>
                   {item.paras?.map((paragraph, index) => (
-                    <p key={`${item.title}-para-${index}`} className="mb-3 text-sm leading-relaxed text-brand/75 md:text-base">
+                    <p key={`${item.title}-para-${index}`} className="mb-3 text-sm leading-relaxed text-brand/80 md:text-base">
                       {paragraph}
                     </p>
                   ))}
                   {item.bullets && (
-                    <ul className="mb-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-brand/75 marker:text-brand md:text-base">
+                    <ul className="mb-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-brand/80 marker:text-brand md:text-base">
                       {item.bullets.map((bullet, index) => <li key={`${item.title}-bullet-${index}`}>{bullet}</li>)}
                     </ul>
                   )}
                   {item.after?.map((paragraph, index) => (
-                    <p key={`${item.title}-after-${index}`} className="mb-3 text-sm leading-relaxed text-brand/75 last:mb-0 md:text-base">
+                    <p key={`${item.title}-after-${index}`} className="mb-3 text-sm leading-relaxed text-brand/80 last:mb-0 md:text-base">
                       {paragraph}
                     </p>
                   ))}
@@ -128,7 +128,7 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
         </div>
 
         <nav aria-label="Các kỹ năng khác" className="mt-14 border-t-2 border-brand/15 pt-8">
-          <p className="mb-4 text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Khám phá kỹ năng khác</p>
+          <p className="mb-4 text-sm font-bold uppercase tracking-[0.12em] text-brand/80">Khám phá kỹ năng khác</p>
           <div className="grid gap-3 sm:grid-cols-2">
             {SKILL_SECTIONS.filter(({ id }) => id !== section.id).map((other) => (
               <Link

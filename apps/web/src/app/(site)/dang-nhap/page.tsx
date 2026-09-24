@@ -72,14 +72,14 @@ export default async function LoginPage({
         <p className="text-center mt-6">
           <Link
             href="/phong-luyen-tap"
-            className="inline-flex items-center gap-1.5 text-2xs font-medium text-ink/50 hover:text-brand transition-colors"
+            className="inline-flex items-center gap-1.5 text-2xs font-medium text-ink/65 hover:text-brand transition-colors"
           >
             <ArrowLeft size={13} />
             Quay lại xem các đề
           </Link>
         </p>
 
-        <p className="text-2xs text-ink/40 text-center mt-5 leading-relaxed">
+        <p className="text-2xs text-ink/65 text-center mt-5 leading-relaxed">
           Đăng nhập nghĩa là bạn đồng ý để HNT.IELTS lưu tên, ảnh đại diện và kết quả làm bài của
           mình.
         </p>

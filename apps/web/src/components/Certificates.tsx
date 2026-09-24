@@ -209,7 +209,7 @@ export default function Certificates() {
                   className="mt-5 border-t border-brand/10 pt-5"
                 >
                   <p className="text-xl font-bold leading-snug text-brand">{cert.title}</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-brand/60">{cert.detail}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-brand/80">{cert.detail}</p>
                 </motion.div>
               </AnimatePresence>
             </div>

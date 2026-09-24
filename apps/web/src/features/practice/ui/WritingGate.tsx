@@ -80,7 +80,7 @@ export default function WritingGate({
     <div className="max-w-3xl mx-auto">
       <Link
         href="/kiem-tra-kien-thuc/writing"
-        className="inline-flex items-center gap-2 text-2xs font-medium text-ink/45 hover:text-brand transition-colors"
+        className="inline-flex items-center gap-2 text-2xs font-medium text-ink/65 hover:text-brand transition-colors"
       >
         <ArrowLeft size={13} />
         Danh sách đề
@@ -120,11 +120,11 @@ export default function WritingGate({
               key={label}
               className="px-4 py-5 flex flex-col items-center gap-1"
             >
-              <Icon size={15} className="text-brand/50" />
+              <Icon size={15} className="text-brand/80" />
               <span className="text-2xl font-bold text-ink leading-none tabular-nums">
                 {value}
               </span>
-              <span className="text-2xs text-ink/40 font-medium">{label}</span>
+              <span className="text-2xs text-ink/65 font-medium">{label}</span>
             </div>
           ))}
         </div>
@@ -141,7 +141,7 @@ export default function WritingGate({
           </span>
           <ul className="mt-3 flex flex-col gap-2.5 text-sm text-ink/70">
             <li className="flex gap-2.5">
-              <Clock size={15} className="shrink-0 mt-0.5 text-brand/50" />
+              <Clock size={15} className="shrink-0 mt-0.5 text-brand/80" />
               <span>
                 Đồng hồ <b className="text-ink">chỉ chạy sau khi bấm bắt đầu</b>
                 , không chạy trong lúc đọc trang này. Hết {WRITING_MINUTES} phút
@@ -150,7 +150,7 @@ export default function WritingGate({
               </span>
             </li>
             <li className="flex gap-2.5">
-              <Lightbulb size={15} className="shrink-0 mt-0.5 text-brand/50" />
+              <Lightbulb size={15} className="shrink-0 mt-0.5 text-brand/80" />
               <span>
                 Bí ý thì cứ dừng bút. Sau khoảng mười giây không gõ, bảng bên
                 phải sẽ gợi{" "}
@@ -159,7 +159,7 @@ export default function WritingGate({
               </span>
             </li>
             <li className="flex gap-2.5">
-              <PenLine size={15} className="shrink-0 mt-0.5 text-brand/50" />
+              <PenLine size={15} className="shrink-0 mt-0.5 text-brand/80" />
               <span>
                 Viết xong bấm <b className="text-ink">Kiểm tra nháp</b> để soi
                 lỗi bố cục, lạc đề, thiếu ví dụ. Phần này{" "}
@@ -199,7 +199,7 @@ export default function WritingGate({
                 setDraft(null);
                 start(false);
               }}
-              className="mt-2 w-full flex items-center justify-center gap-1.5 py-3 text-2xs font-medium text-ink/50 hover:text-brand cursor-pointer transition-colors"
+              className="mt-2 w-full flex items-center justify-center gap-1.5 py-3 text-2xs font-medium text-ink/65 hover:text-brand cursor-pointer transition-colors"
             >
               <RotateCcw size={12} />
               Bỏ bài dở, viết lại từ đầu

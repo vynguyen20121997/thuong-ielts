@@ -57,7 +57,7 @@ export default function IdeaCoach({
   return (
     <div className="flex flex-col gap-5">
       <section className="rounded-2xl border border-sage-3 bg-white px-6 py-5">
-        <p className="mb-1.5 flex items-center gap-3 text-2xs font-extrabold uppercase tracking-wider text-ink/55">
+        <p className="mb-1.5 flex items-center gap-3 text-2xs font-extrabold uppercase tracking-wider text-ink/65">
           Câu hỏi · Part {question.part} · {question.topic}
           <button
             type="button"
@@ -151,7 +151,7 @@ export default function IdeaCoach({
           {!seeds && feedback && (
             <>
               <div className="rounded-xl bg-white px-4 py-3.5">
-                <p className="mb-1.5 text-2xs font-bold text-ink/55">
+                <p className="mb-1.5 text-2xs font-bold text-ink/65">
                   Ý của bạn, nói lại cho tròn câu
                 </p>
                 <p className="text-sm leading-relaxed">{feedback.reshaped}</p>
@@ -166,7 +166,7 @@ export default function IdeaCoach({
               )}
               {feedback.vocab.length > 0 && (
                 <div>
-                  <p className="mb-2 text-2xs font-bold text-ink/55">
+                  <p className="mb-2 text-2xs font-bold text-ink/65">
                     Từ có thể dùng
                   </p>
                   <div className="flex flex-wrap gap-1.5">

@@ -82,7 +82,7 @@ export default function RecordDesk({
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
       <section className="flex flex-col gap-4 rounded-2xl border border-sage-3 bg-white p-6 md:p-7">
-        <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/55">
+        <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/65">
           {question.part === 2
             ? "Cue card"
             : `Part ${question.part} · ${question.topic}`}
@@ -101,7 +101,7 @@ export default function RecordDesk({
         {phase === "prep" && (
           <div className="mt-auto flex flex-wrap items-center gap-4 rounded-xl bg-mist-3 p-4">
             <div>
-              <p className="text-2xs font-bold uppercase tracking-wider text-ink/55">
+              <p className="text-2xs font-bold uppercase tracking-wider text-ink/65">
                 Chuẩn bị
               </p>
               <p className="font-mono text-2xl font-extrabold text-brand">

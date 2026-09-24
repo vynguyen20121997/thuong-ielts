@@ -193,7 +193,7 @@ export default function BusyOverlay({
         <p className="text-sm font-semibold text-ink" aria-live="polite">
           {label}
         </p>
-        {hint && <p className="text-2xs leading-relaxed text-ink/50">{hint}</p>}
+        {hint && <p className="text-2xs leading-relaxed text-ink/65">{hint}</p>}
       </div>
     </div>,
     document.body,

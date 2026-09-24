@@ -26,7 +26,7 @@ export default function SpeakingCatalogPage() {
     <main className="relative z-10 min-h-screen bg-white pb-24 pt-28 md:pt-32">
       <PageArch />
       <div className="relative z-10 mx-auto max-w-7xl gutter">
-        <nav className="mb-6 flex items-center gap-1.5 text-2xs font-medium text-ink/40">
+        <nav className="mb-6 flex items-center gap-1.5 text-2xs font-medium text-ink/65">
           <Link
             href="/kiem-tra-kien-thuc"
             className="transition-colors hover:text-brand"
@@ -53,7 +53,7 @@ export default function SpeakingCatalogPage() {
           </p>
         </div>
 
-        <p className="mb-10 max-w-2xl rounded-xl border border-black/5 bg-cream px-4 py-3 text-2xs leading-relaxed text-ink/45">
+        <p className="mb-10 max-w-2xl rounded-xl border border-black/5 bg-cream px-4 py-3 text-2xs leading-relaxed text-ink/65">
           Phần chấm tự động <b className="text-ink/70">chưa nối</b>. Bài thu âm
           hiện được giữ trên máy bạn và gửi cho cô; điểm bốn tiêu chí sẽ hiện ở
           đây khi bộ chấm sẵn sàng.
@@ -114,7 +114,7 @@ export default function SpeakingCatalogPage() {
         <div className="grid gap-8 lg:grid-cols-3">
           {parts.map((part) => (
             <section key={part}>
-              <h3 className="mb-3 text-2xs font-extrabold uppercase tracking-wider text-ink/55">
+              <h3 className="mb-3 text-2xs font-extrabold uppercase tracking-wider text-ink/65">
                 {PART_LABEL[part]} · nói tối đa{" "}
                 {Math.round((TALK_SECONDS[part] / 60) * 10) / 10} phút
               </h3>

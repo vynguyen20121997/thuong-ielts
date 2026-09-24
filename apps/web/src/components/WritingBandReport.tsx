@@ -272,7 +272,7 @@ export default function WritingBandReport({
                   <li key={c.id} className="rounded-xl bg-mist-3 px-4 py-3">
                     <p className="flex flex-wrap items-baseline gap-2">
                       <b className="text-sm font-bold">{c.label}</b>
-                      <em className="text-2xs not-italic text-ink/50">
+                      <em className="text-2xs not-italic text-ink/65">
                         {c.english}
                       </em>
                       <span className="ml-auto font-mono text-base font-extrabold text-brand">
@@ -329,7 +329,7 @@ export default function WritingBandReport({
 
           {tab === "essay" && (
             <div className="mt-3.5 rounded-xl bg-mist-3 px-4 py-4 text-sm leading-[1.75]">
-              <p className="mb-3 text-2xs font-bold text-ink/55">
+              <p className="mb-3 text-2xs font-bold text-ink/65">
                 {graded.words} từ ·{" "}
                 {graded.meetsWordCount
                   ? "đủ số chữ tối thiểu"
@@ -360,7 +360,7 @@ export default function WritingBandReport({
             </ul>
           )}
 
-          <p className="mt-4 text-2xs leading-relaxed text-ink/55">
+          <p className="mt-4 text-2xs leading-relaxed text-ink/65">
             {footnote}
           </p>
         </>

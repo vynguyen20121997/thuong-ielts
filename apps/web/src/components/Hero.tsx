@@ -263,7 +263,7 @@ export default function Hero() {
                   <span className="text-[34px] font-bold leading-none tracking-tight text-brand-soft">
                     {h.value}
                   </span>
-                  <span className="text-xs font-semibold leading-snug text-ink/55">
+                  <span className="text-xs font-semibold leading-snug text-ink/65">
                     {h.label}
                   </span>
                 </div>
@@ -317,7 +317,7 @@ export default function Hero() {
                 <span className="text-2xl font-bold leading-none tracking-tight text-brand-soft">
                   {h.value}
                 </span>
-                <span className="text-2xs font-semibold leading-snug text-ink/55">
+                <span className="text-2xs font-semibold leading-snug text-ink/65">
                   {h.label}
                 </span>
               </div>

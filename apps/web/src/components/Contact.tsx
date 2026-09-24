@@ -95,7 +95,7 @@ export default function Contact() {
                   <Phone className="text-brand" size={18} />
                 </div>
                 <div>
-                  <h4 className="text-2xs text-ink/50 mb-0.5 font-medium">
+                  <h4 className="text-2xs text-ink/65 mb-0.5 font-medium">
                     Số điện thoại (Zalo)
                   </h4>
                   <a
@@ -114,7 +114,7 @@ export default function Contact() {
                   <Mail className="text-brand" size={18} />
                 </div>
                 <div>
-                  <h4 className="text-2xs text-ink/50 mb-0.5 font-medium">
+                  <h4 className="text-2xs text-ink/65 mb-0.5 font-medium">
                     Email Hỗ Trợ
                   </h4>
                   <a
@@ -131,7 +131,7 @@ export default function Contact() {
                   <MapPin className="text-brand" size={18} />
                 </div>
                 <div>
-                  <h4 className="text-2xs text-ink/50 mb-0.5 font-medium">
+                  <h4 className="text-2xs text-ink/65 mb-0.5 font-medium">
                     Địa Chỉ Lớp Học
                   </h4>
                   <p className="font-mono font-bold text-sm text-ink">
@@ -143,7 +143,7 @@ export default function Contact() {
 
             {/* Social Links */}
             <div className="pt-6 border-t border-black/10">
-              <p className="text-2xs text-ink/50 mb-3 font-medium">
+              <p className="text-2xs text-ink/65 mb-3 font-medium">
                 Kênh Học Tập Cộng Đồng
               </p>
               <div className="flex gap-4 text-xs font-bold text-ink/80">
@@ -190,7 +190,7 @@ export default function Contact() {
                     <h3 className="text-2xl font-bold text-ink mb-2">
                       Đăng Ký Đánh Giá Năng Lực
                     </h3>
-                    <p className="text-xs text-ink/50">
+                    <p className="text-xs text-ink/65">
                       Nhận lịch hẹn test trình độ miễn phí và tư vấn lộ trình
                       1-kèm-1.
                     </p>
@@ -359,7 +359,7 @@ export default function Contact() {
                     <Send size={14} />
                   </button>
 
-                  <p className="text-2xs text-center text-ink/40 font-medium">
+                  <p className="text-2xs text-center text-ink/65 font-medium">
                     * Thông tin cá nhân của bạn hoàn toàn bảo mật theo chính
                     sách học viên.
                   </p>
