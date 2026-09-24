@@ -2,9 +2,18 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, BookOpen, ListChecks, Timer } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  BookOpen,
+  ListChecks,
+  Timer,
+} from "lucide-react";
 
-import { formatClock, useReadingSession } from "../application/useReadingSession";
+import {
+  formatClock,
+  useReadingSession,
+} from "../application/useReadingSession";
 import { LEVEL_LABELS } from "../domain/catalog";
 import { questionRangeOf } from "../domain/paper";
 import { groupReadingQuestions, normalizeReadingQuestion } from "../domain/readingQuestionType";
@@ -30,10 +39,22 @@ import ReadingResultPanel from "./ReadingResultPanel";
  * trong `paper.sections`. Đồng hồ, phiếu trả lời và lần chấm là một, đúng như
  * phòng thi thật — chuyển passage không phải là bắt đầu bài mới.
  */
-export default function ReadingPlayer({ paper, resume = false, timed = true, vocabularySupport = false }: { paper: ReadingPaper; resume?: boolean; timed?: boolean; vocabularySupport?: boolean }) {
+export default function ReadingPlayer({
+  paper,
+  resume = false,
+  timed = true,
+  vocabularySupport = false,
+}: {
+  paper: ReadingPaper;
+  resume?: boolean;
+  timed?: boolean;
+  vocabularySupport?: boolean;
+}) {
   const session = useReadingSession(paper, resume, timed);
   // Mobile only: the two panes do not fit side by side under `md`.
-  const [mobilePane, setMobilePane] = useState<"passage" | "questions">("passage");
+  const [mobilePane, setMobilePane] = useState<"passage" | "questions">(
+    "passage",
+  );
   /** Which question the student is typing in, so it can be highlighted. */
   const [activeNumber, setActiveNumber] = useState<number | null>(null);
 
@@ -82,7 +103,7 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
     const missing = session.totalQuestions - session.answeredCount;
     if (missing > 0) {
       const ok = window.confirm(
-        `Bạn còn ${missing} câu chưa trả lời. Nộp bây giờ là kết thúc bài và không làm tiếp được. Vẫn nộp?`
+        `Bạn còn ${missing} câu chưa trả lời. Nộp bây giờ là kết thúc bài và không làm tiếp được. Vẫn nộp?`,
       );
       if (!ok) return;
     }
@@ -107,7 +128,9 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
           if (!first) return;
           const target = document.getElementById(`question-${first.number}`);
           const field =
-            target instanceof HTMLInputElement ? target : target?.querySelector("input");
+            target instanceof HTMLInputElement
+              ? target
+              : target?.querySelector("input");
           target?.scrollIntoView({ behavior: "smooth", block: "center" });
           field?.focus({ preventScroll: true });
         }}
@@ -139,7 +162,7 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
 
           <div className="ml-auto flex items-center gap-3 md:gap-4">
             <div className="hidden md:flex flex-col items-end">
-              <span className="text-2xs text-ink/45 font-medium">
+              <span className="text-2xs text-ink/65 font-medium">
                 Đã làm {session.answeredCount}/{session.totalQuestions}
               </span>
               <div className="h-1 w-28 bg-black/[0.08] rounded-full overflow-hidden mt-1.5">
@@ -151,7 +174,7 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
             </div>
 
             <span
-              className={`flex items-center gap-1.5 font-mono text-sm font-bold px-3 py-1.5 rounded-full tabular-nums ${isReview ? "bg-black/[0.05] text-ink/50" : lowTime ? "bg-red-50 text-red-600 border border-red-200" : "bg-white border border-black/10 text-brand"}`}
+              className={`flex items-center gap-1.5 font-mono text-sm font-bold px-3 py-1.5 rounded-full tabular-nums ${isReview ? "bg-black/[0.05] text-ink/65" : lowTime ? "bg-red-50 text-red-600 border border-red-200" : "bg-white border border-black/10 text-brand"}`}
             >
               <Timer size={14} />
               {timed ? formatClock(session.remainingSeconds) : "Không giới hạn"}
@@ -186,7 +209,7 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
                   type="button"
                   onClick={() => session.setSectionIndex(index)}
                   aria-current={active ? "true" : undefined}
-                  className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-full border text-2xs font-medium transition-colors cursor-pointer ${active ? "bg-brand text-white border-brand" : "bg-white text-ink/55 border-black/10 hover:border-brand/40 hover:text-brand"}`}
+                  className={`shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-full border text-2xs font-medium transition-colors cursor-pointer ${active ? "bg-brand text-white border-brand" : "bg-white text-ink/65 border-black/10 hover:border-brand/40 hover:text-brand"}`}
                 >
                   Passage {index + 1}
                   <span
@@ -213,9 +236,11 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
               key={pane}
               type="button"
               onClick={() => setMobilePane(pane)}
-              className={`flex-1 py-2 rounded-full text-2xs font-medium border transition-colors ${mobilePane === pane ? "bg-brand text-white border-brand" : "bg-white text-ink/55 border-black/10"}`}
+              className={`flex-1 py-2 rounded-full text-2xs font-medium border transition-colors ${mobilePane === pane ? "bg-brand text-white border-brand" : "bg-white text-ink/65 border-black/10"}`}
             >
-              {pane === "passage" ? "Bài đọc" : `Câu hỏi (${section.questions.length})`}
+              {pane === "passage"
+                ? "Bài đọc"
+                : `Câu hỏi (${section.questions.length})`}
             </button>
           ))}
         </div>
@@ -239,10 +264,12 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
           <div className="bg-white border border-black/5 rounded-2xl p-6 md:p-8 shadow-sm">
             <span className="text-2xs text-brand font-medium flex items-center gap-1.5 mb-3">
               <BookOpen size={12} />
-              {multi ? `Reading Passage ${session.sectionIndex + 1}` : "Reading Passage"}
+              {multi
+                ? `Reading Passage ${session.sectionIndex + 1}`
+                : "Reading Passage"}
             </span>
             {section.passage.intro && (
-              <p className="font-sans italic text-sm text-ink/55 mb-3 border-l-2 border-leaf pl-3">
+              <p className="font-sans italic text-sm text-ink/65 mb-3 border-l-2 border-leaf pl-3">
                 {section.passage.intro}
               </p>
             )}
@@ -310,7 +337,9 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
           <div className="flex items-center gap-1.5 mb-4">
             <ListChecks size={13} className="text-brand" />
             <span className="text-2xs text-brand font-medium">
-              {isReview ? `Đáp án & giải thích · câu ${questionRange}` : `Câu hỏi ${questionRange}`}
+              {isReview
+                ? `Đáp án & giải thích · câu ${questionRange}`
+                : `Câu hỏi ${questionRange}`}
             </span>
           </div>
 
@@ -350,8 +379,8 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
                 }}
                 className="w-full mt-8 py-4 bg-brand hover:bg-brand-deep text-white font-bold text-xs rounded-full transition-colors cursor-pointer tracking-wider uppercase"
               >
-                Sang passage {session.sectionIndex + 2} ({session.answeredCount}/{session.totalQuestions}{" "}
-                câu đã làm)
+                Sang passage {session.sectionIndex + 2} ({session.answeredCount}
+                /{session.totalQuestions} câu đã làm)
               </button>
             ) : (
               <button
@@ -382,12 +411,23 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
             : undefined
         }
         bookmarked={
-          selectedQuestion ? marks.annotations.bookmarks.includes(selectedQuestion.number) : false
+          selectedQuestion
+            ? marks.annotations.bookmarks.includes(selectedQuestion.number)
+            : false
         }
-        onLookup={vocabularySupport ? () => {
-          const word = window.getSelection()?.toString().trim();
-          if (word) window.open(`https://dictionary.cambridge.org/dictionary/english/${encodeURIComponent(word)}`, "_blank", "noopener,noreferrer");
-        } : undefined}
+        onLookup={
+          vocabularySupport
+            ? () => {
+                const word = window.getSelection()?.toString().trim();
+                if (word)
+                  window.open(
+                    `https://dictionary.cambridge.org/dictionary/english/${encodeURIComponent(word)}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
+              }
+            : undefined
+        }
       />
 
       <ExitWarningDialog

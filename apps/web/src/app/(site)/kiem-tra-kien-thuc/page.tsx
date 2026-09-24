@@ -25,13 +25,16 @@ export default function PracticeHubPage() {
             Làm bài luyện tập IELTS theo 4 kĩ năng
           </h1>
           <p className="max-w-3xl text-ink/70 text-sm md:text-base leading-relaxed mt-5">
-            Bộ đề luyện tập IELTS 4 kĩ năng để luyện tập thêm tại nhà &amp; theo dõi tiến bộ
-            trong điểm số
+            Bộ đề luyện tập IELTS 4 kĩ năng để luyện tập thêm tại nhà &amp; theo
+            dõi tiến bộ trong điểm số
           </p>
         </div>
 
+        {/* Heading chỉ-đọc-được, để `h1` không nhảy thẳng xuống `h3` của các
+            thẻ. Không hiện chữ vì lưới thẻ đã tự nói nó là gì; nhưng người
+            dùng screen reader nhảy theo heading thì cần một bậc ở giữa. */}
+        <h2 className="sr-only">Các kỹ năng luyện tập</h2>
         <SkillGrid />
-
       </div>
     </main>
   );

@@ -22,16 +22,24 @@ export const dynamic = "force-dynamic";
 export default async function ReadingCatalogPage() {
   const [tests, session] = await Promise.all([listReadingTests(), auth()]);
   const studentId = session?.user?.id;
-  const completed = new Set(studentId ? await listCompletedTargets(studentId, "reading") : []);
-  const catalogTests = tests.map((test) => ({ ...test, completed: completed.has(test.slug) }));
+  const completed = new Set(
+    studentId ? await listCompletedTargets(studentId, "reading") : [],
+  );
+  const catalogTests = tests.map((test) => ({
+    ...test,
+    completed: completed.has(test.slug),
+  }));
 
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <PageArch />
       <div className="relative z-10 max-w-7xl mx-auto gutter">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-2xs font-medium text-ink/40 mb-6">
-          <Link href="/phong-luyen-tap" className="hover:text-brand transition-colors">
+        <nav className="flex items-center gap-1.5 text-2xs font-medium text-ink/65 mb-6">
+          <Link
+            href="/phong-luyen-tap"
+            className="hover:text-brand transition-colors"
+          >
             Phòng luyện tập
           </Link>
           <ChevronRight size={12} />

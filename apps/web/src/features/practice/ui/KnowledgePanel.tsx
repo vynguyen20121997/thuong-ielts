@@ -56,7 +56,9 @@ export default function KnowledgePanel({
       // ghi chú không liên quan.
       else setMiss(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Không tải được kiến thức nền.");
+      setError(
+        err instanceof Error ? err.message : "Không tải được kiến thức nền.",
+      );
     } finally {
       setBusy(false);
     }
@@ -69,15 +71,15 @@ export default function KnowledgePanel({
       className="panel-scroll w-full lg:max-h-[38vh] rounded-2xl border border-black/5 bg-white p-5 md:p-6 shadow-sm"
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/45 flex items-center gap-1.5">
+        <h2 className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/65 flex items-center gap-1.5">
           <BookOpen size={13} />
           Kiến thức nền
-        </span>
+        </h2>
         {note && (
           <button
             type="button"
             onClick={() => setNote(null)}
-            className="flex items-center gap-1 text-2xs font-semibold text-ink/45 hover:text-brand cursor-pointer transition-colors"
+            className="flex items-center gap-1 text-2xs font-semibold text-ink/65 hover:text-brand cursor-pointer transition-colors"
           >
             <ArrowLeft size={12} />
             Chủ đề khác
@@ -88,8 +90,8 @@ export default function KnowledgePanel({
       {!open ? (
         <>
           <p className="mt-2 text-[13px] text-ink/60 leading-relaxed">
-            Chưa chắc dùng từ nào, lấy ví dụ ở đâu, hay viết đoạn phản biện kiểu gì? Có sẵn ghi
-            chú cho đúng đề này.
+            Chưa chắc dùng từ nào, lấy ví dụ ở đâu, hay viết đoạn phản biện kiểu
+            gì? Có sẵn ghi chú cho đúng đề này.
           </p>
           <button
             type="button"
@@ -154,7 +156,10 @@ export default function KnowledgePanel({
               className="shrink-0 flex items-center gap-1.5 rounded-full bg-brand hover:bg-brand-deep disabled:bg-black/15 disabled:cursor-not-allowed px-4 py-2 text-2xs font-bold text-white cursor-pointer transition-colors"
             >
               {busy ? (
-                <Loader2 size={13} className="animate-spin motion-reduce:animate-none" />
+                <Loader2
+                  size={13}
+                  className="animate-spin motion-reduce:animate-none"
+                />
               ) : (
                 <Search size={13} />
               )}
@@ -163,9 +168,10 @@ export default function KnowledgePanel({
           </form>
 
           {miss && (
-            <p className="text-2xs text-ink/50 leading-relaxed">
-              Chưa có ghi chú nào cho câu hỏi đó. Thử chọn một chủ đề ở trên, hoặc hỏi cô trực
-              tiếp — phần này chỉ có những gì cô đã soạn sẵn cho đề.
+            <p className="text-2xs text-ink/65 leading-relaxed">
+              Chưa có ghi chú nào cho câu hỏi đó. Thử chọn một chủ đề ở trên,
+              hoặc hỏi cô trực tiếp — phần này chỉ có những gì cô đã soạn sẵn
+              cho đề.
             </p>
           )}
           {error && <p className="text-2xs text-red-600">{error}</p>}

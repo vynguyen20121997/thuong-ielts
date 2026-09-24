@@ -55,7 +55,7 @@ function SkillCard({
           nốt. Chỉ giữ nhãn cho thẻ CHƯA mở, vì đó là thứ thật sự chặn tay.
         */}
         {!isOpen && (
-          <span className="text-2xs font-medium text-ink/40 bg-black/[0.04] rounded-full px-2.5 py-1 flex items-center gap-1">
+          <span className="text-2xs font-medium text-ink/65 bg-black/[0.04] rounded-full px-2.5 py-1 flex items-center gap-1">
             <Lock size={10} />
             Sắp ra mắt
           </span>
@@ -64,12 +64,12 @@ function SkillCard({
 
       <div className="mt-5">
         <h3
-          className={`text-xl font-bold tracking-tight ${isOpen ? "text-ink" : "text-ink/45"}`}
+          className={`text-xl font-bold tracking-tight ${isOpen ? "text-ink" : "text-ink/65"}`}
         >
           {skill.name}
         </h3>
         <span
-          className={`text-2xs font-medium block mt-1 ${isOpen ? "text-brand/70" : "text-ink/30"}`}
+          className={`text-2xs font-medium block mt-1 ${isOpen ? "text-brand" : "text-ink/30"}`}
         >
           {skill.label}
         </span>
@@ -87,7 +87,7 @@ function SkillCard({
         className={`mt-5 pt-4 border-t flex items-center justify-between gap-2 ${isOpen ? "border-black/5" : "border-black/[0.03]"}`}
       >
         <span
-          className={`text-2xs font-medium ${isOpen ? "text-ink/50" : "text-ink/25"}`}
+          className={`text-2xs font-medium ${isOpen ? "text-ink/65" : "text-ink/25"}`}
         >
           {skill.hint}
         </span>

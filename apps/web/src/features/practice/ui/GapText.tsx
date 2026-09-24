@@ -193,7 +193,7 @@ export default function GapText({
       <Fragment key={key++}>
         {text.slice(cursor, match.index)}
         {match[2] ? `${match[2]} ` : ""}
-      </Fragment>
+      </Fragment>,
     );
     parts.push(
       <GapInput
@@ -203,14 +203,16 @@ export default function GapText({
         onChange={(value) => onChange(field.questionId, value)}
         onFocus={onFocus}
         variant={variant}
-      />
+      />,
     );
     cursor = match.index + match[0].length;
   }
   parts.push(<Fragment key={key++}>{text.slice(cursor)}</Fragment>);
 
   return (
-    <p className={`whitespace-pre-line text-base text-ink ${variant === "line" ? "leading-[2.1]" : "leading-[2.4]"}`}>
+    <p
+      className={`whitespace-pre-line text-base text-ink ${variant === "line" ? "leading-[2.1]" : "leading-[2.4]"}`}
+    >
       {parts}
     </p>
   );

@@ -81,7 +81,9 @@ export default function SelectionPopup({
         >
           <Bookmark
             size={14}
-            className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-ink/50"}
+            className={
+              bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-ink/50"
+            }
           />
           {bookmarked ? "Bỏ đánh dấu" : "Đánh dấu"}
         </button>

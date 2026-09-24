@@ -51,9 +51,14 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
   const [paper, setPaper] = useState<ReadingPaper | null>(null);
   const [error, setError] = useState<string | null>(null);
   /** Có bài đang làm dở trong phiên trình duyệt này không. */
-  const [saved, setSaved] = useState<{ remainingSeconds: number; answered: number } | null>(null);
+  const [saved, setSaved] = useState<{
+    remainingSeconds: number;
+    answered: number;
+  } | null>(null);
   const [resume, setResume] = useState(false);
-  const [practiceMode, setPracticeMode] = useState<"practice" | "exam">("practice");
+  const [practiceMode, setPracticeMode] = useState<"practice" | "exam">(
+    "practice",
+  );
   const [examMinutes, setExamMinutes] = useState(20);
 
   // Đọc sau khi mount: sessionStorage không tồn tại lúc server render.
@@ -62,7 +67,8 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
     if (!progress) return;
     setSaved({
       remainingSeconds: progress.remainingSeconds,
-      answered: Object.values(progress.answers).filter((v) => String(v).trim()).length,
+      answered: Object.values(progress.answers).filter((v) => String(v).trim())
+        .length,
     });
   }, [outline.id]);
 
@@ -77,11 +83,15 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
       try {
         const loaded = await fetchReadingPaper(outline.mode, outline.id);
         const remaining = MIN_LOADING_MS - (Date.now() - startedAt);
-        if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
+        if (remaining > 0)
+          await new Promise((resolve) => setTimeout(resolve, remaining));
 
         setPaper(
           outline.mode === "passage"
-            ? { ...loaded, durationSeconds: practiceMode === "exam" ? examMinutes * 60 : 0 }
+            ? {
+                ...loaded,
+                durationSeconds: practiceMode === "exam" ? examMinutes * 60 : 0,
+              }
             : loaded,
         );
         setPhase("running");
@@ -90,7 +100,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         setPhase("intro");
       }
     },
-    [outline.mode, outline.id, practiceMode, examMinutes]
+    [outline.mode, outline.id, practiceMode, examMinutes],
   );
 
   if (phase === "running" && paper) {
@@ -99,7 +109,9 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         paper={paper}
         resume={resume}
         timed={outline.mode === "test" || practiceMode === "exam"}
-        vocabularySupport={outline.mode === "passage" && practiceMode === "practice"}
+        vocabularySupport={
+          outline.mode === "passage" && practiceMode === "practice"
+        }
       />
     );
   }
@@ -112,7 +124,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
     <div className="max-w-3xl mx-auto py-6 md:py-10 gutter">
       <Link
         href="/phong-luyen-tap/reading"
-        className="inline-flex items-center gap-2 text-2xs font-medium text-ink/45 hover:text-brand transition-colors"
+        className="inline-flex items-center gap-2 text-2xs font-medium text-ink/65 hover:text-brand transition-colors"
       >
         <ArrowLeft size={13} />
         Danh sách đề
@@ -143,16 +155,35 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         {/* Thông số */}
         <div className="grid grid-cols-3 divide-x divide-black/5 border-b border-black/5">
           {[
-            { icon: ListChecks, value: `${outline.questionCount}`, label: "câu hỏi" },
-            { icon: Clock, value: !multi && practiceMode === "practice" ? "∞" : `${multi ? minutes : examMinutes}`, label: !multi && practiceMode === "practice" ? "thời gian" : "phút" },
-            { icon: BookOpen, value: `${outline.parts.length}`, label: "passage" },
+            {
+              icon: ListChecks,
+              value: `${outline.questionCount}`,
+              label: "câu hỏi",
+            },
+            {
+              icon: Clock,
+              value:
+                !multi && practiceMode === "practice"
+                  ? "∞"
+                  : `${multi ? minutes : examMinutes}`,
+              label:
+                !multi && practiceMode === "practice" ? "thời gian" : "phút",
+            },
+            {
+              icon: BookOpen,
+              value: `${outline.parts.length}`,
+              label: "passage",
+            },
           ].map(({ icon: Icon, value, label }) => (
-            <div key={label} className="px-4 py-5 flex flex-col items-center gap-1">
+            <div
+              key={label}
+              className="px-4 py-5 flex flex-col items-center gap-1"
+            >
               <Icon size={15} className="text-brand/50" />
               <span className="text-2xl font-bold text-ink leading-none tabular-nums">
                 {value}
               </span>
-              <span className="text-2xs text-ink/40 font-medium">{label}</span>
+              <span className="text-2xs text-ink/65 font-medium">{label}</span>
             </div>
           ))}
         </div>
@@ -160,23 +191,34 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         <div className="px-6 md:px-9 py-6 md:py-7">
           {!multi && (
             <div className="mb-7">
-              <h2 className="text-sm font-bold text-ink">Chọn hình thức làm bài</h2>
+              <h2 className="text-sm font-bold text-ink">
+                Chọn hình thức làm bài
+              </h2>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <button
                   type="button"
                   onClick={() => setPracticeMode("practice")}
                   className={`rounded-xl border p-4 text-left transition-colors ${practiceMode === "practice" ? "border-brand bg-leaf/15 ring-1 ring-brand/20" : "border-black/10 hover:border-brand/30"}`}
                 >
-                  <span className="block text-sm font-bold text-ink">Luyện tập</span>
-                  <span className="mt-1.5 block text-xs leading-relaxed text-ink/60">Không giới hạn thời gian, có hỗ trợ tra từ vựng trong bài đọc.</span>
+                  <span className="block text-sm font-bold text-ink">
+                    Luyện tập
+                  </span>
+                  <span className="mt-1.5 block text-xs leading-relaxed text-ink/60">
+                    Không giới hạn thời gian, có hỗ trợ tra từ vựng trong bài
+                    đọc.
+                  </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setPracticeMode("exam")}
                   className={`rounded-xl border p-4 text-left transition-colors ${practiceMode === "exam" ? "border-brand bg-leaf/15 ring-1 ring-brand/20" : "border-black/10 hover:border-brand/30"}`}
                 >
-                  <span className="block text-sm font-bold text-ink">Thi thử</span>
-                  <span className="mt-1.5 block text-xs leading-relaxed text-ink/60">Có giới hạn thời gian, không hỗ trợ tra từ vựng.</span>
+                  <span className="block text-sm font-bold text-ink">
+                    Thi thử
+                  </span>
+                  <span className="mt-1.5 block text-xs leading-relaxed text-ink/60">
+                    Có giới hạn thời gian, không hỗ trợ tra từ vựng.
+                  </span>
                 </button>
               </div>
               {practiceMode === "exam" && (
@@ -184,10 +226,16 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
                   Giới hạn thời gian
                   <select
                     value={examMinutes}
-                    onChange={(event) => setExamMinutes(Number(event.target.value))}
+                    onChange={(event) =>
+                      setExamMinutes(Number(event.target.value))
+                    }
                     className="rounded-lg border border-black/10 bg-white px-3 py-2 text-xs font-bold text-brand outline-none focus:border-brand"
                   >
-                    {[10, 15, 20, 25, 30].map((value) => <option key={value} value={value}>{value} phút</option>)}
+                    {[10, 15, 20, 25, 30].map((value) => (
+                      <option key={value} value={value}>
+                        {value} phút
+                      </option>
+                    ))}
                   </select>
                 </label>
               )}
@@ -211,7 +259,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
                     <span className="flex-1 min-w-0 text-xs font-bold text-ink truncate">
                       {part.label}
                     </span>
-                    <span className="font-mono text-2xs font-bold text-ink/45 whitespace-nowrap">
+                    <span className="font-mono text-2xs font-bold text-ink/65 whitespace-nowrap">
                       {part.questionCount} câu
                     </span>
                   </li>
@@ -227,13 +275,31 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
           <ul className="mt-3 flex flex-col gap-2.5 text-sm text-ink/70">
             <li className="flex gap-2.5">
               <Timer size={15} className="shrink-0 mt-0.5 text-brand/50" />
-              <span>{multi || practiceMode === "exam" ? <>Đồng hồ <b className="text-ink">chỉ chạy sau khi bấm bắt đầu</b>. Hết {multi ? minutes : examMinutes} phút, bài tự nộp với những gì đã điền.</> : <>Chế độ luyện tập <b className="text-ink">không giới hạn thời gian</b>; bạn chủ động nộp bài khi hoàn thành.</>}</span>
+              <span>
+                {multi || practiceMode === "exam" ? (
+                  <>
+                    Đồng hồ{" "}
+                    <b className="text-ink">chỉ chạy sau khi bấm bắt đầu</b>.
+                    Hết {multi ? minutes : examMinutes} phút, bài tự nộp với
+                    những gì đã điền.
+                  </>
+                ) : (
+                  <>
+                    Chế độ luyện tập{" "}
+                    <b className="text-ink">không giới hạn thời gian</b>; bạn
+                    chủ động nộp bài khi hoàn thành.
+                  </>
+                )}
+              </span>
             </li>
             <li className="flex gap-2.5">
-              <Highlighter size={15} className="shrink-0 mt-0.5 text-brand/50" />
+              <Highlighter
+                size={15}
+                className="shrink-0 mt-0.5 text-brand/50"
+              />
               <span>
-                Bôi đen chữ trong bài để tô màu hoặc đánh dấu câu cần quay lại, như gạch chì trên đề
-                giấy.
+                Bôi đen chữ trong bài để tô màu hoặc đánh dấu câu cần quay lại,
+                như gạch chì trên đề giấy.
               </span>
             </li>
             <li className="flex gap-2.5">
@@ -262,7 +328,10 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
               <RotateCcw size={15} className="shrink-0 mt-0.5" />
               <span>
                 Bạn có bài đang làm dở: <b>{saved.answered} câu</b> đã điền, còn{" "}
-                <b className="tabular-nums">{formatClock(saved.remainingSeconds)}</b>.
+                <b className="tabular-nums">
+                  {formatClock(saved.remainingSeconds)}
+                </b>
+                .
               </span>
             </p>
           )}
@@ -275,7 +344,10 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
           >
             {loading ? (
               <>
-                <Loader2 size={16} className="animate-spin motion-reduce:animate-none" />
+                <Loader2
+                  size={16}
+                  className="animate-spin motion-reduce:animate-none"
+                />
                 Đang tải đề...
               </>
             ) : saved ? (
@@ -298,7 +370,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
                 setSaved(null);
                 start(false);
               }}
-              className="mt-2 w-full py-3 text-2xs font-medium text-ink/50 hover:text-brand cursor-pointer transition-colors"
+              className="mt-2 w-full py-3 text-2xs font-medium text-ink/65 hover:text-brand cursor-pointer transition-colors"
             >
               Bỏ bài dở, làm lại từ đầu
             </button>
@@ -320,7 +392,9 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         open={loading}
         label="Đang mở đề…"
         hint={`Tải ${outline.questionCount} câu hỏi và ${
-          outline.parts.length > 1 ? `${outline.parts.length} bài đọc` : "bài đọc"
+          outline.parts.length > 1
+            ? `${outline.parts.length} bài đọc`
+            : "bài đọc"
         }. Đồng hồ chỉ chạy khi đề đã hiện.`}
       />
     </div>

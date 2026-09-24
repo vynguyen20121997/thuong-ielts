@@ -45,12 +45,19 @@ export default function HighlightableText({
         const offset = cursor;
         cursor += segment.text.length;
 
-        if (!segment.highlighted) return <Fragment key={index}>{segment.text}</Fragment>;
+        if (!segment.highlighted)
+          return <Fragment key={index}>{segment.text}</Fragment>;
 
         return (
           <mark
             key={index}
-            onClick={(e) => onRemove?.(blockId, offset, e.currentTarget.getBoundingClientRect())}
+            onClick={(e) =>
+              onRemove?.(
+                blockId,
+                offset,
+                e.currentTarget.getBoundingClientRect(),
+              )
+            }
             title="Bấm để xoá tô màu"
             className="bg-[#FFF86B] text-[#222] rounded-[2px] shadow-[0_1px_2px_rgba(0,0,0,0.067)] cursor-pointer"
           >

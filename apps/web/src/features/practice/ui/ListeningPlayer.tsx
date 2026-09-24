@@ -3,7 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, ArrowRight, Bookmark, Check, Volume2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  Bookmark,
+  Check,
+  Volume2,
+} from "lucide-react";
 
 import { formatClock } from "../application/useReadingSession";
 import { useListeningSession } from "../application/useListeningSession";
@@ -104,7 +111,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
     const missing = session.unansweredCount;
     if (missing > 0) {
       const ok = window.confirm(
-        `Bạn còn ${missing} câu chưa trả lời. Nộp bài bây giờ sẽ kết thúc bài nghe và không làm tiếp được. Vẫn nộp?`
+        `Bạn còn ${missing} câu chưa trả lời. Nộp bài bây giờ sẽ kết thúc bài nghe và không làm tiếp được. Vẫn nộp?`,
       );
       if (!ok) return;
     }
@@ -156,7 +163,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
             onEnded={session.handleTrackEnded}
             className="hidden"
           />,
-          document.body
+          document.body,
         )
       : null;
 
@@ -166,98 +173,107 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
       <>
         {audioElement}
         <div className="min-h-[70vh] bg-[#F5F5F3] flex items-center justify-center px-4 py-14">
-        <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-black/5 p-8 md:p-12">
-          <h1 className="text-3xl font-bold text-center text-ink mb-8">
-            Hướng dẫn làm bài kiểm tra
-          </h1>
+          <div className="w-full max-w-3xl bg-white rounded-2xl shadow-sm border border-black/5 p-8 md:p-12">
+            <h1 className="text-3xl font-bold text-center text-ink mb-8">
+              Hướng dẫn làm bài kiểm tra
+            </h1>
 
-          <h2 className="text-lg font-semibold text-ink mb-3">
-            Lưu ý trước khi làm bài
-          </h2>
-          <p className="text-sm font-bold text-ink mb-2">Bài nghe sẽ chạy như thi thật:</p>
-          <ul className="list-disc pl-5 space-y-2 text-sm text-ink/75 leading-relaxed">
-            <li>
-              Audio <strong>tự phát một lần duy nhất</strong> và không tạm dừng, tua hay nghe lại
-              được. Hãy chuẩn bị tai nghe trước khi bấm bắt đầu.
-            </li>
-            <li>
-              Bài gồm <strong>{session.sections.length} phần</strong>, tổng{" "}
-              <strong>{session.totalQuestions} câu</strong>, làm trong{" "}
-              <strong>{Math.round(test.durationSeconds / 60)} phút</strong>.
-            </li>
-            <li>Hết giờ hệ thống tự nộp bài, nên hãy điền hết những gì nghe được.</li>
-            {/* A first-timer's two commonest worries, answered before they start. */}
-            <li>
-              Trong lúc làm bài bạn <strong>sửa lại đáp án thoải mái</strong> và quay về câu
-              trước bất cứ lúc nào — bấm số câu ở thanh dưới cùng để nhảy tới.
-            </li>
-            <li>
-              Nộp bài xong sẽ thấy <strong>điểm, band ước lượng và đáp án đúng</strong> của
-              từng câu.
-            </li>
-          </ul>
+            <h2 className="text-lg font-semibold text-ink mb-3">
+              Lưu ý trước khi làm bài
+            </h2>
+            <p className="text-sm font-bold text-ink mb-2">
+              Bài nghe sẽ chạy như thi thật:
+            </p>
+            <ul className="list-disc pl-5 space-y-2 text-sm text-ink/75 leading-relaxed">
+              <li>
+                Audio <strong>tự phát một lần duy nhất</strong> và không tạm
+                dừng, tua hay nghe lại được. Hãy chuẩn bị tai nghe trước khi bấm
+                bắt đầu.
+              </li>
+              <li>
+                Bài gồm <strong>{session.sections.length} phần</strong>, tổng{" "}
+                <strong>{session.totalQuestions} câu</strong>, làm trong{" "}
+                <strong>{Math.round(test.durationSeconds / 60)} phút</strong>.
+              </li>
+              <li>
+                Hết giờ hệ thống tự nộp bài, nên hãy điền hết những gì nghe
+                được.
+              </li>
+              {/* A first-timer's two commonest worries, answered before they start. */}
+              <li>
+                Trong lúc làm bài bạn <strong>sửa lại đáp án thoải mái</strong>{" "}
+                và quay về câu trước bất cứ lúc nào — bấm số câu ở thanh dưới
+                cùng để nhảy tới.
+              </li>
+              <li>
+                Nộp bài xong sẽ thấy{" "}
+                <strong>điểm, band ước lượng và đáp án đúng</strong> của từng
+                câu.
+              </li>
+            </ul>
 
-          {session.canResume && (
-            <div className="mt-6 flex items-start gap-2 bg-leaf/20 border border-brand/25 text-brand rounded-xl px-4 py-3 text-sm">
-              <AlertTriangle size={16} className="shrink-0 mt-0.5" />
-              <span>
-                Bạn có một bài đang làm dở. Bấm <strong>Tiếp tục</strong> để làm tiếp — đáp án,
-                đồng hồ và bài nghe sẽ trở lại đúng chỗ bạn dừng.
-              </span>
-            </div>
-          )}
+            {session.canResume && (
+              <div className="mt-6 flex items-start gap-2 bg-leaf/20 border border-brand/25 text-brand rounded-xl px-4 py-3 text-sm">
+                <AlertTriangle size={16} className="shrink-0 mt-0.5" />
+                <span>
+                  Bạn có một bài đang làm dở. Bấm <strong>Tiếp tục</strong> để
+                  làm tiếp — đáp án, đồng hồ và bài nghe sẽ trở lại đúng chỗ bạn
+                  dừng.
+                </span>
+              </div>
+            )}
 
-          {test.note && (
-            <div className="mt-6 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-4 py-3 text-sm">
-              <AlertTriangle size={16} className="shrink-0 mt-0.5" />
-              <span>{test.note}</span>
-            </div>
-          )}
+            {test.note && (
+              <div className="mt-6 flex items-start gap-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl px-4 py-3 text-sm">
+                <AlertTriangle size={16} className="shrink-0 mt-0.5" />
+                <span>{test.note}</span>
+              </div>
+            )}
 
-          {/*
+            {/*
             Whether the recording is ready is the one thing a student on a poor
             connection wants to know before committing to a play-once test.
           */}
-          <p
-            className={`mt-6 flex items-center gap-2 text-sm ${
-              session.audioReady ? "text-brand" : "text-ink/50"
-            }`}
-          >
-            <Volume2 size={15} />
-            {session.audioReady
-              ? "Bài nghe đã tải xong, bấm bắt đầu là nghe được ngay."
-              : "Đang tải bài nghe... Bạn vẫn bấm bắt đầu được, đồng hồ chỉ chạy khi có tiếng."}
-          </p>
-
-          <div className="border-t border-black/10 mt-8 pt-6 flex items-center justify-between">
-            <Link
-              href="/phong-luyen-tap/listening"
-              className="text-sm text-ink/50 hover:text-brand transition-colors"
+            <p
+              className={`mt-6 flex items-center gap-2 text-sm ${
+                session.audioReady ? "text-brand" : "text-ink/65"
+              }`}
             >
-              ← Chọn đề khác
-            </Link>
-            <div className="flex items-center gap-3">
-              {session.canResume && (
+              <Volume2 size={15} />
+              {session.audioReady
+                ? "Bài nghe đã tải xong, bấm bắt đầu là nghe được ngay."
+                : "Đang tải bài nghe... Bạn vẫn bấm bắt đầu được, đồng hồ chỉ chạy khi có tiếng."}
+            </p>
+
+            <div className="border-t border-black/10 mt-8 pt-6 flex items-center justify-between">
+              <Link
+                href="/phong-luyen-tap/listening"
+                className="text-sm text-ink/65 hover:text-brand transition-colors"
+              >
+                ← Chọn đề khác
+              </Link>
+              <div className="flex items-center gap-3">
+                {session.canResume && (
+                  <button
+                    type="button"
+                    onClick={session.resume}
+                    className="px-6 py-3 rounded-xl bg-brand text-white hover:bg-brand-deep font-bold text-sm transition-colors cursor-pointer"
+                  >
+                    Tiếp tục bài đang làm dở
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={session.resume}
-                  className="px-6 py-3 rounded-xl bg-brand text-white hover:bg-brand-deep font-bold text-sm transition-colors cursor-pointer"
+                  onClick={session.start}
+                  // Focused on arrival so a keyboard user does not Tab through the
+                  // whole marketing nav to reach the only button that matters.
+                  autoFocus
+                  className="px-8 py-3 rounded-xl border-2 border-brand text-brand hover:bg-brand hover:text-white font-bold text-sm transition-colors cursor-pointer"
                 >
-                  Tiếp tục bài đang làm dở
+                  {session.canResume ? "Làm lại từ đầu" : "Bắt đầu"}
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={session.start}
-                // Focused on arrival so a keyboard user does not Tab through the
-                // whole marketing nav to reach the only button that matters.
-                autoFocus
-                className="px-8 py-3 rounded-xl border-2 border-brand text-brand hover:bg-brand hover:text-white font-bold text-sm transition-colors cursor-pointer"
-              >
-                {session.canResume ? "Làm lại từ đầu" : "Bắt đầu"}
-              </button>
+              </div>
             </div>
-          </div>
           </div>
         </div>
       </>
@@ -267,7 +283,6 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
   // ── Exam ────────────────────────────────────────────────────────────────
   const exam = (
     <div ref={examRef} data-exam className="min-h-screen bg-white pb-28">
-
       <header className="sticky top-0 z-30 bg-white border-b border-black/10">
         <div className="max-w-6xl mx-auto py-2.5 flex items-center gap-3 gutter">
           <span className="shrink-0 h-10 w-10 rounded-full bg-brand text-leaf flex items-center justify-center font-mono text-2xs font-bold tracking-tight">
@@ -276,12 +291,25 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           <div className="min-w-0">
             <p className="font-bold text-sm text-ink truncate">{test.title}</p>
             <p className="flex items-center gap-3 text-xs text-ink/60">
-              <span className={session.remainingSeconds <= 180 && !isReview ? "text-red-600 font-bold" : ""}>
-                {isReview ? `Đã nộp · ${formatClock(session.remainingSeconds)} còn lại` : minutesRemaining(session.remainingSeconds)}
+              <span
+                className={
+                  session.remainingSeconds <= 180 && !isReview
+                    ? "text-red-600 font-bold"
+                    : ""
+                }
+              >
+                {isReview
+                  ? `Đã nộp · ${formatClock(session.remainingSeconds)} còn lại`
+                  : minutesRemaining(session.remainingSeconds)}
               </span>
               {!isReview && (
                 <span className="flex items-center gap-1.5">
-                  <Volume2 size={13} className={session.audioPlaying ? "text-brand" : "text-ink/35"} />
+                  <Volume2
+                    size={13}
+                    className={
+                      session.audioPlaying ? "text-brand" : "text-ink/35"
+                    }
+                  />
                   {session.audioPlaying
                     ? `Đang phát${track?.label ? ` · ${track.label}` : ""}`
                     : isStarting
@@ -293,7 +321,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
           </div>
           <Link
             href="/phong-luyen-tap/listening"
-            className="ml-auto shrink-0 h-9 w-9 rounded-full border border-black/10 flex items-center justify-center text-ink/50 hover:text-brand transition-colors"
+            className="ml-auto shrink-0 h-9 w-9 rounded-full border border-black/10 flex items-center justify-center text-ink/65 hover:text-brand transition-colors"
             aria-label="Thoát về danh sách đề"
           >
             <ArrowLeft size={16} />
@@ -354,15 +382,17 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         One minute left. The paper submits itself at zero, so this is the last
         chance to fill in a guess — worth interrupting for.
       */}
-      {!isReview && session.remainingSeconds <= 60 && session.remainingSeconds > 0 && (
-        <div
-          role="alert"
-          className="fixed bottom-16 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 bg-red-600 text-white rounded-full px-5 py-2 text-sm font-bold shadow-lg"
-        >
-          <AlertTriangle size={15} />
-          Còn {session.remainingSeconds} giây — hết giờ bài sẽ tự nộp
-        </div>
-      )}
+      {!isReview &&
+        session.remainingSeconds <= 60 &&
+        session.remainingSeconds > 0 && (
+          <div
+            role="alert"
+            className="fixed bottom-16 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 bg-red-600 text-white rounded-full px-5 py-2 text-sm font-bold shadow-lg"
+          >
+            <AlertTriangle size={15} />
+            Còn {session.remainingSeconds} giây — hết giờ bài sẽ tự nộp
+          </div>
+        )}
 
       {/*
         Question navigator, following the exam's own design: every button and
@@ -392,7 +422,10 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                 : 0;
 
               return (
-                <div key={progress.section} className="shrink-0 flex items-center gap-3">
+                <div
+                  key={progress.section}
+                  className="shrink-0 flex items-center gap-3"
+                >
                   <button
                     type="button"
                     onClick={() => session.goToSection(index)}
@@ -405,14 +438,16 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                     />
                     <span
                       className={`text-xs font-bold transition-colors ${
-                        isCurrent ? "text-ink" : "text-ink/55 group-hover:text-brand"
+                        isCurrent
+                          ? "text-ink"
+                          : "text-ink/65 group-hover:text-brand"
                       }`}
                     >
                       SECTION {progress.section}
                     </span>
                     {/* The tally gives way to the numbers once the section is open. */}
                     {!isCurrent && (
-                      <span className="text-xs text-ink/45">
+                      <span className="text-xs text-ink/65">
                         {progress.answered} of {progress.total}
                       </span>
                     )}
@@ -421,7 +456,8 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
                   {isCurrent && (
                     <div className="flex gap-1">
                       {session.sections[index].questions.map((q) => {
-                        const done = (session.answers[q.id] ?? "").trim().length > 0;
+                        const done =
+                          (session.answers[q.id] ?? "").trim().length > 0;
                         const review = reviewByQuestion?.get(q.id);
                         const trackFill = review
                           ? review.isCorrect
@@ -526,7 +562,9 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
             : undefined
         }
         bookmarked={
-          selectedQuestion ? marks.annotations.bookmarks.includes(selectedQuestion.number) : false
+          selectedQuestion
+            ? marks.annotations.bookmarks.includes(selectedQuestion.number)
+            : false
         }
       />
 

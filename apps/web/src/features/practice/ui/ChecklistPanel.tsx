@@ -51,7 +51,7 @@ function CheckRow({ check }: { check: CheckResult }) {
         ? { icon: X, ring: "bg-warn-soft text-warn", text: "text-ink" }
         : {
             icon: CircleHelp,
-            ring: "bg-black/[0.05] text-ink/40",
+            ring: "bg-black/[0.05] text-ink/65",
             text: "text-ink/70",
           };
   const Icon = tone.icon;
@@ -67,7 +67,7 @@ function CheckRow({ check }: { check: CheckResult }) {
         <p className={`text-sm font-semibold leading-snug ${tone.text}`}>
           {check.label}
           {check.passed === null && (
-            <span className="ml-2 text-2xs font-medium text-ink/40">
+            <span className="ml-2 text-2xs font-medium text-ink/65">
               chưa đủ chắc để nói
             </span>
           )}
@@ -75,7 +75,7 @@ function CheckRow({ check }: { check: CheckResult }) {
         {/* Lời khuyên chỉ hiện khi CHƯA đạt. Hiện cả khi đã đạt thì thành một
             bức tường chữ, và học sinh không biết nhìn vào đâu trước. */}
         {check.passed !== true && (
-          <p className="text-2xs text-ink/55 leading-relaxed mt-1">
+          <p className="text-2xs text-ink/65 leading-relaxed mt-1">
             {check.advice}
           </p>
         )}
@@ -130,12 +130,12 @@ export default function ChecklistPanel({
       data-lenis-prevent
       className="panel-scroll w-full lg:max-h-[46vh] rounded-2xl border border-black/5 bg-white p-5 md:p-6 shadow-sm"
     >
-      <span className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/45 flex items-center gap-1.5">
+      <h2 className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/65 flex items-center gap-1.5">
         <ClipboardCheck size={13} />
         Kiểm tra nháp
-      </span>
+      </h2>
 
-      <p className="text-2xs text-ink/50 leading-relaxed mt-2">
+      <p className="text-2xs text-ink/65 leading-relaxed mt-2">
         Máy chỉ soi được những lỗi nhìn ra trong vài giây. Đây{" "}
         <b className="text-ink/70">không phải band điểm</b> — bài vẫn cần cô
         Thương chấm theo barem.
@@ -164,7 +164,7 @@ export default function ChecklistPanel({
       </button>
 
       {tooShort && (
-        <p className="mt-2.5 text-2xs text-ink/40 leading-relaxed">
+        <p className="mt-2.5 text-2xs text-ink/65 leading-relaxed">
           Viết được khoảng {WRITING_CHECKABLE_WORDS} từ rồi kiểm tra sẽ có ích
           hơn.
         </p>
@@ -185,7 +185,7 @@ export default function ChecklistPanel({
         </ul>
       ) : (
         reason && (
-          <p className="mt-3 text-[13px] text-ink/55 leading-relaxed">
+          <p className="mt-3 text-[13px] text-ink/65 leading-relaxed">
             {REASON_TEXT[reason]}
           </p>
         )

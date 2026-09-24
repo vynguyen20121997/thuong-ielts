@@ -29,8 +29,9 @@ export default function PracticeSection() {
               Biết Ngay Mình Đang Ở Đâu
             </h2>
             <p className="text-ink/70 text-sm md:text-base leading-relaxed mt-5">
-              Bộ đề luyện tập miễn phí do cô Thương biên soạn. Bấm giờ như thi thật, nộp bài là có
-              điểm, band ước lượng và giải thích cho từng câu.
+              Bộ đề luyện tập miễn phí do cô Thương biên soạn. Bấm giờ như thi
+              thật, nộp bài là có điểm, band ước lượng và giải thích cho từng
+              câu.
             </p>
           </div>
 

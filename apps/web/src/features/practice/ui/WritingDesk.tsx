@@ -619,18 +619,75 @@ export default function WritingDesk({
   /* Đóng khi đang chấm cũng được — request vẫn chạy, mở lại là thấy kết quả. */
   const closeBand = () => setShowBand(false);
 
+  const bandBox = useRef<HTMLDivElement>(null);
+  const submitBtn = useRef<HTMLButtonElement>(null);
   /*
-    Esc đóng hộp thoại. Bắt ở `window` chứ không ở chính hộp thoại: không có
-    phần tử nào trong đó nhận focus bắt buộc, nên nghe phím trên hộp là nghe
-    hụt ngay lần bấm đầu.
+    Quản lý focus cho hộp thoại kết quả: đưa focus VÀO, giam Tab ở trong, trả
+    focus về chỗ cũ khi đóng.
+
+    Thiếu ba việc này thì hộp thoại chỉ là cái nhìn được chứ không dùng được
+    bằng bàn phím — đo bằng Playwright: bấm "Nộp bài" xong focus nằm ở `body`,
+    Tab tám lần thì cả tám lần rơi ra sau lớp phủ (nút "Kiểm tra nháp", logo,
+    link chân trang), và Esc đóng xong focus lạc ở đâu đó giữa chân trang.
+
+    Giam Tab bằng cách bắt phím ở `document` với `capture`, tính tay phần tử
+    kế tiếp trong hộp. Cách này không cần `inert` (Safari mới hỗ trợ) và không
+    đụng tới `aria-hidden` của cả trang.
+
+    Escape vẫn đóng — khác `BusyOverlay`, nơi lớp phủ chặn thao tác nên đóng
+    được là sai. Ở đây bài đã chấm xong, đóng lại xem bài là việc bình thường.
   */
   useEffect(() => {
     if (!showBand) return;
+    const box = bandBox.current;
+    if (!box) return;
+    box.focus({ preventScroll: true });
+
+    const SELECTOR =
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setShowBand(false);
+      if (e.key === "Escape") {
+        setShowBand(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = [...box.querySelectorAll<HTMLElement>(SELECTOR)].filter(
+        (el) => el.offsetParent !== null,
+      );
+      if (items.length === 0) {
+        e.preventDefault();
+        box.focus({ preventScroll: true });
+        return;
+      }
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      /* Ra khỏi hộp thì vòng lại đầu bên kia — kể cả khi focus đang ở chính
+         hộp (`box`), vì nó nhận focus lúc mở mà không nằm trong `items`. */
+      if (e.shiftKey && (active === first || active === box)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || active === box)) {
+        e.preventDefault();
+        first.focus();
+      } else if (!box.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("keydown", onKey, true);
+      /*
+        Trả focus về đúng nút "Nộp bài", KHÔNG phải về `document.activeElement`
+        lúc mở. Cú bấm chuột không phải lúc nào cũng để lại focus trên nút —
+        đo được là sau khi bấm, `activeElement` vẫn là `body` — nên nhớ "chỗ
+        cũ" kiểu đó là trả focus về hư không, và lần Tab kế tiếp bắt đầu lại từ
+        đầu trang.
+      */
+      submitBtn.current?.focus({ preventScroll: true });
+    };
   }, [showBand]);
 
   /*
@@ -767,9 +824,19 @@ export default function WritingDesk({
     <div className="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-8 items-start">
       <div className="min-w-0">
         <div className="rounded-2xl border border-black/5 bg-[#FAFAF8] p-5 md:p-6">
-          <span className="text-2xs font-bold uppercase tracking-[0.12em] text-brand">
+          {/*
+            `h1` của trang thi, không phải một `span` trang trí.
+
+            Vào chế độ viết thì tiêu đề đề bài biến mất khỏi màn hình, nên đo
+            bằng máy thấy cả `main` không còn heading nào — người dùng screen
+            reader nhảy theo heading là rơi thẳng xuống chân trang. Chữ hiện ra
+            giữ nguyên; tên đề đi kèm dạng chỉ-đọc-được để heading nói đúng
+            "trang này là đề nào".
+          */}
+          <h1 className="text-2xs font-bold uppercase tracking-[0.12em] text-brand">
             Writing Task 2 · {prompt.topic}
-          </span>
+            <span className="sr-only">: {prompt.title}</span>
+          </h1>
           {/* `whitespace-pre-line` giữ đúng các dòng trống của đề gốc. Đề IELTS
               tách "You should spend about 40 minutes…" khỏi câu hỏi chính bằng
               dòng trống, gộp lại thành một khối chữ là học sinh đọc lướt mất
@@ -777,7 +844,7 @@ export default function WritingDesk({
           <p className="text-ink text-[15px] md:text-base leading-relaxed mt-3 whitespace-pre-line">
             {prompt.prompt}
           </p>
-          <p className="text-2xs text-ink/45 mt-4">
+          <p className="text-2xs text-ink/65 mt-4">
             Viết ít nhất {WRITING_MIN_WORDS} từ trong khoảng {WRITING_MINUTES}{" "}
             phút, như thi thật.
           </p>
@@ -787,18 +854,18 @@ export default function WritingDesk({
           <div className="flex items-center gap-4">
             <span
               className={`font-mono text-sm font-bold tabular-nums ${
-                words >= WRITING_MIN_WORDS ? "text-brand" : "text-ink/50"
+                words >= WRITING_MIN_WORDS ? "text-brand" : "text-ink/65"
               }`}
             >
               {words}
-              <span className="text-ink/35 font-medium">
+              <span className="text-ink/65 font-medium">
                 {" "}
                 / {WRITING_MIN_WORDS} từ
               </span>
             </span>
             <span
               className={`flex items-center gap-1.5 font-mono text-sm tabular-nums ${
-                overTime ? "text-warn" : "text-ink/45"
+                overTime ? "text-warn" : "text-ink/65"
               }`}
             >
               <Timer size={14} />
@@ -809,7 +876,7 @@ export default function WritingDesk({
           <button
             type="button"
             onClick={reset}
-            className="flex items-center gap-1.5 text-2xs font-medium text-ink/45 hover:text-brand cursor-pointer transition-colors"
+            className="flex items-center gap-1.5 text-2xs font-medium text-ink/65 hover:text-brand cursor-pointer transition-colors"
           >
             <RotateCcw size={12} />
             Viết lại từ đầu
@@ -835,12 +902,29 @@ export default function WritingDesk({
             className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl border border-transparent p-5 text-[15px] leading-[1.9] whitespace-pre-wrap break-words"
           >
             <span className="invisible">{essay}</span>
-            {ghost && <span className="text-ink/30">{ghost}</span>}
+            {ghost && (
+              /*
+                Gợi ý phải ĐỌC ĐƯỢC, và vẫn phải trông khác chữ mình gõ.
+
+                Trước đây nó phân biệt bằng mỗi độ mờ (`text-ink/30`) — 1,9:1,
+                dưới xa mức 4,5:1, tức là người mắt kém không đọc nổi đúng cái
+                câu họ sắp bấm Tab để nhận. Giờ chữ đủ đậm để đọc, và cái phân
+                biệt chuyển sang NỀN: một vệt xanh nhạt nói "phần này máy đề
+                nghị, chưa phải của em". Phân biệt bằng hai dấu hiệu thay vì
+                một cũng an toàn hơn cho người mù màu.
+              */
+              <span className="rounded-sm bg-leaf/30 text-ink/65">{ghost}</span>
+            )}
           </div>
 
           <textarea
             ref={area}
             id="writing-essay"
+            /* Ô này không có nhãn NHÌN THẤY được — cả màn hình chỉ có một chỗ
+               để gõ nên nhãn là thừa với người nhìn được. Nhưng `placeholder`
+               biến mất ngay khi gõ chữ đầu, và screen reader đọc nó ra thành
+               "edit, blank": không biết ô đó để làm gì. */
+            aria-label="Bài viết Task 2"
             value={essay}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={onKeyDown}
@@ -855,14 +939,14 @@ export default function WritingDesk({
         </div>
 
         {!ghost && shownIdea && (
-          <p className="mt-2 text-2xs text-ink/40">
+          <p className="mt-2 text-2xs text-ink/65">
             Bí tiếp thì cứ dừng bút — bảng bên phải sẽ gợi phần kế tiếp của
             đoạn.
           </p>
         )}
 
         {ghost && (
-          <p className="mt-2 flex items-center gap-2 text-2xs text-ink/40">
+          <p className="mt-2 flex items-center gap-2 text-2xs text-ink/65">
             <kbd className="rounded border border-black/15 bg-white px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink/60">
               Tab
             </kbd>
@@ -876,6 +960,7 @@ export default function WritingDesk({
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
+            ref={submitBtn}
             type="button"
             onClick={submit}
             disabled={banding || words < WRITING_CHECKABLE_WORDS}
@@ -897,7 +982,7 @@ export default function WritingDesk({
             )}
           </button>
           {words < WRITING_CHECKABLE_WORDS && (
-            <span className="text-2xs text-ink/40">
+            <span className="text-2xs text-ink/65">
               Viết được khoảng {WRITING_CHECKABLE_WORDS} từ rồi nộp sẽ có ích
               hơn.
             </span>
@@ -941,15 +1026,18 @@ export default function WritingDesk({
               className="fixed inset-0 z-[110] overflow-y-auto bg-ink/50 backdrop-blur-sm px-4 py-10 flex items-start justify-center"
             >
               <div
+                ref={bandBox}
+                /* `-1`: hộp nhận được focus lúc mở mà không chen vào thứ tự Tab. */
+                tabIndex={-1}
                 /* Bấm trong bảng không được tính là bấm ra ngoài để đóng. */
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-5xl rounded-2xl bg-white p-5 md:p-7 shadow-xl"
+                className="relative w-full max-w-5xl rounded-2xl bg-white p-5 md:p-7 shadow-xl focus:outline-none"
               >
                 <button
                   type="button"
                   onClick={closeBand}
                   aria-label="Đóng"
-                  className="absolute right-4 top-4 rounded-full p-2 text-ink/40 hover:bg-black/5 hover:text-ink cursor-pointer transition-colors"
+                  className="absolute right-4 top-4 rounded-full p-2 text-ink/65 hover:bg-black/5 hover:text-ink cursor-pointer transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -1012,13 +1100,13 @@ export default function WritingDesk({
           }`}
         >
           <>
-            <span className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/45 flex items-center gap-1.5">
+            <h2 className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/65 flex items-center gap-1.5">
               <Lightbulb size={13} />
               Gợi ý ý tưởng
-            </span>
+            </h2>
 
             {!guide ? (
-              <p className="mt-4 text-sm text-ink/45 leading-relaxed">
+              <p className="mt-4 text-sm text-ink/65 leading-relaxed">
                 {attempt >= MAX_RETRIES
                   ? "Chưa lấy được gợi ý — có thể mạng đang trục trặc. Bài viết của em vẫn giữ nguyên, và phần kiểm tra nháp vẫn dùng được."
                   : "Cứ đọc đề và bắt đầu viết. Khi nào bí, dừng bút một lát là gợi ý hiện ra ở đây."}
@@ -1033,9 +1121,9 @@ export default function WritingDesk({
                 */}
                 {shownIdea === null ? (
                   <div className={exiting ? "hint-box--out" : "hint-box"}>
-                    <h2 className="mt-3 text-[17px] font-bold tracking-tight text-ink leading-snug">
+                    <h3 className="mt-3 text-[17px] font-bold tracking-tight text-ink leading-snug">
                       {guide.title}
-                    </h2>
+                    </h3>
                     <p className="mt-1.5 text-[13.5px] text-ink/70 leading-relaxed">
                       {guide.body}
                     </p>
@@ -1080,7 +1168,7 @@ export default function WritingDesk({
                       <button
                         type="button"
                         onClick={() => setOpenIdea(null)}
-                        className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/45 hover:text-brand cursor-pointer transition-colors"
+                        className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/65 hover:text-brand cursor-pointer transition-colors"
                         style={{ "--i": 0 } as CSSProperties}
                       >
                         <ArrowLeft size={12} />
@@ -1112,7 +1200,7 @@ export default function WritingDesk({
                             <span className="text-[13px] font-semibold text-ink">
                               {row.idea}
                             </span>
-                            <span className="text-2xs text-ink/50">
+                            <span className="text-2xs text-ink/65">
                               · {row.part}
                             </span>
                           </li>
@@ -1121,7 +1209,7 @@ export default function WritingDesk({
                     </div>
 
                     <p
-                      className="hint-step text-2xs text-ink/45 leading-relaxed"
+                      className="hint-step text-2xs text-ink/65 leading-relaxed"
                       style={{ "--i": journal.length + 1 } as CSSProperties}
                     >
                       Viết tiếp bằng lời của em. Bí thì cứ dừng bút — gợi ý sẽ
@@ -1150,7 +1238,7 @@ export default function WritingDesk({
                       <button
                         type="button"
                         onClick={() => setOpenIdea(null)}
-                        className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/45 hover:text-brand cursor-pointer transition-colors"
+                        className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/65 hover:text-brand cursor-pointer transition-colors"
                         style={{ "--i": 0 } as CSSProperties}
                       >
                         <ArrowLeft size={12} />
@@ -1252,7 +1340,7 @@ export default function WritingDesk({
               </>
             )}
 
-            <p className="mt-5 pt-3 border-t border-black/5 text-2xs text-ink/40 leading-relaxed">
+            <p className="mt-5 pt-3 border-t border-black/5 text-2xs text-ink/65 leading-relaxed">
               Gợi ý do cô Thương soạn sẵn cho đề này. Máy chỉ đọc bài để chọn
               gợi ý khớp với chỗ em đang viết — không viết thay em, và không
               chấm điểm.

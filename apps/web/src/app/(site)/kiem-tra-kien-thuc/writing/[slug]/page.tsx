@@ -52,12 +52,18 @@ export default async function WritingTaskPage({
   return (
     <main className="relative z-10 pt-24 md:pt-28 pb-20 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto gutter">
-        <nav className="flex items-center gap-1.5 text-2xs font-medium text-ink/40 mb-6">
-          <Link href="/kiem-tra-kien-thuc" className="hover:text-brand transition-colors">
+        <nav className="flex items-center gap-1.5 text-2xs font-medium text-ink/65 mb-6">
+          <Link
+            href="/kiem-tra-kien-thuc"
+            className="hover:text-brand transition-colors"
+          >
             Kiểm tra kiến thức
           </Link>
           <ChevronRight size={12} />
-          <Link href="/kiem-tra-kien-thuc/writing" className="hover:text-brand transition-colors">
+          <Link
+            href="/kiem-tra-kien-thuc/writing"
+            className="hover:text-brand transition-colors"
+          >
             Writing
           </Link>
           <ChevronRight size={12} />

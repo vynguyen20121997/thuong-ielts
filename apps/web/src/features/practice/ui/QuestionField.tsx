@@ -2,7 +2,11 @@
 
 import { Check, X } from "lucide-react";
 
-import { isChoiceQuestion, type GradedQuestion, type Question } from "../domain/types";
+import {
+  isChoiceQuestion,
+  type GradedQuestion,
+  type Question,
+} from "../domain/types";
 
 /**
  * Renders one question in either of its two states: answerable, or reviewed.
@@ -37,7 +41,7 @@ export default function QuestionField({
     >
       <div className="flex items-start gap-3">
         <span
-          className={`h-7 w-7 shrink-0 rounded-full flex items-center justify-center font-mono text-2xs font-bold ${state === "correct" ? "bg-leaf text-brand" : state === "wrong" ? "bg-red-100 text-red-600" : value.trim() ? "bg-brand text-white" : "bg-black/[0.06] text-ink/50"}`}
+          className={`h-7 w-7 shrink-0 rounded-full flex items-center justify-center font-mono text-2xs font-bold ${state === "correct" ? "bg-leaf text-brand" : state === "wrong" ? "bg-red-100 text-red-600" : value.trim() ? "bg-brand text-white" : "bg-black/[0.06] text-ink/65"}`}
         >
           {state === "correct" ? (
             <Check size={14} />
@@ -98,7 +102,9 @@ export default function QuestionField({
 
         {review && !review.isCorrect && (
           <p className="mt-3 text-sm text-ink/70">
-            <span className="text-2xs font-medium text-brand block mb-1">Đáp án đúng</span>
+            <span className="text-2xs font-medium text-brand block mb-1">
+              Đáp án đúng
+            </span>
             {review.expected}
           </p>
         )}

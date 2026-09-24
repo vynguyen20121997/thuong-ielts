@@ -19,7 +19,10 @@ import {
   countWords,
 } from "../domain/writing";
 import type { WritingPrompt } from "../server/writingRepository";
-import WritingDesk, { readWritingDraft, clearWritingDraft } from "./WritingDesk";
+import WritingDesk, {
+  readWritingDraft,
+  clearWritingDraft,
+} from "./WritingDesk";
 
 /**
  * Màn bìa trước khi vào bài Writing — cùng vai với `ReadingExamGate`.
@@ -64,7 +67,14 @@ export default function WritingGate({
   );
 
   if (started)
-    return <WritingDesk prompt={prompt} knowledge={knowledge} autoStart resume={resume} />;
+    return (
+      <WritingDesk
+        prompt={prompt}
+        knowledge={knowledge}
+        autoStart
+        resume={resume}
+      />
+    );
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -98,11 +108,18 @@ export default function WritingGate({
         {/* Thông số — cùng bố cục với màn bìa Reading để hai kỹ năng đọc như một */}
         <div className="grid grid-cols-3 divide-x divide-black/5 border-b border-black/5">
           {[
-            { icon: Type, value: `${WRITING_MIN_WORDS}`, label: "từ tối thiểu" },
+            {
+              icon: Type,
+              value: `${WRITING_MIN_WORDS}`,
+              label: "từ tối thiểu",
+            },
             { icon: Clock, value: `${WRITING_MINUTES}`, label: "phút" },
             { icon: ListChecks, value: "6", label: "mục kiểm tra" },
           ].map(({ icon: Icon, value, label }) => (
-            <div key={label} className="px-4 py-5 flex flex-col items-center gap-1">
+            <div
+              key={label}
+              className="px-4 py-5 flex flex-col items-center gap-1"
+            >
               <Icon size={15} className="text-brand/50" />
               <span className="text-2xl font-bold text-ink leading-none tabular-nums">
                 {value}
@@ -126,26 +143,28 @@ export default function WritingGate({
             <li className="flex gap-2.5">
               <Clock size={15} className="shrink-0 mt-0.5 text-brand/50" />
               <span>
-                Đồng hồ <b className="text-ink">chỉ chạy sau khi bấm bắt đầu</b>, không chạy
-                trong lúc đọc trang này. Hết {WRITING_MINUTES} phút bài{" "}
-                <b className="text-ink">không tự nộp</b> — em vẫn viết tiếp được, đồng hồ chỉ
-                cho biết mình nhanh hay chậm so với phòng thi.
+                Đồng hồ <b className="text-ink">chỉ chạy sau khi bấm bắt đầu</b>
+                , không chạy trong lúc đọc trang này. Hết {WRITING_MINUTES} phút
+                bài <b className="text-ink">không tự nộp</b> — em vẫn viết tiếp
+                được, đồng hồ chỉ cho biết mình nhanh hay chậm so với phòng thi.
               </span>
             </li>
             <li className="flex gap-2.5">
               <Lightbulb size={15} className="shrink-0 mt-0.5 text-brand/50" />
               <span>
-                Bí ý thì cứ dừng bút. Sau khoảng mười giây không gõ, bảng bên phải sẽ gợi{" "}
-                <b className="text-ink">câu hỏi để em tự nghĩ ra ý</b> — không viết câu thay em.
+                Bí ý thì cứ dừng bút. Sau khoảng mười giây không gõ, bảng bên
+                phải sẽ gợi{" "}
+                <b className="text-ink">câu hỏi để em tự nghĩ ra ý</b> — không
+                viết câu thay em.
               </span>
             </li>
             <li className="flex gap-2.5">
               <PenLine size={15} className="shrink-0 mt-0.5 text-brand/50" />
               <span>
-                Viết xong bấm <b className="text-ink">Kiểm tra nháp</b> để soi lỗi bố cục, lạc
-                đề, thiếu ví dụ. Phần này{" "}
-                <b className="text-ink">không chấm band</b> — bài vẫn cần cô Thương chấm theo
-                barem.
+                Viết xong bấm <b className="text-ink">Kiểm tra nháp</b> để soi
+                lỗi bố cục, lạc đề, thiếu ví dụ. Phần này{" "}
+                <b className="text-ink">không chấm band</b> — bài vẫn cần cô
+                Thương chấm theo barem.
               </span>
             </li>
           </ul>
@@ -154,7 +173,8 @@ export default function WritingGate({
             <div className="mt-6 rounded-xl border border-brand/20 bg-leaf/[0.12] px-4 py-3.5">
               <p className="text-sm text-ink">
                 Có một bài dở trong phiên này —{" "}
-                <b className="font-mono tabular-nums">{draft.words}</b> từ đã viết.
+                <b className="font-mono tabular-nums">{draft.words}</b> từ đã
+                viết.
               </p>
             </div>
           )}
@@ -172,7 +192,10 @@ export default function WritingGate({
             <button
               type="button"
               onClick={() => {
-                if (!window.confirm("Bỏ bài đang viết dở và bắt đầu lại từ đầu?")) return;
+                if (
+                  !window.confirm("Bỏ bài đang viết dở và bắt đầu lại từ đầu?")
+                )
+                  return;
                 setDraft(null);
                 start(false);
               }}

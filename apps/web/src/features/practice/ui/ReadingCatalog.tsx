@@ -230,6 +230,7 @@ export default function ReadingCatalog({
           </Fold>
           <Fold title="Topics" open>
             <select
+              aria-label="Lọc theo chủ đề"
               value={topic}
               onChange={(e) => setTopic(e.target.value as IeltsTopic | "")}
               className="w-full rounded-xl border border-black/10 p-2.5 text-xs"
@@ -266,6 +267,10 @@ export default function ReadingCatalog({
         <div>
           {total ? (
             <>
+              {/* Bậc heading ở giữa: `h1` của trang nhảy thẳng xuống `h3` của
+                  thẻ đề thì người dùng screen reader mất một tầng bản đồ. Không
+                  hiện chữ vì lưới thẻ đã tự nói nó là gì. */}
+              <h2 className="sr-only">Danh sách đề Reading</h2>
               <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {mode === "single"
                   ? visiblePassages.map((test, i) => (
@@ -314,7 +319,7 @@ function Top({
           <button
             key={v}
             onClick={() => setStatus(v as "undone" | "done")}
-            className={`rounded-xl px-5 py-3 text-sm font-bold ${status === v ? "bg-white text-brand shadow-sm" : "text-ink/45"}`}
+            className={`rounded-xl px-5 py-3 text-sm font-bold ${status === v ? "bg-white text-brand shadow-sm" : "text-ink/65"}`}
           >
             {l}
           </button>
@@ -322,13 +327,16 @@ function Top({
       </div>
       <div className="relative ml-auto w-full sm:max-w-xl">
         <Search
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/45"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/65"
           size={19}
         />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Tìm theo tên bài tập"
+          /* Placeholder biến mất ngay khi gõ, và screen reader đọc ô này ra
+             thành "edit, blank" — phải có tên thật. */
+          aria-label="Tìm theo tên bài tập"
           className="w-full rounded-full border border-black/10 bg-white py-3 pl-12 pr-5 text-sm outline-none"
         />
       </div>
@@ -337,7 +345,7 @@ function Top({
 }
 function Empty() {
   return (
-    <div className="rounded-2xl border border-dashed border-black/15 py-20 text-center text-sm text-ink/55">
+    <div className="rounded-2xl border border-dashed border-black/15 py-20 text-center text-sm text-ink/65">
       Không tìm thấy bài phù hợp.
     </div>
   );

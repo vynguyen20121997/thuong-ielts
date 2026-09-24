@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+
 import Link from "next/link";
 import { AlarmClock, RotateCcw, Target, Timer } from "lucide-react";
 
@@ -23,6 +25,12 @@ export default function ReadingResultPanel({
   /** Where "chọn đề khác" goes. The panel is shared with listening. */
   catalogHref?: string;
 }) {
+  const heading = useRef<HTMLHeadingElement>(null);
+  /* Chỉ kéo focus MỘT lần, lúc bảng vừa gắn vào cây. */
+  useEffect(() => {
+    heading.current?.focus({ preventScroll: true });
+  }, []);
+
   const percent = Math.round(result.accuracy * 100);
 
   /*
@@ -37,52 +45,78 @@ export default function ReadingResultPanel({
 
   return (
     <div className="bg-brand text-white rounded-2xl p-6 md:p-7 shadow-xl">
-      <div className="flex items-center gap-2 mb-5">
+      {/*
+        Bảng điểm TỰ NHẬN focus khi nó xuất hiện.
+
+        Nộp bài xong, lớp phủ "đang chấm" bị gỡ cùng cả phòng thi, nên focus
+        rơi về `body` — đo được — và người dùng bàn phím phải Tab lại từ logo
+        trang. Kéo focus về đây là đưa họ tới đúng thứ vừa xảy ra, và screen
+        reader đọc luôn "Kết quả bài làm".
+
+        `tabIndex={-1}` để nhận được focus mà không chen vào thứ tự Tab.
+      */}
+      <h2
+        ref={heading}
+        tabIndex={-1}
+        className="flex items-center gap-2 mb-5 focus:outline-none"
+      >
         <Target size={15} className="text-leaf" />
         <span className="text-2xs font-medium text-leaf">
           {giauDiem ? "Đã nộp bài" : "Kết quả bài làm"}
         </span>
-      </div>
+      </h2>
 
       {giauDiem && (
         <div className="rounded-xl bg-white/10 px-4 py-3.5 mb-6">
           <p className="text-sm font-semibold">Bài của em đã nộp xong.</p>
           <p className="text-xs text-white/65 mt-1 leading-relaxed">
-            Buổi này thầy cô chữa chung cả lớp trước rồi mới trả điểm. Quay lại trang này sau khi
-            thầy cô mở kết quả nhé.
+            Buổi này thầy cô chữa chung cả lớp trước rồi mới trả điểm. Quay lại
+            trang này sau khi thầy cô mở kết quả nhé.
           </p>
         </div>
       )}
 
-      <div className={`grid grid-cols-3 gap-4 mb-6 ${giauDiem ? "hidden" : ""}`}>
+      <div
+        className={`grid grid-cols-3 gap-4 mb-6 ${giauDiem ? "hidden" : ""}`}
+      >
         <div>
           <span className="text-4xl font-bold block leading-none">
             {result.correct}
-            <span className="text-white/40 text-2xl">/{result.total}</span>
+            <span className="text-white/70 text-2xl">/{result.total}</span>
           </span>
-          <span className="text-2xs text-white/50 font-medium mt-2 block">Câu đúng</span>
+          <span className="text-2xs text-white/70 font-medium mt-2 block">
+            Câu đúng
+          </span>
         </div>
         <div>
           <span className="text-4xl font-bold block leading-none text-leaf">
             {formatBand(result.band)}
           </span>
-          <span className="text-2xs text-white/50 font-medium mt-2 block">Band ước lượng</span>
+          <span className="text-2xs text-white/70 font-medium mt-2 block">
+            Band ước lượng
+          </span>
         </div>
         <div>
-          <span className="text-4xl font-bold block leading-none">{percent}%</span>
-          <span className="text-2xs text-white/50 font-medium mt-2 block">Độ chính xác</span>
+          <span className="text-4xl font-bold block leading-none">
+            {percent}%
+          </span>
+          <span className="text-2xs text-white/70 font-medium mt-2 block">
+            Độ chính xác
+          </span>
         </div>
       </div>
 
       {/* Accuracy bar */}
-      <div className={`h-1.5 w-full bg-white/15 rounded-full overflow-hidden mb-5 ${giauDiem ? "hidden" : ""}`}>
+      <div
+        className={`h-1.5 w-full bg-white/15 rounded-full overflow-hidden mb-5 ${giauDiem ? "hidden" : ""}`}
+      >
         <div
           className="h-full bg-leaf rounded-full transition-all duration-700"
           style={{ width: `${percent}%` }}
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-white/60 mb-6">
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-white/70 mb-6">
         <span className="flex items-center gap-1.5 font-mono text-2xs font-bold">
           <Timer size={13} />
           Thời gian làm: {formatClock(result.elapsedSeconds)}
@@ -96,9 +130,9 @@ export default function ReadingResultPanel({
       </div>
 
       <p className="text-sm leading-relaxed text-white/70 mb-6">
-        Band ở trên là con số quy đổi tương đối từ thang 40 câu của IELTS Academic Reading, dùng để
-        theo dõi tiến bộ chứ không thay thế điểm thi thật. Kéo xuống dưới để xem đáp án và giải
-        thích cho từng câu.
+        Band ở trên là con số quy đổi tương đối từ thang 40 câu của IELTS
+        Academic Reading, dùng để theo dõi tiến bộ chứ không thay thế điểm thi
+        thật. Kéo xuống dưới để xem đáp án và giải thích cho từng câu.
       </p>
 
       <div className="flex flex-wrap gap-3">

@@ -12,21 +12,41 @@ function fullTestTitle(label: string): string {
   return label.replace(/\s*[·–—]\s*/g, " - ");
 }
 
-export default function ReadingTestGroupCard({ group, index }: { group: TestGroup; index: number }) {
+export default function ReadingTestGroupCard({
+  group,
+  index,
+}: {
+  group: TestGroup;
+  index: number;
+}) {
   return (
     <Link
       href={`/phong-luyen-tap/reading/test/${group.id}`}
       className="group flex min-h-[315px] flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-brand/25 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
     >
-      <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${COVER_TONES[index % COVER_TONES.length]}`}>
-        <BookOpen className="absolute right-6 top-6 text-white/20" size={82} strokeWidth={1.15} />
+      <div
+        className={`relative h-44 overflow-hidden bg-gradient-to-br ${COVER_TONES[index % COVER_TONES.length]}`}
+      >
+        <BookOpen
+          className="absolute right-6 top-6 text-white/20"
+          size={82}
+          strokeWidth={1.15}
+        />
         <div className="absolute -bottom-20 -left-10 h-52 w-52 rounded-full border-[32px] border-white/10" />
-        <span className="absolute bottom-0 left-0 rounded-tr-2xl bg-brand px-5 py-2 text-sm font-bold text-white">Full test</span>
+        <span className="absolute bottom-0 left-0 rounded-tr-2xl bg-brand px-5 py-2 text-sm font-bold text-white">
+          Full test
+        </span>
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-lg font-bold leading-snug text-ink transition-colors group-hover:text-brand">{fullTestTitle(group.label)}</h3>
-        <p className="mt-2 text-sm text-ink/55">Reading · {group.passages.length} passages</p>
-        <span className="mt-auto pt-5 text-sm font-semibold text-brand">Làm toàn bộ đề →</span>
+        <h3 className="text-lg font-bold leading-snug text-ink transition-colors group-hover:text-brand">
+          {fullTestTitle(group.label)}
+        </h3>
+        <p className="mt-2 text-sm text-ink/65">
+          Reading · {group.passages.length} passages
+        </p>
+        <span className="mt-auto pt-5 text-sm font-semibold text-brand">
+          Làm toàn bộ đề →
+        </span>
       </div>
     </Link>
   );
