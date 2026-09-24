@@ -255,9 +255,20 @@ export default function DeckEditor({
                         </span>
                       )}
                     </p>
-                    <p className="mt-0.5 text-sm text-ink/75">
-                      {card.vietnamese || "— chưa có nghĩa —"}
-                    </p>
+                    {card.vietnamese ? (
+                      <p className="mt-0.5 text-sm text-ink/75">
+                        {card.vietnamese}
+                      </p>
+                    ) : (
+                      /*
+                        Nói rõ hậu quả, không chỉ nói thiếu: thẻ không có nghĩa
+                        thì lật ra chẳng có gì để nhớ, nên nó đứng ngoài lịch ôn
+                        cho tới khi điền.
+                      */
+                      <p className="mt-0.5 text-sm font-semibold text-warn">
+                        Chưa có nghĩa — thẻ này chưa vào lịch ôn
+                      </p>
+                    )}
                     {card.examples.length > 0 && (
                       <ul className="mt-2 flex flex-col gap-1">
                         {card.examples.map((e, i) => (

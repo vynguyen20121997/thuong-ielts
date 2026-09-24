@@ -1,0 +1,91 @@
+{
+  "_comment": "Bằng chứng đo trên trình duyệt thật (Playwright) cho phần học từ vựng. Chỉ số đo và chuỗi đọc được từ DOM/DB — không có ý kiến persona nào trong file này.",
+  "ngay": "2026-09-24",
+  "duong_dan": "/hoc-tu-vung",
+  "loi_tim_duoc": [
+    {
+      "id": "cham-nhieu-lan-mot-the",
+      "persona": "voi-vang (Minh Khoa) — bấm nút liên tục",
+      "muc_do": "nặng",
+      "trieu_chung": "Bấm 'Nhớ' bốn lần liên tiếp ghi BỐN lượt chấm cho cùng một thẻ; khoảng cách ôn phồng lên theo cấp số nhân và hai thẻ sau bị nhảy qua.",
+      "bang_chung_truoc": {
+        "so_dong_nhat_ky": 4,
+        "cung_mot_the": "education-65-scrutiny",
+        "interval_tung_lan": [3, 8, 20, 50],
+        "reviews_count": 4,
+        "giao_dien": "nhảy từ thẻ 1 sang thẻ 3"
+      },
+      "nguyen_nhan": "Không có chốt chống bấm lặp. Mỗi lần gọi đọc `index` cũ nên vẫn trỏ vào thẻ đang hiện.",
+      "sua_lan_1_that_bai": {
+        "cach": "chốt bằng React state + disabled",
+        "ket_qua_do_lai": "vẫn 4 dòng — bốn cú bấm nằm trong cùng một nhịp, cả bốn đọc state cũ là false trước khi React kịp vẽ lại"
+      },
+      "sua_lan_2": {
+        "cach": "chốt bằng ref (đổi ngay tại chỗ), state chỉ để làm mờ nút",
+        "bang_chung_sau": {
+          "so_dong_nhat_ky": 1,
+          "interval": 3
+        }
+      }
+    },
+    {
+      "id": "the-khong-co-nghia-van-vao-lich",
+      "persona": "to-mo (Đức Huy) — bấm thử mọi thứ",
+      "muc_do": "vừa",
+      "trieu_chung": "Lưu được thẻ chỉ có từ, không có nghĩa. Thẻ đó vẫn vào lịch ôn; lật ra chỉ thấy dấu gạch ngang, học sinh không học được gì mà vẫn phải tự chấm — và cái chấm ấy đẩy thẻ đi xa cả tuần.",
+      "bang_chung_truoc": {
+        "the_them_duoc": "ubiquitous",
+        "mat_sau_hien": "—",
+        "van_nam_trong_danh_sach_den_han": true
+      },
+      "sua": "ensureReviews và listDueCards bỏ qua thẻ có `vietnamese` rỗng; ô đếm ở trang chủ lọc cùng điều kiện để hai con số không lệch nhau. Màn sửa thẻ ghi rõ 'Chưa có nghĩa — thẻ này chưa vào lịch ôn'.",
+      "bang_chung_sau": {
+        "trang_chu": "Hôm nay có 4 thẻ đến hạn",
+        "api_tra_ve": 4,
+        "co_the_thieu_nghia_trong_buoi": false
+      }
+    },
+    {
+      "id": "dap-an-lo-ra-truoc-khi-lat",
+      "persona": "ban-phim (Quang Vinh) — dùng bàn phím, trình đọc màn hình",
+      "muc_do": "vừa",
+      "trieu_chung": "Nghĩa tiếng Việt chỉ bị ẩn bằng opacity/max-height nên vẫn nằm trong cây DOM: trình đọc màn hình đọc ra, Ctrl+F tìm thấy, Ctrl+A bôi đen là thấy. Học sinh dùng bàn phím biết đáp án trước khi tự nhớ — đúng thứ tính năng này sinh ra để ngăn.",
+      "bang_chung_truoc": {
+        "opacity": "0",
+        "maxHeight": "0px",
+        "van_doc_duoc_bang_text": true
+      },
+      "sua": "thêm `invisible` và `aria-hidden` khi chưa lật; vẫn giữ được chuyển động.",
+      "bang_chung_sau": {
+        "chua_lat": { "visibility": "hidden", "aria-hidden": "true" },
+        "da_lat": { "visibility": "visible", "aria-hidden": "false", "cao_px": 71 }
+      }
+    }
+  ],
+  "da_do_va_khong_thay_loi": [
+    {
+      "muc": "Bàn phím",
+      "ket_qua": "Space lật thẻ; phím 1–4 chấm đúng mức. Giữ phím (keydown repeat) ba lần chỉ ghi MỘT lượt — nhờ chốt `e.repeat` cộng chốt ref."
+    },
+    {
+      "muc": "Màn hẹp 320px",
+      "ket_qua": "0 phần tử tràn ở cả trang chủ lẫn màn ôn thẻ; trang không cuộn ngang."
+    },
+    {
+      "muc": "Tải lại giữa buổi ôn",
+      "ket_qua": "Buổi ôn bắt đầu lại từ đầu (không giữ chồng bài), nhưng lượt đã chấm thì đã ghi: 3 thẻ đến hạn -> chấm 1 -> tải lại -> còn đúng 2 thẻ."
+    },
+    {
+      "muc": "Tạo bộ thẻ với tên rỗng hoặc toàn khoảng trắng",
+      "ket_qua": "Nút 'Tạo bộ' tắt ở cả hai trường hợp."
+    },
+    {
+      "muc": "Nút sinh phiên âm/nghĩa tự động",
+      "ket_qua": "API trả `available:false`, giao diện hiện đúng câu 'Bộ sinh tự động chưa nối…' chứ không im lặng và không bịa nội dung."
+    }
+  ],
+  "chua_do_duoc": [
+    "Hai học sinh cùng chấm một thẻ ở hai tab — transaction có FOR UPDATE nhưng chưa dựng được cảnh chạy song song thật.",
+    "Chuỗi ngày học qua nhiều ngày thật (streak) — cần dữ liệu nhiều ngày, mới chỉ kiểm bằng hàm thuần."
+  ]
+}

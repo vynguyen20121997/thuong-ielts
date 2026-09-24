@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -95,6 +95,22 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
+  /*
+    Đang ghi một lượt chấm thì KHÓA bốn nút lại.
+
+    Không có chốt này thì bấm nhanh bốn cái là bốn lượt chấm cho CÙNG một thẻ:
+    mỗi lần gọi đọc `index` cũ nên vẫn trỏ vào thẻ đang hiện. Đo được: bấm
+    "Nhớ" bốn lần liên tiếp -> bốn dòng nhật ký cho cùng một từ, khoảng cách
+    phồng 3 -> 8 -> 20 -> 50 ngày. Một cú double-click vô tình đủ để hỏng lịch
+    ôn cả tháng rưỡi.
+
+    Chốt phải là REF, không phải state. Đã thử bằng state và đo lại vẫn ra bốn
+    dòng: bốn cú bấm nằm trong cùng một nhịp, cả bốn đọc `saving` cũ là false
+    trước khi React kịp vẽ lại, và `disabled` cũng chỉ có hiệu lực sau lần vẽ
+    ấy. Ref đổi ngay tại chỗ nên cú bấm thứ hai thấy liền.
+  */
+  const savingRef = useRef(false);
+  const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -127,7 +143,9 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
 
   async function rate(rating: Rating) {
     const item = stack[index];
-    if (!item) return;
+    if (!item || savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
 
     /*
       CHỜ ghi xong mới sang thẻ sau, đúng như bản gốc.
@@ -144,6 +162,9 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
       });
     } catch {
       /* Mất mạng thì buổi học vẫn chạy tiếp; lượt này không được ghi. */
+    } finally {
+      savingRef.current = false;
+      setSaving(false);
     }
 
     if (rating === "again") {
@@ -184,6 +205,8 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
       const n = Number(e.key);
       if (n >= 1 && n <= 4) {
         e.preventDefault();
+        /* Giữ phím 1 thì trình duyệt bắn keydown liên tục — cùng cái bẫy. */
+        if (e.repeat || savingRef.current) return;
         void rate(RATINGS[n - 1].value);
       }
     };
@@ -323,9 +346,22 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
             </div>
           )}
 
+          {/*
+            Chưa lật thì mặt sau phải THỰC SỰ không với tới được, không chỉ mờ
+            đi. Ẩn bằng `opacity: 0` vẫn để chữ nằm trong cây: trình đọc màn
+            hình đọc ra, Ctrl+F tìm thấy, Ctrl+A bôi đen là thấy — tức là một
+            học sinh dùng bàn phím hoặc dùng trình đọc luôn biết đáp án trước
+            khi tự nhớ, đúng thứ mà cả tính năng này sinh ra để ngăn.
+
+            `visibility: hidden` cắt cả ba đường đó mà vẫn chạy được chuyển
+            động; `aria-hidden` để trình đọc bỏ qua hẳn.
+          */}
           <div
+            aria-hidden={!flipped}
             className={`overflow-hidden border-t-2 border-dashed border-sage transition-all duration-300 ${
-              flipped ? "max-h-64 pt-5 opacity-100" : "max-h-0 opacity-0"
+              flipped
+                ? "max-h-64 pt-5 opacity-100"
+                : "invisible max-h-0 opacity-0"
             }`}
           >
             <h4 className="text-2xs font-extrabold uppercase tracking-[0.14em] text-brand-soft">
@@ -356,8 +392,9 @@ export default function StudySession({ deckId, onClose, onDone }: Props) {
                 <button
                   key={value}
                   type="button"
+                  disabled={saving}
                   onClick={() => rate(value)}
-                  className={`flex min-h-[76px] flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-3 text-sm font-bold transition-colors ${tone}`}
+                  className={`flex min-h-[76px] flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-3 text-sm font-bold transition-colors disabled:opacity-45 ${tone}`}
                 >
                   <Icon size={16} />
                   {label}

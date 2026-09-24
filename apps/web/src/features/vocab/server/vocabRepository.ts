@@ -146,13 +146,18 @@ export async function listCards(deckId: string): Promise<Card[]> {
  * Bản gốc gọi `ensureStudentReviews` ở đầu mỗi endpoint. Giữ nguyên ý đó,
  * nhưng làm bằng một câu `INSERT ... SELECT ... ON CONFLICT DO NOTHING` — chạy
  * song song hai tab cũng không sinh hai dòng.
+ *
+ * Thẻ CHƯA CÓ NGHĨA thì không xếp lịch. Lật một thẻ như vậy ra chỉ thấy dấu
+ * gạch ngang: học sinh không học được gì mà vẫn phải tự chấm, và cái chấm ấy
+ * đẩy thẻ đi xa cả tuần. Điền nghĩa vào là thẻ tự vào lịch ở lần mở trang sau.
  */
 export async function ensureReviews(studentId: string): Promise<void> {
   await pool.query(
     `INSERT INTO vocab_reviews (student_id, card_id, due_date)
      SELECT $1, c.id, CURRENT_DATE
      FROM vocab_cards c
-     WHERE c.deck_id IN (
+     WHERE btrim(c.vietnamese) <> ''
+       AND c.deck_id IN (
        SELECT DISTINCT d.id FROM vocab_decks d
        LEFT JOIN vocab_assignments a ON a.deck_id = d.id
        WHERE (d.type = 'personal' AND d.creator_id = $1)
@@ -177,6 +182,7 @@ export async function listDueCards(
      JOIN vocab_cards c ON c.id = r.card_id
      JOIN vocab_decks d ON d.id = c.deck_id
      WHERE r.student_id = $1 AND r.due_date <= CURRENT_DATE
+       AND btrim(c.vietnamese) <> ''
        AND ($2::text IS NULL OR c.deck_id = $2)
      ORDER BY r.due_date, c.position`,
     [studentId, deckId ?? null],
@@ -263,11 +269,18 @@ export async function studentStats(studentId: string): Promise<StudentStats> {
   const decks = await listStudentDecks(studentId);
   const deckIds = decks.map((d) => d.id);
 
+  /*
+    Đếm "đến hạn" phải bỏ thẻ chưa có nghĩa y như `listDueCards`. Hai chỗ lệch
+    nhau thì trang chủ báo "5 thẻ đến hạn" mà bấm vào chỉ có 4 — người dùng
+    tưởng mất thẻ.
+  */
   const counts = await pool.query<{ due: string; learned: string }>(
     `SELECT
-       COUNT(*) FILTER (WHERE due_date <= CURRENT_DATE) AS due,
-       COUNT(*) FILTER (WHERE reviews_count > 0 AND difficulty_rating <> 'again') AS learned
-     FROM vocab_reviews WHERE student_id = $1`,
+       COUNT(*) FILTER (WHERE r.due_date <= CURRENT_DATE) AS due,
+       COUNT(*) FILTER (WHERE r.reviews_count > 0 AND r.difficulty_rating <> 'again') AS learned
+     FROM vocab_reviews r
+     JOIN vocab_cards c ON c.id = r.card_id
+     WHERE r.student_id = $1 AND btrim(c.vietnamese) <> ''`,
     [studentId],
   );
 
