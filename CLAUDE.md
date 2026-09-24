@@ -142,6 +142,25 @@ lại bằng bộ quy tắc khác thì trang nói ra thay vì im lặng.
 fetch, không `pg`) ← `application/` (hook, không JSX) ← `infrastructure/` (fetch) /
 `server/` (SQL) / `ui/` (chỉ vẽ). Giữ hướng phụ thuộc một chiều này.
 
+**Phần học từ vựng port từ repo `vynguyen20121997/ielts`, không clone.** Bản gốc
+là Vite SPA + Express + file `data/db.json` + đăng nhập bằng mật khẩu thô và
+token giả (`fake-token-<id>`). Ba thứ đó viết lại hết: Postgres (`vocab_*`),
+route handler của Next, và danh tính lấy từ phiên Auth.js phía server — bản gốc
+nhận `x-user-id` do CLIENT gửi, tức ai cũng đổi được thành id người khác.
+
+Giữ NGUYÊN hai thứ, vì đó mới là phần đáng giá: mô hình dữ liệu, và thuật toán
+giãn cách trong `features/vocab/domain/srs.ts` (again 0 ngày / hard 1 / good 3
+hoặc `interval × ease` / easy 7 hoặc `interval × ease × 1.3`; ease khởi tạo
+2.5, sàn 1.3). Đổi số trong đó là đổi lịch ôn của mọi học sinh đang học dở.
+
+**Mục "AI tự sinh IPA / nghĩa / ví dụ" CHƯA nối được vào model đang dùng.**
+TypeSafe (Jev) chỉ trả lời câu hỏi có sẵn lựa chọn — `noul`, `score`, `choice`.
+Đã thử gửi kiểu `text`, `string`, `freeform`, `generate`: cả bốn trả về 400
+`api_usage_error`. Sinh phiên âm và câu ví dụ là sinh văn bản tự do, nên phải
+có một model khác. Chỗ nối để sẵn ở `features/vocab/application/ports.ts`, đổi
+một dòng trong `infrastructure/index.ts` là xong; bản tạm khai
+`available() === false` và trả `null`, KHÔNG bịa phiên âm.
+
 ## Bẫy đã sập, đừng sập lại
 
 **Ký hiệu chỗ trống phải khớp giữa importer và giao diện.** Đề gốc viết chỗ trống theo
