@@ -47,6 +47,7 @@ export type ReadingLevel = "easy" | "medium" | "hard";
 
 export type QuestionType =
   | "multiple-choice"
+  | "multiple-choice-many"
   | "true-false-not-given"
   | "yes-no-not-given"
   | "matching-headings"
@@ -58,6 +59,7 @@ export type QuestionType =
   | "matching-features"
   /** "Complete the summary using the list of words, A-L, below." */
   | "summary-completion"
+  | "map-diagram-label"
   | "gap-fill";
 
 interface QuestionBase {
@@ -68,6 +70,10 @@ interface QuestionBase {
   prompt: string;
   /** Optional group heading rendered above the first question of a block. */
   group?: string;
+  /** Low-confidence import classification; dedicated UI must not guess. */
+  needsReview?: boolean;
+  /** Optional visual retained by map/diagram importers. */
+  imageUrl?: string;
   /**
    * Listening only: which of the four recorded parts this question belongs to.
    * Reading leaves it unset.
@@ -77,20 +83,20 @@ interface QuestionBase {
 
 /** Any question answered by picking one of a fixed list of options. */
 export interface ChoiceQuestion extends QuestionBase {
-  type: Exclude<QuestionType, "gap-fill">;
+  type: Exclude<QuestionType, "gap-fill" | "map-diagram-label">;
   options: string[];
 }
 
 /** Free-text question ("NO MORE THAN TWO WORDS FROM THE PASSAGE"). */
 export interface GapFillQuestion extends QuestionBase {
-  type: "gap-fill";
+  type: "gap-fill" | "map-diagram-label";
   maxWords: number;
 }
 
 export type Question = ChoiceQuestion | GapFillQuestion;
 
 export function isChoiceQuestion(q: Question): q is ChoiceQuestion {
-  return q.type !== "gap-fill";
+  return Array.isArray((q as ChoiceQuestion).options);
 }
 
 export interface PassageParagraph {

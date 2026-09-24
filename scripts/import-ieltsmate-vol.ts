@@ -21,6 +21,7 @@ const API = "https://api.ieltsmate.vn/api";
 const sourceToken = process.env.IELTSMATE_TOKEN;
 const dryRun = process.argv.includes("--dry");
 const only = process.argv.find((arg) => arg.startsWith("--only="))?.split("=")[1];
+const onlyVol = Number(process.argv.find((arg) => arg.startsWith("--vol="))?.split("=")[1]);
 const skills = only ? [only] : ["reading", "listening"];
 if (skills.some((skill) => skill !== "reading" && skill !== "listening")) {
   throw new Error("--only must be reading or listening");
@@ -308,7 +309,7 @@ async function upsertListening(target: ReturnType<typeof targets>[number], detai
 async function main() {
   let written = 0;
   for (const skill of skills as Skill[]) {
-    const allTargets = targets(skill);
+    const allTargets = targets(skill).filter((target) => !Number.isFinite(onlyVol) || target.vol === onlyVol);
     console.log(`\n${skill.toUpperCase()} — tìm ${allTargets.length} test...`);
     const roomSets = await mapLimit(allTargets, 8, async (target) => ({
       target, rooms: await findRooms(skill, target),

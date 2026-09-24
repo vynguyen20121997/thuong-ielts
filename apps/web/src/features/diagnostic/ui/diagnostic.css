@@ -420,6 +420,67 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
+.diag-overall-assessment {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.7fr) 1fr auto;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 12px;
+  padding: 18px 22px;
+  border: 1px solid rgba(20, 83, 45, 0.16);
+  border-radius: 14px;
+  background: #eff7f1;
+}
+.diag-overall-score {
+  display: grid;
+  gap: 3px;
+}
+.diag-overall-score span {
+  color: color-mix(in srgb, var(--color-ink) 57%, transparent);
+  font-size: 12px;
+  font-weight: 650;
+}
+.diag-overall-score strong {
+  color: var(--color-brand);
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+.diag-overall-score small {
+  margin-left: 2px;
+  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  font-size: 0.52em;
+  letter-spacing: 0;
+}
+.diag-overall-copy {
+  border-left: 1px solid rgba(20, 83, 45, 0.14);
+  padding-left: 24px;
+}
+.diag-overall-level {
+  color: var(--color-brand);
+  font-size: 14px;
+  font-weight: 800;
+}
+.diag-overall-copy > p:last-child {
+  margin-top: 4px;
+  color: color-mix(in srgb, var(--color-ink) 68%, transparent);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.diag-overall-percent {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-brand);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+}
 .diag-score-card {
   border: 1px solid rgba(20, 83, 45, 0.13);
   border-radius: 14px;
@@ -685,6 +746,17 @@
   }
   .diag-score-grid {
     grid-template-columns: 1fr;
+  }
+  .diag-overall-assessment {
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding: 16px;
+  }
+  .diag-overall-copy {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(20, 83, 45, 0.14);
+    border-left: 0;
+    padding: 13px 0 0;
   }
   .diag-score-card {
     padding: 16px;

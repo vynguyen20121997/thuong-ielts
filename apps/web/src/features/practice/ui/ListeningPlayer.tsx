@@ -7,20 +7,13 @@ import { AlertTriangle, ArrowLeft, ArrowRight, Bookmark, Check, Volume2 } from "
 
 import { formatClock } from "../application/useReadingSession";
 import { useListeningSession } from "../application/useListeningSession";
-import {
-  isChoiceQuestion,
-  type ChoiceQuestion,
-  type GradedQuestion,
-  type ListeningTest,
-  type Question,
-} from "../domain/types";
+import type { ListeningTest } from "../domain/types";
+import { groupListeningQuestions } from "../domain/listeningQuestionType";
 import { useAnnotations } from "../application/useAnnotations";
 import { useExitGuard } from "../application/useExitGuard";
-import { highlightsFor } from "../domain/annotations";
 import BusyOverlay from "../../../components/BusyOverlay";
 import ExitWarningDialog from "./ExitWarningDialog";
-import GapText, { GapInput, hasInlineGap, type GapField } from "./GapText";
-import HighlightableText from "./HighlightableText";
+import ListeningQuestionGroup from "./ListeningQuestionGroup";
 import SelectionPopup from "./SelectionPopup";
 import ReadingResultPanel from "./ReadingResultPanel";
 
@@ -33,12 +26,6 @@ import ReadingResultPanel from "./ReadingResultPanel";
  * format — the recording plays once, straight through — so the element is
  * rendered hidden and driven entirely by the session.
  */
-
-/** One rendered unit: either a sentence carrying blanks, or a choice question. */
-type Block =
-  | { kind: "gaps"; key: string; text: string; fields: GapField[] }
-  | { kind: "choice"; key: string; question: ChoiceQuestion; review?: GradedQuestion }
-  | { kind: "field"; key: string; question: Question; review?: GradedQuestion };
 
 /**
  * Thời gian còn lại, tính theo phút như đề nghe trên máy thật.
@@ -139,55 +126,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
   const track = test.audio[session.activeTrack];
   const current = session.sections[session.activeSection];
 
-  /**
-   * Groups the section's questions into what the page actually draws. Blanks
-   * that share a sentence are merged so the sentence appears once with two
-   * boxes in it, exactly as the paper shows it.
-   */
-  const groups = useMemo(() => {
-    if (!current) return [];
-    const out: { heading?: string; blocks: Block[] }[] = [];
-    let heading: string | undefined;
-
-    for (const q of current.questions) {
-      if (q.group && q.group !== heading) {
-        heading = q.group;
-        out.push({ heading, blocks: [] });
-      }
-      if (out.length === 0) out.push({ heading: undefined, blocks: [] });
-
-      const bucket = out[out.length - 1].blocks;
-      const review = reviewByQuestion?.get(q.id);
-
-      if (isChoiceQuestion(q)) {
-        bucket.push({ kind: "choice", key: q.id, question: q, review });
-        continue;
-      }
-
-      const field: GapField = {
-        number: q.number,
-        questionId: q.id,
-        value: session.answers[q.id] ?? "",
-        maxWords: "maxWords" in q ? q.maxWords : 2,
-        review,
-        active: activeNumber === q.number,
-      };
-
-      if (!hasInlineGap(q.prompt, q.number)) {
-        bucket.push({ kind: "field", key: q.id, question: q, review });
-        continue;
-      }
-
-      const last = bucket[bucket.length - 1];
-      if (last?.kind === "gaps" && last.text === q.prompt) {
-        last.fields.push(field);
-      } else {
-        bucket.push({ kind: "gaps", key: q.id, text: q.prompt, fields: [field] });
-      }
-    }
-
-    return out;
-  }, [current, session.answers, reviewByQuestion, activeNumber]);
+  const groups = useMemo(() => current ? groupListeningQuestions(current.questions) : [], [current]);
 
   /**
    * One <audio> for the whole session, portalled so it keeps the same place in
@@ -383,139 +322,28 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
 
         {current && (
           <>
-            <div className="mt-5 bg-[#EFEFEA] rounded px-5 py-4">
-              <h2 className="font-bold text-lg text-ink tracking-tight">
-                SECTION {current.section}
+            <div className="mt-5 rounded-xl bg-[#EFEFEA] px-5 py-5">
+              <h2 className="text-2xl font-bold tracking-tight text-ink">
+                Part {current.section}
               </h2>
-              <p className="text-sm text-ink/70 mt-0.5">
-                Nghe và trả lời câu {current.questions[0].number}–
+              <p className="mt-1 text-lg text-ink/70">
+                Listen and answer questions {current.questions[0].number}–
                 {current.questions[current.questions.length - 1].number}
               </p>
             </div>
 
-            <div className="py-6 space-y-8" onMouseUp={marks.captureSelection}>
-              {groups.map((group, gi) => (
-                <section key={gi}>
-                  {group.heading && (
-                    <p className="text-sm text-ink/80 leading-relaxed mb-4 font-medium border-l-2 border-brand/25 pl-3">
-                      <HighlightableText
-                        blockId={`g${gi}`}
-                        text={group.heading}
-                        highlights={highlightsFor(marks.annotations, `g${gi}`)}
-                        onRemove={marks.selectExistingHighlight}
-                      />
-                    </p>
-                  )}
-
-                  <div className="space-y-4">
-                    {group.blocks.map((block) => {
-                      if (block.kind === "gaps") {
-                        return (
-                          <GapText
-                            key={block.key}
-                            text={block.text}
-                            fields={block.fields}
-                            disabled={disabled}
-                            onChange={session.setAnswer}
-                            onFocus={setActiveNumber}
-                          />
-                        );
-                      }
-
-                      if (block.kind === "field") {
-                        const q = block.question;
-                        const review = block.review;
-                        return (
-                          <p key={block.key} className="text-base leading-[2.4] text-ink">
-                            <span className="font-bold mr-2">{q.number}</span>
-                            {q.prompt}
-                            <GapInput
-                              field={{
-                                number: q.number,
-                                questionId: q.id,
-                                value: session.answers[q.id] ?? "",
-                                maxWords: "maxWords" in q ? q.maxWords : 2,
-                                review,
-                                active: activeNumber === q.number,
-                              }}
-                              disabled={disabled}
-                              onChange={(value) => session.setAnswer(q.id, value)}
-                              onFocus={setActiveNumber}
-                            />
-                          </p>
-                        );
-                      }
-
-                      const q = block.question;
-                      const review = block.review;
-                      return (
-                        <div
-                          key={block.key}
-                          id={`question-${q.number}`}
-                          className={`scroll-mt-32 rounded-lg transition-colors ${
-                            activeNumber === q.number && !review
-                              ? "bg-[#FFFBEB] ring-1 ring-[#D97706]/40 -mx-2 px-2 py-1"
-                              : ""
-                          }`}
-                        >
-                          <p className="text-base text-ink mb-2 flex items-start gap-2">
-                            <span className="font-bold">{q.number}</span>
-                            <HighlightableText
-                              blockId={q.id}
-                              text={q.prompt}
-                              highlights={highlightsFor(marks.annotations, q.id)}
-                              onRemove={marks.selectExistingHighlight}
-                              className="flex-1"
-                            />
-                            <BookmarkToggle
-                              number={q.number}
-                              bookmarked={marks.annotations.bookmarks.includes(q.number)}
-                              onToggle={() => marks.toggleQuestionBookmark(q.number)}
-                            />
-                          </p>
-                          <div className="space-y-1.5 pl-6">
-                            {q.options.map((option) => {
-                              const chosen = session.answers[q.id] === option;
-                              const isAnswer = review && !review.isCorrect && review.expected === option;
-                              return (
-                                <label
-                                  key={option}
-                                  className={`flex items-start gap-2.5 text-base rounded px-2 py-1 ${
-                                    disabled ? "cursor-default" : "cursor-pointer hover:bg-cream"
-                                  } ${
-                                    review && chosen
-                                      ? review.isCorrect
-                                        ? "bg-leaf/25"
-                                        : "bg-red-50 text-red-700"
-                                      : isAnswer
-                                        ? "bg-leaf/20"
-                                        : ""
-                                  }`}
-                                >
-                                  <input
-                                    type="radio"
-                                    name={q.id}
-                                    checked={chosen}
-                                    onChange={() => session.setAnswer(q.id, option)}
-                                    onFocus={() => setActiveNumber(q.number)}
-                                    disabled={disabled}
-                                    className="mt-1.5 accent-brand"
-                                  />
-                                  <span>{option}</span>
-                                </label>
-                              );
-                            })}
-                          </div>
-                          {isAnswerShown(review) && (
-                            <p className="text-xs text-brand mt-1.5 pl-6 font-medium">
-                              Đáp án: {review!.expected}
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
+            <div className="py-6" onMouseUp={marks.captureSelection}>
+              {groups.map((questions) => (
+                <ListeningQuestionGroup
+                  key={`${questions[0].number}-${questions.at(-1)?.number}`}
+                  questions={questions}
+                  answers={session.answers}
+                  onChange={session.setAnswer}
+                  reviewByQuestion={reviewByQuestion}
+                  disabled={disabled}
+                  activeNumber={activeNumber}
+                  onFocus={setActiveNumber}
+                />
               ))}
             </div>
           </>
@@ -737,35 +565,3 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
  * The flag a student sets on a question to come back to. Hidden until hovered
  * unless it is set, so an unmarked paper stays clean.
  */
-function BookmarkToggle({
-  number,
-  bookmarked,
-  onToggle,
-}: {
-  number: number;
-  bookmarked: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-pressed={bookmarked}
-      aria-label={bookmarked ? `Bỏ đánh dấu câu ${number}` : `Đánh dấu câu ${number}`}
-      title={bookmarked ? "Bỏ đánh dấu" : "Đánh dấu để quay lại sau"}
-      className={`shrink-0 cursor-pointer transition-opacity ${
-        bookmarked ? "opacity-100" : "opacity-0 hover:opacity-100 focus:opacity-100"
-      }`}
-    >
-      <Bookmark
-        size={14}
-        className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-ink/50"}
-      />
-    </button>
-  );
-}
-
-/** Only worth printing the expected answer when the student got it wrong. */
-function isAnswerShown(review?: GradedQuestion): boolean {
-  return Boolean(review && !review.isCorrect);
-}

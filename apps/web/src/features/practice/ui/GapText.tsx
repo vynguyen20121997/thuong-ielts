@@ -210,7 +210,7 @@ export default function GapText({
   parts.push(<Fragment key={key++}>{text.slice(cursor)}</Fragment>);
 
   return (
-    <p className={`text-base text-ink ${variant === "line" ? "leading-[2.1]" : "leading-[2.4]"}`}>
+    <p className={`whitespace-pre-line text-base text-ink ${variant === "line" ? "leading-[2.1]" : "leading-[2.4]"}`}>
       {parts}
     </p>
   );

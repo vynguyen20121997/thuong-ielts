@@ -14,9 +14,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const test = await getListeningTestBySlug(slug);
-  if (!test) return { title: "Không tìm thấy đề | HNT.IELTS" };
+  if (!test) return { title: "Không tìm thấy đề | ThuongHo.Class" };
   return {
-    title: `${test.title} | Luyện Listening IELTS`,
+    title: `${test.title} | ThuongHo.Class`,
     description: `Bài luyện Listening IELTS: ${test.title} — ${test.questionCount} câu, ${Math.round(
       test.durationSeconds / 60,
     )} phút, có file nghe và chấm điểm tự động.`,

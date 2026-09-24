@@ -7,15 +7,16 @@ import { AlertTriangle, ArrowLeft, BookOpen, ListChecks, Timer } from "lucide-re
 import { formatClock, useReadingSession } from "../application/useReadingSession";
 import { LEVEL_LABELS } from "../domain/catalog";
 import { questionRangeOf } from "../domain/paper";
+import { groupReadingQuestions, normalizeReadingQuestion } from "../domain/readingQuestionType";
 import { countAnswered } from "../domain/scoring";
-import type { ReadingPaper } from "../domain/types";
+import { isChoiceQuestion, type ReadingPaper } from "../domain/types";
 import { useAnnotations } from "../application/useAnnotations";
 import { useExitGuard } from "../application/useExitGuard";
 import { highlightsFor } from "../domain/annotations";
 import BusyOverlay from "../../../components/BusyOverlay";
 import ExitWarningDialog from "./ExitWarningDialog";
 import HighlightableText from "./HighlightableText";
-import PaperQuestion from "./PaperQuestion";
+import ReadingQuestionGroup from "./ReadingQuestionGroup";
 import SelectionPopup from "./SelectionPopup";
 import ReadingResultPanel from "./ReadingResultPanel";
 
@@ -56,6 +57,9 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
   // Cambridge papers keep their original numbering when a full test is split by
   // passage (14-26, 27-40), so the heading follows the data, not a 1-based count.
   const questionRange = questionRangeOf(section.questions);
+  const normalizedQuestions = useMemo(() => section.questions.map(normalizeReadingQuestion), [section.questions]);
+  const questionGroups = useMemo(() => groupReadingQuestions(normalizedQuestions), [normalizedQuestions]);
+  const headingQuestions = useMemo(() => normalizedQuestions.filter((question) => question.type === "matching-headings"), [normalizedQuestions]);
 
   const isReview = session.status === "finished";
   const lowTime = timed && session.remainingSeconds <= 120 && !isReview;
@@ -229,30 +233,50 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
         the mouse comes back up, and the handler works out for itself which
         block it landed in.
       */}
-      <div className="grid md:grid-cols-2 gap-6 lg:gap-10 py-8" onMouseUp={marks.captureSelection}>
+      <div className="grid md:grid-cols-2 gap-6 lg:gap-8 py-8 md:h-screen md:min-h-screen" onMouseUp={marks.captureSelection}>
         {/* Passage */}
-        <div className={`${mobilePane === "passage" ? "block" : "hidden"} md:block`}>
+        <div className={`${mobilePane === "passage" ? "block" : "hidden"} md:block md:min-h-0 md:overflow-y-auto md:pr-2`}>
           <div className="bg-white border border-black/5 rounded-2xl p-6 md:p-8 shadow-sm">
             <span className="text-2xs text-brand font-medium flex items-center gap-1.5 mb-3">
               <BookOpen size={12} />
               {multi ? `Reading Passage ${session.sectionIndex + 1}` : "Reading Passage"}
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight">
-              {section.passage.title}
-            </h2>
             {section.passage.intro && (
-              <p className="font-sans italic text-sm text-ink/55 mt-3 border-l-2 border-leaf pl-3">
+              <p className="font-sans italic text-sm text-ink/55 mb-3 border-l-2 border-leaf pl-3">
                 {section.passage.intro}
               </p>
             )}
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-ink leading-tight">
+              {section.passage.title}
+            </h2>
 
             <div className="mt-6 space-y-5">
-              {section.passage.paragraphs.map((paragraph, index) => (
-                // Bài đọc từng để serif (Literata) cho giống đề Cambridge trên
-                // giấy; đã gỡ khi cả site về một họ chữ. Giờ cột bài đọc phân
-                // biệt với cột câu hỏi bằng `leading-[1.8]` — dòng thưa hơn hẳn
-                // phần còn lại, và đó là thứ giữ cho đoạn văn dài đỡ mỏi mắt.
-                <p key={index} className="text-base leading-[1.8] text-ink/85">
+              {section.passage.paragraphs.map((paragraph, index) => {
+                const headingQuestion = headingQuestions.find((question) => {
+                  const label = paragraph.label?.replace(/[.\s]/g, "");
+                  return label && new RegExp(`(?:paragraph|section)\\s+${label}\\b`, "i").test(question.prompt);
+                });
+                const headingOptions = headingQuestion && isChoiceQuestion(headingQuestion) ? headingQuestion.options : [];
+                return (
+                <div key={index}>
+                  {headingQuestion && (
+                    <div className="mb-3 flex items-center gap-2">
+                      <label className="flex min-h-11 flex-1 items-center rounded-lg border-2 border-dashed border-brand/35 bg-leaf/10 px-3 text-sm">
+                        <strong className="mr-2">{headingQuestion.number}</strong>
+                        <select
+                          value={session.answers[headingQuestion.id] ?? ""}
+                          onChange={(event) => session.setAnswer(headingQuestion.id, event.target.value)}
+                          disabled={isReview || session.status === "submitting"}
+                          className="min-w-0 flex-1 bg-transparent py-2 outline-none"
+                          aria-label={`Heading for paragraph ${paragraph.label ?? index + 1}`}
+                        >
+                          <option value="">Choose a heading</option>
+                          {headingOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                        </select>
+                      </label>
+                    </div>
+                  )}
+                <p className="text-base leading-[1.8] text-ink/85">
                   {paragraph.label && (
                     <span className="font-bold text-brand mr-2">
                       {paragraph.label}
@@ -265,13 +289,14 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
                     onRemove={marks.selectExistingHighlight}
                   />
                 </p>
-              ))}
+                </div>
+              );})}
             </div>
           </div>
         </div>
 
         {/* Questions */}
-        <div className={`${mobilePane === "questions" ? "block" : "hidden"} md:block`}>
+        <div className={`${mobilePane === "questions" ? "block" : "hidden"} md:block md:min-h-0 md:overflow-y-auto md:pl-2`}>
           {isReview && session.result && (
             <div className="mb-6">
               <ReadingResultPanel
@@ -295,27 +320,17 @@ export default function ReadingPlayer({ paper, resume = false, timed = true, voc
             the line it belongs to.
           */}
           <div className="bg-white border border-black/5 rounded-2xl p-6 md:p-8 shadow-sm space-y-1">
-            {section.questions.map((question) => (
-              <div key={question.id}>
-                {question.group && (
-                  <p className="text-sm leading-relaxed text-ink/80 font-medium border-l-2 border-brand/25 pl-3 mt-7 first:mt-0 mb-4 whitespace-pre-line">
-                    {question.group}
-                  </p>
-                )}
-                <PaperQuestion
-                  highlights={highlightsFor(marks.annotations, question.id)}
-                  onRemoveHighlight={marks.removeHighlight}
-                  bookmarked={marks.annotations.bookmarks.includes(question.number)}
-                  onToggleBookmark={() => marks.toggleQuestionBookmark(question.number)}
-                  question={question}
-                  value={session.answers[question.id] ?? ""}
-                  onChange={(value) => session.setAnswer(question.id, value)}
-                  review={reviewByQuestion?.get(question.id)}
-                  disabled={isReview || session.status === "submitting"}
-                  active={activeNumber === question.number}
-                  onFocus={setActiveNumber}
-                />
-              </div>
+            {questionGroups.map((questions) => (
+              <ReadingQuestionGroup
+                key={`${questions[0].number}-${questions.at(-1)?.number}`}
+                questions={questions}
+                answers={session.answers}
+                onChange={session.setAnswer}
+                reviewByQuestion={reviewByQuestion}
+                disabled={isReview || session.status === "submitting"}
+                activeNumber={activeNumber}
+                onFocus={setActiveNumber}
+              />
             ))}
           </div>
 

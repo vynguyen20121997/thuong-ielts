@@ -10,7 +10,7 @@ import ListeningCatalog from "../../../../features/practice/ui/ListeningCatalog"
 import PageArch from "../../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Luyện Listening IELTS | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Luyện đề IELTS Listening | ThuongHo.Class",
   description:
     "Bộ đề luyện Listening IELTS miễn phí có file nghe, bấm giờ 30 phút, chấm điểm tự động và quy đổi band.",
 };
@@ -39,7 +39,7 @@ export default async function ListeningCatalogPage() {
           <div>
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-brand flex items-center gap-2">
               <Headphones size={42} strokeWidth={1.8} />
-              Kỹ năng Listening
+              Luyện đề IELTS Listening
             </h1>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { pool } from "@thuong-ielts/db";
 import { unstable_cache } from "next/cache";
 import { practiceDisplayName } from "../domain/displayNames";
 import { keyPracticeLevel } from "../domain/keyPracticeDifficulty";
+import { normalizeListeningQuestion } from "../domain/listeningQuestionType";
 
 import type {
   AnswerKeyEntry,
@@ -127,7 +128,7 @@ export async function getListeningTestBySlug(slug: string): Promise<ListeningTes
   if (rows.length === 0) return null;
 
   const row = rows[0];
-  return { ...toSummary(row), audio: row.audio ?? [], questions: row.questions ?? [] };
+  return { ...toSummary(row), audio: row.audio ?? [], questions: (row.questions ?? []).map(normalizeListeningQuestion) };
 }
 
 /** Server-only: the answers, for the submit route. */

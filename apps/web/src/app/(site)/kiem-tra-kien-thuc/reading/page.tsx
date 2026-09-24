@@ -10,7 +10,7 @@ import ReadingCatalog from "../../../../features/practice/ui/ReadingCatalog";
 import PageArch from "../../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Luyện Reading IELTS | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Luyện đề IELTS Reading | ThuongHo.Class",
   description:
     "Bộ đề luyện Reading IELTS miễn phí theo từng dạng câu hỏi: True/False/Not Given, Matching Headings, điền từ. Chấm điểm tự động kèm giải thích.",
 };
@@ -42,7 +42,7 @@ export default async function ReadingCatalogPage() {
           <div>
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-brand flex items-center gap-2">
               <BookOpen size={42} strokeWidth={1.8} />
-              Kỹ năng Reading
+              Luyện đề IELTS Reading
             </h1>
           </div>
         </div>

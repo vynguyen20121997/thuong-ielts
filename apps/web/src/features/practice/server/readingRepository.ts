@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { passageLabelFromTitle, passageNumberFromTitle, testLabelFromTitle } from "../domain/paper";
 import { practiceDisplayName } from "../domain/displayNames";
 import { keyPracticeLevel } from "../domain/keyPracticeDifficulty";
+import { normalizeReadingQuestion } from "../domain/readingQuestionType";
 import type {
   AnswerKeyEntry,
   ExamOutline,
@@ -115,7 +116,7 @@ export async function getReadingTestBySlug(slug: string): Promise<ReadingTest | 
   return {
     ...toSummary(row),
     passage: row.passage as ReadingTest["passage"],
-    questions: row.questions ?? [],
+    questions: (row.questions ?? []).map(normalizeReadingQuestion),
   };
 }
 
@@ -210,7 +211,7 @@ export async function getReadingPaper(testId: string): Promise<ReadingPaper | nu
       slug: row.slug,
       label: passageLabelFromTitle(row.title),
       passage: row.passage,
-      questions: row.questions ?? [],
+      questions: (row.questions ?? []).map(normalizeReadingQuestion),
     })),
   };
 }

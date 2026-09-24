@@ -100,15 +100,42 @@
   đổi ở ĐÂY một dòng là cả site theo, đúng cách đã làm với bảng màu trong
   `@theme`.
 
-  Hiện chốt ở 0: nội dung chạm mép màn hình, theo yêu cầu tháng 9/2026. Muốn
-  lề trở lại thì chỉ sửa `padding-inline` dưới đây — đừng rải `px-*` vào các
-  khối `mx-auto max-w-*` nữa, làm thế là dựng lại đúng mớ vừa dọn.
+  Hiện dùng lề mỗi bên 16px trên mobile, 24px trên tablet và 32px trên desktop. Muốn
+  nới hay bóp lề thì chỉ sửa `width` dưới đây — đừng rải `px-*` vào các khối
+  `mx-auto max-w-*` nữa, làm thế là dựng lại đúng mớ vừa dọn.
 
   Dùng cho khối bọc nội dung (`mx-auto max-w-*`), KHÔNG dùng cho thẻ, hộp,
   nút — lề trong của chúng là chuyện khác và vẫn viết bằng `px-*` tại chỗ.
 */
 .gutter {
+  width: calc(100% - 2rem);
   padding-inline: 0;
+}
+
+/*
+  Các khu vực dạng dashboard/gallery cần tận dụng màn hình rộng. Tailwind's
+  `max-w-7xl` dừng ở 1280px nên trên laptop lớn tạo hai dải trống không cần
+  thiết. Chỉ nới hai cỡ container rộng; các trang đọc dài dùng max-w-3xl/4xl
+  vẫn giữ độ dài dòng dễ đọc.
+*/
+.max-w-7xl.gutter {
+  max-width: 96rem;
+}
+
+.max-w-6xl.gutter {
+  max-width: 88rem;
+}
+
+@media (min-width: 768px) {
+  .gutter {
+    width: calc(100% - 3rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .gutter {
+    width: calc(100% - 4rem);
+  }
 }
 
 /* Base Editorial Styling */

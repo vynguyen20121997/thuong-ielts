@@ -83,7 +83,39 @@ const focusDialog = (el: HTMLDivElement | null) => {
 const clock = (n: number) =>
   `${Math.floor(n / 60)}:${String(Math.floor(n % 60)).padStart(2, "0")}`;
 const totals = { Listening: 20, Reading: 13, Grammar: 20 };
+const totalQuestions = Object.values(totals).reduce((sum, total) => sum + total, 0);
 const names = ["Tốt", "Khá", "Cần cải thiện"];
+
+function getOverallAssessment(scores: Record<Section, number>) {
+  const score = sections.reduce((sum, section) => sum + scores[section], 0);
+  const percentage = Math.round((score / totalQuestions) * 100);
+
+  if (percentage < 40) {
+    return {
+      score,
+      percentage,
+      level: "Yếu",
+      description: "Cần xây nền lại trước khi bắt đầu học IELTS.",
+    };
+  }
+
+  if (percentage < 70) {
+    return {
+      score,
+      percentage,
+      level: "Trung bình",
+      description:
+        "Có thể học lớp IELTS nền tảng nhưng vẫn cần tiếp tục củng cố Vocabulary, Grammar, Reading và Listening.",
+    };
+  }
+
+  return {
+    score,
+    percentage,
+    level: "Khá tốt",
+    description: "Nền vững, sẵn sàng học lớp IELTS nền tảng.",
+  };
+}
 const emptyWorkspace: Workspace = {
   bookmarks: [],
   highlights: [],
@@ -902,6 +934,9 @@ export default function Diagnostic() {
   const sectionHighlights = workspace.highlights.filter(
     (h) => blockSection(h.blockId) === workspace.section,
   ).length;
+  const overallAssessment = session?.result
+    ? getOverallAssessment(session.result.scores)
+    : null;
   const selectedHighlight =
     selection &&
     workspace.highlights.some(
@@ -988,7 +1023,7 @@ export default function Diagnostic() {
             THƯƠNG HỒ’S CLASS · IELTS DIAGNOSTIC TEST
           </p>
           <h1 className="mt-4 text-3xl font-bold leading-tight text-brand md:text-5xl">
-            Kiểm tra nền tảng IELTS
+            Bài kiểm tra nền tảng IELTS
           </h1>
         </div>
       )}
@@ -1265,7 +1300,7 @@ export default function Diagnostic() {
           {stage === "instructions" && (
             <>
               <p className="mb-3 text-sm font-bold uppercase tracking-[0.12em] text-brand">
-                Kiểm tra nền tảng IELTS
+                Bài kiểm tra nền tảng IELTS
               </p>
               <h2 className="text-3xl font-bold text-ink">
                 Hướng dẫn làm bài kiểm tra
@@ -1387,7 +1422,7 @@ export default function Diagnostic() {
               <div className="diag-exam-identity">
                 <span className="diag-ielts-mark">IELTS</span>
                 <p className="truncate text-sm font-bold">
-                  Kiểm tra nền tảng IELTS
+                  Bài kiểm tra nền tảng IELTS
                 </p>
               </div>
               <div
@@ -1410,7 +1445,7 @@ export default function Diagnostic() {
                   <Settings size={17} />
                 </button>
                 <Link
-                  href="/kiem-tra-kien-thuc"
+                  href="/phong-luyen-tap"
                   aria-label="Thoát về phòng luyện tập"
                   className="diag-exit"
                 >
@@ -2303,6 +2338,22 @@ export default function Diagnostic() {
               kiểm tra không đo Speaking.
             </p>
           </div>
+          {overallAssessment && (
+            <section className="diag-overall-assessment" aria-label="Đánh giá tổng quan">
+              <div className="diag-overall-score">
+                <span>Điểm tổng 3 kỹ năng</span>
+                <strong>
+                  {overallAssessment.score}
+                  <small>/{totalQuestions}</small>
+                </strong>
+              </div>
+              <div className="diag-overall-copy">
+                <p className="diag-overall-level">Nền tảng: {overallAssessment.level}</p>
+                <p>{overallAssessment.description}</p>
+              </div>
+              <span className="diag-overall-percent">{overallAssessment.percentage}%</span>
+            </section>
+          )}
           <div className="diag-score-grid">
             {sections.map((s, index) => {
               const Icon = [Headphones, BookOpen, PenLine][index];
@@ -2340,7 +2391,7 @@ export default function Diagnostic() {
             </p>
           )}
           <div className="my-6 flex flex-wrap gap-2 print:hidden">
-            {(["report", "answers", "plan"] as const).map((t, i) => (
+            {(["report", "plan", "answers"] as const).map((t, i) => (
               <button
                 key={t}
                 className={`diag-tab ${resultTab === t ? "active" : ""}`}
@@ -2415,35 +2466,7 @@ export default function Diagnostic() {
                 URL.revokeObjectURL(url);
               }}
             >
-              Tải báo cáo & kế hoạch
-            </button>
-            <button className="diag-secondary" onClick={() => window.print()}>
-              In / lưu PDF
-            </button>
-            <button
-              className="diag-secondary"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(
-                    `${location.origin}/kiem-tra-nen-tang-ielts#result=${token.current}`,
-                  );
-                  setNotice(
-                    "Đã sao chép đường dẫn cá nhân. Người có đường dẫn này có thể xem báo cáo; hãy giữ riêng.",
-                  );
-                } catch {
-                  setNotice(
-                    "Không sao chép được. Hãy cho phép truy cập clipboard rồi thử lại.",
-                  );
-                }
-              }}
-            >
-              Lưu đường dẫn cá nhân
-            </button>
-            <button
-              className="diag-secondary"
-              onClick={() => setResetPrompt(true)}
-            >
-              Làm lượt mới
+              Tải nhận xét & kế hoạch học
             </button>
           </div>
           {
