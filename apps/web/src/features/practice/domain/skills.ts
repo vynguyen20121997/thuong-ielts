@@ -48,6 +48,16 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     status: "available",
     hint: "Thu âm trên trang",
   },
+  {
+    id: "vocab",
+    name: "Từ vựng",
+    label: "Học theo thẻ",
+    description:
+      "Thẻ từ vựng quay lại đúng lúc sắp quên chứ không quét lại từ đầu mỗi ngày. Bộ thẻ của cô và bộ em tự tạo, lịch ôn tính riêng cho từng thẻ.",
+    href: "/hoc-tu-vung",
+    status: "available",
+    hint: "Lịch ôn giãn cách",
+  },
 ];
 
 export const READING_SKILL = PRACTICE_SKILLS[0];

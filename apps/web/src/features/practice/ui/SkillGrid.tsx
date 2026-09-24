@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Headphones, Lock, Mic, PenLine } from "lucide-react";
+import { BookOpen, Headphones, Layers, Lock, Mic, PenLine } from "lucide-react";
 
 import { PRACTICE_SKILLS } from "../domain/skills";
 import type { PracticeSkill, SkillId } from "../domain/types";
@@ -14,6 +14,7 @@ const ICONS: Record<SkillId, typeof BookOpen> = {
   listening: Headphones,
   writing: PenLine,
   speaking: Mic,
+  vocab: Layers,
 };
 
 function SkillCard({ skill, compact }: { skill: PracticeSkill; compact?: boolean }) {
@@ -47,7 +48,9 @@ function SkillCard({ skill, compact }: { skill: PracticeSkill; compact?: boolean
 
 export default function SkillGrid({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    /* Năm thẻ: 4 cột thì thẻ cuối đứng lẻ một hàng, nên chia 5 từ `xl` và giữ
+       3 cột ở `lg` để không thẻ nào bị bóp còn hơn 200px. */
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
       {PRACTICE_SKILLS.map((skill) => (
         <SkillCard key={skill.id} skill={skill} compact={compact} />
       ))}

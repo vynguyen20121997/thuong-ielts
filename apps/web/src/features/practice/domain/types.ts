@@ -13,8 +13,22 @@
  * than merely forgetting to `delete question.answer` somewhere.
  */
 
-export type SkillId = "reading" | "listening" | "writing" | "speaking";
+/*
+  "vocab" KHÔNG phải kỹ năng IELTS thứ năm — đề thi chỉ có bốn. Nó nằm chung
+  danh sách này vì học sinh vào cùng một chỗ để tìm: trang "Kiểm tra kiến thức"
+  là cửa duy nhất dẫn tới mọi thứ luyện được. Dựng một danh sách thứ hai cho
+  đúng một mục thì trang phải biết vẽ hai loại thẻ, mà hai loại thẻ sẽ lệch nhau.
+*/
+export type SkillId =
+  "reading" | "listening" | "writing" | "speaking" | "vocab";
 
+/*
+  Không có trạng thái "cần đăng nhập". Thẻ chỉ trả lời "vào được hay chưa làm
+  xong", còn chuyện danh tính để đúng lúc vào bài mới hỏi — và lúc đó MỌI mục
+  đều hỏi: Reading/Listening gọi `requireStudentOrGuest`, từ vựng gọi
+  `requireStudent`. Dán nhãn lên một thẻ trong khi ba thẻ kia cũng chặn là nói
+  sai về ba thẻ kia.
+*/
 export type SkillStatus = "available" | "coming-soon";
 
 export interface PracticeSkill {
