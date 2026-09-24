@@ -40,28 +40,28 @@
     - mist / mist-2 / mist-3 : nền section (vinh danh–cảm nhận / phương pháp / công cụ)
     - sage / sage-2 / sage-3 : nền thẻ, nút phụ, vòng icon nhạt dần theo số
   */
-  --color-brand: #14532D;
-  --color-brand-deep: #052E16;
-  --color-leaf: #9FE870;
-  --color-leaf-dark: #86D65A;
+  --color-brand: #14532d;
+  --color-brand-deep: #052e16;
+  --color-leaf: #9fe870;
+  --color-leaf-dark: #86d65a;
   /* xanh lá vừa: chữ tiêu đề lớn muốn nhạt hơn brand mà vẫn đọc được
      trên nền trắng (4.9:1, đạt AA cả cho chữ thường). leaf/leaf-dark
      quá sáng để làm màu chữ. */
-  --color-brand-soft: #2E7D42;
-  --color-ink: #1A1A1A;
-  --color-cream: #FAF9F6;
-  --color-mist: #F3F4EF;
-  --color-mist-2: #F0F2EC;
-  --color-mist-3: #F7F8F1;
+  --color-brand-soft: #2e7d42;
+  --color-ink: #1a1a1a;
+  --color-cream: #faf9f6;
+  --color-mist: #f3f4ef;
+  --color-mist-2: #f0f2ec;
+  --color-mist-3: #f7f8f1;
   /* Màu cảnh báo/ưu tiên. Token hoá thay vì rải hex: bảng nhận xét và lộ
      trình đều cần một sắc "chưa đạt" đọc được trên nền sáng, và đây là mục
      CLAUDE.md đã ghi là còn thiếu. Cam đất 4.9:1 trên trắng. */
-  --color-warn: #B45309;
-  --color-warn-soft: #FDF6EE;
+  --color-warn: #b45309;
+  --color-warn-soft: #fdf6ee;
 
-  --color-sage: #EDEFE8;
-  --color-sage-2: #E4EDDE;
-  --color-sage-3: #DCE8D5;
+  --color-sage: #edefe8;
+  --color-sage-2: #e4edde;
+  --color-sage-3: #dce8d5;
 }
 
 /*
@@ -113,15 +113,16 @@
 
 /* Base Editorial Styling */
 body {
-  background-color: #FFFFFF; /* Bright white background */
-  color: #1A1A1A; /* Charcoal text */
+  background-color: #ffffff; /* Bright white background */
+  color: #1a1a1a; /* Charcoal text */
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 /* Custom Hide Scrollbar for Lenis smooth-scroll */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
@@ -202,7 +203,6 @@ html.lenis, html.lenis body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
 
 /*
  * Exam mode: while a listening test is open, everything else on the page is
@@ -707,14 +707,20 @@ html.site-loading #logo-wordmark {
   transform: translate3d(0, 125%, 0);
 }
 
-.group:hover .navigation-button-label-current .navigation-button-label-character,
-.group:focus-visible .navigation-button-label-current .navigation-button-label-character {
+.group:hover
+  .navigation-button-label-current
+  .navigation-button-label-character,
+.group:focus-visible
+  .navigation-button-label-current
+  .navigation-button-label-character {
   opacity: 0;
   transform: translate3d(0, -125%, 0);
 }
 
 .group:hover .navigation-button-label-next .navigation-button-label-character,
-.group:focus-visible .navigation-button-label-next .navigation-button-label-character {
+.group:focus-visible
+  .navigation-button-label-next
+  .navigation-button-label-character {
   opacity: 1;
   transform: translate3d(0, 0, 0);
 }
