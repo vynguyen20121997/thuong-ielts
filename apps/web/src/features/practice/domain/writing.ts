@@ -3,11 +3,15 @@
  *
  * ## Nó KHÔNG phải cái gì
  *
- * Không phải band điểm, và không được để nó trở thành band điểm. Bài thi thật
- * chấm Writing theo bốn tiêu chí do người chấm cân nhắc cùng lúc; ở đây chỉ là
- * một loạt câu hỏi nguyên tử kiểu có/không, mỗi câu trả lời độc lập. Gộp chúng
- * lại thành một con số rồi gọi là "band 6.0" là đúng thứ `roadmap.ts` đã cấm:
- * không có cơ sở quy đổi, và học sinh sẽ tin con số đó hơn cô giáo.
+ * Không phải band điểm. Đây là một loạt câu hỏi nguyên tử kiểu có/không, mỗi
+ * câu trả lời độc lập; gộp chúng lại thành một con số rồi gọi là "band 6.0"
+ * thì không có cơ sở quy đổi nào cả.
+ *
+ * Band ĐÃ CÓ, nhưng chấm bằng đường khác: `server/writingBand.ts` hỏi model
+ * bốn câu `score` theo đúng thang mô tả band của từng tiêu chí IELTS, chứ
+ * không cộng các câu có/không ở đây lại. Hai thứ sống cạnh nhau và trả lời hai
+ * câu hỏi khác nhau — checklist nói "còn thiếu gì sửa được trong năm phút",
+ * band nói "bài đang ở mức nào" — nên đừng nối chúng vào nhau.
  *
  * Vai của nó là **cái checklist trước khi nộp cho cô**: những lỗi máy nhìn ra
  * được trong vài giây (lạc đề, thiếu kết luận, không có ví dụ) thì để máy nói,
@@ -108,7 +112,8 @@ export const WRITING_CHECKS: CheckSpec[] = [
     id: "mach_lac",
     label: "Mạch lạc giữa các ý",
     kind: "score",
-    instructions: "How clearly the ideas connect and progress from one to the next.",
+    instructions:
+      "How clearly the ideas connect and progress from one to the next.",
     criteria: [
       "Ideas are disconnected; the reader has to guess how they relate",
       "Ideas connect but the essay jumps between them abruptly",

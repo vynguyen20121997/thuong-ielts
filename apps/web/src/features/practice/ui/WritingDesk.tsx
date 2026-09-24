@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -21,8 +27,18 @@ import {
   countWords,
   type CheckResult,
 } from "../domain/writing";
-import { paragraphCount, type Coaching, type Idea } from "../domain/writingCoach";
-import { checkWriting, trackWriting, type FeedbackReason } from "../infrastructure/writingApi";
+import {
+  paragraphCount,
+  type Coaching,
+  type Idea,
+} from "../domain/writingCoach";
+import {
+  checkWriting,
+  trackWriting,
+  type FeedbackReason,
+} from "../infrastructure/writingApi";
+import WritingBandReport from "../../../components/WritingBandReport";
+import type { WritingState } from "@thuong-ielts/diagnostic";
 import KnowledgePanel from "./KnowledgePanel";
 import type { WritingPrompt } from "../server/writingRepository";
 
@@ -34,7 +50,9 @@ import type { WritingPrompt } from "../server/writingRepository";
  * 1. **Không tự chấm khi đang gõ.** Mỗi lần gọi là một request tính tiền, và
  *    quan trọng hơn: nhận xét nhảy loạn trong lúc viết là thứ phá mạch viết.
  *    Học sinh chủ động bấm khi thấy xong.
- * 2. **Không đưa ra band.** Xem chú thích đầu `domain/writing.ts`.
+ * 2. **Không gộp checklist thành band.** Band là một nút riêng, chấm bằng
+ *    đường riêng (`server/writingBand.ts`), và hiện ở một khối riêng dưới ô
+ *    viết. Xem chú thích đầu `domain/writing.ts`.
  * 3. **Không tự nộp khi hết giờ.** Khác Reading/Listening: ở đó hết giờ là hết
  *    lượt vì có đáp án đúng/sai; ở đây bài viết là của học sinh, cắt ngang giữa
  *    câu chẳng phục vụ ai. Đồng hồ chỉ đếm để biết mình viết nhanh hay chậm.
@@ -184,7 +202,11 @@ function CheckRow({ check }: { check: CheckResult }) {
       ? { icon: Check, ring: "bg-leaf/25 text-brand", text: "text-ink" }
       : check.passed === false
         ? { icon: X, ring: "bg-warn-soft text-warn", text: "text-ink" }
-        : { icon: CircleHelp, ring: "bg-black/[0.05] text-ink/40", text: "text-ink/70" };
+        : {
+            icon: CircleHelp,
+            ring: "bg-black/[0.05] text-ink/40",
+            text: "text-ink/70",
+          };
   const Icon = tone.icon;
 
   return (
@@ -198,13 +220,17 @@ function CheckRow({ check }: { check: CheckResult }) {
         <p className={`text-sm font-semibold leading-snug ${tone.text}`}>
           {check.label}
           {check.passed === null && (
-            <span className="ml-2 text-2xs font-medium text-ink/40">chưa đủ chắc để nói</span>
+            <span className="ml-2 text-2xs font-medium text-ink/40">
+              chưa đủ chắc để nói
+            </span>
           )}
         </p>
         {/* Lời khuyên chỉ hiện khi CHƯA đạt. Hiện cả khi đã đạt thì thành một
             bức tường chữ, và học sinh không biết nhìn vào đâu trước. */}
         {check.passed !== true && (
-          <p className="text-2xs text-ink/55 leading-relaxed mt-1">{check.advice}</p>
+          <p className="text-2xs text-ink/55 leading-relaxed mt-1">
+            {check.advice}
+          </p>
         )}
       </div>
     </li>
@@ -227,6 +253,15 @@ export default function WritingDesk({
 }) {
   const [essay, setEssay] = useState("");
   const [checks, setChecks] = useState<CheckResult[] | null>(null);
+  /*
+    Chấm band là thao tác RIÊNG, không gộp vào "Kiểm tra nháp".
+
+    Checklist trả lời "bài đã đủ những thứ sửa được trong năm phút chưa";
+    band trả lời "bài này đang ở mức nào". Hai câu hỏi khác nhau, và gộp lại
+    thì học sinh chỉ đọc con số rồi bỏ qua phần sửa được.
+  */
+  const [band, setBand] = useState<WritingState | null>(null);
+  const [banding, setBanding] = useState(false);
   const [reason, setReason] = useState<FeedbackReason>(undefined);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -377,7 +412,8 @@ export default function WritingDesk({
     */
     const first = !hasGuide.current;
     const enoughChange =
-      paras !== sent.current.paras || words - sent.current.words >= MIN_NEW_WORDS;
+      paras !== sent.current.paras ||
+      words - sent.current.words >= MIN_NEW_WORDS;
     if (!first && !enoughChange) return;
 
     /*
@@ -386,7 +422,8 @@ export default function WritingDesk({
       - trang còn trắng: 20 giây, xem chú thích ở `FIRST_IDLE_MS`;
       - đang viết dở: 10 giây, tức là đã khựng lại thật.
     */
-    const delay = attempt > 0 ? RETRY_MS : words === 0 ? FIRST_IDLE_MS : STUCK_MS;
+    const delay =
+      attempt > 0 ? RETRY_MS : words === 0 ? FIRST_IDLE_MS : STUCK_MS;
 
     /*
       Bật ngay từ phím đầu tiên, không đợi hết 10 giây. Học sinh phải thấy máy
@@ -491,7 +528,10 @@ export default function WritingDesk({
 
   /* Đồng hồ ngồi im: gõ một phím là `essay` đổi, effect dựng lại, đếm từ đầu. */
   useEffect(() => {
-    const id = window.setInterval(() => setIdleTick((t) => t + 1), IDLE_REPEAT_MS);
+    const id = window.setInterval(
+      () => setIdleTick((t) => t + 1),
+      IDLE_REPEAT_MS,
+    );
     return () => window.clearInterval(id);
   }, [essay]);
 
@@ -563,6 +603,27 @@ export default function WritingDesk({
     }
   };
 
+  const runBand = async () => {
+    if (banding) return;
+    setBanding(true);
+    setBand(null);
+    setError(null);
+    try {
+      const res = await fetch("/api/practice/writing/band", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promptId: prompt.id, essay }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Chấm band thất bại.");
+      setBand(data.writing as WritingState);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Chấm band thất bại.");
+    } finally {
+      setBanding(false);
+    }
+  };
+
   /*
     Tra trong `allIdeas`, không chỉ `guide.ideas`: một ý vừa được viết xong sẽ
     rời khỏi danh sách gợi ý, nhưng học sinh vẫn có quyền mở lại nó để xem
@@ -570,7 +631,9 @@ export default function WritingDesk({
   */
   const allIdeas = useRef(new Map<string, Idea>());
   for (const i of guide?.ideas ?? []) allIdeas.current.set(i.id, i);
-  const openQuestions = shownIdea ? (allIdeas.current.get(shownIdea) ?? null) : null;
+  const openQuestions = shownIdea
+    ? (allIdeas.current.get(shownIdea) ?? null)
+    : null;
   /** Tra nhanh "phần này viết chưa" cho các nút sơ đồ. */
   const doneKeys = new Set(written.map((w) => `${w.idea}:${w.part}`));
   /** Nhật ký để vẽ hộp tóm tắt: nhãn ý + nhãn phần, đúng thứ tự viết. */
@@ -625,7 +688,9 @@ export default function WritingDesk({
       const idea = shownIdea;
       const part = shownPart;
       setWritten((w) =>
-        w.some((x) => x.idea === idea && x.part === part) ? w : [...w, { idea, part }],
+        w.some((x) => x.idea === idea && x.part === part)
+          ? w
+          : [...w, { idea, part }],
       );
     }
     setShapePart(null);
@@ -703,7 +768,8 @@ export default function WritingDesk({
             {prompt.prompt}
           </p>
           <p className="text-2xs text-ink/45 mt-4">
-            Viết ít nhất {WRITING_MIN_WORDS} từ trong khoảng {WRITING_MINUTES} phút, như thi thật.
+            Viết ít nhất {WRITING_MIN_WORDS} từ trong khoảng {WRITING_MINUTES}{" "}
+            phút, như thi thật.
           </p>
         </div>
 
@@ -715,7 +781,10 @@ export default function WritingDesk({
               }`}
             >
               {words}
-              <span className="text-ink/35 font-medium"> / {WRITING_MIN_WORDS} từ</span>
+              <span className="text-ink/35 font-medium">
+                {" "}
+                / {WRITING_MIN_WORDS} từ
+              </span>
             </span>
             <span
               className={`flex items-center gap-1.5 font-mono text-sm tabular-nums ${
@@ -777,7 +846,8 @@ export default function WritingDesk({
 
         {!ghost && shownIdea && (
           <p className="mt-2 text-2xs text-ink/40">
-            Bí tiếp thì cứ dừng bút — bảng bên phải sẽ gợi phần kế tiếp của đoạn.
+            Bí tiếp thì cứ dừng bút — bảng bên phải sẽ gợi phần kế tiếp của
+            đoạn.
           </p>
         )}
 
@@ -786,8 +856,7 @@ export default function WritingDesk({
             <kbd className="rounded border border-black/15 bg-white px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink/60">
               Tab
             </kbd>
-            nhận gợi ý
-            <span className="text-ink/25">·</span>
+            nhận gợi ý<span className="text-ink/25">·</span>
             <kbd className="rounded border border-black/15 bg-white px-1.5 py-0.5 font-mono text-[10px] font-bold text-ink/60">
               Esc
             </kbd>
@@ -804,7 +873,10 @@ export default function WritingDesk({
           >
             {busy ? (
               <>
-                <Loader2 size={16} className="animate-spin motion-reduce:animate-none" />
+                <Loader2
+                  size={16}
+                  className="animate-spin motion-reduce:animate-none"
+                />
                 Đang đọc bài…
               </>
             ) : (
@@ -814,9 +886,28 @@ export default function WritingDesk({
               </>
             )}
           </button>
+          <button
+            type="button"
+            onClick={runBand}
+            disabled={banding || words < WRITING_CHECKABLE_WORDS}
+            className="flex items-center justify-center gap-2 rounded-full border border-brand/30 bg-white px-6 py-3 text-sm font-semibold text-brand transition-colors hover:border-brand disabled:cursor-not-allowed disabled:border-black/10 disabled:text-ink/30"
+          >
+            {banding ? (
+              <>
+                <Loader2
+                  size={16}
+                  className="animate-spin motion-reduce:animate-none"
+                />
+                Đang chấm…
+              </>
+            ) : (
+              "Chấm thử 4 tiêu chí"
+            )}
+          </button>
           {words < WRITING_CHECKABLE_WORDS && (
             <span className="text-2xs text-ink/40">
-              Viết được khoảng {WRITING_CHECKABLE_WORDS} từ rồi kiểm tra sẽ có ích hơn.
+              Viết được khoảng {WRITING_CHECKABLE_WORDS} từ rồi kiểm tra sẽ có
+              ích hơn.
             </span>
           )}
         </div>
@@ -826,6 +917,25 @@ export default function WritingDesk({
             <AlertTriangle size={15} className="shrink-0 mt-0.5" />
             <span>{error}</span>
           </p>
+        )}
+
+        {/*
+          Bảng band nằm DƯỚI ô viết, không nằm ở cột phải: cột phải là chỗ của
+          gợi ý trong lúc viết, còn band là thứ đọc sau khi đã dừng bút.
+        */}
+        {(banding || band) && (
+          <div className="mt-5">
+            <WritingBandReport
+              state={banding ? null : band}
+              essay={essay}
+              minWords={WRITING_MIN_WORDS}
+              caption="band tham khảo cho bài này"
+              emptyText="Chưa có chữ nào để chấm."
+              footnote="Band này do máy chấm theo bốn tiêu chí, dùng để ước lượng mình đang ở đâu. Bài vẫn cần cô Thương chấm theo barem — máy không đọc được ý hay, cũng không biết em đã tiến bộ tới đâu."
+              onRetry={runBand}
+              retrying={banding}
+            />
+          </div>
         )}
       </div>
 
@@ -844,93 +954,99 @@ export default function WritingDesk({
         cuộn, nên học sinh kéo bài dài tới đâu thì hai hộp vẫn theo tới đó.
       */}
       <div className="lg:sticky lg:top-24 lg:w-[380px] flex flex-col gap-4">
-      {/*
+        {/*
         Trạng thái đọc nằm ở VIỀN của bảng, không ở một con quay trong tiêu đề
         — xem chú thích `panel-reading` trong `globals.css`.
       */}
-      <aside
-        /*
+        <aside
+          /*
           Cột phải DÍNH theo màn hình, nên hộp dài hơn viewport là phần cuối
           không cách nào đọc tới — nó không trôi theo trang. Vì vậy chặn chiều
           cao và cho cuộn bên trong; `data-lenis-prevent` + lớp `panel-scroll`
           là cặp bắt buộc, xem chú thích trong `globals.css`.
         */
-        data-lenis-prevent
-        className={`panel-scroll w-full lg:max-h-[52vh] rounded-2xl border bg-white p-5 md:p-6 shadow-sm ${
-          reading ? "panel-reading" : pending ? "panel-waiting" : "border-black/5"
-        }`}
-      >
-        {checks?.length ? (
-          <>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-lg font-bold tracking-tight text-ink">Checklist trước khi nộp</h2>
-            </div>
-            <p className="text-2xs text-ink/50 leading-relaxed mt-1.5">
-              Máy chỉ soi được những lỗi nhìn ra trong vài giây. Đây{" "}
-              <b className="text-ink/70">không phải band điểm</b> — bài vẫn cần cô Thương chấm
-              theo barem.
-            </p>
-            <ul className="mt-4">
-              {checks.map((c) => (
-                <CheckRow key={c.id} check={c} />
-              ))}
-            </ul>
-            <button
-              type="button"
-              onClick={() => setChecks(null)}
-              className="mt-4 flex items-center gap-1.5 text-2xs font-semibold text-brand hover:text-brand-deep cursor-pointer transition-colors"
-            >
-              <ArrowLeft size={13} />
-              Quay lại gợi ý ý tưởng
-            </button>
-          </>
-        ) : (
-          <>
-            <span className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/45 flex items-center gap-1.5">
-              <Lightbulb size={13} />
-              Gợi ý ý tưởng
-            </span>
-
-            {!guide ? (
-              <p className="mt-4 text-sm text-ink/45 leading-relaxed">
-                {attempt >= MAX_RETRIES
-                  ? "Chưa lấy được gợi ý — có thể mạng đang trục trặc. Bài viết của em vẫn giữ nguyên, và phần kiểm tra nháp vẫn dùng được."
-                  : "Cứ đọc đề và bắt đầu viết. Khi nào bí, dừng bút một lát là gợi ý hiện ra ở đây."}
+          data-lenis-prevent
+          className={`panel-scroll w-full lg:max-h-[52vh] rounded-2xl border bg-white p-5 md:p-6 shadow-sm ${
+            reading
+              ? "panel-reading"
+              : pending
+                ? "panel-waiting"
+                : "border-black/5"
+          }`}
+        >
+          {checks?.length ? (
+            <>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-lg font-bold tracking-tight text-ink">
+                  Checklist trước khi nộp
+                </h2>
+              </div>
+              <p className="text-2xs text-ink/50 leading-relaxed mt-1.5">
+                Máy chỉ soi được những lỗi nhìn ra trong vài giây. Đây{" "}
+                <b className="text-ink/70">không phải band điểm</b> — bài vẫn
+                cần cô Thương chấm theo barem.
               </p>
-            ) : (
-              <>
-                {/*
+              <ul className="mt-4">
+                {checks.map((c) => (
+                  <CheckRow key={c.id} check={c} />
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={() => setChecks(null)}
+                className="mt-4 flex items-center gap-1.5 text-2xs font-semibold text-brand hover:text-brand-deep cursor-pointer transition-colors"
+              >
+                <ArrowLeft size={13} />
+                Quay lại gợi ý ý tưởng
+              </button>
+            </>
+          ) : (
+            <>
+              <span className="text-2xs font-bold uppercase tracking-[0.12em] text-ink/45 flex items-center gap-1.5">
+                <Lightbulb size={13} />
+                Gợi ý ý tưởng
+              </span>
+
+              {!guide ? (
+                <p className="mt-4 text-sm text-ink/45 leading-relaxed">
+                  {attempt >= MAX_RETRIES
+                    ? "Chưa lấy được gợi ý — có thể mạng đang trục trặc. Bài viết của em vẫn giữ nguyên, và phần kiểm tra nháp vẫn dùng được."
+                    : "Cứ đọc đề và bắt đầu viết. Khi nào bí, dừng bút một lát là gợi ý hiện ra ở đây."}
+                </p>
+              ) : (
+                <>
+                  {/*
                   Hai màn thay nhau trong cùng một chỗ, không bao giờ cùng
                   hiện. Trước đây sơ đồ nằm DƯỚI dãy chip, nên bấm xong bảng
                   dài ra và phần quan trọng nhất — sơ đồ vừa ráp — bị đẩy xuống
                   khỏi tầm mắt. Giờ nó chiếm đúng chỗ của dãy chip.
                 */}
-                {shownIdea === null ? (
-                  <div className={exiting ? "hint-box--out" : "hint-box"}>
-                    <h2 className="mt-3 text-[17px] font-bold tracking-tight text-ink leading-snug">
-                      {guide.title}
-                    </h2>
-                    <p className="mt-1.5 text-[13.5px] text-ink/70 leading-relaxed">
-                      {guide.body}
-                    </p>
+                  {shownIdea === null ? (
+                    <div className={exiting ? "hint-box--out" : "hint-box"}>
+                      <h2 className="mt-3 text-[17px] font-bold tracking-tight text-ink leading-snug">
+                        {guide.title}
+                      </h2>
+                      <p className="mt-1.5 text-[13.5px] text-ink/70 leading-relaxed">
+                        {guide.body}
+                      </p>
 
-                    {guide.ideas.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {guide.ideas.map((idea: Idea) => (
-                          <button
-                            key={idea.id}
-                            type="button"
-                            onClick={() => setOpenIdea(idea.id)}
-                            className="rounded-full border border-brand/35 bg-white px-3.5 py-2 text-[13px] font-semibold text-brand cursor-pointer transition-colors hover:bg-brand/[0.06] hover:border-brand/60"
-                          >
-                            {idea.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : openQuestions && shownPart === null ? (
-                  /*
+                      {guide.ideas.length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {guide.ideas.map((idea: Idea) => (
+                            <button
+                              key={idea.id}
+                              type="button"
+                              onClick={() => setOpenIdea(idea.id)}
+                              className="rounded-full border border-brand/35 bg-white px-3.5 py-2 text-[13px] font-semibold text-brand cursor-pointer transition-colors hover:bg-brand/[0.06] hover:border-brand/60"
+                            >
+                              {idea.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : openQuestions && shownPart === null ? (
+                    /*
                     HỘP TÓM TẮT — hiện sau khi nhận một câu.
 
                     Chỉ kể lại bài theo đúng thứ tự đã viết, không có câu hỏi
@@ -938,118 +1054,121 @@ export default function WritingDesk({
                     hai hộp khác nhau: lúc đang bí thì cần gợi, lúc vừa viết
                     xong thì cần thấy mình đang ở đâu.
                   */
-                  <div
-                    key={`${openQuestions.id}:done`}
-                    className={`rounded-xl bg-mist p-4 flex flex-col gap-3 ${
-                      exiting ? "hint-box--out" : "hint-box"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <span
-                        className="hint-step text-xs font-bold text-brand"
-                        style={{ "--i": 0 } as CSSProperties}
-                      >
-                        Bài của em đã có
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setOpenIdea(null)}
-                        className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/45 hover:text-brand cursor-pointer transition-colors"
-                        style={{ "--i": 0 } as CSSProperties}
-                      >
-                        <ArrowLeft size={12} />
-                        Chọn ý khác
-                      </button>
-                    </div>
-
-                    {/* Mốc thời gian dọc: mỗi câu đã nhận là một mốc, theo đúng
-                        thứ tự viết. Đường nối vẽ sau khi các mốc đã vào chỗ. */}
-                    <div className="relative pl-5">
-                      <span
-                        aria-hidden
-                        className="hint-rail absolute left-[7px] top-2 bottom-2 w-px bg-brand/25"
-                      />
-                      <ol className="flex flex-col gap-2">
-                        {journal.map((row, i) => (
-                          <li
-                            key={row.key}
-                            className="hint-step relative flex items-baseline gap-2"
-                            style={{ "--i": i + 1 } as CSSProperties}
-                          >
-                            <span
-                              aria-hidden
-                              className={`absolute -left-5 top-1.5 h-[9px] w-[9px] rounded-full ${row.dot}`}
-                            />
-                            <span className="font-mono text-[10px] tabular-nums text-ink/35">
-                              {i + 1}
-                            </span>
-                            <span className="text-[13px] font-semibold text-ink">
-                              {row.idea}
-                            </span>
-                            <span className="text-2xs text-ink/50">· {row.part}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-
-                    <p
-                      className="hint-step text-2xs text-ink/45 leading-relaxed"
-                      style={{ "--i": journal.length + 1 } as CSSProperties}
+                    <div
+                      key={`${openQuestions.id}:done`}
+                      className={`rounded-xl bg-mist p-4 flex flex-col gap-3 ${
+                        exiting ? "hint-box--out" : "hint-box"
+                      }`}
                     >
-                      Viết tiếp bằng lời của em. Bí thì cứ dừng bút — gợi ý sẽ hiện lại.
-                    </p>
-                  </div>
-                ) : openQuestions ? (
-                  <div
-                    // `key` để sang ý khác là dựng lại từ đầu, animation ráp chạy lại.
-                    // Khoá gồm cả phần đang chọn: bấm "Giải thích" cũng là
-                    // một hộp mới, nên animation ráp phải chạy lại.
-                    // Khoá chỉ đổi khi sang ý khác hoặc khi gợi ý bật/tắt —
-                    // đổi phần thì hộp giữ nguyên, không ráp lại.
-                    key={`${openQuestions.id}:${shownPart === null ? "done" : "live"}`}
-                    className={`rounded-xl bg-mist p-4 flex flex-col gap-3.5 ${
-                      exiting ? "hint-box--out" : "hint-box"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <span
-                        className="hint-step text-xs font-bold text-brand"
-                        style={{ "--i": 0 } as CSSProperties}
-                      >
-                        {openQuestions.label}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setOpenIdea(null)}
-                        className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/45 hover:text-brand cursor-pointer transition-colors"
-                        style={{ "--i": 0 } as CSSProperties}
-                      >
-                        <ArrowLeft size={12} />
-                        Chọn ý khác
-                      </button>
-                    </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span
+                          className="hint-step text-xs font-bold text-brand"
+                          style={{ "--i": 0 } as CSSProperties}
+                        >
+                          Bài của em đã có
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setOpenIdea(null)}
+                          className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/45 hover:text-brand cursor-pointer transition-colors"
+                          style={{ "--i": 0 } as CSSProperties}
+                        >
+                          <ArrowLeft size={12} />
+                          Chọn ý khác
+                        </button>
+                      </div>
 
-                    {/*
+                      {/* Mốc thời gian dọc: mỗi câu đã nhận là một mốc, theo đúng
+                        thứ tự viết. Đường nối vẽ sau khi các mốc đã vào chỗ. */}
+                      <div className="relative pl-5">
+                        <span
+                          aria-hidden
+                          className="hint-rail absolute left-[7px] top-2 bottom-2 w-px bg-brand/25"
+                        />
+                        <ol className="flex flex-col gap-2">
+                          {journal.map((row, i) => (
+                            <li
+                              key={row.key}
+                              className="hint-step relative flex items-baseline gap-2"
+                              style={{ "--i": i + 1 } as CSSProperties}
+                            >
+                              <span
+                                aria-hidden
+                                className={`absolute -left-5 top-1.5 h-[9px] w-[9px] rounded-full ${row.dot}`}
+                              />
+                              <span className="font-mono text-[10px] tabular-nums text-ink/35">
+                                {i + 1}
+                              </span>
+                              <span className="text-[13px] font-semibold text-ink">
+                                {row.idea}
+                              </span>
+                              <span className="text-2xs text-ink/50">
+                                · {row.part}
+                              </span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+
+                      <p
+                        className="hint-step text-2xs text-ink/45 leading-relaxed"
+                        style={{ "--i": journal.length + 1 } as CSSProperties}
+                      >
+                        Viết tiếp bằng lời của em. Bí thì cứ dừng bút — gợi ý sẽ
+                        hiện lại.
+                      </p>
+                    </div>
+                  ) : openQuestions ? (
+                    <div
+                      // `key` để sang ý khác là dựng lại từ đầu, animation ráp chạy lại.
+                      // Khoá gồm cả phần đang chọn: bấm "Giải thích" cũng là
+                      // một hộp mới, nên animation ráp phải chạy lại.
+                      // Khoá chỉ đổi khi sang ý khác hoặc khi gợi ý bật/tắt —
+                      // đổi phần thì hộp giữ nguyên, không ráp lại.
+                      key={`${openQuestions.id}:${shownPart === null ? "done" : "live"}`}
+                      className={`rounded-xl bg-mist p-4 flex flex-col gap-3.5 ${
+                        exiting ? "hint-box--out" : "hint-box"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span
+                          className="hint-step text-xs font-bold text-brand"
+                          style={{ "--i": 0 } as CSSProperties}
+                        >
+                          {openQuestions.label}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setOpenIdea(null)}
+                          className="hint-step flex items-center gap-1 text-2xs font-semibold text-ink/45 hover:text-brand cursor-pointer transition-colors"
+                          style={{ "--i": 0 } as CSSProperties}
+                        >
+                          <ArrowLeft size={12} />
+                          Chọn ý khác
+                        </button>
+                      </div>
+
+                      {/*
                       Hai câu hỏi tự vấn chỉ có nghĩa khi ĐANG gợi ý. Nhận câu
                       xong rồi mà vẫn để chúng đó thì bảng vẫn trông như đang
                       mời làm tiếp việc vừa làm xong — lúc này chỉ còn sơ đồ,
                       để em thấy đoạn của mình đã có gì và còn thiếu gì.
                     */}
-                    {shownPart !== null && (
-                      <ol className="list-decimal pl-4 flex flex-col gap-1.5 text-[13px] text-ink/80 leading-relaxed">
-                        {openQuestions.questions.map((q, i) => (
-                          <li
-                            key={q}
-                            className="hint-step"
-                            style={{ "--i": i + 1 } as CSSProperties}
-                          >
-                            {q}
-                          </li>
-                        ))}
-                      </ol>
-                    )}
+                      {shownPart !== null && (
+                        <ol className="list-decimal pl-4 flex flex-col gap-1.5 text-[13px] text-ink/80 leading-relaxed">
+                          {openQuestions.questions.map((q, i) => (
+                            <li
+                              key={q}
+                              className="hint-step"
+                              style={{ "--i": i + 1 } as CSSProperties}
+                            >
+                              {q}
+                            </li>
+                          ))}
+                        </ol>
+                      )}
 
-                    {/*
+                      {/*
                       Ba lựa chọn, RÁP từng mảnh: mỗi nút bay vào từ một phía
                       rồi khớp lại. Cùng bay từ một phía thì thành danh sách
                       trượt xuống, không ra cảm giác lắp ghép.
@@ -1059,70 +1178,81 @@ export default function WritingDesk({
                       được. Vẽ đường nối là ngụ ý phải đi theo thứ tự, mà đó là
                       chuyện của hộp tóm tắt — nơi thứ tự có thật.
                     */}
-                    <ul className="flex flex-col gap-2">
-                      {PARAGRAPH_SHAPE.map((step, i) => (
-                        <li key={step.label}>
-                          <button
-                            type="button"
-                            aria-pressed={shownPart === i}
-                            onClick={() => {
-                              setShapePart(i);
-                              setGhostOff(false);
-                              area.current?.focus({ preventScroll: true });
-                            }}
-                            className={`hint-piece ${step.from} w-full text-left rounded-lg px-3 py-2 cursor-pointer transition-shadow ${step.box} ${
-                              shownPart === i
-                                ? "ring-2 ring-offset-1 ring-brand/60"
-                                : "hover:ring-2 hover:ring-offset-1 hover:ring-brand/25"
-                            } ${
-                              // Phần đã có trong bài thì lùi lại một bước để
-                              // phần chưa viết nổi lên.
-                              shownIdea && doneKeys.has(`${shownIdea}:${i}`) && shownPart !== i
-                                ? "opacity-55"
-                                : ""
-                            }`}
-                            style={
-                              { minHeight: step.height, "--d": 200 + i * 90 } as CSSProperties
-                            }
-                          >
-                            <span className="flex items-center gap-1.5 text-2xs font-bold leading-tight">
-                              {shownIdea && doneKeys.has(`${shownIdea}:${i}`) && (
-                                <Check size={11} className="shrink-0" />
-                              )}
-                              {step.label}
-                            </span>
-                            <span className="block text-2xs font-medium opacity-70 leading-tight mt-0.5">
-                              {shownPart === i
-                                ? "đang gợi ý — Tab để nhận"
-                                : shownIdea && doneKeys.has(`${shownIdea}:${i}`)
-                                  ? "đã viết"
-                                  : step.hint}
-                            </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
+                      <ul className="flex flex-col gap-2">
+                        {PARAGRAPH_SHAPE.map((step, i) => (
+                          <li key={step.label}>
+                            <button
+                              type="button"
+                              aria-pressed={shownPart === i}
+                              onClick={() => {
+                                setShapePart(i);
+                                setGhostOff(false);
+                                area.current?.focus({ preventScroll: true });
+                              }}
+                              className={`hint-piece ${step.from} w-full text-left rounded-lg px-3 py-2 cursor-pointer transition-shadow ${step.box} ${
+                                shownPart === i
+                                  ? "ring-2 ring-offset-1 ring-brand/60"
+                                  : "hover:ring-2 hover:ring-offset-1 hover:ring-brand/25"
+                              } ${
+                                // Phần đã có trong bài thì lùi lại một bước để
+                                // phần chưa viết nổi lên.
+                                shownIdea &&
+                                doneKeys.has(`${shownIdea}:${i}`) &&
+                                shownPart !== i
+                                  ? "opacity-55"
+                                  : ""
+                              }`}
+                              style={
+                                {
+                                  minHeight: step.height,
+                                  "--d": 200 + i * 90,
+                                } as CSSProperties
+                              }
+                            >
+                              <span className="flex items-center gap-1.5 text-2xs font-bold leading-tight">
+                                {shownIdea &&
+                                  doneKeys.has(`${shownIdea}:${i}`) && (
+                                    <Check size={11} className="shrink-0" />
+                                  )}
+                                {step.label}
+                              </span>
+                              <span className="block text-2xs font-medium opacity-70 leading-tight mt-0.5">
+                                {shownPart === i
+                                  ? "đang gợi ý — Tab để nhận"
+                                  : shownIdea &&
+                                      doneKeys.has(`${shownIdea}:${i}`)
+                                    ? "đã viết"
+                                    : step.hint}
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
 
-                {guide.warning && (
-                  <p className="mt-3 flex items-start gap-2.5 rounded-xl border border-warn bg-warn-soft px-3.5 py-3 text-[12.5px] leading-relaxed">
-                    <AlertTriangle size={15} className="shrink-0 mt-0.5 text-warn" />
-                    <span>{guide.warning}</span>
-                  </p>
-                )}
-              </>
-            )}
+                  {guide.warning && (
+                    <p className="mt-3 flex items-start gap-2.5 rounded-xl border border-warn bg-warn-soft px-3.5 py-3 text-[12.5px] leading-relaxed">
+                      <AlertTriangle
+                        size={15}
+                        className="shrink-0 mt-0.5 text-warn"
+                      />
+                      <span>{guide.warning}</span>
+                    </p>
+                  )}
+                </>
+              )}
 
-            <p className="mt-5 pt-3 border-t border-black/5 text-2xs text-ink/40 leading-relaxed">
-              Gợi ý do cô Thương soạn sẵn cho đề này. Máy chỉ đọc bài để chọn gợi ý khớp với chỗ
-              em đang viết — không viết thay em, và không chấm điểm.
-            </p>
-          </>
-        )}
-      </aside>
+              <p className="mt-5 pt-3 border-t border-black/5 text-2xs text-ink/40 leading-relaxed">
+                Gợi ý do cô Thương soạn sẵn cho đề này. Máy chỉ đọc bài để chọn
+                gợi ý khớp với chỗ em đang viết — không viết thay em, và không
+                chấm điểm.
+              </p>
+            </>
+          )}
+        </aside>
 
-      <KnowledgePanel promptId={prompt.id} topics={knowledge} />
+        <KnowledgePanel promptId={prompt.id} topics={knowledge} />
       </div>
     </div>
   );

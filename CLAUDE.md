@@ -96,6 +96,21 @@ lộ trình thì **cảnh báo chứ không cắt chặng** — cắt thì Writi
 nghị, không phải từ nhịp học sinh đang khai: lấy nhịp hiện tại nhân lên sẽ ra nghịch lý
 "đang học 1.5 giờ/tuần, học 6 giờ/tuần là kịp" trong khi 6 giờ vẫn dưới mức cần.
 
+**Chấm band bốn tiêu chí chỉ có MỘT bản cài đặt: `apps/web/src/server/
+writingBand.ts`.** Hai chỗ gọi nó — Section 4 của bài kiểm tra nền (bài 15
+phút, 150 từ, có `GRADER_CONTEXT` dặn model đừng trừ điểm vì bài ngắn) và màn
+luyện Writing (Task 2 đủ 40 phút, 250 từ, không dặn gì thêm). Khác nhau đúng
+hai tham số `context` và `minWords`; để hai bản cài đặt song song là mở đường
+cho ngày điểm ở hai màn lệch nhau. Bảng điểm cũng một bản:
+`components/WritingBandReport.tsx`, phần chữ quanh con số vào qua props.
+
+**Checklist Writing và band Writing là HAI thứ, đừng nối vào nhau.** Checklist
+(`domain/writing.ts`, sáu câu có/không) trả lời "bài còn thiếu gì sửa được
+trong năm phút"; band (`writingBand.ts`, bốn câu `score` theo thang mô tả band)
+trả lời "bài đang ở mức nào". Cộng sáu câu có/không lại thành một con số band
+thì không có cơ sở quy đổi — đó là thứ chú thích cũ trong `domain/writing.ts`
+cấm, và lệnh cấm ấy vẫn còn hiệu lực. Học sinh bấm riêng từng nút.
+
 **Bộ chấm VÀ bộ nhận xét của bài kiểm tra nền đều nằm ở `packages/diagnostic`, không ở
 `apps/web`.** `apps/admin` chấm lại bằng đúng hàm `grade()` và đúng `exam.json` mà trang
 học sinh dùng — hai bản cài đặt song song thì sẽ có ngày điểm học sinh thấy khác điểm cô
