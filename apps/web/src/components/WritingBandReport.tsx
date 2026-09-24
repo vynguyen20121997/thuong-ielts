@@ -15,11 +15,19 @@ import {
  * band thi thật — nên hai câu đó vào qua props `caption` và `footnote`, còn
  * cách vẽ thì một bản.
  *
- * ## Cố ý KHÔNG có mục "Lỗi chi tiết"
+ * ## Mục "Lỗi chi tiết" có khung, chưa có dữ liệu
  *
  * Bộ chấm dạng `score` chỉ trả về một con số cho mỗi tiêu chí, không trả văn
- * bản tự do. Dựng danh sách lỗi từ đó là bịa vị trí lỗi mà học sinh tìm mãi
- * không thấy.
+ * bản tự do — dựng danh sách lỗi từ nó là bịa vị trí lỗi mà học sinh tìm mãi
+ * không thấy. Nên tab này nhận lỗi qua prop `issues` từ một bộ sinh riêng, và
+ * khi chưa nối (`essayCoach.issues` trả `null`) thì nói thẳng "chưa soi" chứ
+ * KHÔNG hiện "không có lỗi". Hai câu đó khác nhau một trời.
+ *
+ * ## Bốn thẻ điểm là bộ lọc
+ *
+ * Bấm TR/CC/LR/GRA thì "Điểm chi tiết" và "Lỗi chi tiết" thu về đúng tiêu chí
+ * đó. Vẫn một bản nội dung, chỉ lọc bớt — không nhân đôi thành bốn hộp mở ra
+ * đóng vào, vì hai chỗ cùng nói một điều là hai chỗ sẽ có ngày nói khác nhau.
  */
 
 /** Một lỗi có trích dẫn; hình dạng đủ để vẽ, không phụ thuộc bộ sinh nào. */
@@ -66,7 +74,43 @@ export default function WritingBandReport({
   const [tab, setTab] = useState<"scores" | "issues" | "essay" | "advice">(
     "scores",
   );
+  /*
+    Tiêu chí đang soi, `null` = xem cả bốn.
+
+    Bốn thẻ điểm ở trên không chỉ để nhìn: bấm một thẻ là hai tab "Điểm chi
+    tiết" và "Lỗi chi tiết" thu về đúng tiêu chí đó. Học sinh đọc bảng này theo
+    đường "LR có 6.0, vì sao?" chứ không đọc tuần tự từ trên xuống — bắt cuộn
+    qua ba tiêu chí không hỏi để tới cái đang hỏi là thừa.
+
+    Không dựng thêm màn mới: vẫn đúng hai tab ấy, chỉ lọc bớt. Mỗi tiêu chí một
+    hộp mở ra đóng vào thì cùng một nội dung nằm ở hai chỗ, và sẽ tới ngày hai
+    chỗ nói khác nhau.
+  */
+  const [focus, setFocus] = useState<string | null>(null);
   const graded = state?.kind === "graded" ? state.result : null;
+  const focused = WRITING_CRITERIA.find((c) => c.id === focus) ?? null;
+  const shownCriteria = focused ? [focused] : WRITING_CRITERIA;
+  /*
+    Lọc lỗi theo mã tiêu chí, so KHÔNG phân biệt hoa thường và chấp nhận cả
+    tên đầy đủ ("Lexical Resource") lẫn mã ngắn ("LR").
+
+    Bộ sinh lỗi chưa nối (`essayCoach.issues` trả `null`), nên trường
+    `criterion` hiện do hợp đồng quy định chứ chưa có dữ liệu thật để dựa vào.
+    Nhận cả hai dạng để ngày nối vào không phải sửa chỗ này; lỗi mang mã lạ
+    thì chỉ hiện ở màn "cả bốn tiêu chí" — thà nó nằm ngoài bộ lọc còn hơn bị
+    gán bừa vào một tiêu chí không phải của nó.
+  */
+  const shownIssues = !issues
+    ? []
+    : focused
+      ? issues.filter((x) => {
+          const key = x.criterion.trim().toLowerCase();
+          return (
+            key === focused.short.toLowerCase() ||
+            key === focused.english.toLowerCase()
+          );
+        })
+      : issues;
 
   return (
     <section className="rounded-2xl border border-sage-3 bg-white p-6">
@@ -133,29 +177,46 @@ export default function WritingBandReport({
               const s = graded.criteria.find((x) => x.id === c.id);
               if (!s) return null;
               const weak = s.band < 6;
+              const on = focus === c.id;
               return (
-                <li
-                  key={c.id}
-                  className="rounded-[13px] border border-sage-3 p-3.5"
-                >
-                  <p className="flex items-baseline justify-between gap-2">
-                    <b className="font-mono text-2xs font-extrabold tracking-wider">
-                      {c.short}
-                    </b>
-                    <span className="font-mono text-xl font-extrabold tracking-tight text-brand">
-                      {s.band.toFixed(1)}
-                    </span>
-                  </p>
-                  <span
-                    className="my-2 block h-1.5 rounded-full bg-sage-2"
-                    aria-hidden
+                <li key={c.id}>
+                  <button
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => {
+                      setFocus(on ? null : c.id);
+                      /* Bấm thẻ mà đang đứng ở "Bài làm"/"Gợi ý" thì cú bấm
+                         không có gì để nhìn — kéo về tab điểm cho nó có hồi đáp. */
+                      if (tab !== "scores" && tab !== "issues")
+                        setTab("scores");
+                    }}
+                    className={`w-full cursor-pointer rounded-[13px] border p-3.5 text-left transition-colors ${
+                      on
+                        ? "border-brand bg-sage-2"
+                        : "border-sage-3 hover:border-brand/40"
+                    }`}
                   >
-                    <i
-                      className={`block h-full rounded-full ${weak ? "bg-warn" : "bg-brand"}`}
-                      style={{ width: `${percentOf(s.band)}%` }}
-                    />
-                  </span>
-                  <p className="text-2xs leading-snug text-ink/60">{c.label}</p>
+                    <p className="flex items-baseline justify-between gap-2">
+                      <b className="font-mono text-2xs font-extrabold tracking-wider">
+                        {c.short}
+                      </b>
+                      <span className="font-mono text-xl font-extrabold tracking-tight text-brand">
+                        {s.band.toFixed(1)}
+                      </span>
+                    </p>
+                    <span
+                      className="my-2 block h-1.5 rounded-full bg-sage-2"
+                      aria-hidden
+                    >
+                      <i
+                        className={`block h-full rounded-full ${weak ? "bg-warn" : "bg-brand"}`}
+                        style={{ width: `${percentOf(s.band)}%` }}
+                      />
+                    </span>
+                    <p className="text-2xs leading-snug text-ink/60">
+                      {c.label}
+                    </p>
+                  </button>
                 </li>
               );
             })}
@@ -176,7 +237,7 @@ export default function WritingBandReport({
                 {
                   [
                     "Điểm chi tiết",
-                    `Lỗi chi tiết (${issues?.length ?? 0})`,
+                    `Lỗi chi tiết (${shownIssues.length})`,
                     "Bài làm",
                     "Gợi ý",
                   ][i]
@@ -185,9 +246,22 @@ export default function WritingBandReport({
             ))}
           </div>
 
+          {focused && (
+            <p className="mt-3.5 flex flex-wrap items-center gap-2 text-2xs text-ink/60">
+              Đang xem riêng <b className="text-ink/80">{focused.label}</b>
+              <button
+                type="button"
+                onClick={() => setFocus(null)}
+                className="cursor-pointer font-bold text-brand underline underline-offset-2"
+              >
+                xem cả bốn tiêu chí
+              </button>
+            </p>
+          )}
+
           {tab === "scores" && (
             <ul className="mt-3.5 grid gap-3">
-              {WRITING_CRITERIA.map((c) => {
+              {shownCriteria.map((c) => {
                 const s = graded.criteria.find((x) => x.id === c.id);
                 if (!s) return null;
                 const index = Math.min(
@@ -222,14 +296,15 @@ export default function WritingBandReport({
                 được điểm theo thang, không viết được chữ nào. Số 0 trên tab là
                 "chưa soi", không phải "bài không có lỗi".
               </p>
-            ) : issues.length === 0 ? (
+            ) : shownIssues.length === 0 ? (
               <p className="mt-3.5 rounded-xl bg-sage-2 px-4 py-5 text-sm leading-relaxed">
-                Đã soi và không thấy lỗi nào đáng chỉ ra. Không có nghĩa là bài
-                hoàn hảo — bốn tiêu chí ở trên vẫn là thước đo chính.
+                {focused
+                  ? `Đã soi và không thấy lỗi nào thuộc ${focused.label}. Các tiêu chí khác có thể vẫn còn — bấm "xem cả bốn tiêu chí" để xem hết.`
+                  : "Đã soi và không thấy lỗi nào đáng chỉ ra. Không có nghĩa là bài hoàn hảo — bốn tiêu chí ở trên vẫn là thước đo chính."}
               </p>
             ) : (
               <ul className="mt-3.5 grid gap-3">
-                {issues.map((issue, i) => (
+                {shownIssues.map((issue, i) => (
                   <li key={i} className="rounded-xl bg-mist-3 px-4 py-3">
                     <p className="flex items-baseline gap-2">
                       <b className="rounded bg-warn-soft px-1.5 py-0.5 font-mono text-2xs font-extrabold text-warn">
