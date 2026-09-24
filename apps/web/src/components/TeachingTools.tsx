@@ -112,7 +112,7 @@ export default function TeachingTools({
       className={`${isFull ? "bg-white pt-28 pb-16 md:pt-32 md:pb-24" : "bg-mist py-16 md:py-24"} relative overflow-hidden`}
     >
       {isFull && <PageArch />}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-start">
           {/* Cột trái: giới thiệu hệ thống */}
           <Reveal className="flex flex-col items-start gap-5">

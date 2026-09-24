@@ -15,7 +15,7 @@ export default function PracticeHubPage() {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <PageArch />
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+      <div className="relative z-10 max-w-7xl mx-auto gutter">
         <div className="max-w-2xl mb-12">
           <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand mb-3 flex items-center gap-1.5">
             <GraduationCap size={15} />

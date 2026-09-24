@@ -49,7 +49,7 @@ export default function StudentPageHeader({
       {/* Soft brand arch background */}
       <PageArch />
 
-      <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+      <div className="relative z-10 max-w-3xl mx-auto text-center gutter">
         <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand mb-5 inline-flex items-center gap-1.5">
           <Sparkles size={14} className="text-brand" />
           {eyebrow}

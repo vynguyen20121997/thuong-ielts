@@ -69,7 +69,7 @@ export default function Contact() {
       className="py-28 bg-white relative overflow-hidden border-b border-black/5"
     >
       <PageArch />
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           {/* Left Column: Direct Contact Info & Booking Slogan */}
           <div className="lg:col-span-5 contact-reveal text-left">

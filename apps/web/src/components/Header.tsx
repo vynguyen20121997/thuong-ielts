@@ -66,7 +66,7 @@ export default function Header() {
       id="header-nav"
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${isScrolled ? "py-3 bg-mist/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_30px_rgba(20,83,45,0.04)]" : "py-5 bg-transparent"}`}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-12 flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 gutter">
         {/* Logo: vòng tròn xanh + wordmark theo Figma */}
         <Link
           href="/"

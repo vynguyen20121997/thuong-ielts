@@ -16,7 +16,7 @@ export default function IdeaCoachPage() {
 
   return (
     <main className="relative z-10 min-h-screen bg-white pb-20 pt-24 md:pt-28">
-      <div className="mx-auto max-w-5xl px-4 md:px-8">
+      <div className="mx-auto max-w-5xl gutter">
         <nav className="mb-6 flex items-center gap-1.5 text-2xs font-medium text-ink/40">
           <Link
             href="/kiem-tra-kien-thuc"

@@ -22,6 +22,14 @@ import {
  * không thấy.
  */
 
+/** Một lỗi có trích dẫn; hình dạng đủ để vẽ, không phụ thuộc bộ sinh nào. */
+export type BandIssue = {
+  criterion: string;
+  quote: string;
+  why: string;
+  fix?: string;
+};
+
 const BAND_MIN = 4;
 const BAND_MAX = 9;
 const percentOf = (band: number) =>
@@ -36,6 +44,7 @@ export default function WritingBandReport({
   onRetry,
   retrying,
   emptyText,
+  issues,
 }: {
   state: WritingState | null;
   essay: string;
@@ -48,8 +57,15 @@ export default function WritingBandReport({
   retrying: boolean;
   /** Câu hiện khi chưa viết gì. */
   emptyText: string;
+  /**
+   * Danh sách lỗi có trích dẫn. `null` = chưa nối bộ sinh văn bản; `[]` = đã
+   * soi và không thấy lỗi nào. Hai thứ khác nhau, tab phải nói khác nhau.
+   */
+  issues?: BandIssue[] | null;
 }) {
-  const [tab, setTab] = useState<"scores" | "essay" | "advice">("scores");
+  const [tab, setTab] = useState<"scores" | "issues" | "essay" | "advice">(
+    "scores",
+  );
   const graded = state?.kind === "graded" ? state.result : null;
 
   return (
@@ -146,7 +162,7 @@ export default function WritingBandReport({
           </ol>
 
           <div className="mt-5 flex flex-wrap gap-2" role="tablist">
-            {(["scores", "essay", "advice"] as const).map((t, i) => (
+            {(["scores", "issues", "essay", "advice"] as const).map((t, i) => (
               <button
                 key={t}
                 type="button"
@@ -157,7 +173,14 @@ export default function WritingBandReport({
                   tab === t ? "bg-brand text-white" : "bg-mist-3 text-ink"
                 }`}
               >
-                {["Điểm chi tiết", "Bài làm", "Gợi ý"][i]}
+                {
+                  [
+                    "Điểm chi tiết",
+                    `Lỗi chi tiết (${issues?.length ?? 0})`,
+                    "Bài làm",
+                    "Gợi ý",
+                  ][i]
+                }
               </button>
             ))}
           </div>
@@ -190,6 +213,44 @@ export default function WritingBandReport({
               })}
             </ul>
           )}
+
+          {tab === "issues" &&
+            (issues === null || issues === undefined ? (
+              <p className="mt-3.5 rounded-xl border border-dashed border-sage-3 bg-mist-3 px-4 py-5 text-sm leading-relaxed text-ink/65">
+                Chưa liệt kê được lỗi. Mục này phải TRÍCH đúng câu sai trong bài
+                và viết câu sửa, tức là sinh văn bản — model đang dùng chỉ chấm
+                được điểm theo thang, không viết được chữ nào. Số 0 trên tab là
+                "chưa soi", không phải "bài không có lỗi".
+              </p>
+            ) : issues.length === 0 ? (
+              <p className="mt-3.5 rounded-xl bg-sage-2 px-4 py-5 text-sm leading-relaxed">
+                Đã soi và không thấy lỗi nào đáng chỉ ra. Không có nghĩa là bài
+                hoàn hảo — bốn tiêu chí ở trên vẫn là thước đo chính.
+              </p>
+            ) : (
+              <ul className="mt-3.5 grid gap-3">
+                {issues.map((issue, i) => (
+                  <li key={i} className="rounded-xl bg-mist-3 px-4 py-3">
+                    <p className="flex items-baseline gap-2">
+                      <b className="rounded bg-warn-soft px-1.5 py-0.5 font-mono text-2xs font-extrabold text-warn">
+                        {issue.criterion}
+                      </b>
+                      <span className="text-sm leading-relaxed text-ink/70">
+                        {issue.why}
+                      </span>
+                    </p>
+                    <p className="mt-2 border-l-2 border-warn pl-3 text-sm italic leading-relaxed text-ink/70">
+                      {issue.quote}
+                    </p>
+                    {issue.fix && (
+                      <p className="mt-1.5 border-l-2 border-brand pl-3 text-sm font-semibold leading-relaxed">
+                        {issue.fix}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ))}
 
           {tab === "essay" && (
             <div className="mt-3.5 rounded-xl bg-mist-3 px-4 py-4 text-sm leading-[1.75]">

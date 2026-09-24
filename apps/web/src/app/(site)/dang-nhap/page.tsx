@@ -47,7 +47,7 @@ export default async function LoginPage({
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <PageArch />
-      <div className="relative z-10 max-w-md mx-auto px-6">
+      <div className="relative z-10 max-w-md mx-auto gutter">
         <div className="bg-white border border-black/5 rounded-2xl shadow-sm p-7 md:p-9">
           <span className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-[0.12em] text-brand">
             <BookOpen size={14} />

@@ -395,7 +395,7 @@ export default function TeachingMethodPage() {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white">
       <PageArch />
-      <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8">
+      <div className="relative z-10 max-w-4xl mx-auto gutter">
         {/* Mở đầu */}
         <div className="mb-14 text-left">
           <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand block mb-4">

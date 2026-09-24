@@ -155,7 +155,7 @@ export default function Hero() {
       className="relative pt-24 md:pt-20 overflow-hidden bg-white"
     >
       <PageArch />
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-8 items-end">
           {/* Cột chữ: container stagger, từng khối bật vào bằng spring.
               `self-center` để khối chữ ngang tầm chân dung — lưới vẫn giữ
@@ -331,7 +331,7 @@ export default function Hero() {
         initial={reduce ? false : { opacity: 0, y: 24 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
         transition={{ type: "spring", stiffness: 120, damping: 22, delay: 0.75 }}
-        className="relative z-20 max-w-6xl mx-auto px-6 md:px-12 -mt-2 pb-10 md:pb-6"
+        className="relative z-20 max-w-6xl mx-auto -mt-2 pb-10 md:pb-6 gutter"
       >
         <div className="bg-white rounded-[32px] shadow-[0_20px_60px_rgba(20,83,45,0.12)] border border-black/5 px-6 py-6 md:py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:divide-x md:divide-black/10">
           {IMPACT_STATS.map((s) => (

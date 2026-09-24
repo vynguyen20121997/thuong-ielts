@@ -112,7 +112,7 @@ export default async function TrangVaoBangLink({
 
 function Khung({ tieuDe, children }: { tieuDe: string; children: React.ReactNode }) {
   return (
-    <main className="mx-auto max-w-lg px-5 py-20">
+    <main className="mx-auto max-w-lg py-20 gutter">
       <div className="rounded-3xl border border-black/10 bg-white p-8 flex flex-col gap-4">
         <h1 className="text-2xl font-bold text-ink">{tieuDe}</h1>
         {children}

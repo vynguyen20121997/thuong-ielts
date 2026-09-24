@@ -91,6 +91,26 @@
   đừng viết class rồi hy vọng.
 */
 
+/*
+  LỀ HAI BÊN của mọi khối nội dung — nguồn sự thật duy nhất.
+
+  Trước đây mỗi khối tự khai lề riêng: `px-6 md:px-12` (25 chỗ), `px-4 md:px-8`,
+  `px-6 md:px-9`, `px-4 md:px-6 lg:px-12`… 41 file, sáu công thức cho cùng một
+  vai. Muốn nới hay bóp lề cả site là phải quét lại repo và chắc chắn sót. Giờ
+  đổi ở ĐÂY một dòng là cả site theo, đúng cách đã làm với bảng màu trong
+  `@theme`.
+
+  Hiện chốt ở 0: nội dung chạm mép màn hình, theo yêu cầu tháng 9/2026. Muốn
+  lề trở lại thì chỉ sửa `padding-inline` dưới đây — đừng rải `px-*` vào các
+  khối `mx-auto max-w-*` nữa, làm thế là dựng lại đúng mớ vừa dọn.
+
+  Dùng cho khối bọc nội dung (`mx-auto max-w-*`), KHÔNG dùng cho thẻ, hộp,
+  nút — lề trong của chúng là chuyện khác và vẫn viết bằng `px-*` tại chỗ.
+*/
+.gutter {
+  padding-inline: 0;
+}
+
 /* Base Editorial Styling */
 body {
   background-color: #FFFFFF; /* Bright white background */

@@ -93,7 +93,7 @@ export default function Certificates() {
 
   return (
     <section id="bang-cap" className="py-16 md:py-24 bg-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 lg:gap-14 items-start">
           {/* Cột trái: hồ sơ năng lực (chuyển từ hero xuống) */}
           <Reveal className="flex flex-col items-start gap-5">

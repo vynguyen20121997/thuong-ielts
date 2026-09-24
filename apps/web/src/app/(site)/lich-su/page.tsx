@@ -38,7 +38,7 @@ export default async function TrangLichSu() {
   return (
     <main className="relative z-10 pt-28 pb-20 bg-white min-h-screen">
       <PageArch />
-      <div className="relative z-10 mx-auto max-w-3xl px-5">
+      <div className="relative z-10 mx-auto max-w-3xl gutter">
         <h1 className="text-4xl font-bold text-ink mb-2">Bài đã làm</h1>
         <p className="text-sm text-ink/55 mb-8">
           Toàn bộ bài Reading và Listening em đã làm trên trang này.

@@ -27,7 +27,7 @@ export default async function ReadingCatalogPage() {
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <PageArch />
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+      <div className="relative z-10 max-w-7xl mx-auto gutter">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-2xs font-medium text-ink/40 mb-6">
           <Link href="/kiem-tra-kien-thuc" className="hover:text-brand transition-colors">

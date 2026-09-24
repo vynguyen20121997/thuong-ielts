@@ -386,7 +386,7 @@ export default function Testimonials({
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         {/* Preview header — trái tiêu đề, phải nút outline theo Figma */}
         {isPreview && (
           <Reveal className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">

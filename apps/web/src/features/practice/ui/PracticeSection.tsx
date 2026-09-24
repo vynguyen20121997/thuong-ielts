@@ -17,7 +17,7 @@ export default function PracticeSection() {
       <div className="absolute top-1/4 left-0 w-[420px] h-[420px] rounded-full bg-leaf/20 blur-[130px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-brand/[0.05] blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div className="max-w-2xl">
             <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand mb-3 flex items-center gap-1.5">

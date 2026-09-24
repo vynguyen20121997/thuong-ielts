@@ -135,7 +135,7 @@ export default function Stats() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         {/* Editorial Subtitle & Title */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16 items-end">
           <div className="lg:col-span-6">

@@ -33,6 +33,7 @@ import {
 } from "../domain/writingCoach";
 import { trackWriting } from "../infrastructure/writingApi";
 import WritingBandReport from "../../../components/WritingBandReport";
+import EssayCoachPanel, { type CoachData } from "./EssayCoachPanel";
 import type { WritingState } from "@thuong-ielts/diagnostic";
 import ChecklistPanel from "./ChecklistPanel";
 import KnowledgePanel from "./KnowledgePanel";
@@ -222,6 +223,12 @@ export default function WritingDesk({
   */
   const [band, setBand] = useState<WritingState | null>(null);
   const [banding, setBanding] = useState(false);
+  /*
+    Năm mục hướng dẫn quanh bảng điểm. Lấy trong CÙNG lúc chấm band, không đợi
+    học sinh bấm sang từng mục: cả năm nằm trên một màn, tải lười từng mục là
+    năm vòng chờ cho thứ người ta thấy cùng lúc.
+  */
+  const [coach, setCoach] = useState<CoachData | null>(null);
   /* Hộp thoại kết quả: mở ngay lúc bấm nộp, đóng được mà không mất `band`. */
   const [showBand, setShowBand] = useState(false);
   /* `createPortal` chỉ chạy được ở trình duyệt — lần vẽ đầu trên server thì chưa. */
@@ -552,6 +559,9 @@ export default function WritingDesk({
     if (el) setCaretAtEnd(el.selectionStart === el.value.length);
   };
 
+  /** Bản bài viết ứng với `band` đang giữ — để biết có cần chấm lại không. */
+  const gradedEssay = useRef("");
+
   const runBand = async () => {
     if (banding) return;
     setBanding(true);
@@ -566,6 +576,20 @@ export default function WritingDesk({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Chấm band thất bại.");
       setBand(data.writing as WritingState);
+      gradedEssay.current = essay;
+
+      /*
+        Hướng dẫn tải SAU điểm và không chặn: điểm là thứ học sinh chờ, còn
+        năm mục kia đọc sau. Hỏng thì bảng điểm vẫn đứng nguyên.
+      */
+      void fetch("/api/practice/writing/coach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promptId: prompt.id, essay }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => d && setCoach(d as CoachData))
+        .catch(() => {});
     } catch (err) {
       setError(err instanceof Error ? err.message : "Chấm band thất bại.");
     } finally {
@@ -574,15 +598,21 @@ export default function WritingDesk({
   };
 
   /**
-   * Nộp bài: mở hộp thoại TRƯỚC rồi mới gọi chấm.
+   * Nộp bài — LỐI VÀO DUY NHẤT của hộp thoại kết quả.
    *
-   * Chấm mất tới hàng chục giây. Mở hộp thoại sau khi có kết quả thì học sinh
-   * bấm xong nhìn vào một màn hình không nhúc nhích, tưởng nút hỏng và bấm
-   * tiếp. Mở trước thì chỗ chờ có mặt ngay, và `WritingBandReport` với
-   * `state={null}` đã là màn đang-chấm sẵn có.
+   * Mở hộp thoại TRƯỚC rồi mới gọi chấm: chấm mất tới hàng chục giây, mở sau
+   * khi có kết quả thì học sinh bấm xong nhìn một màn hình không nhúc nhích,
+   * tưởng nút hỏng và bấm tiếp. Mở trước thì chỗ chờ có mặt ngay, và
+   * `WritingBandReport` với `state={null}` đã là màn đang-chấm sẵn có.
+   *
+   * Bài KHÔNG đổi một chữ nào kể từ lần chấm trước thì mở lại đúng kết quả cũ,
+   * không gọi lại dịch vụ. Đóng hộp thoại xem lại bài rồi nộp lại là thao tác
+   * thường gặp; chấm lại mỗi lần vừa tốn một request tính tiền vừa có thể ra
+   * con số khác chút, trông như máy chấm lung tung.
    */
   const submit = () => {
     setShowBand(true);
+    if (band && essay === gradedEssay.current) return;
     void runBand();
   };
 
@@ -866,17 +896,6 @@ export default function WritingDesk({
               </>
             )}
           </button>
-          {/* Nộp rồi đóng bảng thì phải mở lại được, chứ không phải chấm lại
-              từ đầu — mỗi lần chấm là một request tính tiền. */}
-          {band && !showBand && (
-            <button
-              type="button"
-              onClick={() => setShowBand(true)}
-              className="flex items-center justify-center gap-2 rounded-full border border-brand/30 bg-white px-6 py-3 text-sm font-semibold text-brand transition-colors hover:border-brand cursor-pointer"
-            >
-              Xem lại kết quả chấm
-            </button>
-          )}
           {words < WRITING_CHECKABLE_WORDS && (
             <span className="text-2xs text-ink/40">
               Viết được khoảng {WRITING_CHECKABLE_WORDS} từ rồi nộp sẽ có ích
@@ -924,7 +943,7 @@ export default function WritingDesk({
               <div
                 /* Bấm trong bảng không được tính là bấm ra ngoài để đóng. */
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-2xl rounded-2xl bg-white p-5 md:p-7 shadow-xl"
+                className="relative w-full max-w-5xl rounded-2xl bg-white p-5 md:p-7 shadow-xl"
               >
                 <button
                   type="button"
@@ -943,7 +962,14 @@ export default function WritingDesk({
                   footnote="Band này do máy chấm theo bốn tiêu chí, dùng để ước lượng mình đang ở đâu. Bài vẫn cần cô Thương chấm theo barem — máy không đọc được ý hay, cũng không biết em đã tiến bộ tới đâu."
                   onRetry={runBand}
                   retrying={banding}
+                  issues={coach ? coach.issues : undefined}
                 />
+
+                {coach && (
+                  <div className="mt-6 border-t border-sage pt-6">
+                    <EssayCoachPanel data={coach} />
+                  </div>
+                )}
               </div>
             </div>,
             document.body,

@@ -86,7 +86,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
+    <div className="max-w-7xl mx-auto gutter">
       {/*
         Lối tắt cho người dùng bàn phím. Đo được: vào bài rồi phải Tab thêm 5
         lần mới tới ô đáp án đầu tiên, mà mỗi lần chuyển passage lại phải đi

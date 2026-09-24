@@ -73,7 +73,7 @@ const SKILLS = [
 export default function TeachingMethod() {
   return (
     <section id="phuong-phap" className="relative overflow-hidden bg-white pt-16 pb-14 md:pt-24 md:pb-16">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         {/* Đầu khối căn trái: tiêu đề và câu dẫn nằm CẠNH nhau, không chồng lên nhau giữa trang */}
         <Reveal className="mb-8 md:mb-10">
           <div className="flex flex-col gap-4">

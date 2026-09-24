@@ -330,7 +330,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
     <div ref={examRef} data-exam className="min-h-screen bg-white pb-28">
 
       <header className="sticky top-0 z-30 bg-white border-b border-black/10">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 py-2.5 flex items-center gap-3">
+        <div className="max-w-6xl mx-auto py-2.5 flex items-center gap-3 gutter">
           <span className="shrink-0 h-10 w-10 rounded-full bg-brand text-leaf flex items-center justify-center font-mono text-2xs font-bold tracking-tight">
             IELTS
           </span>
@@ -362,7 +362,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
+      <div className="max-w-6xl mx-auto gutter">
         {session.error && (
           <div className="mt-5 flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm">
             <AlertTriangle size={16} className="shrink-0 mt-0.5" />

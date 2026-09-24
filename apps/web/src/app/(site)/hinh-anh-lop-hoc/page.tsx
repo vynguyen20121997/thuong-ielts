@@ -37,7 +37,7 @@ const gallerySections: {
 export default function ClassroomGalleryPage() {
   return (
     <main className="min-h-screen bg-mist pb-20 pt-32 md:pb-28 md:pt-40">
-      <section className="mx-auto max-w-7xl px-6 md:px-12">
+      <section className="mx-auto max-w-7xl gutter">
         <Reveal className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
           <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
             Thương Hồ&apos;s Class

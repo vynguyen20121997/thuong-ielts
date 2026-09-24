@@ -147,7 +147,7 @@ export default function Feedback({
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         {/* Preview header — căn giữa theo Figma, tiêu đề sans đậm thay vì serif */}
         {isPreview && (
           <Reveal className="text-center mb-12 flex flex-col items-center gap-4">

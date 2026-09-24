@@ -96,7 +96,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
   const loading = phase === "loading";
 
   return (
-    <div className="max-w-3xl mx-auto px-4 md:px-8 py-6 md:py-10">
+    <div className="max-w-3xl mx-auto py-6 md:py-10 gutter">
       <Link
         href="/kiem-tra-kien-thuc/reading"
         className="inline-flex items-center gap-2 text-2xs font-medium text-ink/45 hover:text-brand transition-colors"

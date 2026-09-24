@@ -10,7 +10,7 @@ import NavigationButtonLabel from "./NavigationButtonLabel";
 export default function Footer() {
   return (
     <footer className="bg-mist text-brand pt-14 pb-10 relative overflow-hidden border-t border-black/5">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         {/* Lưới 4 cột */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 pb-14 border-b border-black/10 text-left">
           {/* Thương hiệu */}

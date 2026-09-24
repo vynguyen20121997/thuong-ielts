@@ -45,7 +45,7 @@ export default function About() {
       <section className="relative overflow-hidden border-b border-brand/10 bg-mist">
         <PageArch />
         <div className="absolute -right-24 top-8 h-80 w-80 rounded-full bg-leaf/35 blur-3xl" />
-        <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-6 pb-16 pt-28 md:px-12 md:pb-24 md:pt-32 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="relative z-10 mx-auto grid max-w-7xl gap-12 pb-16 pt-28 md:pb-24 md:pt-32 lg:grid-cols-[1.05fr_0.95fr] lg:items-center gutter">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Về giáo viên</p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight text-brand md:text-6xl">Hồ Ngọc Thương</h1>
@@ -66,7 +66,7 @@ export default function About() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-5xl px-6 md:px-12">
+      <div className="mx-auto max-w-5xl gutter">
         <StorySection id="hanh-trinh" number="01" eyebrow="Hành trình học tiếng Anh của mình" title="Mình cũng từng là một học sinh rất sợ tiếng Anh" paragraphs={LEARNING_STORY} icon={BookOpen} />
         <StorySection id="kinh-nghiem" number="02" eyebrow="Mình đến với việc dạy tiếng Anh như thế nào?" title="Từ công việc văn phòng chuyển sang giảng dạy" paragraphs={TEACHING_STORY} icon={BriefcaseBusiness} />
 

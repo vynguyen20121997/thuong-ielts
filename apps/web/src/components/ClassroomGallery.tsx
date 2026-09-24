@@ -267,7 +267,7 @@ export default function ClassroomGallery() {
       id="classroom-gallery"
       className="border-b border-black/5 bg-mist py-16 md:py-20"
     >
-      <div className="mx-auto max-w-7xl px-6 md:px-12">
+      <div className="mx-auto max-w-7xl gutter">
         <Reveal className="mx-auto mb-10 max-w-3xl text-center">
           <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand">
             HÌNH ẢNH LỚP HỌC

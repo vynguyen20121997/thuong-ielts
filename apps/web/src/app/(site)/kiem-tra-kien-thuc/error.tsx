@@ -28,7 +28,7 @@ export default function PracticeError({
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <PageArch />
-      <div className="relative z-10 max-w-2xl mx-auto px-6 md:px-12 text-center">
+      <div className="relative z-10 max-w-2xl mx-auto text-center gutter">
         <span className="h-14 w-14 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center mx-auto mb-6">
           <AlertTriangle size={24} className="text-red-500" />
         </span>

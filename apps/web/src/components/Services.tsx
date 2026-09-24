@@ -119,7 +119,7 @@ export default function Services() {
       className="py-28 bg-white relative overflow-hidden border-b border-black/5"
     >
       <PageArch />
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 gutter">
         {/* Tạm ẩn Editorial Heading
         <div className="max-w-3xl mb-16 text-left">
           <span className="text-xs text-brand block mb-3 font-medium">

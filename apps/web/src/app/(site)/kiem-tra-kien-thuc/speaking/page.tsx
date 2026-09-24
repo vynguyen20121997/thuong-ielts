@@ -25,7 +25,7 @@ export default function SpeakingCatalogPage() {
   return (
     <main className="relative z-10 min-h-screen bg-white pb-24 pt-28 md:pt-32">
       <PageArch />
-      <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
+      <div className="relative z-10 mx-auto max-w-7xl gutter">
         <nav className="mb-6 flex items-center gap-1.5 text-2xs font-medium text-ink/40">
           <Link
             href="/kiem-tra-kien-thuc"

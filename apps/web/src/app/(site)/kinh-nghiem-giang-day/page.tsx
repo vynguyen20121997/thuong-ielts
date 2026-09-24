@@ -63,7 +63,7 @@ export default function TeachingExperiencePage() {
   return (
     <main className="relative min-h-screen bg-white pb-24 pt-28 md:pt-32">
       <PageArch />
-      <div className="relative z-10 mx-auto max-w-5xl px-6 md:px-12">
+      <div className="relative z-10 mx-auto max-w-5xl gutter">
         <Link href="/gioi-thieu" className="group inline-flex items-center gap-2 text-sm font-bold text-brand/70 hover:text-brand"><ArrowLeft size={17} className="transition-transform group-hover:-translate-x-1" />Về giáo viên</Link>
         <header className="max-w-3xl border-b-2 border-brand/15 pb-12 pt-8">
           <p className="text-sm font-bold uppercase tracking-[0.12em] text-brand/60">Kinh nghiệm giảng dạy</p>

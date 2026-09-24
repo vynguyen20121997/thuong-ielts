@@ -72,7 +72,7 @@ export default async function SkillMethodPage({ params }: SkillPageProps) {
   return (
     <main className="relative z-10 min-h-screen bg-white pb-24 pt-28 md:pt-32">
       <PageArch />
-      <div className="relative z-10 mx-auto max-w-4xl px-6 md:px-8">
+      <div className="relative z-10 mx-auto max-w-4xl gutter">
         <Link
           href="/phuong-phap"
           className="group inline-flex items-center gap-2 text-sm font-bold text-brand/70 transition-colors hover:text-brand"
