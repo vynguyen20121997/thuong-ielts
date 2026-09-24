@@ -138,36 +138,19 @@ export function testLabelFromTitle(title: string): string {
 }
 
 export function groupByBook(tests: ListeningTestSummary[]): ListeningBookGroup[] {
-  const buckets = new Map<string, ListeningTestSummary[]>();
-  const order = new Map<string, number>();
-
-  tests.forEach((test, index) => {
-    const key = test.collection || "Khác";
-    const bucket = buckets.get(key);
-    if (bucket) {
-      bucket.push(test);
-    } else {
-      buckets.set(key, [test]);
-      order.set(key, index);
-    }
-  });
-
-  return Array.from(buckets, ([id, bucket]) => {
-    const sorted = [...bucket].sort((a, b) => testNumberOf(a) - testNumberOf(b));
-    return {
-      id,
-      label: bookLabelFromTitle(sorted[0].title),
-      collection: sorted[0].collection,
-      tests: sorted,
-      fullTestCount: sorted.length,
-      questionCount: sorted.reduce((sum, t) => sum + t.questionCount, 0),
-      durationSeconds: sorted.reduce((sum, t) => sum + t.durationSeconds, 0),
-      attemptCount: sorted.reduce((sum, t) => sum + t.attemptCount, 0),
-      partialCount: sorted.filter((t) => !isFullTest(t)).length,
-      order: order.get(id) ?? 0,
-      publishedAt: sorted.reduce((latest, t) => (t.publishedAt > latest ? t.publishedAt : latest), ""),
-    };
-  });
+  return tests.map((test, order) => ({
+    id: test.id,
+    label: testLabelFromTitle(test.title),
+    collection: test.collection,
+    tests: [test],
+    fullTestCount: 1,
+    questionCount: test.questionCount,
+    durationSeconds: test.durationSeconds,
+    attemptCount: test.attemptCount,
+    partialCount: isFullTest(test) ? 0 : 1,
+    order,
+    publishedAt: test.publishedAt,
+  }));
 }
 
 const GROUP_SORTERS: Record<

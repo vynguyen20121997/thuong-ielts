@@ -19,8 +19,8 @@ export const dynamic = "force-dynamic";
 
 /** Chỉ nhận đường dẫn nội bộ: `next=https://…` là mở cửa cho chuyển hướng lừa đảo. */
 function safeNext(raw: string | undefined): string {
-  if (!raw) return "/kiem-tra-kien-thuc";
-  return raw.startsWith("/") && !raw.startsWith("//") ? raw : "/kiem-tra-kien-thuc";
+  if (!raw) return "/phong-luyen-tap";
+  return raw.startsWith("/") && !raw.startsWith("//") ? raw : "/phong-luyen-tap";
 }
 
 export default async function LoginPage({
@@ -71,7 +71,7 @@ export default async function LoginPage({
         */}
         <p className="text-center mt-6">
           <Link
-            href="/kiem-tra-kien-thuc"
+            href="/phong-luyen-tap"
             className="inline-flex items-center gap-1.5 text-2xs font-medium text-ink/50 hover:text-brand transition-colors"
           >
             <ArrowLeft size={13} />

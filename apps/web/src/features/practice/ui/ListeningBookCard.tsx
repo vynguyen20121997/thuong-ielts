@@ -1,138 +1,37 @@
-"use client";
-
-import { useId, useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ChevronDown, Clock, Headphones, ListChecks, Users } from "lucide-react";
-
-import { formatAttempts } from "../domain/catalog";
-import {
-  coverageNoteOf,
-  isFullTest,
-  testLabelFromTitle,
-  type ListeningBookGroup,
-} from "../domain/listeningCatalog";
-
-/**
- * Một bộ đề nghe (Cam 12) trong lưới, dựng theo đúng mẫu thẻ Reading.
- *
- * Thẻ chỉ hiện tên bộ; bốn test nằm bên trong, mở ra mới thấy. Khác thẻ
- * Reading ở chỗ mỗi dòng con là một *bài thi trọn vẹn* 30 phút, không phải một
- * phần của bài — nên mỗi dòng là một link vào phòng thi.
- */
+import { Headphones } from "lucide-react";
+import type { ListeningBookGroup } from "../domain/listeningCatalog";
 
 const COVER_TONES = [
-  "from-brand to-brand-deep",
-  "from-[#1A3A2A] to-brand",
-  "from-[#245C3A] to-[#0B3D22]",
+  "from-[#143D30] via-[#2F7257] to-[#A6C9B8]",
+  "from-[#253159] via-[#53639C] to-[#C5CAE2]",
+  "from-[#54315C] via-[#9366A0] to-[#DCC7E0]",
 ];
 
-export default function ListeningBookCard({
-  group,
-  index,
-}: {
-  group: ListeningBookGroup;
-  index: number;
-}) {
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
+function testNumber(title: string, slug: string): string {
+  return /test\s*(\d+)/i.exec(title)?.[1] ?? /test-?(\d+)/i.exec(slug)?.[1] ?? "";
+}
 
-  const minutes = Math.round(group.durationSeconds / 60);
+export default function ListeningBookCard({ group, index }: { group: ListeningBookGroup; index: number }) {
+  const test = group.tests[0];
+  const number = testNumber(test.title, test.slug);
+  const title = `${group.collection}${number ? ` - Test ${number}` : ` - ${group.label}`}`;
 
   return (
-    <div className="group flex flex-col bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-brand/30 transition-all duration-300">
-      {/* Bìa */}
-      <div
-        className={`relative h-40 bg-gradient-to-br ${
-          COVER_TONES[index % COVER_TONES.length]
-        } overflow-hidden`}
-      >
-        <span className="absolute -right-4 -bottom-8 text-[7rem] font-bold text-white/[0.08] leading-none select-none">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-
-        <div className="relative z-10 h-full p-5 flex flex-col justify-between">
-          <span className="text-2xs font-medium text-leaf">{group.collection}</span>
-          <span className="inline-flex items-center gap-1.5 self-start bg-white/10 backdrop-blur-sm text-white text-2xs font-medium px-2.5 py-1 rounded-full">
-            <Headphones size={11} />
-            {group.tests.length} test
-          </span>
-        </div>
+    <Link
+      href={`/phong-luyen-tap/listening/${test.slug}`}
+      className="group flex min-h-[315px] flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-brand/25 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+    >
+      <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${COVER_TONES[index % COVER_TONES.length]}`}>
+        <Headphones className="absolute right-6 top-6 text-white/20" size={84} strokeWidth={1.15} />
+        <div className="absolute -bottom-20 -left-10 h-52 w-52 rounded-full border-[32px] border-white/10" />
+        <span className="absolute bottom-0 left-0 rounded-tr-2xl bg-brand px-5 py-2 text-sm font-bold text-white">Full test</span>
       </div>
-
-      {/* Thân */}
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-lg font-bold tracking-tight text-ink leading-snug group-hover:text-brand transition-colors">
-          {group.label}
-        </h3>
-
-        <div className="mt-3 flex items-center gap-3 text-ink/50">
-          <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap">
-            <ListChecks size={13} />
-            {group.questionCount} câu
-          </span>
-          <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap">
-            <Clock size={13} />
-            {minutes} phút
-          </span>
-          <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap ml-auto">
-            <Users size={13} />
-            {formatAttempts(group.attemptCount)} lượt làm
-          </span>
-        </div>
-
-        {/* Nói trước bộ này có mấy đề thiếu phần, khỏi mở ra mới biết. */}
-        {group.partialCount > 0 && (
-          <p className="flex items-start gap-1.5 text-2xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5 mt-3 leading-snug">
-            <AlertTriangle size={12} className="shrink-0 mt-0.5" />
-            <span>
-              {group.partialCount}/{group.tests.length} đề trong bộ thiếu phần vì nguồn chưa có
-              audio.
-            </span>
-          </p>
-        )}
-
-        <button
-          type="button"
-          onClick={() => setOpen((value) => !value)}
-          aria-expanded={open}
-          aria-controls={panelId}
-          className="mt-4 flex items-center justify-between gap-2 w-full rounded-full bg-brand hover:bg-brand-deep px-4 py-3.5 text-2xs font-semibold text-white cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
-        >
-          {open ? "Thu gọn" : `Chọn 1 trong ${group.tests.length} test`}
-          <ChevronDown
-            size={14}
-            className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          />
-        </button>
-
-        <ul id={panelId} hidden={!open} className="mt-3 flex flex-col gap-1.5">
-          {group.tests.map((test, order) => (
-            <li key={test.id}>
-              <Link
-                href={`/kiem-tra-kien-thuc/listening/${test.slug}`}
-                className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FAFAF8] px-3 py-2.5 hover:border-brand/30 hover:bg-white transition-colors"
-              >
-                <span className="font-mono text-2xs font-bold text-brand/40 tabular-nums">
-                  {order + 1}
-                </span>
-                <span className="flex-1 min-w-0">
-                  <span className="block text-xs font-semibold text-ink truncate">
-                    {testLabelFromTitle(test.title)}
-                  </span>
-                  {!isFullTest(test) && (
-                    <span className="block text-2xs text-amber-700 truncate">
-                      {coverageNoteOf(test)}
-                    </span>
-                  )}
-                </span>
-                <span className="text-2xs font-medium text-ink/50 whitespace-nowrap tabular-nums">
-                  {test.questionCount} câu · {Math.round(test.durationSeconds / 60)}′
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="text-lg font-bold leading-snug text-ink transition-colors group-hover:text-brand">{title}</h3>
+        <p className="mt-2 text-sm text-ink/55">Listening · {test.sections.length} parts</p>
+        <span className="mt-auto pt-5 text-sm font-semibold text-brand">Làm toàn bộ đề →</span>
       </div>
-    </div>
+    </Link>
   );
 }

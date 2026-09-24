@@ -67,7 +67,7 @@ export default async function TrangVaoBangLink({
             thức chọn đề khác.
           </p>
           <Link
-            href="/kiem-tra-kien-thuc"
+            href="/phong-luyen-tap"
             className="inline-block rounded-full bg-brand hover:bg-brand-deep px-5 py-2.5 text-sm font-bold text-white transition-colors"
           >
             Luyện đề khác
@@ -83,7 +83,7 @@ export default async function TrangVaoBangLink({
       <Khung tieuDe="Buổi học này đã kết thúc">
         <p>Thầy cô đã đóng link. Nếu em vào muộn, nhắn thầy cô mở lại giúp nhé.</p>
         <Link
-          href="/kiem-tra-kien-thuc"
+          href="/phong-luyen-tap"
           className="inline-block rounded-full bg-brand hover:bg-brand-deep px-5 py-2.5 text-sm font-bold text-white transition-colors"
         >
           Tự luyện đề khác
@@ -94,8 +94,8 @@ export default async function TrangVaoBangLink({
 
   const duongDenBai =
     bai.skill === "listening"
-      ? `/kiem-tra-kien-thuc/listening/${bai.target}?bai=${token}`
-      : `/kiem-tra-kien-thuc/reading/test/${bai.target}?bai=${token}`;
+      ? `/phong-luyen-tap/listening/${bai.target}?bai=${token}`
+      : `/phong-luyen-tap/reading/test/${bai.target}?bai=${token}`;
 
   // Đã có danh tính (tài khoản hoặc khách) thì đi thẳng vào bài.
   if (student || khach) redirect(duongDenBai);

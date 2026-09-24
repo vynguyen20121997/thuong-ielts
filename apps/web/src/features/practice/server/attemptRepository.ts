@@ -446,3 +446,16 @@ export async function listAttemptsByStudent(
     choCoMo: row.cho_mo === true,
   }));
 }
+
+/** Targets the student has submitted, used by the practice-room tabs. */
+export async function listCompletedTargets(
+  studentId: string,
+  skill: "reading" | "listening",
+): Promise<string[]> {
+  const { rows } = await pool.query<{ target: string }>(
+    `SELECT DISTINCT target FROM attempts
+      WHERE student_id = $1 AND skill = $2 AND status = 'submitted'`,
+    [studentId, skill],
+  );
+  return rows.map((row) => row.target);
+}

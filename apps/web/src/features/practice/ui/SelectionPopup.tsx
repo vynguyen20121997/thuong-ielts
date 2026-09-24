@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bookmark, Highlighter, Trash2 } from "lucide-react";
+import { Bookmark, BookOpen, Highlighter, Trash2 } from "lucide-react";
 
 import type { PendingSelection } from "../application/useAnnotations";
 
@@ -20,6 +20,7 @@ export default function SelectionPopup({
   onRemoveAll,
   onBookmark,
   bookmarked,
+  onLookup,
 }: {
   selection: PendingSelection | null;
   onHighlight: () => void;
@@ -28,6 +29,7 @@ export default function SelectionPopup({
   /** Absent when the selection does not belong to a question. */
   onBookmark?: () => void;
   bookmarked?: boolean;
+  onLookup?: () => void;
 }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -82,6 +84,16 @@ export default function SelectionPopup({
             className={bookmarked ? "text-[#FFC107] fill-[#FFC107]" : "text-ink/50"}
           />
           {bookmarked ? "Bỏ đánh dấu" : "Đánh dấu"}
+        </button>
+      )}
+      {selection.kind === "selection" && onLookup && (
+        <button
+          type="button"
+          onClick={onLookup}
+          className="flex items-center gap-1.5 border-l border-black/5 px-3.5 py-2 text-sm font-medium text-ink hover:bg-cream"
+        >
+          <BookOpen size={14} className="text-brand" />
+          Tra từ
         </button>
       )}
     </div>,

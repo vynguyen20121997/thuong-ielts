@@ -56,6 +56,13 @@ export default function Header() {
         { label: "Đánh giá của học viên", to: "/cam-nhan-hoc-vien" },
       ],
     },
+    {
+      label: "Phòng luyện tập",
+      items: [
+        { label: "Luyện Reading", to: "/phong-luyen-tap/reading" },
+        { label: "Luyện Listening", to: "/phong-luyen-tap/listening" },
+      ],
+    },
   ];
 
   const linkClass = (isActive: boolean) =>

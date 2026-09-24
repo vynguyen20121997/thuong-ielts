@@ -35,7 +35,7 @@ export default function PracticeSection() {
           </div>
 
           <Link
-            href="/kiem-tra-kien-thuc"
+            href="/phong-luyen-tap"
             className="group shrink-0 px-7 py-3.5 bg-brand hover:bg-brand-deep text-white font-bold text-xs rounded-full transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase inline-flex items-center gap-2"
           >
             Vào Phòng Luyện Tập

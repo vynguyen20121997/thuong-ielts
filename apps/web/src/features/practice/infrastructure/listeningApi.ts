@@ -14,6 +14,7 @@ export async function submitListeningAttempt(
   elapsedSeconds: number,
   attemptId?: string | null,
   autoSubmitted = false,
+  part?: number,
 ): Promise<AttemptResult> {
   const res = await fetch(`/api/practice/listening/${slug}/submit`, {
     method: "POST",
@@ -21,7 +22,7 @@ export async function submitListeningAttempt(
     // `attemptId` là lượt đã mở lúc bài bắt đầu. Có nó thì server chốt đúng
     // lượt ấy thay vì đẻ dòng mới, và bảng lớp của cô thấy em này chuyển sang
     // "đã nộp" thay vì treo ở "đang làm" mãi.
-    body: JSON.stringify({ answers, elapsedSeconds, attemptId, autoSubmitted }),
+    body: JSON.stringify({ answers, elapsedSeconds, attemptId, autoSubmitted, part }),
   });
 
   if (!res.ok) {

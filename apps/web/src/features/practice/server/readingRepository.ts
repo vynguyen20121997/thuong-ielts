@@ -1,6 +1,9 @@
 import { pool } from "@thuong-ielts/db";
+import { unstable_cache } from "next/cache";
 
 import { passageLabelFromTitle, passageNumberFromTitle, testLabelFromTitle } from "../domain/paper";
+import { practiceDisplayName } from "../domain/displayNames";
+import { keyPracticeLevel } from "../domain/keyPracticeDifficulty";
 import type {
   AnswerKeyEntry,
   ExamOutline,
@@ -29,7 +32,8 @@ import type {
 
 const SUMMARY_COLUMNS = `
   id, slug, title, collection, topic, level, duration_seconds, question_count,
-  attempt_count, is_free, cover_image_url, published_at
+  attempt_count, is_free, cover_image_url, published_at,
+  COALESCE((SELECT array_agg(DISTINCT q ->> 'type') FROM jsonb_array_elements(questions) q), '{}') AS question_types
 `;
 
 interface SummaryRow {
@@ -45,22 +49,24 @@ interface SummaryRow {
   is_free: boolean;
   cover_image_url: string | null;
   published_at: string | null;
+  question_types: ReadingTestSummary["questionTypes"] | null;
 }
 
 function toSummary(row: SummaryRow): ReadingTestSummary {
   return {
     id: row.id,
     slug: row.slug,
-    title: row.title,
-    collection: row.collection ?? "",
+    title: practiceDisplayName(row.title),
+    collection: practiceDisplayName(row.collection ?? ""),
     topic: row.topic ?? "",
-    level: (row.level as ReadingTestSummary["level"]) ?? "medium",
+    level: keyPracticeLevel("reading", row.slug, (row.level as ReadingTestSummary["level"]) ?? "medium"),
     durationSeconds: row.duration_seconds ?? 1200,
     questionCount: row.question_count ?? 0,
     attemptCount: row.attempt_count ?? 0,
     isFree: row.is_free ?? true,
     coverImageUrl: row.cover_image_url ?? undefined,
     publishedAt: row.published_at ?? "",
+    questionTypes: row.question_types ?? [],
   };
 }
 
@@ -81,7 +87,7 @@ function toSummary(row: SummaryRow): ReadingTestSummary {
  */
 const CHI_KHO_CHUNG = `owner_id IS NULL`;
 
-export async function listReadingTests(): Promise<ReadingTestSummary[]> {
+const listReadingTestsCached = unstable_cache(async (): Promise<ReadingTestSummary[]> => {
   const { rows } = await pool.query<SummaryRow>(
     `SELECT ${SUMMARY_COLUMNS}
        FROM reading_tests
@@ -89,6 +95,10 @@ export async function listReadingTests(): Promise<ReadingTestSummary[]> {
       ORDER BY sort_order ASC, published_at DESC NULLS LAST`,
   );
   return rows.map(toSummary);
+}, ["practice-reading-catalog-v5"], { revalidate: 3600, tags: ["practice-reading-catalog"] });
+
+export async function listReadingTests(): Promise<ReadingTestSummary[]> {
+  return listReadingTestsCached();
 }
 
 export async function getReadingTestBySlug(slug: string): Promise<ReadingTest | null> {
@@ -162,7 +172,7 @@ export async function recordAttempt(slug: string): Promise<void> {
  * passage 2.
  * ------------------------------------------------------------------ */
 
-const TEST_ID = /^cam\d+-test\d+$/;
+const TEST_ID = /^(?:cam\d+|guide|train[12])-test\d+$/;
 
 export function isTestId(value: string): boolean {
   return TEST_ID.test(value);

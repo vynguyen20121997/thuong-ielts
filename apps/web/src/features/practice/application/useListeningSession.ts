@@ -65,7 +65,7 @@ function readProgress(slug: string): SavedProgress | null {
   }
 }
 
-export function useListeningSession(test: ListeningTest) {
+export function useListeningSession(test: ListeningTest, timed = true) {
   const [answers, setAnswers] = useState<ReadingAnswers>({});
   const [status, setStatus] = useState<SessionStatus>("instructions");
   const [result, setResult] = useState<AttemptResult | null>(null);
@@ -102,6 +102,7 @@ export function useListeningSession(test: ListeningTest) {
   activeSectionRef.current = activeSection;
   const statusRef = useRef(status);
   statusRef.current = status;
+  const startedAtRef = useRef(Date.now());
 
   // Read once on mount so the instructions screen can offer to carry on.
   useEffect(() => {
@@ -206,9 +207,10 @@ export function useListeningSession(test: ListeningTest) {
         const graded = await submitListeningAttempt(
           test.slug,
           answersRef.current,
-          test.durationSeconds - remainingRef.current,
+          timed ? test.durationSeconds - remainingRef.current : Math.floor((Date.now() - startedAtRef.current) / 1000),
           attemptRef.current,
-          auto
+          auto,
+          test.practicePart,
         );
         setResult(graded);
         setStatus("finished");
@@ -219,7 +221,7 @@ export function useListeningSession(test: ListeningTest) {
         submittingRef.current = false;
       }
     },
-    [test.slug, test.durationSeconds, clearProgress]
+    [test.slug, test.durationSeconds, test.practicePart, clearProgress, timed]
   );
 
   const submit = useCallback(() => void runSubmit(false), [runSubmit]);
@@ -250,10 +252,11 @@ export function useListeningSession(test: ListeningTest) {
     setActiveTrack(0);
     setActiveSection(0);
     setStatus("instructions");
+    startedAtRef.current = Date.now();
   }, [test.durationSeconds, clearProgress]);
 
   useEffect(() => {
-    if (status !== "running") return;
+    if (status !== "running" || !timed) return;
     const id = window.setInterval(() => {
       setRemainingSeconds((prev) => {
         if (prev <= 1) {
@@ -282,7 +285,7 @@ export function useListeningSession(test: ListeningTest) {
       });
     }, 1000);
     return () => window.clearInterval(id);
-  }, [status, runSubmit, test.slug]);
+  }, [status, runSubmit, test.slug, timed]);
 
   /**
    * The recording plays once, so leaving mid-test is destructive in a way a

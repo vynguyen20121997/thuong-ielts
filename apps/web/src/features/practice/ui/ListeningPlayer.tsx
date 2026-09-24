@@ -292,7 +292,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
 
           <div className="border-t border-black/10 mt-8 pt-6 flex items-center justify-between">
             <Link
-              href="/kiem-tra-kien-thuc/listening"
+              href="/phong-luyen-tap/listening"
               className="text-sm text-ink/50 hover:text-brand transition-colors"
             >
               ← Chọn đề khác
@@ -353,7 +353,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
             </p>
           </div>
           <Link
-            href="/kiem-tra-kien-thuc/listening"
+            href="/phong-luyen-tap/listening"
             className="ml-auto shrink-0 h-9 w-9 rounded-full border border-black/10 flex items-center justify-center text-ink/50 hover:text-brand transition-colors"
             aria-label="Thoát về danh sách đề"
           >
@@ -376,7 +376,7 @@ export default function ListeningPlayer({ test }: { test: ListeningTest }) {
               result={session.result}
               timedOut={session.timedOut}
               onRestart={session.restart}
-              catalogHref="/kiem-tra-kien-thuc/listening"
+              catalogHref="/phong-luyen-tap/listening"
             />
           </div>
         )}

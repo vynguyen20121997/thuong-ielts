@@ -83,7 +83,7 @@ export interface ReadingSession {
   restart: () => void;
 }
 
-export function useReadingSession(paper: ReadingPaper, resume = false): ReadingSession {
+export function useReadingSession(paper: ReadingPaper, resume = false, timed = true): ReadingSession {
   // Đọc một lần lúc khởi tạo: nếu học sinh chọn "làm tiếp" thì bài bắt đầu
   // ngay ở trạng thái cũ, không nháy qua trạng thái trống rồi mới nhảy số.
   const [saved] = useState(() => (resume ? readReadingProgress(paper.id) : null));
@@ -132,8 +132,9 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
   const sectionRef = useRef(sectionIndex);
   sectionRef.current = sectionIndex;
   const submittingRef = useRef(false);
+  const startedAtRef = useRef(Date.now());
 
-  const elapsedSeconds = paper.durationSeconds - remainingSeconds;
+  const elapsedSeconds = timed ? paper.durationSeconds - remainingSeconds : Math.floor((Date.now() - startedAtRef.current) / 1000);
 
   const setAnswer = useCallback((questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -161,7 +162,7 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
           paper.mode,
           paper.id,
           answersRef.current,
-          paper.durationSeconds - remainingRef.current,
+          timed ? paper.durationSeconds - remainingRef.current : Math.floor((Date.now() - startedAtRef.current) / 1000),
           attemptRef.current,
           auto,
         );
@@ -176,7 +177,7 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
         submittingRef.current = false;
       }
     },
-    [paper.mode, paper.id, paper.durationSeconds],
+    [paper.mode, paper.id, paper.durationSeconds, timed],
   );
 
   const submit = useCallback(() => {
@@ -192,13 +193,14 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
     setRemainingSeconds(paper.durationSeconds);
     setSectionIndex(0);
     setStatus("running");
+    startedAtRef.current = Date.now();
     clearReadingProgress(paper.id);
   }, [paper.durationSeconds, paper.id]);
 
   // Countdown. One interval for the lifetime of a "running" phase; hitting zero
   // submits whatever the student has so far, exactly like the real exam.
   useEffect(() => {
-    if (status !== "running") return;
+    if (status !== "running" || !timed) return;
 
     const id = window.setInterval(() => {
       setRemainingSeconds((prev) => {
@@ -227,7 +229,7 @@ export function useReadingSession(paper: ReadingPaper, resume = false): ReadingS
     }, 1000);
 
     return () => window.clearInterval(id);
-  }, [status, runSubmit, paper.id]);
+  }, [status, runSubmit, paper.id, timed]);
 
   // Nhịp tiến độ cho màn theo dõi của cô. Đặt sau `submit` để hook chạy trong
   // suốt thời gian làm bài và tự ngừng khi server bảo lượt đã đóng.

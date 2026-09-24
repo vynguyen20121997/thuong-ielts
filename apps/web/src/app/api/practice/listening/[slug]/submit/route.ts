@@ -21,6 +21,7 @@ interface SubmitBody {
   /** Lượt đã mở lúc bài bắt đầu. Có thì chốt đúng lượt ấy, không đẻ dòng mới. */
   attemptId?: unknown;
   autoSubmitted?: unknown;
+  part?: unknown;
 }
 
 function sanitizeAnswers(input: unknown): ReadingAnswers {
@@ -53,7 +54,11 @@ export async function POST(
 
   const answers = sanitizeAnswers(body.answers);
   const elapsed = typeof body.elapsedSeconds === "number" ? body.elapsedSeconds : 0;
-  const result = gradeReading(record.questions, record.answerKey, answers, elapsed);
+  const part = typeof body.part === "number" && body.part >= 1 && body.part <= 4 ? body.part : null;
+  const questions = part ? record.questions.filter((question) => question.section === part) : record.questions;
+  const ids = new Set(questions.map((question) => question.id));
+  const answerKey = part ? record.answerKey.filter((entry) => ids.has(entry.questionId)) : record.answerKey;
+  const result = gradeReading(questions, answerKey, answers, elapsed);
 
   await recordListeningAttempt(slug);
 

@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 function safeNext(raw: string | undefined): string {
-  if (!raw) return "/kiem-tra-kien-thuc";
-  return raw.startsWith("/") && !raw.startsWith("//") ? raw : "/kiem-tra-kien-thuc";
+  if (!raw) return "/phong-luyen-tap";
+  return raw.startsWith("/") && !raw.startsWith("//") ? raw : "/phong-luyen-tap";
 }
 
 export default async function ProfilePage({

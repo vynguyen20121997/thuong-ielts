@@ -14,7 +14,7 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     label: "Đọc hiểu",
     description:
       "Luyện đọc theo từng dạng câu hỏi: True/False/Not Given, Matching Headings, điền từ. Chấm điểm và giải thích ngay khi nộp bài.",
-    href: "/kiem-tra-kien-thuc/reading",
+    href: "/phong-luyen-tap/reading",
     status: "available",
     hint: "Bài tập theo dạng",
   },
@@ -24,7 +24,7 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     label: "Nghe hiểu",
     description:
       "Đề nghe 4 section như thi thật, có file nghe ngay trên trang, được tua và nghe lại. Nộp bài là có điểm và band ước lượng.",
-    href: "/kiem-tra-kien-thuc/listening",
+    href: "/phong-luyen-tap/listening",
     status: "available",
     hint: "Có file nghe",
   },
@@ -34,7 +34,7 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     label: "Viết",
     description:
       "Đề Task 2 có bấm giờ và đếm từ. Viết xong bấm một nút để soi trước lỗi bố cục, lạc đề, thiếu ví dụ — trước khi gửi cô chấm theo barem.",
-    href: "/kiem-tra-kien-thuc/writing",
+    href: "/phong-luyen-tap/writing",
     status: "available",
     hint: "Checklist trước khi nộp",
   },
@@ -44,7 +44,7 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     label: "Nói",
     description:
       "Bộ đề Part 1-2-3 theo quý, thu âm ngay trên trang. Luyện phát triển ý cho Part 3, hoặc bốc chủ đề ngẫu nhiên có kiến thức nền và từ vựng.",
-    href: "/kiem-tra-kien-thuc/speaking",
+    href: "/phong-luyen-tap/speaking",
     status: "available",
     hint: "Thu âm trên trang",
   },

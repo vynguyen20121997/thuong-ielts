@@ -43,7 +43,7 @@ export default async function ReadingFullTestPage({
   // hồ sơ và cho phép khách gõ tên. Xem `requireStudentOrGuest`.
   const { bai: token } = await searchParams;
 
-  await requireStudentOrGuest(`/kiem-tra-kien-thuc/reading/test/${testId}`, token);
+  await requireStudentOrGuest(`/phong-luyen-tap/reading/test/${testId}`, token);
 
   // Chỉ lấy bìa đề. Nội dung bài đọc tải sau, khi học sinh bấm bắt đầu.
   const outline = await getExamOutline("test", testId);

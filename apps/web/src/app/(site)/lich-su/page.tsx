@@ -51,7 +51,7 @@ export default async function TrangLichSu() {
               Làm một đề rồi quay lại đây xem tiến bộ của mình nhé.
             </p>
             <Link
-              href="/kiem-tra-kien-thuc"
+              href="/phong-luyen-tap"
               className="inline-block rounded-full bg-brand hover:bg-brand-deep px-5 py-2.5 text-sm font-bold text-white transition-colors"
             >
               Chọn đề để làm

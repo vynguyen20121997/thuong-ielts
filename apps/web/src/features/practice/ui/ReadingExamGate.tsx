@@ -53,6 +53,8 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
   /** Có bài đang làm dở trong phiên trình duyệt này không. */
   const [saved, setSaved] = useState<{ remainingSeconds: number; answered: number } | null>(null);
   const [resume, setResume] = useState(false);
+  const [practiceMode, setPracticeMode] = useState<"practice" | "exam">("practice");
+  const [examMinutes, setExamMinutes] = useState(20);
 
   // Đọc sau khi mount: sessionStorage không tồn tại lúc server render.
   useEffect(() => {
@@ -77,18 +79,29 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         const remaining = MIN_LOADING_MS - (Date.now() - startedAt);
         if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
 
-        setPaper(loaded);
+        setPaper(
+          outline.mode === "passage"
+            ? { ...loaded, durationSeconds: practiceMode === "exam" ? examMinutes * 60 : 0 }
+            : loaded,
+        );
         setPhase("running");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Không tải được đề.");
         setPhase("intro");
       }
     },
-    [outline.mode, outline.id]
+    [outline.mode, outline.id, practiceMode, examMinutes]
   );
 
   if (phase === "running" && paper) {
-    return <ReadingPlayer paper={paper} resume={resume} />;
+    return (
+      <ReadingPlayer
+        paper={paper}
+        resume={resume}
+        timed={outline.mode === "test" || practiceMode === "exam"}
+        vocabularySupport={outline.mode === "passage" && practiceMode === "practice"}
+      />
+    );
   }
 
   const minutes = Math.round(outline.durationSeconds / 60);
@@ -98,7 +111,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
   return (
     <div className="max-w-3xl mx-auto py-6 md:py-10 gutter">
       <Link
-        href="/kiem-tra-kien-thuc/reading"
+        href="/phong-luyen-tap/reading"
         className="inline-flex items-center gap-2 text-2xs font-medium text-ink/45 hover:text-brand transition-colors"
       >
         <ArrowLeft size={13} />
@@ -131,7 +144,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         <div className="grid grid-cols-3 divide-x divide-black/5 border-b border-black/5">
           {[
             { icon: ListChecks, value: `${outline.questionCount}`, label: "câu hỏi" },
-            { icon: Clock, value: `${minutes}`, label: "phút" },
+            { icon: Clock, value: !multi && practiceMode === "practice" ? "∞" : `${multi ? minutes : examMinutes}`, label: !multi && practiceMode === "practice" ? "thời gian" : "phút" },
             { icon: BookOpen, value: `${outline.parts.length}`, label: "passage" },
           ].map(({ icon: Icon, value, label }) => (
             <div key={label} className="px-4 py-5 flex flex-col items-center gap-1">
@@ -145,6 +158,41 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
         </div>
 
         <div className="px-6 md:px-9 py-6 md:py-7">
+          {!multi && (
+            <div className="mb-7">
+              <h2 className="text-sm font-bold text-ink">Chọn hình thức làm bài</h2>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => setPracticeMode("practice")}
+                  className={`rounded-xl border p-4 text-left transition-colors ${practiceMode === "practice" ? "border-brand bg-leaf/15 ring-1 ring-brand/20" : "border-black/10 hover:border-brand/30"}`}
+                >
+                  <span className="block text-sm font-bold text-ink">Luyện tập</span>
+                  <span className="mt-1.5 block text-xs leading-relaxed text-ink/60">Không giới hạn thời gian, có hỗ trợ tra từ vựng trong bài đọc.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPracticeMode("exam")}
+                  className={`rounded-xl border p-4 text-left transition-colors ${practiceMode === "exam" ? "border-brand bg-leaf/15 ring-1 ring-brand/20" : "border-black/10 hover:border-brand/30"}`}
+                >
+                  <span className="block text-sm font-bold text-ink">Thi thử</span>
+                  <span className="mt-1.5 block text-xs leading-relaxed text-ink/60">Có giới hạn thời gian, không hỗ trợ tra từ vựng.</span>
+                </button>
+              </div>
+              {practiceMode === "exam" && (
+                <label className="mt-4 flex items-center justify-between gap-4 rounded-xl bg-[#F6F6F2] px-4 py-3 text-xs font-semibold text-ink">
+                  Giới hạn thời gian
+                  <select
+                    value={examMinutes}
+                    onChange={(event) => setExamMinutes(Number(event.target.value))}
+                    className="rounded-lg border border-black/10 bg-white px-3 py-2 text-xs font-bold text-brand outline-none focus:border-brand"
+                  >
+                    {[10, 15, 20, 25, 30].map((value) => <option key={value} value={value}>{value} phút</option>)}
+                  </select>
+                </label>
+              )}
+            </div>
+          )}
           {/* Cấu trúc bài */}
           {multi && (
             <div className="mb-6">
@@ -179,10 +227,7 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
           <ul className="mt-3 flex flex-col gap-2.5 text-sm text-ink/70">
             <li className="flex gap-2.5">
               <Timer size={15} className="shrink-0 mt-0.5 text-brand/50" />
-              <span>
-                Đồng hồ <b className="text-ink">chỉ chạy sau khi bấm bắt đầu</b>, không chạy
-                trong lúc đọc trang này. Hết {minutes} phút, bài tự nộp với những gì đã điền.
-              </span>
+              <span>{multi || practiceMode === "exam" ? <>Đồng hồ <b className="text-ink">chỉ chạy sau khi bấm bắt đầu</b>. Hết {multi ? minutes : examMinutes} phút, bài tự nộp với những gì đã điền.</> : <>Chế độ luyện tập <b className="text-ink">không giới hạn thời gian</b>; bạn chủ động nộp bài khi hoàn thành.</>}</span>
             </li>
             <li className="flex gap-2.5">
               <Highlighter size={15} className="shrink-0 mt-0.5 text-brand/50" />

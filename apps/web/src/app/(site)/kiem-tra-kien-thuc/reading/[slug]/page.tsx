@@ -39,7 +39,7 @@ export default async function ReadingTestPage({
 
   // Phải đăng nhập và khai xong hồ sơ mới vào được. Chặn ở đây chứ không ở
   // danh mục: danh sách đề vẫn để mở cho Google đọc và cho khách xem trước.
-  await requireStudentOrGuest(`/kiem-tra-kien-thuc/reading/${slug}`, token);
+  await requireStudentOrGuest(`/phong-luyen-tap/reading/${slug}`, token);
 
   // Chỉ bìa đề: tên, số câu, thời gian. Bài đọc và câu hỏi tải khi bấm bắt đầu,
   // nên đồng hồ không chạy trong lúc học sinh còn đang đọc hướng dẫn.

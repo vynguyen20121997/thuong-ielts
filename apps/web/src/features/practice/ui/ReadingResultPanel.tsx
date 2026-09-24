@@ -15,7 +15,7 @@ export default function ReadingResultPanel({
   result,
   timedOut,
   onRestart,
-  catalogHref = "/kiem-tra-kien-thuc/reading",
+  catalogHref = "/phong-luyen-tap/reading",
 }: {
   result: ReadingResult;
   timedOut: boolean;

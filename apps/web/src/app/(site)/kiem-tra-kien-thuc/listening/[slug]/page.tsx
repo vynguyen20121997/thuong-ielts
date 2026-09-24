@@ -28,14 +28,14 @@ export default async function ListeningTestPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ bai?: string }>;
+  searchParams: Promise<{ bai?: string; part?: string }>;
 }) {
   const { slug } = await params;
   // `?bai=<token>` nghĩa là em vào bằng link cô gửi — luồng đó không đòi khai
   // hồ sơ và cho phép khách gõ tên. Xem `requireStudentOrGuest`.
-  const { bai: token } = await searchParams;
+  const { bai: token, part: rawPart } = await searchParams;
 
-  await requireStudentOrGuest(`/kiem-tra-kien-thuc/listening/${slug}`, token);
+  await requireStudentOrGuest(`/phong-luyen-tap/listening/${slug}`, token);
 
   // Public projection — the answer key stays in the database.
   //
@@ -46,10 +46,25 @@ export default async function ListeningTestPage({
   // dùng — Safari chặn, và học sinh vào bài thì không nghe thấy gì.
   const test = await getListeningTestBySlug(slug);
   if (!test) notFound();
+  const part = Number(rawPart);
+  const selectedPart = Number.isInteger(part) && test.sections.includes(part) ? part : null;
+  const partTitle = selectedPart ? test.topic.split("·")[selectedPart - 1]?.trim() : "";
+  const playerTest = selectedPart
+    ? {
+        ...test,
+        title: `${test.title} · Part ${selectedPart}${partTitle ? `: ${partTitle}` : ""}`,
+        questions: test.questions.filter((question) => question.section === selectedPart),
+        sections: [selectedPart],
+        questionCount: test.questions.filter((question) => question.section === selectedPart).length,
+        durationSeconds: Math.max(600, Math.round(test.durationSeconds / Math.max(1, test.sections.length))),
+        audio: test.audio.filter((track) => track.part === undefined || track.part === selectedPart),
+        practicePart: selectedPart,
+      }
+    : test;
 
   return (
     <main className="relative z-10 pt-20 pb-16 bg-white min-h-screen">
-      <ListeningPlayer test={test} />
+      <ListeningPlayer test={playerTest} />
     </main>
   );
 }

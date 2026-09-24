@@ -1,193 +1,33 @@
-"use client";
-
-import { useId, useState } from "react";
 import Link from "next/link";
-import { BookOpen, ChevronDown, Clock, ListChecks, Timer, Users } from "lucide-react";
+import { BookOpen } from "lucide-react";
+import type { TestGroup } from "../domain/catalog";
 
-import { LEVEL_LABELS, formatAttempts, passageLabelOf, type TestGroup } from "../domain/catalog";
-import type { ReadingLevel } from "../domain/types";
-
-/**
- * Một test (Cam 10 · Test 1) trong lưới đề đọc. Thẻ mở ra tại chỗ để chọn
- * passage thay vì dẫn sang trang trung gian: mỗi passage vẫn là một bài thi
- * 20 phút riêng, nên chỗ chọn nằm ngay cạnh chỗ nhìn thấy test.
- *
- * Nhóm chỉ có một passage thì cả thẻ là một link — không có gì để chọn.
- */
-
-const LEVEL_STYLES: Record<ReadingLevel, string> = {
-  easy: "bg-leaf/30 text-brand",
-  medium: "bg-brand/10 text-brand",
-  hard: "bg-ink/[0.07] text-ink/70",
-};
-
-/** No stock photography in this project, so covers are generated from the data. */
 const COVER_TONES = [
-  "from-brand to-brand-deep",
-  "from-[#1A3A2A] to-brand",
-  "from-[#245C3A] to-[#0B3D22]",
+  "from-[#143D30] via-[#2F7257] to-[#A6C9B8]",
+  "from-[#253159] via-[#53639C] to-[#C5CAE2]",
+  "from-[#54315C] via-[#9366A0] to-[#DCC7E0]",
 ];
 
-export default function ReadingTestGroupCard({
-  group,
-  index,
-}: {
-  group: TestGroup;
-  index: number;
-}) {
-  const [open, setOpen] = useState(false);
-  const panelId = useId();
+function fullTestTitle(label: string): string {
+  return label.replace(/\s*[·–—]\s*/g, " - ");
+}
 
-  const minutes = Math.round(group.durationSeconds / 60);
-  const single = group.passages.length === 1 ? group.passages[0] : null;
-  /** Thẻ đang bày đủ passage của test, không bị bộ lọc cắt bớt. */
-  const full = group.passages.length === group.fullPassageCount;
-
-  const cover = (
-    <div
-      className={`relative h-40 bg-gradient-to-br ${COVER_TONES[index % COVER_TONES.length]} overflow-hidden`}
-    >
-      <span className="absolute -right-4 -bottom-8 text-[7rem] font-bold text-white/[0.08] leading-none select-none">
-        {String(index + 1).padStart(2, "0")}
-      </span>
-
-      <div className="relative z-10 h-full p-5 flex flex-col justify-between">
-        <span className="text-2xs font-medium text-leaf">
-          {group.collection}
-        </span>
-        <span className="inline-flex items-center gap-1.5 self-start bg-white/10 backdrop-blur-sm text-white text-2xs font-medium px-2.5 py-1 rounded-full">
-          <BookOpen size={11} />
-          {group.passages.length} passage
-        </span>
-      </div>
-
-      {group.isFree && (
-        <span className="absolute top-4 right-4 z-10 bg-leaf text-brand text-2xs font-medium px-2.5 py-1 rounded-full">
-          Free
-        </span>
-      )}
-    </div>
-  );
-
-  const stats = (
-    <div className="flex items-center gap-3 text-ink/50">
-      <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap">
-        <ListChecks size={13} />
-        {group.questionCount} câu
-      </span>
-      <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap">
-        <Clock size={13} />
-        {minutes} phút
-      </span>
-      <span className="flex items-center gap-1.5 text-2xs font-medium tabular-nums whitespace-nowrap ml-auto">
-        <Users size={13} />
-        {formatAttempts(group.attemptCount)} lượt làm
-      </span>
-    </div>
-  );
-
-  const heading = (
-    <>
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        {group.levels.map((level) => (
-          <span
-            key={level}
-            className={`text-2xs font-medium px-2 py-0.5 rounded-full ${LEVEL_STYLES[level]}`}
-          >
-            {LEVEL_LABELS[level]}
-          </span>
-        ))}
-      </div>
-
-      <h3 className="text-lg font-bold tracking-tight text-ink leading-snug group-hover:text-brand transition-colors">
-        {group.label}
-      </h3>
-    </>
-  );
-
-  const shell =
-    "group flex flex-col bg-white border border-black/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-brand/30 transition-all duration-300";
-
-  // Một passage: không có gì để chọn, cả thẻ là link như trước.
-  if (single) {
-    return (
-      <Link
-        href={`/kiem-tra-kien-thuc/reading/${single.slug}`}
-        className={`${shell} hover:-translate-y-1`}
-      >
-        {cover}
-        <div className="p-5 flex flex-col flex-1">
-          {heading}
-          <p className="mt-1 text-2xs text-ink/40 font-medium">{passageLabelOf(single)}</p>
-          <div className="mt-auto pt-4">{stats}</div>
-        </div>
-      </Link>
-    );
-  }
-
+export default function ReadingTestGroupCard({ group, index }: { group: TestGroup; index: number }) {
   return (
-    <div className={shell}>
-      {cover}
-
-      <div className="p-5 flex flex-col flex-1">
-        {heading}
-        {stats}
-
-        {/*
-          Hai cách vào bài. "Làm cả test" chỉ hiện khi thẻ đang bày đủ passage
-          của test — lọc còn 2/3 mà vẫn mời thi cả 3 thì là nói dối cái đang
-          nhìn thấy.
-        */}
-        {full && (
-          <Link
-            href={`/kiem-tra-kien-thuc/reading/test/${group.id}`}
-            className="mt-4 flex items-center justify-center gap-2 w-full rounded-full bg-brand hover:bg-brand-deep px-4 py-3.5 text-2xs font-medium text-white transition-colors"
-          >
-            <Timer size={13} />
-            Làm cả test · {minutes} phút
-          </Link>
-        )}
-
-        <button
-          type="button"
-          onClick={() => setOpen((value) => !value)}
-          aria-expanded={open}
-          aria-controls={panelId}
-          className={`${full ? "mt-2" : "mt-4"} flex items-center justify-between gap-2 w-full rounded-full border border-black/10 px-4 py-3 text-2xs font-medium text-brand hover:border-brand/40 hover:bg-brand/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 cursor-pointer transition-colors`}
-        >
-          {open ? "Thu gọn" : "Hoặc làm từng passage"}
-          <ChevronDown
-            size={14}
-            className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          />
-        </button>
-
-        <ul id={panelId} hidden={!open} className="mt-3 flex flex-col gap-1.5">
-          {group.passages.map((passage, order) => (
-            <li key={passage.id}>
-              <Link
-                href={`/kiem-tra-kien-thuc/reading/${passage.slug}`}
-                className="flex items-center gap-3 rounded-xl border border-black/5 bg-[#FAFAF8] px-3 py-2.5 hover:border-brand/30 hover:bg-white transition-colors"
-              >
-                <span className="font-mono text-2xs font-bold text-brand/40 tabular-nums">
-                  {order + 1}
-                </span>
-                <span className="flex-1 min-w-0">
-                  <span className="block text-xs font-bold text-ink truncate">
-                    {passageLabelOf(passage)}
-                  </span>
-                  <span className="block text-2xs text-ink/40 font-medium">
-                    {passage.topic}
-                  </span>
-                </span>
-                <span className="font-mono text-2xs font-bold text-ink/50 whitespace-nowrap">
-                  {passage.questionCount} câu
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <Link
+      href={`/phong-luyen-tap/reading/test/${group.id}`}
+      className="group flex min-h-[315px] flex-col overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-brand/25 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+    >
+      <div className={`relative h-44 overflow-hidden bg-gradient-to-br ${COVER_TONES[index % COVER_TONES.length]}`}>
+        <BookOpen className="absolute right-6 top-6 text-white/20" size={82} strokeWidth={1.15} />
+        <div className="absolute -bottom-20 -left-10 h-52 w-52 rounded-full border-[32px] border-white/10" />
+        <span className="absolute bottom-0 left-0 rounded-tr-2xl bg-brand px-5 py-2 text-sm font-bold text-white">Full test</span>
       </div>
-    </div>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="text-lg font-bold leading-snug text-ink transition-colors group-hover:text-brand">{fullTestTitle(group.label)}</h3>
+        <p className="mt-2 text-sm text-ink/55">Reading · {group.passages.length} passages</p>
+        <span className="mt-auto pt-5 text-sm font-semibold text-brand">Làm toàn bộ đề →</span>
+      </div>
+    </Link>
   );
 }

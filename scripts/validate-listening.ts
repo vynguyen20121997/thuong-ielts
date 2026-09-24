@@ -55,7 +55,7 @@ const SHORT_PROMPT = 12;
  * table cell such as "19 Oct" for a question line, which silently steals a
  * question number. This one is a hard failure.
  */
-const DATE_PROMPT = /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?$/i;
+const DATE_PROMPT = /^(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?$/i;
 
 async function main() {
   const { rows } = await pool.query<Row>(

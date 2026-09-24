@@ -1,263 +1,344 @@
 "use client";
-
-import { useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
-
-import { useReadingCatalog } from "../application/useReadingCatalog";
-import { LEVEL_LABELS, type CatalogSort } from "../domain/catalog";
-import type { ReadingLevel, ReadingTestSummary } from "../domain/types";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
+import { groupByTest } from "../domain/catalog";
+import {
+  COLLECTION_GROUPS,
+  matchesCollectionGroup,
+} from "../domain/collectionGroups";
+import { passageNumberFromTitle } from "../domain/paper";
+import {
+  availableIeltsTopics,
+  matchesIeltsTopic,
+  type IeltsTopic,
+} from "../domain/topicTaxonomy";
+import type {
+  QuestionType,
+  ReadingLevel,
+  ReadingTestSummary,
+} from "../domain/types";
+import CatalogPagination, { TESTS_PER_PAGE } from "./CatalogPagination";
+import ReadingPassageCard from "./ReadingPassageCard";
 import ReadingTestGroupCard from "./ReadingTestGroupCard";
-
-/**
- * The interactive shell around the catalog grid. All state lives in
- * `useReadingCatalog`; this component only maps that state onto controls.
- *
- * Bộ lọc nằm thành cột dọc chạy song song với lưới kết quả: 9 bộ đề xếp hàng
- * ngang thì tràn ra ngoài màn hình, cái thứ 6 trở đi phải cuộn mới thấy. Xếp
- * dọc thì thấy hết cùng lúc, và kết quả đổi ngay bên cạnh chỗ vừa bấm.
- *
- * Dưới `lg` không đủ chỗ cho hai cột, nên cột lọc thu lại sau một nút bật/tắt.
- */
-
-const SORT_OPTIONS: { value: CatalogSort; label: string }[] = [
-  { value: "default", label: "Mặc định" },
-  { value: "newest", label: "Mới nhất" },
-  { value: "popular", label: "Nhiều lượt làm" },
+const QT: { value: QuestionType | "other"; label: string }[] = [
+  { value: "matching-headings", label: "Matching Headings" },
+  { value: "true-false-not-given", label: "True - False - Not Given" },
+  { value: "yes-no-not-given", label: "Yes - No - Not Given" },
+  { value: "multiple-choice", label: "Multiple Choice" },
+  { value: "matching-information", label: "Matching Information" },
+  { value: "matching-features", label: "Matching Features" },
+  { value: "matching-endings", label: "Matching Endings" },
+  { value: "gap-fill", label: "Gap Filling" },
+  { value: "other", label: "Other Types" },
 ];
-
-const LEVELS: ReadingLevel[] = ["easy", "medium", "hard"];
-
-export default function ReadingCatalog({ tests }: { tests: ReadingTestSummary[] }) {
-  const {
-    query,
-    collections,
-    collectionCounts,
-    topics,
-    groups,
-    totalGroups,
-    visibleCount,
-    total,
-    setCollection,
-    setLevel,
-    setTopic,
-    setSearch,
-    setSort,
-    reset,
-  } = useReadingCatalog(tests);
-
-  /** Chỉ có tác dụng dưới `lg`; từ `lg` trở lên cột lọc luôn hiện. */
-  const [openOnMobile, setOpenOnMobile] = useState(false);
-  /** 22 chủ đề bày hết thì cột lọc dài hơn cả lưới đề. */
-  const [allTopics, setAllTopics] = useState(false);
-
-  const filtered = Boolean(query.collection || query.level || query.topic || query.search);
-
-  const TOPICS_SHOWN = 10;
-  // Chủ đề đang chọn luôn phải thấy được, kể cả khi nó nằm trong phần bị giấu.
-  const visibleTopics =
-    allTopics || topics.length <= TOPICS_SHOWN
-      ? topics
-      : topics
-          .slice(0, TOPICS_SHOWN)
-          .concat(topics.slice(TOPICS_SHOWN).filter((topic) => topic.label === query.topic));
-
-  /** Một dòng trong cột lọc: chiếm hết bề ngang, số đếm đẩy về cuối dòng. */
-  const rowClass = (active: boolean) =>
-    `w-full flex items-center gap-2 px-3 py-2 rounded-lg text-2xs font-medium text-left transition-colors cursor-pointer ${active ? "bg-brand text-white" : "text-ink/60 hover:bg-brand/[0.06] hover:text-brand"}`;
-
-  const sectionLabel = "text-2xs text-ink/35 font-medium";
-
+const KNOWN = new Set(
+  QT.filter((x) => x.value !== "other").map((x) => x.value),
+);
+function Check({
+  checked,
+  label,
+  onChange,
+}: {
+  checked: boolean;
+  label: string;
+  onChange: () => void;
+}) {
   return (
-    <div className="grid lg:grid-cols-[248px_1fr] gap-6 lg:gap-8 items-start">
-      {/* Cột lọc */}
-      <aside className="lg:sticky lg:top-28">
-        <div className="flex items-center gap-3 lg:hidden mb-3">
-          <button
-            type="button"
-            onClick={() => setOpenOnMobile((value) => !value)}
-            aria-expanded={openOnMobile}
-            aria-controls="catalog-filters"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full border border-black/10 bg-white text-2xs font-medium text-ink/70 cursor-pointer"
-          >
-            <SlidersHorizontal size={13} />
-            Bộ lọc
-            {filtered && <span className="h-1.5 w-1.5 rounded-full bg-brand" />}
-          </button>
-          <span className="text-2xs text-ink/40 font-medium">
-            {groups.length}/{totalGroups} test
-          </span>
-        </div>
-
-        {/*
-          Tiêu đề cột lọc. Ngoài việc gọi tên cột, nó chiếm đúng chiều cao của
-          dòng đếm bên phải (cùng cỡ chữ, cùng `mb-4`), nên mép trên của khung
-          lọc và mép trên của thẻ đầu tiên nằm trên một đường.
-        */}
-        <div className="hidden lg:flex items-center gap-2 h-5 mb-4">
-          <SlidersHorizontal size={13} className="text-ink/35" />
-          <span className="text-2xs font-medium text-ink/40">Bộ lọc</span>
-        </div>
-
-        <div
-          id="catalog-filters"
-          className={`${openOnMobile ? "block" : "hidden"} lg:block bg-white border border-black/5 rounded-2xl shadow-sm p-4`}
+    <label className="flex cursor-pointer items-start gap-2.5 py-1.5 text-xs font-medium text-ink/75">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="mt-0.5 h-4 w-4 accent-brand"
+      />
+      <span>{label}</span>
+    </label>
+  );
+}
+function Fold({
+  title,
+  children,
+  open = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  open?: boolean;
+}) {
+  const [shown, setShown] = useState(open || title === "Bộ đề");
+  return (
+    <section className="mt-5 border-t border-black/[0.07] pt-5">
+      <button
+        onClick={() => setShown(!shown)}
+        className="flex w-full items-center justify-between text-sm font-bold"
+      >
+        {title === "Difficulty" ? "Mức độ" : title}
+        <ChevronDown size={16} className={shown ? "rotate-180" : ""} />
+      </button>
+      {shown && <div className="mt-2">{children}</div>}
+    </section>
+  );
+}
+export default function ReadingCatalog({
+  tests,
+}: {
+  tests: ReadingTestSummary[];
+}) {
+  const [mode, setMode] = useState<"single" | "full">("single"),
+    [passages, setPassages] = useState<number[]>([]),
+    [collections, setCollections] = useState<string[]>([]),
+    [types, setTypes] = useState<(QuestionType | "other")[]>([]),
+    [levels, setLevels] = useState<ReadingLevel[]>([]),
+    [topic, setTopic] = useState<IeltsTopic | "">(""),
+    [status, setStatus] = useState<"undone" | "done">("undone"),
+    [search, setSearch] = useState(""),
+    [mobile, setMobile] = useState(false),
+    [page, setPage] = useState(1);
+  const topics = useMemo(
+    () => availableIeltsTopics(tests.map((t) => `${t.topic} ${t.title}`)),
+    [tests],
+  );
+  const toggle = <T,>(a: T[], v: T, s: (x: T[]) => void) =>
+    s(a.includes(v) ? a.filter((x) => x !== v) : [...a, v]);
+  const shown = useMemo(
+    () =>
+      tests.filter((t) => {
+        if (status === "done" ? !t.completed : t.completed) return false;
+        if (
+          collections.length &&
+          !collections.some((g) => matchesCollectionGroup(t.collection, g))
+        )
+          return false;
+        if (levels.length && !levels.includes(t.level)) return false;
+        if (topic && !matchesIeltsTopic(`${t.topic} ${t.title}`, topic))
+          return false;
+        if (
+          mode === "single" &&
+          passages.length &&
+          !passages.includes(passageNumberFromTitle(t.title))
+        )
+          return false;
+        if (
+          types.length &&
+          !types.some((q) =>
+            q === "other"
+              ? t.questionTypes.some((x) => !KNOWN.has(x))
+              : t.questionTypes.includes(q),
+          )
+        )
+          return false;
+        const s = search.trim().toLowerCase();
+        return (
+          !s ||
+          `${t.title} ${t.collection} ${t.topic}`.toLowerCase().includes(s)
+        );
+      }),
+    [tests, status, collections, levels, topic, mode, passages, types, search],
+  );
+  const groups = useMemo(() => groupByTest(shown), [shown]);
+  const total = mode === "single" ? shown.length : groups.length;
+  const offset = (page - 1) * TESTS_PER_PAGE;
+  const visiblePassages = shown.slice(offset, offset + TESTS_PER_PAGE);
+  const visibleGroups = groups.slice(offset, offset + TESTS_PER_PAGE);
+  useEffect(
+    () => setPage(1),
+    [mode, passages, collections, types, levels, topic, status, search],
+  );
+  const reset = () => {
+    setPassages([]);
+    setCollections([]);
+    setTypes([]);
+    setLevels([]);
+    setTopic("");
+    setSearch("");
+  };
+  const dirty =
+    passages.length + collections.length + types.length + levels.length > 0 ||
+    !!topic ||
+    !!search;
+  return (
+    <>
+      <Top
+        status={status}
+        setStatus={setStatus}
+        search={search}
+        setSearch={setSearch}
+      />
+      <button
+        onClick={() => setMobile(!mobile)}
+        className="mb-4 flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-bold lg:hidden"
+      >
+        <SlidersHorizontal size={14} /> Bộ lọc
+      </button>
+      <div className="grid items-start gap-7 lg:grid-cols-[280px_1fr]">
+        <aside
+          className={`${mobile ? "block" : "hidden"} rounded-2xl border border-black/10 bg-white p-5 lg:sticky lg:top-28 lg:block`}
         >
-          {/* Tìm kiếm */}
-          <div className="relative">
-            <Search
-              size={14}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/35 pointer-events-none"
-            />
-            <input
-              type="search"
-              value={query.search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm tên đề, chủ đề..."
-              aria-label="Tìm đề đọc"
-              className="w-full bg-[#FAFAF8] border border-black/10 rounded-full pl-9 pr-3 py-2.5 text-xs text-ink placeholder:text-ink/35 focus:outline-none focus:border-brand/50 transition-colors"
-            />
-          </div>
-
-          {/* Bộ đề */}
-          <div className="mt-5">
-            <span className={sectionLabel}>Bộ đề</span>
-            <div className="mt-2 flex flex-col gap-0.5">
-              <button
-                type="button"
-                onClick={() => setCollection("")}
-                className={rowClass(!query.collection)}
-              >
-                <span className="flex-1">Tất cả</span>
-                <span className="tabular-nums opacity-60">{totalGroups}</span>
-              </button>
-              {collections.map((collection) => (
-                <button
-                  key={collection}
-                  type="button"
-                  onClick={() => setCollection(collection)}
-                  className={rowClass(query.collection === collection)}
-                >
-                  <span className="flex-1 truncate">{collection}</span>
-                  <span className="tabular-nums opacity-60">
-                    {collectionCounts.get(collection) ?? 0}
-                  </span>
-                </button>
-              ))}
+          <div className="overflow-hidden rounded-2xl border-2 border-brand">
+            <div className="bg-leaf/60 px-4 py-3 text-sm font-bold">
+              Hình thức luyện tập
+            </div>
+            <div className="space-y-3 p-4 text-sm font-bold">
+              <label className="flex gap-2">
+                <input
+                  type="radio"
+                  checked={mode === "single"}
+                  onChange={() => setMode("single")}
+                />{" "}
+                Bài lẻ
+              </label>
+              {mode === "single" && (
+                <div className="ml-3 border-l pl-4">
+                  {[1, 2, 3].map((n) => (
+                    <Check
+                      key={n}
+                      checked={passages.includes(n)}
+                      label={`Passage ${n}`}
+                      onChange={() => toggle(passages, n, setPassages)}
+                    />
+                  ))}
+                </div>
+              )}
+              <label className="flex gap-2">
+                <input
+                  type="radio"
+                  checked={mode === "full"}
+                  onChange={() => setMode("full")}
+                />{" "}
+                Full đề
+              </label>
             </div>
           </div>
-
-          {/* Chủ đề */}
-          <div className="mt-5 pt-5 border-t border-black/5">
-            <span className={sectionLabel}>Chủ đề</span>
-            <div className="mt-2 flex flex-col gap-0.5">
-              <button type="button" onClick={() => setTopic("")} className={rowClass(!query.topic)}>
-                Tất cả
-              </button>
-              {visibleTopics.map((topic) => (
-                <button
-                  key={topic.label}
-                  type="button"
-                  onClick={() => setTopic(query.topic === topic.label ? "" : topic.label)}
-                  className={rowClass(query.topic === topic.label)}
-                >
-                  <span className="flex-1 truncate">{topic.label}</span>
-                  <span className="tabular-nums opacity-60">{topic.count}</span>
-                </button>
-              ))}
-            </div>
-
-            {topics.length > TOPICS_SHOWN && (
-              <button
-                type="button"
-                onClick={() => setAllTopics((value) => !value)}
-                className="mt-1.5 px-3 text-2xs font-medium text-brand/70 hover:text-brand cursor-pointer transition-colors"
-              >
-                {allTopics ? "Thu gọn" : `Thêm ${topics.length - TOPICS_SHOWN} chủ đề`}
-              </button>
-            )}
-          </div>
-
-          {/* Độ khó */}
-          <div className="mt-5 pt-5 border-t border-black/5">
-            <span className={sectionLabel}>Độ khó</span>
-            <div className="mt-2 flex flex-col gap-0.5">
-              <button
-                type="button"
-                onClick={() => setLevel(null)}
-                className={rowClass(query.level === null)}
-              >
-                Tất cả
-              </button>
-              {LEVELS.map((level) => (
-                <button
-                  key={level}
-                  type="button"
-                  onClick={() => setLevel(level)}
-                  className={rowClass(query.level === level)}
-                >
-                  {LEVEL_LABELS[level]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Sắp xếp */}
-          <div className="mt-5 pt-5 border-t border-black/5">
-            <span className={sectionLabel}>Sắp xếp</span>
-            <div className="mt-2 flex flex-col gap-0.5">
-              {SORT_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setSort(option.value)}
-                  className={rowClass(query.sort === option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {filtered && (
-            <button
-              type="button"
-              onClick={reset}
-              className="mt-5 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-full border border-black/10 text-2xs font-medium text-ink/55 hover:border-brand/40 hover:text-brand cursor-pointer transition-colors"
+          <Fold title="Bộ đề">
+            {COLLECTION_GROUPS.map((c) => (
+              <Check
+                key={c.id}
+                checked={collections.includes(c.id)}
+                label={c.label}
+                onChange={() => toggle(collections, c.id, setCollections)}
+              />
+            ))}
+          </Fold>
+          <Fold title="Loại câu hỏi" open>
+            {QT.map((q) => (
+              <Check
+                key={q.value}
+                checked={types.includes(q.value)}
+                label={q.label}
+                onChange={() => toggle(types, q.value, setTypes)}
+              />
+            ))}
+          </Fold>
+          <Fold title="Topics" open>
+            <select
+              value={topic}
+              onChange={(e) => setTopic(e.target.value as IeltsTopic | "")}
+              className="w-full rounded-xl border border-black/10 p-2.5 text-xs"
             >
-              <X size={12} />
-              Xoá bộ lọc
+              <option value="">All topics</option>
+              {topics.map((t) => (
+                <option key={t}>{t}</option>
+              ))}
+            </select>
+          </Fold>
+          <Fold title="Difficulty" open>
+            {[
+              ["easy", "Easy"],
+              ["medium", "Medium"],
+              ["hard", "Difficult"],
+            ].map(([v, l]) => (
+              <Check
+                key={v}
+                checked={levels.includes(v as ReadingLevel)}
+                label={l}
+                onChange={() => toggle(levels, v as ReadingLevel, setLevels)}
+              />
+            ))}
+          </Fold>
+          {dirty && (
+            <button
+              onClick={reset}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border py-2.5 text-xs font-bold text-brand"
+            >
+              <X size={13} /> Xoá bộ lọc
             </button>
           )}
+        </aside>
+        <div>
+          {total ? (
+            <>
+              <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                {mode === "single"
+                  ? visiblePassages.map((test, i) => (
+                      <ReadingPassageCard
+                        key={test.id}
+                        test={test}
+                        index={offset + i}
+                      />
+                    ))
+                  : visibleGroups.map((group, i) => (
+                      <ReadingTestGroupCard
+                        key={group.id}
+                        group={group}
+                        index={offset + i}
+                      />
+                    ))}
+              </div>
+              <CatalogPagination page={page} total={total} onChange={setPage} />
+            </>
+          ) : (
+            <Empty />
+          )}
         </div>
-      </aside>
-
-      {/* Kết quả */}
-      <div>
-        <div className="hidden lg:flex items-center gap-2 h-5 mb-4">
-          <span className="text-2xs text-ink/40 font-medium">
-            {groups.length}/{totalGroups} test · {visibleCount}/{total} passage
-          </span>
-        </div>
-
-        {groups.length === 0 ? (
-          <div className="text-center py-20 border border-dashed border-black/10 rounded-2xl">
-            <p className="text-sm text-ink/55">Không tìm thấy đề nào khớp bộ lọc.</p>
-            <button
-              type="button"
-              onClick={reset}
-              className="mt-4 text-2xs font-medium text-brand hover:underline cursor-pointer"
-            >
-              Xoá bộ lọc
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
-            {groups.map((group, index) => (
-              <ReadingTestGroupCard key={group.id} group={group} index={index} />
-            ))}
-          </div>
-        )}
       </div>
+    </>
+  );
+}
+function Top({
+  status,
+  setStatus,
+  search,
+  setSearch,
+}: {
+  status: "undone" | "done";
+  setStatus: (v: "undone" | "done") => void;
+  search: string;
+  setSearch: (v: string) => void;
+}) {
+  return (
+    <div className="mb-7 flex flex-col gap-3 rounded-2xl bg-[#F6F6F4] p-2 sm:flex-row sm:items-center">
+      <div className="flex shrink-0">
+        {[
+          ["undone", "Bài chưa làm"],
+          ["done", "Bài đã làm"],
+        ].map(([v, l]) => (
+          <button
+            key={v}
+            onClick={() => setStatus(v as "undone" | "done")}
+            className={`rounded-xl px-5 py-3 text-sm font-bold ${status === v ? "bg-white text-brand shadow-sm" : "text-ink/45"}`}
+          >
+            {l}
+          </button>
+        ))}
+      </div>
+      <div className="relative ml-auto w-full sm:max-w-xl">
+        <Search
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/45"
+          size={19}
+        />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Tìm theo tên bài tập"
+          className="w-full rounded-full border border-black/10 bg-white py-3 pl-12 pr-5 text-sm outline-none"
+        />
+      </div>
+    </div>
+  );
+}
+function Empty() {
+  return (
+    <div className="rounded-2xl border border-dashed border-black/15 py-20 text-center text-sm text-ink/55">
+      Không tìm thấy bài phù hợp.
     </div>
   );
 }

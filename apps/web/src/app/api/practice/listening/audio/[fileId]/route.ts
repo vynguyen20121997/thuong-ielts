@@ -21,6 +21,13 @@ const DRIVE_ENDPOINT = "https://drive.usercontent.google.com/download";
 /** Drive ids are opaque but bounded; reject anything that isn't one. */
 const VALID_ID = /^[A-Za-z0-9_-]{20,60}$/;
 
+// Drive labels some WebM audio uploads as generic binary data. Keep the
+// exception tied to the verified recording id instead of accepting arbitrary
+// octet-stream responses as playable media.
+const MIME_OVERRIDES: Record<string, string> = {
+  "1OHp9BvtfLQpZSc-ybTeoLWZknZN0FC1Q": "audio/webm",
+};
+
 /**
  * Drive drops a connection now and then — observed as roughly one failure in
  * two on a cold request. A single attempt therefore leaves the student staring
@@ -78,7 +85,7 @@ export async function GET(
     return NextResponse.json({ error: "Không tải được file nghe." }, { status: 502 });
   }
 
-  const type = upstream.headers.get("content-type") ?? "";
+  const type = MIME_OVERRIDES[fileId] ?? upstream.headers.get("content-type") ?? "";
   if (!type.startsWith("audio/") && !type.startsWith("video/")) {
     // An HTML body here means Drive refused; surfacing it as audio would give
     // the student an undecodable stream and no explanation.

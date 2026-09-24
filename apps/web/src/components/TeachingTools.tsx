@@ -239,7 +239,7 @@ export default function TeachingTools({
         {/* Bộ đề luyện tập miễn phí — lối vào phòng luyện đề của site */}
         <Reveal delay={0.1} className="mt-14">
           <Link
-            href="/kiem-tra-kien-thuc"
+            href="/phong-luyen-tap"
             className="group block rounded-[28px] bg-brand p-8 transition-colors duration-300 hover:bg-brand-deep md:p-10"
           >
             <span className="h-14 w-14 rounded-full bg-sage-3/20 flex items-center justify-center mb-6">

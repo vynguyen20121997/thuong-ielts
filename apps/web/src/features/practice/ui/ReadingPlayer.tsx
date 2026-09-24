@@ -29,8 +29,8 @@ import ReadingResultPanel from "./ReadingResultPanel";
  * trong `paper.sections`. Đồng hồ, phiếu trả lời và lần chấm là một, đúng như
  * phòng thi thật — chuyển passage không phải là bắt đầu bài mới.
  */
-export default function ReadingPlayer({ paper, resume = false }: { paper: ReadingPaper; resume?: boolean }) {
-  const session = useReadingSession(paper, resume);
+export default function ReadingPlayer({ paper, resume = false, timed = true, vocabularySupport = false }: { paper: ReadingPaper; resume?: boolean; timed?: boolean; vocabularySupport?: boolean }) {
+  const session = useReadingSession(paper, resume, timed);
   // Mobile only: the two panes do not fit side by side under `md`.
   const [mobilePane, setMobilePane] = useState<"passage" | "questions">("passage");
   /** Which question the student is typing in, so it can be highlighted. */
@@ -58,7 +58,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
   const questionRange = questionRangeOf(section.questions);
 
   const isReview = session.status === "finished";
-  const lowTime = session.remainingSeconds <= 120 && !isReview;
+  const lowTime = timed && session.remainingSeconds <= 120 && !isReview;
   const progress = session.totalQuestions
     ? Math.round((session.answeredCount / session.totalQuestions) * 100)
     : 0;
@@ -116,7 +116,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
       <div className="sticky top-16 md:top-20 z-30 -mx-4 md:-mx-8 lg:-mx-12 px-4 md:px-8 lg:px-12 py-3 bg-cream/90 backdrop-blur-md border-b border-black/5">
         <div className="flex items-center gap-3 md:gap-5">
           <Link
-            href="/kiem-tra-kien-thuc/reading"
+            href="/phong-luyen-tap/reading"
             className="shrink-0 h-9 w-9 rounded-full border border-black/10 bg-white flex items-center justify-center text-ink/60 hover:text-brand hover:border-brand/40 transition-colors"
             aria-label="Quay lại danh sách đề"
           >
@@ -150,7 +150,7 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
               className={`flex items-center gap-1.5 font-mono text-sm font-bold px-3 py-1.5 rounded-full tabular-nums ${isReview ? "bg-black/[0.05] text-ink/50" : lowTime ? "bg-red-50 text-red-600 border border-red-200" : "bg-white border border-black/10 text-brand"}`}
             >
               <Timer size={14} />
-              {formatClock(session.remainingSeconds)}
+              {timed ? formatClock(session.remainingSeconds) : "Không giới hạn"}
             </span>
 
             {!isReview && (
@@ -369,13 +369,17 @@ export default function ReadingPlayer({ paper, resume = false }: { paper: Readin
         bookmarked={
           selectedQuestion ? marks.annotations.bookmarks.includes(selectedQuestion.number) : false
         }
+        onLookup={vocabularySupport ? () => {
+          const word = window.getSelection()?.toString().trim();
+          if (word) window.open(`https://dictionary.cambridge.org/dictionary/english/${encodeURIComponent(word)}`, "_blank", "noopener,noreferrer");
+        } : undefined}
       />
 
       <ExitWarningDialog
         open={exit.pending !== null}
         onStay={exit.stay}
         onLeave={exit.leave}
-        detail={`Đồng hồ vẫn đang chạy. Thoát bây giờ thì ${session.answeredCount}/${session.totalQuestions} câu đã điền sẽ mất và bài không được chấm.`}
+        detail={`${timed ? "Đồng hồ vẫn đang chạy. " : ""}Thoát bây giờ thì ${session.answeredCount}/${session.totalQuestions} câu đã điền sẽ mất và bài không được chấm.`}
       />
 
       {/* Nộp xong là hết lượt, nên chặn luôn cả phòng thi trong lúc chờ server

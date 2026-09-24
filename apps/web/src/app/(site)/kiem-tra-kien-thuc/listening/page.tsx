@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, Headphones } from "lucide-react";
 
-import { formatAttempts } from "../../../../features/practice/domain/catalog";
 import { listListeningTests } from "../../../../features/practice/server/listeningRepository";
+import { listCompletedTargets } from "../../../../features/practice/server/attemptRepository";
+import { auth } from "../../../../auth";
 import ListeningCatalog from "../../../../features/practice/ui/ListeningCatalog";
 
 import PageArch from "../../../../components/PageArch";
@@ -17,54 +18,29 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ListeningCatalogPage() {
-  const tests = await listListeningTests();
-  const totalAttempts = tests.reduce((sum, t) => sum + t.attemptCount, 0);
+  const [tests, session] = await Promise.all([listListeningTests(), auth()]);
+  const studentId = session?.user?.id;
+  const completed = new Set(studentId ? await listCompletedTargets(studentId, "listening") : []);
+  const catalogTests = tests.map((test) => ({ ...test, completed: completed.has(test.slug) }));
 
   return (
     <main className="relative z-10 pt-28 md:pt-32 pb-24 bg-white min-h-screen">
       <PageArch />
       <div className="relative z-10 max-w-7xl mx-auto gutter">
         <nav className="flex items-center gap-1.5 text-2xs font-medium text-ink/40 mb-6">
-          <Link href="/kiem-tra-kien-thuc" className="hover:text-brand transition-colors">
-            Kiểm tra kiến thức
+          <Link href="/phong-luyen-tap" className="hover:text-brand transition-colors">
+            Phòng luyện tập
           </Link>
           <ChevronRight size={12} />
           <span className="text-brand">Listening</span>
         </nav>
 
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-          <div className="max-w-2xl">
-            <span className="text-sm font-bold uppercase tracking-[0.12em] text-brand mb-3 flex items-center gap-1.5">
-              <Headphones size={15} />
-              Kỹ năng Nghe
-            </span>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-ink leading-[1.05]">
-              Luyện Listening <br className="hidden md:block" />
-              Có File Nghe Thật
+        <div className="mb-9">
+          <div>
+            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-brand flex items-center gap-2">
+              <Headphones size={42} strokeWidth={1.8} />
+              Kỹ năng Listening
             </h1>
-            <p className="text-ink/70 text-sm md:text-base leading-relaxed mt-5">
-              Mỗi đề gồm 4 section như thi thật, nghe trực tiếp trên trang. Được tua và nghe lại
-              thoải mái — đây là luyện tập, sai ở đâu phải nghe lại chỗ đó mới tiến bộ.
-            </p>
-          </div>
-
-          <div className="flex gap-8 shrink-0">
-            <div>
-              <span className="text-3xl font-bold text-brand block leading-none">
-                {tests.length}
-              </span>
-              <span className="text-2xs text-ink/45 font-medium mt-1.5 block">
-                Đề đang mở
-              </span>
-            </div>
-            <div>
-              <span className="text-3xl font-bold text-brand block leading-none">
-                {formatAttempts(totalAttempts)}
-              </span>
-              <span className="text-2xs text-ink/45 font-medium mt-1.5 block">
-                Lượt làm bài
-              </span>
-            </div>
           </div>
         </div>
 
@@ -73,7 +49,7 @@ export default async function ListeningCatalogPage() {
             <p className="text-sm text-ink/55">Chưa có đề nghe nào được mở.</p>
           </div>
         ) : (
-          <ListeningCatalog tests={tests} />
+          <ListeningCatalog tests={catalogTests} />
         )}
       </div>
     </main>

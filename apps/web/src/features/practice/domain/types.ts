@@ -108,6 +108,10 @@ export interface ReadingTestSummary {
   coverImageUrl?: string;
   /** ISO date string; used only for the "Mới nhất" sort. */
   publishedAt: string;
+  /** Distinct question formats present in this passage. */
+  questionTypes: QuestionType[];
+  /** Whether the signed-in student has submitted this item before. */
+  completed?: boolean;
 }
 
 /** Everything the player needs — and nothing more. No answers here. */
@@ -198,12 +202,18 @@ export interface ListeningTestSummary {
    * trống, nên `note` không đủ tin để biết đề có đủ 4 phần hay không.
    */
   sections: number[];
+  questionTypes: QuestionType[];
+  /** Distinct question formats for each Part, keyed by section number. */
+  questionTypesBySection: Record<string, QuestionType[]>;
+  completed?: boolean;
 }
 
 /** Everything the listening player needs. Still no answers. */
 export interface ListeningTest extends ListeningTestSummary {
   audio: ListeningTrack[];
   questions: Question[];
+  /** Present when the student is practising one Part instead of the full test. */
+  practicePart?: number;
 }
 
 /** Server-only. Stored in its own column and never selected by public queries. */

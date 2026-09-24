@@ -1,4 +1,7 @@
 import { pool } from "@thuong-ielts/db";
+import { unstable_cache } from "next/cache";
+import { practiceDisplayName } from "../domain/displayNames";
+import { keyPracticeLevel } from "../domain/keyPracticeDifficulty";
 
 import type {
   AnswerKeyEntry,
@@ -26,6 +29,16 @@ const SUMMARY_COLUMNS = `
       FROM jsonb_array_elements(questions) AS q
      WHERE q ? 'section'
   ) AS sections
+  ,COALESCE((SELECT array_agg(DISTINCT q ->> 'type') FROM jsonb_array_elements(questions) q), '{}') AS question_types,
+  COALESCE((
+    SELECT jsonb_object_agg(section_no, types)
+      FROM (
+        SELECT (q ->> 'section') AS section_no, jsonb_agg(DISTINCT q ->> 'type') AS types
+          FROM jsonb_array_elements(questions) q
+         WHERE q ? 'section'
+         GROUP BY q ->> 'section'
+      ) section_types
+  ), '{}'::jsonb) AS question_types_by_section
 `;
 
 interface SummaryRow {
@@ -42,22 +55,26 @@ interface SummaryRow {
   published_at: string | null;
   note: string | null;
   sections: number[] | null;
+  question_types: ListeningTestSummary["questionTypes"] | null;
+  question_types_by_section: ListeningTestSummary["questionTypesBySection"] | null;
 }
 
 function toSummary(row: SummaryRow): ListeningTestSummary {
   return {
     id: row.id,
     slug: row.slug,
-    title: row.title,
-    collection: row.collection ?? "",
+    title: practiceDisplayName(row.title),
+    collection: practiceDisplayName(row.collection ?? ""),
     topic: row.topic ?? "",
-    level: (row.level as ListeningTestSummary["level"]) ?? "medium",
+    level: keyPracticeLevel("listening", row.slug, (row.level as ListeningTestSummary["level"]) ?? "medium"),
     durationSeconds: row.duration_seconds ?? 1800,
     questionCount: row.question_count ?? 0,
     attemptCount: row.attempt_count ?? 0,
     isFree: row.is_free ?? true,
     publishedAt: row.published_at ?? "",
     sections: row.sections ?? [],
+    questionTypes: row.question_types ?? [],
+    questionTypesBySection: row.question_types_by_section ?? {},
     ...(row.note ? { note: row.note } : {}),
   };
 }
@@ -69,14 +86,32 @@ function toSummary(row: SummaryRow): ListeningTestSummary {
  */
 const CHI_KHO_CHUNG = `owner_id IS NULL`;
 
-export async function listListeningTests(): Promise<ListeningTestSummary[]> {
+const listListeningTestsCached = unstable_cache(async (): Promise<ListeningTestSummary[]> => {
   const { rows } = await pool.query<SummaryRow>(
     `SELECT ${SUMMARY_COLUMNS}
        FROM listening_tests
       WHERE status = 'published' AND ${CHI_KHO_CHUNG}
-      ORDER BY sort_order ASC, published_at DESC NULLS LAST`,
+      ORDER BY
+        CASE
+          WHEN collection ~ '^Cambridge IELTS (1[0-8])$' THEN 0
+          WHEN collection ~ '^VOL ([1-9]|10)$' THEN 1
+          WHEN upper(collection) = 'GUIDE' THEN 2
+          WHEN upper(collection) = 'TRAIN 1' THEN 3
+          WHEN upper(collection) = 'TRAIN 2' THEN 4
+          ELSE 5
+        END,
+        CASE
+          WHEN collection ~ '^Cambridge IELTS (1[0-8])$' THEN substring(collection from '(1[0-8])$')::int
+          WHEN collection ~ '^VOL ([1-9]|10)$' THEN substring(collection from '([0-9]+)$')::int
+          ELSE 0
+        END,
+        sort_order ASC, published_at DESC NULLS LAST`,
   );
   return rows.map(toSummary);
+}, ["practice-listening-catalog-v4"], { revalidate: 3600, tags: ["practice-listening-catalog"] });
+
+export async function listListeningTests(): Promise<ListeningTestSummary[]> {
+  return listListeningTestsCached();
 }
 
 export async function getListeningTestBySlug(slug: string): Promise<ListeningTest | null> {

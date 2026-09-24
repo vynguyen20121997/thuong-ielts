@@ -29,10 +29,31 @@ export const DEFAULT_CATALOG_QUERY: CatalogQuery = {
 };
 
 export const LEVEL_LABELS: Record<ReadingLevel, string> = {
-  easy: "Cơ bản",
-  medium: "Trung bình",
-  hard: "Nâng cao",
+  easy: "Easy",
+  medium: "Medium",
+  hard: "Difficult",
 };
+
+const TOPIC_WORDS: Record<string, string> = {
+  "Sinh học": "Biology", "Lịch sử": "History", "Khảo cổ": "Archaeology",
+  "Môi trường": "Environment", "Công nghệ": "Technology", "Giáo dục": "Education",
+  "Tâm lý": "Psychology", "Khoa học": "Science", "Kiến trúc": "Architecture",
+  "Nghệ thuật": "Art", "Kinh tế": "Economics", "Xã hội": "Society",
+  "Địa lý": "Geography", "Nông nghiệp": "Agriculture", "Y học": "Medicine",
+  "Văn hóa": "Culture", "Văn hoá": "Culture", "Giao thông": "Transport",
+  "Kinh doanh": "Business", "Du lịch": "Travel", "Hàng hải": "Maritime",
+  "Kỹ thuật": "Engineering", "Vật liệu": "Materials", "Ngôn ngữ": "Language",
+  "Bảo tồn": "Conservation", "Động vật": "Animals", "Âm nhạc": "Music",
+  "Trẻ em": "Children", "Khí hậu": "Climate", "Năng lượng": "Energy",
+  "Dược phẩm": "Pharmaceuticals", "Thực vật": "Plants", "Lao động": "Labour",
+  "Sách": "Books", "Di truyền": "Genetics", "Tuyệt chủng": "Extinction",
+  "Sinh thái": "Ecology", "Lâm nghiệp": "Forestry", "Vũ trụ": "Space",
+  "Đạo đức": "Ethics", "Địa chất": "Geology", "Tiểu sử": "Biography",
+};
+
+export function topicLabelEnglish(topic: string): string {
+  return topic.split(" - ").map((part) => TOPIC_WORDS[part] ?? part).join(" - ");
+}
 
 /** Distinct collections in publication order, for the filter chips. */
 export function collectionsOf(tests: ReadingTestSummary[]): string[] {
@@ -159,7 +180,7 @@ export function queryCatalog(
  * vẫn hiện ra bình thường. Thà thừa một thẻ còn hơn nuốt mất một đề.
  * ------------------------------------------------------------------ */
 
-const TEST_SLUG = /^(cam\d+)-(test\d+)-/i;
+const TEST_SLUG = /^((?:cam\d+|vol-?\d+|guide|train-?[12]))-(test\d+)-/i;
 
 export interface TestGroup {
   /** "cam10-test1", hoặc "single:<slug>" khi slug không theo quy ước. */
@@ -193,8 +214,14 @@ function groupLabelOf(test: ReadingTestSummary, key: string): string {
   const fromTitle = testLabelFromTitle(test.title);
   if (fromTitle !== test.title) return fromTitle;
 
-  const parts = /^cam(\d+)-test(\d+)$/.exec(key);
-  return parts ? `Cam ${parts[1]} · Test ${parts[2]}` : test.title;
+  const parts = /^(cam\d+|vol-?\d+|guide|train-?[12])-test(\d+)$/i.exec(key);
+  if (!parts) return test.title;
+  const book = parts[1]
+    .replace(/^cam/i, "Key Practice ")
+    .replace(/^vol-?/i, "VOL ")
+    .replace(/^train-?/i, "TRAIN ")
+    .replace(/^guide$/i, "GUIDE");
+  return `${book} · Test ${parts[2]}`;
 }
 
 export function passageLabelOf(test: ReadingTestSummary): string {
