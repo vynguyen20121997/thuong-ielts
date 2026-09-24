@@ -2048,7 +2048,16 @@
   font-weight: 700;
   line-height: 1.35;
 }
-.diag-verdict-col li em {
+/*
+  Dấu `>`: CHỈ thẻ <em> điểm số ("0/2") là con trực tiếp của <li>.
+
+  Không có dấu này thì luật trúng luôn `.diag-verdict-phase` — một <em> khác
+  nằm lồng trong <small> ở cùng <li> — và `white-space: nowrap` làm câu "→ Chặng
+  3 · Luyện Listening & Reading theo dạng" không chịu xuống dòng. Đo ở màn
+  390px: thẻ đó rộng 413px trong khi cột chỉ có 97px, kéo cả trang kết quả tràn
+  ngang (scrollWidth 607 / clientWidth 331) — chính là "chữ bị lòi ra".
+*/
+.diag-verdict-col li > em {
   color: var(--color-brand);
   font-family: var(--font-mono);
   font-size: 15px;
@@ -2091,10 +2100,13 @@
   text-transform: uppercase;
 }
 .diag-verdict-phase {
+  /* Nói thẳng ra, đừng dựa vào việc luật trên không trúng mình nữa. */
+  min-width: 0;
   font-style: normal;
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
+  white-space: normal;
 }
 .diag-verdict-empty,
 .diag-verdict-note {
@@ -2352,6 +2364,13 @@
   line-height: 1.6;
 }
 @media (max-width: 860px) {
+  /*
+    Hai cột mạnh/yếu cạnh nhau ở màn hẹp còn 131px mỗi cột — tên nhóm nội dung
+    dài hơn thế nhiều, nên xuống một cột.
+  */
+  .diag-verdict-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .diag-rm-gauges {
     grid-template-columns: minmax(0, 1fr);
   }

@@ -2549,7 +2549,7 @@ export default function Diagnostic() {
                 </select>
               </div>
               {reviewSection === "Listening" && (
-                <div className="mb-6 grid gap-4 md:grid-cols-2">
+                <div className="mb-6 grid grid-cols-[minmax(0,1fr)] gap-4 md:grid-cols-2">
                   {paper.audio.map((id, i) => (
                     <AudioPlayer
                       key={id}
