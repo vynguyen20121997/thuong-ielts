@@ -25,16 +25,18 @@ export default function PracticeHubPage() {
             Kiểm Tra Kiến Thức IELTS
           </h1>
           <p className="text-ink/70 text-sm md:text-base leading-relaxed mt-5">
-            Chọn kỹ năng bạn muốn luyện. Mỗi bài đều được bấm giờ như phòng thi, nộp bài là có ngay
-            số câu đúng, band ước lượng và lời giải thích cho từng câu — để bạn biết mình sai ở đâu
-            chứ không chỉ sai bao nhiêu.
+            Chọn kỹ năng bạn muốn luyện. Mỗi bài đều được bấm giờ như phòng thi,
+            nộp bài là có ngay số câu đúng, band ước lượng và lời giải thích cho
+            từng câu — để bạn biết mình sai ở đâu chứ không chỉ sai bao nhiêu.
           </p>
         </div>
 
         <SkillGrid />
 
         <p className="text-2xs text-ink/40 font-medium mt-8">
-          Listening · Writing · Speaking đang được cô Thương biên soạn và sẽ mở lần lượt.
+          Reading và Listening chấm điểm ngay khi nộp. Writing và Speaking có
+          bài tập và công cụ luyện, nhưng band điểm thì cô chấm — máy chưa thay
+          được người ở hai kỹ năng này.
         </p>
       </div>
     </main>

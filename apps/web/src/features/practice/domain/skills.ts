@@ -2,7 +2,8 @@ import type { PracticeSkill } from "./types";
 
 /**
  * The four IELTS skills shown in "Kiểm tra kiến thức IELTS".
- * Reading, Listening và Writing đang mở; Speaking còn là thẻ mờ.
+ * Cả bốn kỹ năng đang mở. Riêng Speaking chưa có bộ chấm tự động — xem chú
+ * thích trong `features/speaking/application/ports.ts`.
  * Flipping one on is a one-word change here — no UI edit required, because the
  * cards read their enabled/disabled state from this list.
  */
@@ -42,10 +43,10 @@ export const PRACTICE_SKILLS: PracticeSkill[] = [
     name: "Speaking",
     label: "Nói",
     description:
-      "Bộ đề Part 1-2-3 mới nhất theo quý, có gợi ý ý tưởng và từ vựng theo chủ đề.",
+      "Bộ đề Part 1-2-3 theo quý, thu âm ngay trên trang. Luyện phát triển ý cho Part 3, hoặc bốc chủ đề ngẫu nhiên có kiến thức nền và từ vựng.",
     href: "/kiem-tra-kien-thuc/speaking",
-    status: "coming-soon",
-    hint: "Sắp ra mắt",
+    status: "available",
+    hint: "Thu âm trên trang",
   },
 ];
 
