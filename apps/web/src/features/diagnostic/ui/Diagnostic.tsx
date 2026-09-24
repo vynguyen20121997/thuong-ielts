@@ -7,6 +7,7 @@ import {
   Bookmark,
   Clock3,
   Headphones,
+  Loader2,
   BookOpen,
   PenLine,
   Settings,
@@ -163,6 +164,20 @@ export default function Diagnostic() {
     với thời gian còn lại), còn vào bằng đường dẫn cá nhân thì ý định đã rõ.
   */
   const [oldAttempt, setOldAttempt] = useState<Session | null>(null);
+  /*
+    Đang hỏi server xem lượt cũ đó đã nộp chưa — chưa biết thì CHƯA cho bắt đầu.
+
+    Hộp thoại "Bạn đã làm bài này rồi" chỉ dựng được sau HAI request nối tiếp:
+    tải đề, rồi `resume` theo token. Nút "Bắt đầu kiểm tra" trước đây chỉ khoá
+    theo `paper`, tức mở ngay sau request thứ nhất — có một khoảng học sinh bấm
+    được vào bài trong khi hộp thoại còn đang trên đường về, rồi nó đổ ập lên
+    màn hình khi người ta đã đi tiếp. Đo được trên máy dev, mạng thật còn rộng
+    khoảng đó hơn.
+
+    Chỉ bật cờ khi thiết bị CÓ token cũ. Người mới hoàn toàn thì không có gì để
+    chờ, và bắt họ đợi một request không liên quan là tự làm chậm trang.
+  */
+  const [resuming, setResuming] = useState(false);
   const token = useRef(""),
     editor = useRef(""),
     draftLoaded = useRef(false),
@@ -173,6 +188,8 @@ export default function Diagnostic() {
     lastWarn = useRef(0);
   const progressState = useRef<Record<string, boolean>>({});
   const essayWords = countWords(essay);
+  /** Chưa có đề, hoặc chưa biết lượt cũ đã nộp chưa — hai thứ đều chặn vào bài. */
+  const loading = !paper || resuming;
   const [writing, setWriting] = useState<WritingState | null>(null),
     [gradingWriting, setGradingWriting] = useState(false);
   const latest = useRef({ answers, workspace, stage, profile, essay });
@@ -323,7 +340,10 @@ export default function Diagnostic() {
         const savedProfile = localStorage.getItem(STORAGE + "-profile");
         if (savedProfile) setProfile(JSON.parse(savedProfile));
         if (token.current) {
-          const data = await api("resume");
+          setResuming(true);
+          const data = await api("resume").finally(() => {
+            if (!cancelled) setResuming(false);
+          });
           if (cancelled) return;
           const useDraft =
             draft?.token === token.current && draft?.dirty && !data.submittedAt;
@@ -675,7 +695,21 @@ export default function Diagnostic() {
     setReady([false, false]);
     setHeard(false);
     setConfirmed(false);
-    setStage("intro");
+    /*
+      Về màn ĐIỀN THÔNG TIN, không về màn giới thiệu.
+
+      Màn giới thiệu là trang chào bán cho người chưa biết bài kiểm tra là gì;
+      người vừa làm xong một lượt thì không cần bán lại. Trước đây `newAttempt`
+      trả về "intro", và vì màn đó trông hệt như lúc mới mở trang, bấm "Làm
+      lượt mới" nhìn ra thành "hộp thoại tự tắt, không có gì xảy ra" — phải bấm
+      thêm "Bắt đầu kiểm tra" nữa mới đi tiếp.
+
+      Không nhảy thẳng vào đề: `profile` giữ nguyên nên form hiện sẵn thông tin
+      cũ, nhưng mục tiêu band, số giờ tự học và ngày thi là thứ đổi giữa hai
+      lượt, mà cả ba đều nắn lộ trình (xem `roadmap.ts`). Lấy lại số cũ không
+      hỏi là in ra một lộ trình sai mà không ai biết nó sai.
+    */
+    setStage("profile");
   }
   function selectText() {
     const selection = window.getSelection();
@@ -995,13 +1029,31 @@ export default function Diagnostic() {
               </strong>
               .
             </p>
+            {/*
+              Còn chờ dữ liệu thì nút phải NÓI là đang chờ, kèm con quay.
+
+              Một nút mờ đi với chữ đứng yên đọc ra thành "hỏng", và học sinh
+              bấm liên tục vào đó. Con quay là thứ duy nhất nói được "máy vẫn
+              đang chạy, đợi một nhịp".
+            */}
             <button
-              disabled={!paper}
+              disabled={loading}
               onClick={() => setStage("profile")}
               className="diag-primary mt-8"
             >
-              {paper ? "Bắt đầu kiểm tra" : "Đang tải đề…"}{" "}
-              <ArrowUpRight size={19} />
+              {loading ? (
+                <>
+                  <Loader2
+                    size={19}
+                    className="animate-spin motion-reduce:animate-none"
+                  />{" "}
+                  {paper ? "Đang kiểm tra lượt trước…" : "Đang tải đề…"}
+                </>
+              ) : (
+                <>
+                  Bắt đầu kiểm tra <ArrowUpRight size={19} />
+                </>
+              )}
             </button>
           </div>
           <div className="diag-outline">
