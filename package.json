@@ -26,7 +26,9 @@
     "zalo:token": "tsx scripts/zalo-token.ts",
     "zalo:test": "tsx scripts/zalo-test.ts",
     "import:feedback-images": "tsx --env-file=apps/web/.env.local scripts/import-feedback-images.ts",
-    "check:diagnostic-plan": "tsx scripts/check-diagnostic-plan.ts"
+    "check:diagnostic-plan": "tsx scripts/check-diagnostic-plan.ts",
+    "check:writing-task-type": "tsx scripts/check-writing-task-type.ts",
+    "check:vocab": "tsx scripts/check-vocab.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

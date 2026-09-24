@@ -15,6 +15,7 @@ npm run dev:web          # http://localhost:2000
 npm run check:reading    # kiểm tra dữ liệu đề đọc trong DB
 npm run check:listening  # kiểm tra đề nghe (đáp án + audio theo section)
 npm run check:coverage   # còn thiếu đề nào, bộ nào
+npm run check:vocab      # khoá chống mất lượt + chuỗi ngày học (cần dev server đang chạy)
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
 
@@ -160,6 +161,21 @@ TypeSafe (Jev) chỉ trả lời câu hỏi có sẵn lựa chọn — `noul`, `
 có một model khác. Chỗ nối để sẵn ở `features/vocab/application/ports.ts`, đổi
 một dòng trong `infrastructure/index.ts` là xong; bản tạm khai
 `available() === false` và trả `null`, KHÔNG bịa phiên âm.
+
+**Chốt chống bấm lặp phải là REF, không phải state.** Đã sập: nút chấm thẻ từ
+vựng khoá bằng `useState` + `disabled`, đo lại vẫn ra bốn lượt cho một thẻ —
+bốn cú bấm nằm trong cùng một nhịp nên cả bốn đọc state cũ là `false` trước khi
+React kịp vẽ lại, mà `disabled` cũng chỉ có hiệu lực sau lần vẽ ấy. Ref đổi
+ngay tại chỗ nên cú bấm thứ hai thấy liền; state giữ lại chỉ để làm mờ nút.
+Bàn phím cần thêm chốt `e.repeat` vì giữ phím cũng bắn liên tục.
+
+**Đọc–tính–ghi trên cùng một dòng thì phải có `FOR UPDATE`.** `rateCard` trong
+`features/vocab/server` đọc lịch ôn, tính khoảng cách mới rồi ghi lại. Không
+khoá thì hai request chồng nhau đọc cùng một `reviews_count` rồi cùng ghi đè.
+Đây là lỗi IM LẶNG — không ai thấy cho tới khi lịch ôn lệch. `npm run
+check:vocab` bắn 10 request cùng lúc để canh: đã thử gỡ `FOR UPDATE` và script
+báo hỏng ngay (đếm được 3/10 lượt), nên nó thật sự canh được chứ không phải
+một bài test luôn xanh.
 
 ## Bẫy đã sập, đừng sập lại
 
