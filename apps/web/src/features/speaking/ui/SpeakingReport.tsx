@@ -97,9 +97,15 @@ export default function SpeakingReport({
 
       {state.kind === "ungraded" && (
         <div className="mt-4 rounded-xl bg-mist-3 px-4 py-3 text-sm leading-relaxed">
+          {/*
+            Chỉ hứa "nghe lại được" khi THẬT SỰ có file thu. Màn bốc chủ đề
+            chỉ có bản ghi chữ, không thu âm — câu mời nghe lại ở đó là hứa
+            một thứ không tồn tại.
+          */}
           <p>
-            <b>Chưa chấm được.</b> {state.reason} Bài nói của bạn vẫn còn ở đây
-            — nghe lại được, và chấm lại lúc nào cũng được.
+            <b>Chưa chấm được.</b> {state.reason} Bài nói của bạn vẫn còn ở
+            đây{audioUrl ? " — nghe lại được, và chấm lại" : " — chấm lại"} lúc
+            nào cũng được.
           </p>
           <button
             type="button"

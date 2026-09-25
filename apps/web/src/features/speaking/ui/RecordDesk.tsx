@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Mic, Square, RotateCcw } from "lucide-react";
 
 import {
@@ -10,8 +10,10 @@ import {
   formatClock,
 } from "../domain/timing";
 import type { SpeakingQuestion, SpeakingState } from "../domain/types";
+import { MIN_WORDS_TO_GRADE, speechStats } from "../domain/speech";
 import { useCountdown } from "../application/useCountdown";
 import { useRecorder } from "../application/useRecorder";
+import { useSpeechToText } from "../application/useSpeechToText";
 import { grader } from "../infrastructure";
 import SpeakingReport from "./SpeakingReport";
 
@@ -19,8 +21,17 @@ import SpeakingReport from "./SpeakingReport";
   Màn thu âm một câu. Ba bước theo thi thật: chuẩn bị (chỉ Part 2) → nói →
   nộp. Thu lại đúng MAX_RETAKES lần; nghe lại chỉ sau khi đã dừng.
 
-  Không giữ file thu trên server ở bước này — bộ chấm chưa nối, gửi lên chỉ
-  tốn chỗ. Khi nối, `grader.grade()` là chỗ duy nhất nhận Blob.
+  Thu âm và nhận dạng lời nói chạy SONG SONG, hai đường khác nhau và mỗi
+  đường làm được một việc bên kia không làm được:
+
+  - File thu để nghe lại — nghe chính giọng mình là cách duy nhất tự soát
+    phát âm, và là thứ gửi cô nghe khi cần.
+  - Bản ghi chữ để chấm — chữ hiện ra ngay trong lúc nói, và ba tiêu chí
+    Trôi chảy / Vốn từ / Ngữ pháp chấm được từ nó.
+
+  File thu KHÔNG gửi lên server: chấm từ audio cần một model nghe được, chưa
+  có, nên gửi lên chỉ tốn chỗ. Khi có, `grader.grade()` là chỗ duy nhất nhận
+  Blob — và đó cũng là lúc tiêu chí Phát âm có điểm.
 */
 export default function RecordDesk({
   question,
@@ -43,6 +54,13 @@ export default function RecordDesk({
 
   const prep = useCountdown(prepSeconds, () => setPhase("talk"));
   const rec = useRecorder(talkSeconds);
+  const speech = useSpeechToText();
+
+  /*
+    Bản ghi chốt lại lúc dừng. Đọc thẳng `speech.transcript` lúc nộp thì thu
+    lại một lần là mất — hook xoá bản cũ khi bắt đầu nghe lần mới.
+  */
+  const captured = useRef("");
 
   useEffect(() => {
     if (phase === "prep") prep.start();
@@ -51,6 +69,9 @@ export default function RecordDesk({
 
   useEffect(() => {
     if (rec.status === "done") {
+      /* Thu tự dừng khi hết giờ, nên chốt bản ghi ở đây chứ không ở nút bấm. */
+      if (!captured.current) captured.current = speech.transcript.trim();
+      speech.stop();
       setPhase("review");
       setState((s) =>
         s?.kind === "graded"
@@ -60,11 +81,56 @@ export default function RecordDesk({
     }
   }, [rec.status, rec.seconds]);
 
+  function beginTalk() {
+    captured.current = "";
+    speech.reset();
+    speech.start();
+    void rec.start();
+  }
+
+  function endTalk() {
+    captured.current = speech.transcript.trim();
+    speech.stop();
+    rec.stop();
+  }
+
   async function submit() {
-    if (!rec.blob || submitting) return;
+    if (submitting) return;
+    const text = captured.current;
+    if (!text) {
+      /*
+        Có file thu mà không có chữ nào: mic bắt được tiếng nhưng bộ nghe của
+        trình duyệt không ra chữ. Nói thẳng chứ đừng gửi một bản ghi rỗng đi
+        chấm rồi nhận về một lý do khó hiểu hơn.
+      */
+      setState({
+        kind: "ungraded",
+        reason:
+          "Chưa nghe ra chữ nào trong bài nói. Nghe lại file thu xem có tiếng không, rồi thu lại và nói to hơn.",
+      });
+      return;
+    }
+
+    /* Quá ngắn thì trả lời tại chỗ, khỏi đi một vòng mạng. Chốt thật vẫn ở
+       server; hai bên đọc chung `MIN_WORDS_TO_GRADE`. */
+    const words = speechStats(text, rec.seconds).words;
+    if (words < MIN_WORDS_TO_GRADE) {
+      setState({
+        kind: "ungraded",
+        reason: `Mới nghe được ${words} từ. Cần ít nhất ${MIN_WORDS_TO_GRADE} từ thì chấm mới có nghĩa — thu lại và nói dài hơn.`,
+      });
+      return;
+    }
+
     setSubmitting(true);
     setState({ kind: "grading" });
-    const next = await grader.grade(rec.blob, question.id);
+    const next = await grader.gradeTranscript({
+      questionId: question.id,
+      prompt: question.prompt,
+      part: question.part,
+      transcript: text,
+      durationSeconds: rec.seconds,
+    });
     setState(next);
     setSubmitting(false);
   }
@@ -73,6 +139,8 @@ export default function RecordDesk({
     if (retakes >= MAX_RETAKES) return;
     setRetakes((n) => n + 1);
     setState(null);
+    captured.current = "";
+    speech.reset();
     rec.reset();
     setPhase("talk");
   }
@@ -96,6 +164,69 @@ export default function RecordDesk({
               <li key={b}>{b}</li>
             ))}
           </ul>
+        )}
+
+        {phase !== "prep" && (
+          <div className="flex flex-col gap-2">
+            <p className="text-2xs font-extrabold uppercase tracking-wider text-ink/65">
+              Máy nghe và ghi lại — có thể sai vài từ
+            </p>
+            {/*
+              Ô chữ có mặt từ trước khi bấm nói, không mọc ra giữa chừng: một
+              khối mới xuất hiện lúc đang nói sẽ đẩy cả cột xuống đúng lúc
+              người ta đang nhìn đồng hồ.
+            */}
+            <div
+              aria-live="polite"
+              aria-label="Bản ghi lời nói"
+              className="min-h-[6rem] rounded-xl bg-mist-3 px-4 py-3.5 text-[15px] leading-[1.9]"
+            >
+              {captured.current || speech.finalText || speech.interimText ? (
+                <p className="break-words">
+                  {captured.current || speech.finalText}
+                  {!captured.current && speech.interimText && (
+                    <>
+                      {" "}
+                      {/* Phần máy còn đang đoán — mờ hơn, vì nó còn đổi. */}
+                      <span className="text-ink/45">{speech.interimText}</span>
+                    </>
+                  )}
+                </p>
+              ) : (
+                <p className="text-sm text-ink/50">
+                  {speech.status === "unsupported"
+                    ? "Trình duyệt này không nghe được lời nói (Firefox chưa có). File thu vẫn lưu được, nhưng chưa chấm được."
+                    : speech.status === "listening"
+                      ? "Đang nghe… nói một câu là chữ hiện ra ở đây."
+                      : "Bấm nút mic rồi trả lời thành tiếng. Chữ sẽ hiện ra ngay ở ô này."}
+                </p>
+              )}
+            </div>
+            {(speech.status === "listening" || captured.current) && (
+              <p className="flex flex-wrap gap-x-5 gap-y-1 text-2xs text-ink/60">
+                {(() => {
+                  const stats = speechStats(
+                    captured.current || speech.transcript,
+                    rec.seconds,
+                  );
+                  return (
+                    <>
+                      <span>
+                        <b className="text-ink/80">{stats.words}</b> từ
+                      </span>
+                      <span>
+                        <b className="text-ink/80">{stats.wpm}</b> từ/phút
+                      </span>
+                      <span>
+                        <b className="text-ink/80">{stats.fillers}</b> tiếng
+                        ngập ngừng (um, uh…)
+                      </span>
+                    </>
+                  );
+                })()}
+              </p>
+            )}
+          </div>
         )}
 
         {phase === "prep" && (
@@ -144,9 +275,9 @@ export default function RecordDesk({
             <button
               type="button"
               disabled={phase === "prep" || rec.status === "asking"}
-              onClick={rec.status === "recording" ? rec.stop : rec.start}
+              onClick={rec.status === "recording" ? endTalk : beginTalk}
               aria-label={
-                rec.status === "recording" ? "Dừng thu" : "Bắt đầu thu âm"
+                rec.status === "recording" ? "Hoàn thành nói" : "Bắt đầu nói"
               }
               className={`flex h-24 w-24 items-center justify-center rounded-full disabled:opacity-40 ${
                 rec.status === "recording" ? "bg-warn" : "bg-leaf-dark"
@@ -201,7 +332,10 @@ export default function RecordDesk({
         <ul className="mt-auto space-y-1.5 rounded-xl bg-white/[0.06] px-4 py-3 text-sm leading-relaxed text-white/85">
           <li>Thu xong mới nghe lại được — giống thi thật.</li>
           <li>Thu lại tối đa {MAX_RETAKES} lần.</li>
-          <li>File gửi lên để cô nghe và máy chấm theo 4 tiêu chí.</li>
+          <li>
+            Máy chấm 3 tiêu chí đọc được từ bản ghi chữ. Phát âm phải nghe mới
+            chấm được nên để cô chấm.
+          </li>
         </ul>
 
         <div className="flex gap-2.5">
@@ -221,7 +355,7 @@ export default function RecordDesk({
             }
             className="flex-1 rounded-xl bg-leaf-dark px-3 py-3 text-sm font-extrabold text-brand-deep disabled:opacity-40"
           >
-            {submitting ? "Đang gửi…" : "Nộp bài nói"}
+            {submitting ? "Đang chấm…" : "Chấm bài nói"}
           </button>
         </div>
       </aside>

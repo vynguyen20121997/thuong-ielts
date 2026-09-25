@@ -6,6 +6,7 @@ import { STUDY_SECONDS, formatClock } from "../domain/timing";
 import type { Part, TopicPack } from "../domain/types";
 import { useCountdown } from "../application/useCountdown";
 import { topicProvider } from "../infrastructure";
+import SpeechPad from "./SpeechPad";
 
 /*
   Bốc chủ đề → đọc kiến thức nền + từ vựng trong 5/8/10 phút theo part → Q&A.
@@ -192,6 +193,19 @@ export default function TopicDraw() {
             Trả lời thành tiếng, 30–60 giây. Bảng kiến thức đã ẩn — nói bằng
             những gì còn nhớ.
           </p>
+
+          {/*
+            `key` theo chủ đề + số câu: sang câu mới thì ô chữ, đồng hồ và
+            bảng điểm phải sạch. Không có `key` thì React giữ nguyên component
+            và học sinh đọc bản ghi của câu trước dưới câu mới.
+          */}
+          <SpeechPad
+            key={`${pack.topic}-${qIndex}`}
+            questionId={`draw-${pack.topic}-${qIndex}`}
+            prompt={pack.questions[qIndex]}
+            part={pack.part}
+          />
+
           <div className="flex flex-wrap gap-2.5">
             {qIndex < pack.questions.length - 1 ? (
               <button

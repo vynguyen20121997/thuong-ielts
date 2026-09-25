@@ -162,6 +162,37 @@ có một model khác. Chỗ nối để sẵn ở `features/vocab/application/p
 một dòng trong `infrastructure/index.ts` là xong; bản tạm khai
 `available() === false` và trả `null`, KHÔNG bịa phiên âm.
 
+**Speaking chấm từ BẢN GHI CHỮ, và chỉ chấm ba tiêu chí.** Nhận dạng lời nói
+chạy NGAY TRÊN TRÌNH DUYỆT (`application/useSpeechToText.ts`, Web Speech API)
+chứ không gửi file lên server: chữ phải hiện ra trong lúc đang nói thì mới là
+tấm gương cho học sinh tự soát — chờ vài giây sau khi nói xong là mất hẳn tác
+dụng. Đổi lại, Firefox không có API này nên giao diện phải nói thẳng ra.
+
+Bản ghi chữ đi qua `/api/speaking/grade` → `server/speakingBand.ts`, dựng theo
+đúng khuôn `writingBand.ts`. Ba tiêu chí FC/LR/GRA chấm được từ chữ; **Phát âm
+(`P`) thì KHÔNG** — chữ không mang trọng âm, ngữ điệu hay âm cuối bị nuốt, nên
+tiêu chí ấy mang cờ `needsAudio` và bị loại khỏi request. Hệ quả cố ý: kết quả
+thiếu hẳn ô `P`, và `overall` là `null`. Bảng điểm vẫn vẽ ô `P` dạng gạch đứt
+ghi "chưa chấm" — bỏ hẳn ô đi thì học sinh đọc ba thẻ như thể đã chấm đủ, mà
+điền vào đó một con số đoán ra còn tệ hơn. Ngày có model NGHE được audio thì
+nối vào `grader.grade(blob)` (vẫn là bản tạm), và đó cũng là lúc `P` có điểm.
+
+Gửi kèm số giây, tốc độ nói và số tiếng ngập ngừng (`domain/speech.ts`) vì bản
+ghi chữ trơ trọi mất hẳn chiều thời gian: 60 từ trong 20 giây và 60 từ trong 2
+phút ra cùng một đoạn chữ, mà đó đúng là thứ tiêu chí Trôi chảy đo. Ba con số
+ấy ĐẾM ĐƯỢC, không đoán. Danh sách tiếng ngập ngừng cố ý không có "like",
+"you know", "actually": chúng vừa là từ đệm vừa là từ thật.
+
+**Web Speech API có mặt trong trình duyệt tự động nhưng TRƠ.** Đo được:
+`SpeechRecognition` và `webkitSpeechRecognition` đều tồn tại trong Chromium của
+Playwright, nhưng gọi `start()` thì sáu giây sau vẫn không có `onstart`,
+`onerror` hay `onend` nào — nhận dạng thật cần dịch vụ của Google, chỉ bản
+Chrome chính thức mới có. Kiểm tra bằng `'SpeechRecognition' in window` rồi kết
+luận là chạy được thì sai. Cách kiểm luồng: lắp một bộ nghe giả vào chỗ
+`window.SpeechRecognition`, phát lại lời một học sinh thật theo nhịp interim →
+final, và mô phỏng luôn cú tự ngắt. Thứ KHÔNG kiểm được bằng cách đó là độ
+chính xác nhận dạng giọng Việt — phải thử tay trên Chrome thật.
+
 **Chốt chống bấm lặp phải là REF, không phải state.** Đã sập: nút chấm thẻ từ
 vựng khoá bằng `useState` + `disabled`, đo lại vẫn ra bốn lượt cho một thẻ —
 bốn cú bấm nằm trong cùng một nhịp nên cả bốn đọc state cũ là `false` trước khi

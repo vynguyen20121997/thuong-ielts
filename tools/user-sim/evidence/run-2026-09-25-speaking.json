@@ -1,0 +1,75 @@
+{
+  "_comment": "Bằng chứng đo trên trình duyệt thật (Playwright) cho phần Speaking nói-ra-chữ. Chỉ số đo và chuỗi đọc được từ DOM/HTTP — không có ý kiến persona nào trong file này.",
+  "ngay": "2026-09-25",
+  "duong_dan": "/kiem-tra-kien-thuc/speaking/boc-chu-de",
+  "cach_dung_moi_truong": {
+    "van_de": "Web Speech API trong Chromium của Playwright CÓ MẶT nhưng TRƠ: gọi start() không nổ onstart, không onerror, không onend trong 6 giây. Nhận dạng thật cần dịch vụ của Google, chỉ có trong bản Chrome chính thức.",
+    "do_duoc": { "hasSpeechRecognition": true, "hasWebkitSpeechRecognition": true, "su_kien_nhan_duoc_trong_6s": [] },
+    "cach_thay_the": "Lắp một bộ nghe giả vào chỗ window.SpeechRecognition, phát lại lời một học sinh thật theo đúng nhịp interim -> final, và mô phỏng được cả cú tự ngắt của Chrome.",
+    "khong_do_duoc": "Độ chính xác nhận dạng của Google (nghe sai bao nhiêu từ, giọng Việt ra sao). Phải thử tay trên Chrome thật."
+  },
+  "loi_tim_duoc": [
+    {
+      "id": "hua-nghe-lai-file-khong-ton-tai",
+      "persona": "mat-goc (Ngọc Ánh) — trả lời cụt lủn rồi bấm xong",
+      "muc_do": "vừa",
+      "trieu_chung": "Màn bốc chủ đề không thu âm, chỉ có bản ghi chữ. Nhưng bảng kết quả khi chưa chấm được vẫn mời 'nghe lại được' — hứa một thứ không tồn tại, học sinh đi tìm nút nghe không có.",
+      "bang_chung_truoc": {
+        "cau_hien_ra": "Bài nói của bạn vẫn còn ở đây — nghe lại được, và chấm lại lúc nào cũng được.",
+        "audioUrl": null
+      },
+      "sua": "SpeakingReport chỉ nói 'nghe lại được' khi thật sự có audioUrl.",
+      "bang_chung_sau": {
+        "cau_hien_ra": "Bài nói của bạn vẫn còn ở đây — chấm lại lúc nào cũng được.",
+        "con_hua_nghe_lai": false
+      }
+    },
+    {
+      "id": "bai-qua-ngan-van-di-mot-vong-mang",
+      "persona": "mat-goc (Ngọc Ánh)",
+      "muc_do": "nhẹ",
+      "trieu_chung": "Nói 10 từ rồi bấm xong: client vẫn gửi request lên server chỉ để nhận về đúng câu 'cần ít nhất 25 từ'. Học sinh chờ không lý do.",
+      "bang_chung_truoc": { "so_request_len_server": 1, "so_tu": 10 },
+      "sua": "Chặn ngay ở client bằng cùng hằng số MIN_WORDS_TO_GRADE. Chốt ở server GIỮ NGUYÊN — client nào cũng sửa được, nên đó mới là chốt thật.",
+      "bang_chung_sau": { "so_request_len_server": 0, "loi_nhan": "Mới nghe được 10 từ. Cần ít nhất 25 từ thì chấm mới có nghĩa — bấm Nói lại và trả lời dài hơn." }
+    },
+    {
+      "id": "firefox-phai-bam-moi-biet",
+      "persona": "ban-phim (Quang Vinh) — máy không có Web Speech API",
+      "muc_do": "nhẹ",
+      "trieu_chung": "Trạng thái 'máy không nghe được' chỉ đặt ra SAU khi bấm nút. Học sinh dùng Firefox bấm một cú vào khoảng không rồi mới biết.",
+      "sua": "useSpeechToText kiểm tra ngay lúc gắn vào màn hình (trong useEffect, không phải lúc vẽ — window không có ở server).",
+      "bang_chung_sau": {
+        "canh_bao_hien_truoc_khi_bam": "Trình duyệt này không nghe được lời nói. Dùng Chrome, Edge hoặc Safari mới — Firefox chưa có tính năng này.",
+        "nut_bat_dau_noi_bi_khoa": true
+      }
+    }
+  ],
+  "da_do_va_khong_thay_loi": [
+    {
+      "muc": "Chrome tự ngắt giữa câu (im lặng vài giây)",
+      "ket_qua": "Bộ nghe tự bật lại (đếm được 2 lần start), và phần đã nói TRƯỚC cú ngắt không mất: sau khi nói tiếp, ô chữ có đủ cả hai nửa. Đây là hai cái bẫy của API — tự ngắt, và resultIndex đếm lại từ 0 sau mỗi lần bật lại."
+    },
+    {
+      "muc": "Bấm 'Hoàn thành nói' năm cú liên tiếp trong cùng một nhịp",
+      "ket_qua": "Đúng 1 request chấm điểm. Chốt bằng ref nên cú thứ hai thấy ngay, không đợi React vẽ lại."
+    },
+    {
+      "muc": "Chấm thật qua TypeSafe, bài 37 từ trong 25 giây",
+      "ket_qua": "FC 6.0 · LR 5.0 · GRA 6.0 · P 'chưa chấm · cần nghe' · KHÔNG có band tổng, kèm câu giải thích vì sao để trống. Thống kê hiện 37 từ, 89 từ/phút, 1 tiếng ngập ngừng."
+    },
+    {
+      "muc": "Trình đọc màn hình",
+      "ket_qua": "Ô bản ghi mang aria-live='polite' và aria-label='Bản ghi lời nói', nên chữ mới được đọc lên trong lúc nói."
+    },
+    {
+      "muc": "Bài dài đủ chuẩn (một câu trả lời Part 2 thật, 62 giây)",
+      "ket_qua": "Chấm qua route thật: FC 8.0 (conf .66) · LR 7.0 (.79) · GRA 7.0 (.60), overall null."
+    }
+  ],
+  "chua_do_duoc": [
+    "Độ chính xác nhận dạng giọng Việt nói tiếng Anh — cần Chrome thật và người nói thật.",
+    "Tiêu chí Phát âm: chưa có model nghe được audio, nên chưa có gì để đo.",
+    "Màn thu âm một câu (/speaking/[slug]): cần quyền mic thật, trình duyệt tự động không cấp được."
+  ]
+}

@@ -13,6 +13,8 @@ export const SPEAKING_CRITERIA: SpeakingCriterion[] = [
     id: "FC",
     label: "Trôi chảy và mạch lạc",
     english: "Fluency and Coherence",
+    instructions:
+      "How fluently and coherently does the candidate speak: do they keep going at length, and do the ideas connect? Judge only flow and organisation, not accuracy. The text is an automatic transcript of speech, so hesitation markers (um, uh), repetition and self-correction are evidence for this criterion; missing punctuation is not an error.",
     levels: [
       "Speaks with long pauses and frequent breakdowns; ideas are hard to follow",
       "Keeps going but with noticeable hesitation, repetition and self-correction; linking is basic",
@@ -26,6 +28,8 @@ export const SPEAKING_CRITERIA: SpeakingCriterion[] = [
     id: "LR",
     label: "Vốn từ",
     english: "Lexical Resource",
+    instructions:
+      "How wide and precise is the vocabulary used to answer this question? Judge range, appropriacy and any paraphrasing of the question. The text is an automatic transcript, so a few misheard words are expected — do not penalise obvious transcription noise.",
     levels: [
       "Basic vocabulary only; frequent errors in word choice make meaning unclear",
       "Limited range; manages familiar topics but struggles with less familiar ones",
@@ -39,6 +43,8 @@ export const SPEAKING_CRITERIA: SpeakingCriterion[] = [
     id: "GRA",
     label: "Ngữ pháp",
     english: "Grammatical Range and Accuracy",
+    instructions:
+      "How wide a range of grammatical structures is used, and how accurate are they? Judge sentence variety, tense control, articles and agreement. The text is an automatic transcript with no punctuation, so do NOT judge punctuation or capitalisation.",
     levels: [
       "Very limited structures; errors are frequent and often obscure meaning",
       "Basic sentence forms with reasonable accuracy; complex structures rarely attempted or usually faulty",
@@ -52,6 +58,10 @@ export const SPEAKING_CRITERIA: SpeakingCriterion[] = [
     id: "P",
     label: "Phát âm",
     english: "Pronunciation",
+    instructions:
+      "How clear is the pronunciation: stress, intonation, individual sounds and overall intelligibility?",
+    /* Chấm từ chữ thì mù hoàn toàn với tiêu chí này. */
+    needsAudio: true,
     levels: [
       "Often unintelligible; little control of stress and intonation",
       "Understandable with effort; mispronunciations cause some strain; limited use of features",

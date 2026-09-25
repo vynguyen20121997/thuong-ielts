@@ -4,6 +4,7 @@ import type {
   Part,
   SpeakingState,
   TopicPack,
+  TranscriptSubmission,
 } from "../domain/types";
 
 /*
@@ -28,6 +29,15 @@ export interface SpeakingGrader {
    * ném lỗi: hỏng thì trả `{ kind: "ungraded", reason }` — bài nói vẫn còn.
    */
   grade(recording: Blob, questionId: string): Promise<SpeakingState>;
+
+  /**
+   * Chấm từ BẢN GHI CHỮ do trình duyệt nhận dạng. Chấm được FC/LR/GRA; tiêu
+   * chí Phát âm nằm ngoài tầm và kết quả trả về thiếu hẳn nó chứ không đoán
+   * bừa một con số — vì thế `overall` cũng là `null`.
+   *
+   * Cũng không bao giờ ném lỗi, cùng lý do với `grade`.
+   */
+  gradeTranscript(input: TranscriptSubmission): Promise<SpeakingState>;
 }
 
 export interface IdeaCoach {
