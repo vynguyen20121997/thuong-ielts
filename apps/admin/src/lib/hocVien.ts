@@ -7,6 +7,7 @@ import type {
   LanDong,
   Lop,
   NhanXet,
+  TaiKhoanNhan,
   TomTatTien,
 } from "./hocVienKieu";
 
@@ -81,11 +82,17 @@ export async function hocVienCuaLop(
             c.tuition_amount AS muc_lop,
             coalesce((SELECT sum(p.amount) FROM tuition_payments p
                        WHERE p.class_id = m.class_id
-                         AND p.student_id = m.student_id), 0) da_dong,
+                         AND p.student_id = m.student_id
+                         AND p.status = 'da_xac_nhan'), 0) da_dong,
             EXISTS (SELECT 1 FROM tuition_payments p
                      WHERE p.class_id = m.class_id
                        AND p.student_id = m.student_id
+                       AND p.status = 'da_xac_nhan'
                        AND p.period IS NOT DISTINCT FROM $3) da_dong_ky,
+            EXISTS (SELECT 1 FROM tuition_payments p
+                     WHERE p.class_id = m.class_id
+                       AND p.student_id = m.student_id
+                       AND p.status = 'cho_xac_nhan') cho_xac_nhan,
             (SELECT count(*) FROM student_notes n
               WHERE n.student_id = m.student_id) so_nhan_xet,
             (SELECT count(*) FROM attempts a
@@ -116,6 +123,7 @@ export async function hocVienCuaLop(
       note: r.note,
       daDong: Number(r.da_dong),
       daDongKyNay: ky === null ? null : Boolean(r.da_dong_ky),
+      choXacNhan: Boolean(r.cho_xac_nhan),
       soNhanXet: Number(r.so_nhan_xet),
       soLuotLam: Number(r.so_luot),
       lanLamCuoi: r.lan_cuoi ? new Date(r.lan_cuoi).toISOString() : null,
@@ -147,6 +155,8 @@ export async function lanDongCuaLop(
     period: r.period,
     method: r.method as HinhThuc,
     note: r.note,
+    status: r.status as "cho_xac_nhan" | "da_xac_nhan",
+    declaredBy: r.declared_by as "giao_vien" | "hoc_vien",
   }));
 }
 
@@ -263,9 +273,12 @@ export async function tomTatTien(
   const { rows } = await pool.query(
     `SELECT
        coalesce((SELECT sum(p.amount) FROM tuition_payments p
-                  WHERE p.class_id = $2 AND p.period IS NOT DISTINCT FROM $3), 0) thu_ky,
+                  WHERE p.class_id = $2 AND p.status = 'da_xac_nhan'
+                    AND p.period IS NOT DISTINCT FROM $3), 0) thu_ky,
        coalesce((SELECT sum(p.amount) FROM tuition_payments p
-                  WHERE p.class_id = $2), 0) thu_tat_ca,
+                  WHERE p.class_id = $2 AND p.status = 'da_xac_nhan'), 0) thu_tat_ca,
+       (SELECT count(*) FROM tuition_payments p
+         WHERE p.class_id = $2 AND p.status = 'cho_xac_nhan') cho_xac_nhan,
        (SELECT count(*) FROM class_members m
          WHERE m.class_id = $2 AND m.left_on IS NULL) dang_hoc,
        (SELECT count(*) FROM class_members m
@@ -273,6 +286,7 @@ export async function tomTatTien(
            AND NOT EXISTS (SELECT 1 FROM tuition_payments p
                             WHERE p.class_id = m.class_id
                               AND p.student_id = m.student_id
+                              AND p.status = 'da_xac_nhan'
                               AND p.period IS NOT DISTINCT FROM $3)) chua_dong
        FROM classes c WHERE c.id = $2 AND c.teacher_id = $1`,
     [teacherId, classId, ky],
@@ -283,5 +297,21 @@ export async function tomTatTien(
     thuTatCa: r ? Number(r.thu_tat_ca) : 0,
     soChuaDong: r ? Number(r.chua_dong) : 0,
     soDangHoc: r ? Number(r.dang_hoc) : 0,
+    soChoXacNhan: r ? Number(r.cho_xac_nhan) : 0,
+  };
+}
+
+/** Tài khoản nhận học phí của giáo viên đang đăng nhập. */
+export async function taiKhoanNhan(teacherId: string): Promise<TaiKhoanNhan> {
+  const { rows } = await pool.query(
+    "SELECT bank_bin, bank_name, bank_account, bank_holder FROM teachers WHERE id = $1",
+    [teacherId],
+  );
+  const r = rows[0];
+  return {
+    bankBin: r?.bank_bin ?? null,
+    bankName: r?.bank_name ?? null,
+    bankAccount: r?.bank_account ?? null,
+    bankHolder: r?.bank_holder ?? null,
   };
 }

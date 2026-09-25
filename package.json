@@ -33,7 +33,8 @@
     "check:writing-task-type": "tsx scripts/check-writing-task-type.ts",
     "check:vocab": "tsx scripts/check-vocab.ts",
     "check:practice": "tsx scripts/check-practice.ts",
-    "check:class": "tsx scripts/check-class.ts"
+    "check:class": "tsx scripts/check-class.ts",
+    "check:tuition": "tsx scripts/check-tuition.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

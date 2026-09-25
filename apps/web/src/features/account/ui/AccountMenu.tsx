@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { ChevronDown, History, LogOut, Target, UserRound } from "lucide-react";
+import { ChevronDown, History, LogOut, Target, UserRound,
+  Wallet,
+} from "lucide-react";
 
 /**
  * Chip tài khoản ở cuối header.
@@ -126,6 +128,13 @@ export default function AccountMenu({
           Bài đã làm
         </Link>
         <Link
+          href="/hoc-phi"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-ink/80 hover:text-brand hover:bg-leaf/15 transition-colors"
+        >
+          <Wallet size={15} />
+          Học phí
+        </Link>
+        <Link
           href="/ho-so"
           className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-ink/80 hover:text-brand hover:bg-leaf/15 transition-colors"
         >
@@ -193,6 +202,15 @@ export default function AccountMenu({
           >
             <History size={15} />
             Bài đã làm
+          </Link>
+          <Link
+            href="/hoc-phi"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-xs font-semibold text-ink/80 hover:bg-leaf/15 hover:text-brand transition-colors"
+          >
+            <Wallet size={15} />
+            Học phí
           </Link>
           <Link
             href="/ho-so"

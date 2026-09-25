@@ -333,3 +333,75 @@ export async function xoaNhanXet(
   );
   if (!rowCount) throw new LoiNhap("Không tìm thấy nhận xét này.");
 }
+
+/**
+ * Xác nhận một lần học sinh khai đã chuyển khoản.
+ *
+ * Đây là chỗ tiền thật sự vào sổ. Trước khi bấm, cô phải nhìn thấy nó trong
+ * sao kê ngân hàng — không có đường nối nào tới ngân hàng ở đây, nên xác nhận
+ * là hành động của con người, không phải của máy.
+ *
+ * `amount` cho phép sửa: học sinh khai 1.500.000 mà chuyển 1.400.000 thì con
+ * số vào sổ phải là số CHUYỂN THẬT.
+ */
+export async function xacNhanDong(
+  teacherId: string,
+  paymentId: string,
+  amountMoi?: unknown,
+): Promise<void> {
+  const soMoi =
+    amountMoi === undefined || amountMoi === null || amountMoi === ""
+      ? null
+      : docTien(amountMoi);
+  if (soMoi !== null && soMoi <= 0) throw new LoiNhap("Số tiền phải lớn hơn 0.");
+
+  const { rowCount } = await pool.query(
+    `UPDATE tuition_payments p
+        SET status = 'da_xac_nhan',
+            confirmed_at = now(),
+            recorded_by = $2,
+            amount = coalesce($3::numeric, p.amount)
+      FROM classes c
+      WHERE p.id = $1 AND c.id = p.class_id AND c.teacher_id = $2
+        AND p.status = 'cho_xac_nhan'`,
+    [paymentId, teacherId, soMoi],
+  );
+  if (!rowCount) throw new LoiNhap("Không tìm thấy lần đóng đang chờ xác nhận.");
+}
+
+/** Lưu tài khoản nhận học phí. Cô tự nhập — không hardcode của ai vào code. */
+export async function luuTaiKhoan(
+  teacherId: string,
+  body: Record<string, unknown>,
+): Promise<void> {
+  const bin = typeof body.bankBin === "string" ? body.bankBin.trim() : "";
+  const stk =
+    typeof body.bankAccount === "string"
+      ? body.bankAccount.replace(/\s/g, "")
+      : "";
+  const chuTk = typeof body.bankHolder === "string" ? body.bankHolder.trim() : "";
+
+  /* Bỏ trống cả ba = tắt phần chuyển khoản, không phải lỗi. */
+  if (!bin && !stk && !chuTk) {
+    await pool.query(
+      `UPDATE teachers SET bank_bin=NULL, bank_name=NULL,
+                           bank_account=NULL, bank_holder=NULL
+        WHERE id = $1`,
+      [teacherId],
+    );
+    return;
+  }
+
+  if (!/^\d{6}$/.test(bin)) throw new LoiNhap("Chưa chọn ngân hàng.");
+  if (!/^\d{6,19}$/.test(stk))
+    throw new LoiNhap("Số tài khoản phải là 6–19 chữ số.");
+  if (!chuTk) throw new LoiNhap("Thiếu tên chủ tài khoản.");
+
+  const ten = typeof body.bankName === "string" ? body.bankName.trim() : "";
+  await pool.query(
+    `UPDATE teachers
+        SET bank_bin=$2, bank_name=$3, bank_account=$4, bank_holder=$5
+      WHERE id = $1`,
+    [teacherId, bin, ten.slice(0, 80), stk, chuTk.slice(0, 120)],
+  );
+}

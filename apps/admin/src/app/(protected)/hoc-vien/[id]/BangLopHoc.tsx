@@ -8,8 +8,9 @@ import type {
   LanDong,
   Lop,
   NhanXet,
+  TaiKhoanNhan,
 } from "../../../../lib/hocVienKieu";
-import { NHAN_HINH_THUC } from "../../../../lib/hocVienKieu";
+import { NGAN_HANG, NHAN_HINH_THUC } from "../../../../lib/hocVienKieu";
 import { dinhDangTien, nhanKy } from "../../../../lib/tien";
 
 /**
@@ -34,6 +35,7 @@ export default function BangLopHoc({
   lanDong,
   chuaVao,
   nhanXet,
+  taiKhoan,
 }: {
   lop: Lop;
   ky: string | null;
@@ -42,6 +44,7 @@ export default function BangLopHoc({
   lanDong: LanDong[];
   chuaVao: { id: string; ten: string; email: string | null }[];
   nhanXet: NhanXet[];
+  taiKhoan: TaiKhoanNhan;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("so");
@@ -54,7 +57,7 @@ export default function BangLopHoc({
 
   async function goi(
     duongDan: string,
-    method: "POST" | "PATCH" | "DELETE",
+    method: "POST" | "PUT" | "PATCH" | "DELETE",
     body: Record<string, unknown>,
   ): Promise<boolean> {
     if (dangLuuRef.current) return false;
@@ -83,6 +86,7 @@ export default function BangLopHoc({
     }
   }
 
+  const tomTatChoXacNhan = lanDong.filter((d) => d.status === "cho_xac_nhan").length;
   const dangHoc = hocVien.filter((h) => !h.leftOn);
   const daNghi = hocVien.filter((h) => h.leftOn);
   const emDangXem = hocVien.find((h) => h.studentId === dangXem) ?? null;
@@ -94,7 +98,12 @@ export default function BangLopHoc({
         {(
           [
             ["so", `Sổ lớp · ${dangHoc.length}`],
-            ["tien", "Học phí"],
+            [
+              "tien",
+              tomTatChoXacNhan > 0
+                ? `Học phí · ${tomTatChoXacNhan} chờ duyệt`
+                : "Học phí",
+            ],
             ["nhan-xet", `Nhận xét · ${nhanXet.length}`],
           ] as [Tab, string][]
         ).map(([id, nhan]) => (
@@ -160,6 +169,7 @@ export default function BangLopHoc({
           theoKy={theoKy}
           dangHoc={dangHoc}
           lanDong={lanDong}
+          taiKhoan={taiKhoan}
           dangLuu={dangLuu}
           goi={goi}
         />
@@ -183,7 +193,7 @@ export default function BangLopHoc({
 
 type Goi = (
   duongDan: string,
-  method: "POST" | "PATCH" | "DELETE",
+  method: "POST" | "PUT" | "PATCH" | "DELETE",
   body: Record<string, unknown>,
 ) => Promise<boolean>;
 
@@ -418,6 +428,7 @@ function HocPhi({
   theoKy,
   dangHoc,
   lanDong,
+  taiKhoan,
   dangLuu,
   goi,
 }: {
@@ -426,6 +437,7 @@ function HocPhi({
   theoKy: boolean;
   dangHoc: HocVienTrongLop[];
   lanDong: LanDong[];
+  taiKhoan: TaiKhoanNhan;
   dangLuu: boolean;
   goi: Goi;
 }) {
@@ -434,6 +446,8 @@ function HocPhi({
 
   return (
     <div className="flex flex-col gap-6">
+      <TaiKhoan taiKhoan={taiKhoan} dangLuu={dangLuu} goi={goi} />
+
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -582,8 +596,21 @@ function HocPhi({
               <tr key={d.id} className="border-b border-black/5">
                 <td className="px-4 py-3 font-mono text-xs">{d.paidOn}</td>
                 <td className="px-4 py-3 font-bold text-[#1A1A1A]">{d.ten}</td>
-                <td className="px-4 py-3 font-mono text-[#14532D]">
-                  {dinhDangTien(d.amount)}
+                <td className="px-4 py-3 font-mono">
+                  <span
+                    className={
+                      d.status === "da_xac_nhan"
+                        ? "text-[#14532D]"
+                        : "text-[#B45309]"
+                    }
+                  >
+                    {dinhDangTien(d.amount)}
+                  </span>
+                  {d.status === "cho_xac_nhan" && (
+                    <span className="mt-0.5 block font-sans text-[10px] font-bold text-[#B45309]">
+                      {d.declaredBy === "hoc_vien" ? "HV báo" : "Chờ"} · chưa vào sổ
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-xs text-[#1A1A1A]/70">
                   {nhanKy(d.period)}
@@ -595,6 +622,33 @@ function HocPhi({
                   )}
                 </td>
                 <td className="px-4 py-3 text-right">
+                  {d.status === "cho_xac_nhan" && (
+                    /*
+                      Chỉ bấm sau khi đã NHÌN THẤY tiền trong sao kê. Nút này
+                      là lời của con người, không phải của máy — không có
+                      đường nối nào tới ngân hàng ở đây.
+                    */
+                    <button
+                      type="button"
+                      disabled={dangLuu}
+                      onClick={() => {
+                        const so = window.prompt(
+                          `${d.ten} báo đã chuyển ${dinhDangTien(d.amount)} đ.
+
+Sửa lại nếu sao kê ghi số khác, rồi bấm OK để xác nhận:`,
+                          String(d.amount),
+                        );
+                        if (so === null) return;
+                        void goi(`/api/hoc-vien/lop/${lop.id}/hoc-phi`, "PATCH", {
+                          paymentId: d.id,
+                          amount: so,
+                        });
+                      }}
+                      className="mr-3 rounded-full bg-[#14532D] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#052E16] disabled:opacity-50 cursor-pointer"
+                    >
+                      Xác nhận
+                    </button>
+                  )}
                   <button
                     type="button"
                     disabled={dangLuu}
@@ -810,5 +864,143 @@ function NhanXetTab({
         )}
       </div>
     </div>
+  );
+}
+
+/* ── Tài khoản nhận học phí ──────────────────────────────────────────────── */
+
+/**
+ * Cô khai tài khoản nhận tiền.
+ *
+ * Của GIÁO VIÊN, không phải của lớp — một cô nhiều lớp nhưng một tài khoản.
+ * Khai xong thì trang học phí của học sinh mới hiện mã QR; chưa khai thì bên
+ * đó nói thẳng là "cô chưa khai tài khoản", chứ không hiện một ô trống.
+ */
+function TaiKhoan({
+  taiKhoan,
+  dangLuu,
+  goi,
+}: {
+  taiKhoan: TaiKhoanNhan;
+  dangLuu: boolean;
+  goi: Goi;
+}) {
+  const [mo, setMo] = useState(false);
+  const daKhai = Boolean(taiKhoan.bankBin && taiKhoan.bankAccount);
+
+  if (!mo) {
+    return (
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-black/10 bg-white px-5 py-4">
+        <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#1A1A1A]/60">
+          Tài khoản nhận
+        </span>
+        {daKhai ? (
+          <span className="text-sm">
+            <b className="font-mono">{taiKhoan.bankAccount}</b>
+            <span className="ml-2 text-[#1A1A1A]/70">
+              {taiKhoan.bankName} · {taiKhoan.bankHolder}
+            </span>
+          </span>
+        ) : (
+          <span className="text-sm font-semibold text-[#B45309]">
+            Chưa khai — học viên chưa thấy mã chuyển khoản
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={() => setMo(true)}
+          className="ml-auto text-xs font-bold text-[#14532D] hover:underline cursor-pointer"
+        >
+          {daKhai ? "Sửa" : "Khai ngay"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        const bin = String(f.get("bankBin") ?? "");
+        const xong = await goi("/api/hoc-vien/tai-khoan", "PUT", {
+          bankBin: bin,
+          bankName: NGAN_HANG.find((n) => n.bin === bin)?.ten ?? "",
+          bankAccount: f.get("bankAccount"),
+          bankHolder: f.get("bankHolder"),
+        });
+        if (xong) setMo(false);
+      }}
+      className="rounded-2xl border border-black/10 bg-white p-5"
+    >
+      <p className="mb-4 text-xs font-bold uppercase tracking-[0.08em] text-[#1A1A1A]/60">
+        Tài khoản nhận học phí
+      </p>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <label className="block">
+          <span className="mb-1.5 block text-xs font-bold text-[#1A1A1A]/70">
+            Ngân hàng
+          </span>
+          <select
+            name="bankBin"
+            defaultValue={taiKhoan.bankBin ?? ""}
+            className="w-full rounded-xl border border-black/15 px-3.5 py-2.5 text-sm"
+          >
+            <option value="">— Chọn —</option>
+            {NGAN_HANG.map((n) => (
+              <option key={n.bin} value={n.bin}>
+                {n.ten}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-xs font-bold text-[#1A1A1A]/70">
+            Số tài khoản
+          </span>
+          <input
+            name="bankAccount"
+            inputMode="numeric"
+            defaultValue={taiKhoan.bankAccount ?? ""}
+            className="w-full rounded-xl border border-black/15 px-3.5 py-2.5 text-sm font-mono"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-xs font-bold text-[#1A1A1A]/70">
+            Chủ tài khoản
+          </span>
+          <input
+            name="bankHolder"
+            defaultValue={taiKhoan.bankHolder ?? ""}
+            placeholder="HO NGOC THUONG"
+            className="w-full rounded-xl border border-black/15 px-3.5 py-2.5 text-sm uppercase"
+          />
+        </label>
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2.5">
+        <button
+          type="submit"
+          disabled={dangLuu}
+          className="rounded-full bg-[#14532D] hover:bg-[#052E16] px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50 cursor-pointer"
+        >
+          {dangLuu ? "Đang lưu…" : "Lưu tài khoản"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMo(false)}
+          className="rounded-full border border-black/15 px-5 py-2.5 text-sm font-bold text-[#1A1A1A]/70 cursor-pointer"
+        >
+          Huỷ
+        </button>
+      </div>
+      {/*
+        Tên chủ tài khoản viết HOA KHÔNG DẤU để khớp đúng cái học sinh thấy
+        trong app ngân hàng lúc chuyển — khác một chữ là em ấy tưởng chuyển nhầm.
+      */}
+      <p className="mt-3 text-xs text-[#1A1A1A]/60">
+        Viết tên chủ tài khoản hoa không dấu, đúng như app ngân hàng hiện. Để
+        trống cả ba ô rồi lưu là tắt phần chuyển khoản.
+      </p>
+    </form>
   );
 }

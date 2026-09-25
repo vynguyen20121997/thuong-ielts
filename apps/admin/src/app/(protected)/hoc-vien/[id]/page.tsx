@@ -9,6 +9,7 @@ import {
   kyHienTai,
   lanDongCuaLop,
   nhanXetCuaLop,
+  taiKhoanNhan,
   tomTatTien,
 } from "../../../../lib/hocVien";
 import { teacherHienTai } from "../../../../lib/phien";
@@ -48,12 +49,13 @@ export default async function TrangLopHoc({
       : kyHienTai()
     : null;
 
-  const [hocVien, lanDong, tien, chuaVao, nhanXet] = await Promise.all([
+  const [hocVien, lanDong, tien, chuaVao, nhanXet, taiKhoan] = await Promise.all([
     hocVienCuaLop(teacherId, id, ky),
     lanDongCuaLop(teacherId, id),
     tomTatTien(teacherId, id, ky),
     hocVienChuaVaoLop(id),
     nhanXetCuaLop(teacherId, id),
+    taiKhoanNhan(teacherId),
   ]);
 
   return (
@@ -123,6 +125,7 @@ export default async function TrangLopHoc({
         lanDong={lanDong}
         chuaVao={chuaVao}
         nhanXet={nhanXet}
+        taiKhoan={taiKhoan}
       />
     </div>
   );

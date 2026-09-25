@@ -124,3 +124,57 @@ CREATE TABLE IF NOT EXISTS student_notes (
 
 CREATE INDEX IF NOT EXISTS student_notes_student_idx
   ON student_notes (student_id, created_at DESC);
+
+/*
+  ── Học sinh tự chuyển khoản ──────────────────────────────────────────────
+
+  Thêm sau, khi phần học viên đóng tiền ra đời. Giữ ở cuối file để đọc lịch
+  sử dễ hơn là trộn vào bảng gốc.
+
+  ## Học sinh KHÔNG tự xác nhận được tiền của chính mình
+
+  Em ấy bấm "tôi đã chuyển" thì dòng đó ở trạng thái `cho_xac_nhan`. Tiền chỉ
+  vào sổ khi CÔ nhìn thấy trong sao kê ngân hàng rồi bấm xác nhận. Không có
+  cách nào nối thẳng tới ngân hàng ở đây, nên tin lời người trả tiền là mở
+  cửa cho mọi nhầm lẫn — kể cả nhầm lẫn thật thà: chuyển thiếu, chuyển nhầm
+  tài khoản, gõ sai nội dung.
+
+  Mặc định `da_xac_nhan` vì mọi dòng CŨ đều do cô tự ghi, tức đã là tiền thật.
+*/
+ALTER TABLE tuition_payments
+  ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'da_xac_nhan';
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'tuition_payments_status_check'
+  ) THEN
+    ALTER TABLE tuition_payments
+      ADD CONSTRAINT tuition_payments_status_check
+      CHECK (status IN ('cho_xac_nhan', 'da_xac_nhan'));
+  END IF;
+END $$;
+
+/* Ai khai dòng này: 'giao_vien' hay 'hoc_vien'. Để đọc lại lịch sử cho rõ. */
+ALTER TABLE tuition_payments
+  ADD COLUMN IF NOT EXISTS declared_by text NOT NULL DEFAULT 'giao_vien';
+
+ALTER TABLE tuition_payments
+  ADD COLUMN IF NOT EXISTS confirmed_at timestamptz;
+
+CREATE INDEX IF NOT EXISTS tuition_cho_xac_nhan_idx
+  ON tuition_payments (class_id, status) WHERE status = 'cho_xac_nhan';
+
+/*
+  ## Tài khoản nhận tiền
+
+  Của GIÁO VIÊN, không phải của lớp: một cô có thể dạy nhiều lớp nhưng chỉ có
+  một tài khoản. Cô tự nhập — không hardcode số tài khoản của ai vào code.
+
+  `bank_bin` là mã 6 số của ngân hàng theo chuẩn NAPAS (Vietcombank 970436,
+  Techcombank 970407…). Chuẩn VietQR đòi mã này chứ không đòi tên ngân hàng.
+*/
+ALTER TABLE teachers ADD COLUMN IF NOT EXISTS bank_bin text;
+ALTER TABLE teachers ADD COLUMN IF NOT EXISTS bank_name text;
+ALTER TABLE teachers ADD COLUMN IF NOT EXISTS bank_account text;
+ALTER TABLE teachers ADD COLUMN IF NOT EXISTS bank_holder text;

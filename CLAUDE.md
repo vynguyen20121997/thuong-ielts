@@ -18,6 +18,7 @@ npm run check:coverage   # còn thiếu đề nào, bộ nào
 npm run check:vocab      # khoá chống mất lượt + chuỗi ngày học (cần dev server đang chạy)
 npm run check:practice   # đáp án kín, điểm do server quyết, nộp trùng (cần dev server)
 npm run check:class      # học phí, cách ly giáo viên, nhận xét riêng
+npm run check:tuition    # mã VietQR + luật "lời khai không phải là tiền" (cần dev server)
 npm run migrate:class    # dựng bảng quản lý lớp, chạy lại nhiều lần vẫn an toàn
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
@@ -152,6 +153,40 @@ làm tới câu mấy. `/hoc-vien` là LỚP HỌC thật: nhóm học viên cô
 tháng, có học phí và nhận xét. Bảng tiền tố `class_`, nhãn trên thanh điều
 hướng là "Lớp đang làm" với "Học viên & học phí" — cố ý khác nhau rõ vì trong
 code cả hai đều từng gọi là "lớp".
+
+**HỌC SINH KHÔNG TỰ XÁC NHẬN ĐƯỢC TIỀN CỦA MÌNH.** Em ấy bấm "Tôi đã chuyển"
+thì dòng đó đứng ở `cho_xac_nhan` và KHÔNG được cộng vào bất kỳ con số nào —
+"thu kỳ này", "đã đóng", "ai chưa đóng" đều chỉ đếm `da_xac_nhan`. Tiền vào sổ
+khi CÔ nhìn thấy trong sao kê rồi bấm xác nhận, và lúc xác nhận sửa được số
+tiền (em khai 1.5 triệu mà chuyển 1.4 triệu thì vào sổ 1.4). Không có đường
+nối nào tới ngân hàng ở đây, nên tin lời người trả tiền là mở cửa cho mọi nhầm
+lẫn — kể cả nhầm lẫn thật thà. Đã thử cho lời khai thành `da_xac_nhan` luôn:
+`check:tuition` đỏ 6 mục.
+
+Route `/api/hoc-phi/bao-da-chuyen` KHÔNG nhận số tiền từ client — lấy từ mức
+học phí của lớp trong DB. Để client gửi kèm là mở đường cho "tôi đã chuyển
+10.000 đ".
+
+**Mã VietQR tự dựng, không gọi img.vietqr.io.** Dịch vụ ấy tiện nhưng nghĩa là
+mỗi lần học sinh mở trang, trình duyệt em ấy gửi số tài khoản của cô + số tiền
++ nội dung sang máy chủ người khác. Chuỗi QR chỉ là vài trăm ký tự theo chuẩn
+công khai: `features/tuition/domain/vietqr.ts` dựng, `qrcode` vẽ SVG ở server.
+Ba chỗ dễ sai, cả ba đã có bài kiểm: CRC phải là CRC-16/CCITT-FALSE (vector
+chuẩn `"123456789"` → `29B1`), phải tính TRÊN CẢ bốn ký tự `"6304"` ở cuối, và
+nội dung phải bỏ dấu tiếng Việt trước khi vào mã. Sai một trong ba thì mã vẫn
+VẼ RA nhưng app ngân hàng báo không hợp lệ — không cách nào biết cho tới khi
+có người thật quét.
+
+**Trang `/hoc-phi` dùng `currentStudent`, KHÔNG dùng `requireStudent`.**
+`requireStudent` còn chặn thêm một nấc "chưa khai xong hồ sơ thì sang /ho-so"
+— đúng cho phòng thi, sai ở đây: bắt điền tuổi/nghề/band mục tiêu trước khi
+cho xem số tài khoản là cách nhanh nhất để em ấy bỏ đó rồi nhắn thẳng cho cô.
+Lỗi này do `check:tuition` phát hiện chứ không phải đọc code ra.
+
+**Gói `server-only` chỉ Next mới giải được.** Mọi file có `import "server-only"`
+đều KHÔNG import được từ script `tsx` — `ERR_MODULE_NOT_FOUND`. Nên phần server
+của web phải kiểm qua HTTP (`check-tuition.ts`, `check-practice.ts`), không gọi
+thẳng tầng lib như `check-class.ts` làm với admin.
 
 **Học phí: cô nhập, máy KHÔNG tự tính.** Không có bảng công nợ, không có bộ
 sinh hoá đơn. Mỗi lớp một kiểu thu — có em theo tháng, có em trọn khoá, có em
