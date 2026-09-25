@@ -16,6 +16,7 @@ npm run check:reading    # kiểm tra dữ liệu đề đọc trong DB
 npm run check:listening  # kiểm tra đề nghe (đáp án + audio theo section)
 npm run check:coverage   # còn thiếu đề nào, bộ nào
 npm run check:vocab      # khoá chống mất lượt + chuỗi ngày học (cần dev server đang chạy)
+npm run check:practice   # đáp án kín, điểm do server quyết, nộp trùng (cần dev server)
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
 
@@ -182,6 +183,19 @@ ghi chữ trơ trọi mất hẳn chiều thời gian: 60 từ trong 20 giây v�
 phút ra cùng một đoạn chữ, mà đó đúng là thứ tiêu chí Trôi chảy đo. Ba con số
 ấy ĐẾM ĐƯỢC, không đoán. Danh sách tiếng ngập ngừng cố ý không có "like",
 "you know", "actually": chúng vừa là từ đệm vừa là từ thật.
+
+**Dò "đáp án có rò ra không" bằng cách tìm chuỗi đáp án trong phản hồi là
+SAI.** Viết hỏng hai lần liền ở `check-practice.ts`. Với câu trắc nghiệm và
+matching-headings, lựa chọn đúng BẮT BUỘC phải hiện ra mới trả lời được. Với
+câu điền từ, đáp án vốn nằm trong BÀI ĐỌC — đó chính là đề bài, kỹ năng cần đo
+là tìm ra nó. Cả hai đều báo đỏ mà code không sai. Thứ đáng lo là đáp án đi
+KÈM ĐÚNG CÂU: chỉ cần nó nằm trong object của câu ấy là mở tab Network ghép
+một phát ra cả bài. Nên so từng câu với đáp án của chính nó, sau khi bỏ
+`options` ra.
+
+Cũng ở script đó: chọn đề để kiểm phải lấy đề có NHIỀU CÂU TỰ GÕ nhất, đừng
+lấy đề đầu bảng. Lần đầu chạy nó vớ phải một đề toàn trắc nghiệm rồi in "dò 0
+câu" — xanh mà không kiểm gì.
 
 **`pointer-events-none` KHÔNG giấu được thứ gì khỏi bàn phím.** Ngăn kéo menu
 mobile khi đóng chỉ có `opacity-0 translate-x-full pointer-events-none` — đo

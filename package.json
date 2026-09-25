@@ -30,7 +30,8 @@
     "import:feedback-images": "tsx --env-file=apps/web/.env.local scripts/import-feedback-images.ts",
     "check:diagnostic-plan": "tsx scripts/check-diagnostic-plan.ts",
     "check:writing-task-type": "tsx scripts/check-writing-task-type.ts",
-    "check:vocab": "tsx scripts/check-vocab.ts"
+    "check:vocab": "tsx scripts/check-vocab.ts",
+    "check:practice": "tsx scripts/check-practice.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",
