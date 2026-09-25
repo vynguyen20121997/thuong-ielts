@@ -20,6 +20,7 @@ npm run check:practice   # đáp án kín, điểm do server quyết, nộp trù
 npm run check:class      # học phí, cách ly giáo viên, nhận xét riêng
 npm run check:tuition    # mã VietQR + luật "lời khai không phải là tiền" (cần dev server)
 npm run check:personas   # cô + học sinh đi hết một vòng dạy-học (cần cả web lẫn admin)
+npm run check:baigiao    # các chốt của bài giao: che kết quả, đóng bài, một lần, khách
 npm run migrate:class    # dựng bảng quản lý lớp, chạy lại nhiều lần vẫn an toàn
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
@@ -266,6 +267,20 @@ một phát ra cả bài. Nên so từng câu với đáp án của chính nó, 
 Cũng ở script đó: chọn đề để kiểm phải lấy đề có NHIỀU CÂU TỰ GÕ nhất, đừng
 lấy đề đầu bảng. Lần đầu chạy nó vớ phải một đề toàn trắc nghiệm rồi in "dò 0
 câu" — xanh mà không kiểm gì.
+
+**`openAttempt` CỐ Ý dùng lại lượt `in_progress` của cùng một đề.** Đó là cách
+duy nhất đúng khi học sinh F5 hoặc mở hai tab — `expires_at` giữ nguyên nên
+tải lại trang không kéo dài giờ làm bài. Hệ quả cho người viết bài kiểm: phải
+dọn lượt giữa các kịch bản, nếu không kịch bản sau vớ phải lượt bỏ dở của kịch
+bản trước và mọi khẳng định về `assignment_id` đều sai.
+
+**Che kết quả KHÔNG bỏ trường `correct`.** `cheKetQua` đặt `correct`/`band`/
+`accuracy` về 0 và kèm cờ `daChe`, để giao diện nói "chờ cô mở" chứ không để
+học sinh nhìn 0/40 rồi tưởng mình sai hết bài. Kiểm che kết quả thì soi
+`daChe`, `items[].expected` (phải rỗng), `explanation` (phải mất) và
+`isCorrect` (phải mất — biết đúng/sai từng câu là suy ngược ra điểm). ĐỪNG dò
+chuỗi đáp án trong cả phản hồi: `given` là thứ chính học sinh vừa gõ, dội lại
+là đúng.
 
 **Postgres `substring(... from ...)` KHÔNG hiểu `\d`.** Đo trên chính DB của
 dự án: `substring('cam10-test1-stepwells' from '^(cam\d+-test\d+)-')` trả về
