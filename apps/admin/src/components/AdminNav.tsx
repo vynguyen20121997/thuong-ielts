@@ -9,6 +9,12 @@ const NAV_ITEMS = [
   // đây là thứ cô mở, còn sửa trang chủ thì để lúc rảnh.
   { label: "Giao bài", href: "/lop/giao" },
   { label: "Lớp đang làm", href: "/lop" },
+  /*
+    "Lớp đang làm" là PHÒNG THI trực tiếp, sống một buổi. "Học viên & học phí"
+    là lớp học thật, sống nhiều tháng. Hai nhãn phải khác nhau rõ, vì trong
+    code cả hai đều từng gọi là "lớp".
+  */
+  { label: "Học viên & học phí", href: "/hoc-vien" },
   { label: "Kiểm tra nền", href: "/chan-doan" },
   { label: "Trang chủ (Hero)", href: "/hero" },
   { label: "Kết quả học viên", href: "/testimonials" },

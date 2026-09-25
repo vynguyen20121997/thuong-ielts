@@ -18,6 +18,7 @@
     "audit:reading-ui": "tsx scripts/audit-reading-question-types.ts",
     "audit:listening-ui": "tsx scripts/audit-listening-question-types.ts",
     "migrate:diagnostic": "tsx scripts/migrate-diagnostic.ts",
+    "migrate:class": "tsx scripts/migrate-class.ts",
     "check:diagnostic": "tsx scripts/check-diagnostic.ts",
     "check:diagnostic-api": "tsx scripts/check-diagnostic-api.ts",
     "check:listening": "tsx scripts/validate-listening.ts",
@@ -31,7 +32,8 @@
     "check:diagnostic-plan": "tsx scripts/check-diagnostic-plan.ts",
     "check:writing-task-type": "tsx scripts/check-writing-task-type.ts",
     "check:vocab": "tsx scripts/check-vocab.ts",
-    "check:practice": "tsx scripts/check-practice.ts"
+    "check:practice": "tsx scripts/check-practice.ts",
+    "check:class": "tsx scripts/check-class.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

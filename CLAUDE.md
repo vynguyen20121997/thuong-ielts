@@ -17,6 +17,8 @@ npm run check:listening  # kiểm tra đề nghe (đáp án + audio theo section
 npm run check:coverage   # còn thiếu đề nào, bộ nào
 npm run check:vocab      # khoá chống mất lượt + chuỗi ngày học (cần dev server đang chạy)
 npm run check:practice   # đáp án kín, điểm do server quyết, nộp trùng (cần dev server)
+npm run check:class      # học phí, cách ly giáo viên, nhận xét riêng
+npm run migrate:class    # dựng bảng quản lý lớp, chạy lại nhiều lần vẫn an toàn
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
 
@@ -143,6 +145,38 @@ lại bằng bộ quy tắc khác thì trang nói ra thay vì im lặng.
 **Kiến trúc phân lớp** trong `features/practice`: `domain/` thuần (không React, không
 fetch, không `pg`) ← `application/` (hook, không JSX) ← `infrastructure/` (fetch) /
 `server/` (SQL) / `ui/` (chỉ vẽ). Giữ hướng phụ thuộc một chiều này.
+
+**"Lớp" có HAI nghĩa trong dự án này, đừng trộn.** `/lop` bên admin là PHÒNG
+THI trực tiếp: khoá theo mã đề, sống đúng một buổi, dựng để cô nhìn ai đang
+làm tới câu mấy. `/hoc-vien` là LỚP HỌC thật: nhóm học viên cô dạy nhiều
+tháng, có học phí và nhận xét. Bảng tiền tố `class_`, nhãn trên thanh điều
+hướng là "Lớp đang làm" với "Học viên & học phí" — cố ý khác nhau rõ vì trong
+code cả hai đều từng gọi là "lớp".
+
+**Học phí: cô nhập, máy KHÔNG tự tính.** Không có bảng công nợ, không có bộ
+sinh hoá đơn. Mỗi lớp một kiểu thu — có em theo tháng, có em trọn khoá, có em
+được giảm — nên máy suy ra số phải đóng là máy đoán, mà đoán sai TIỀN thì tệ
+hơn không đoán. Chỉ ghi hai thứ đúng như cô biết: mức cô đặt (lớp, và mức
+riêng từng em), và từng lần đóng. Câu "ai chưa đóng tháng này" trả lời được
+nhờ cột `period`, không cần bộ tính công nợ nào.
+
+Tiền lưu `numeric(12,0)`, tuyệt đối không float. `docTien` bỏ mọi dấu phân
+cách trước khi đọc vì cô gõ "1.500.000" hay "1,500,000 đ" tuỳ lúc.
+
+**Phân biệt "không gửi field" với "gửi null để xoá".** `suaHocVien` dùng
+`CASE WHEN <có field> THEN <giá trị> ELSE <giữ nguyên> END`, không dùng
+`coalesce`. Đã thử đổi sang `coalesce` và `check:class` đỏ ngay: cô giảm học
+phí cho một em rồi muốn bỏ mức giảm thì không bỏ được, mức 1.000.000 dính mãi.
+
+**Nhận xét riêng mặc định CHỈ CÔ ĐỌC.** Đây là chỗ cô ghi những câu thật lòng
+("em này mất gốc, chưa nên đẩy lên lớp nâng cao"). Bật cho học viên xem là
+thao tác có chủ đích cho TỪNG dòng, có hỏi lại — không có nút bật hàng loạt.
+
+**Component client KHÔNG được import file có `pool`.** Đã sập: `BangLopHoc.tsx`
+chỉ cần mấy nhãn tiếng Việt mà import từ `hocVien.ts`, thế là Turbopack kéo cả
+driver `pg` vào bundle trình duyệt và build đổ với "Can't resolve 'dns'". Kiểu
+và nhãn để ở `hocVienKieu.ts`, tiền tệ ở `tien.ts`; `hocVien.ts` chỉ giữ truy
+vấn. `tsc` KHÔNG bắt được lỗi này — chỉ `npm run build` mới thấy.
 
 **Phần học từ vựng port từ repo `vynguyen20121997/ielts`, không clone.** Bản gốc
 là Vite SPA + Express + file `data/db.json` + đăng nhập bằng mật khẩu thô và
