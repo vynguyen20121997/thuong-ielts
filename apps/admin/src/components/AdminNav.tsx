@@ -16,7 +16,12 @@ const NAV_ITEMS = [
   */
   { label: "Học viên & học phí", href: "/hoc-vien" },
   { label: "Kiểm tra nền", href: "/chan-doan" },
-  { label: "Trang chủ (Hero)", href: "/hero" },
+  /*
+    Bỏ "Trang chủ (Hero)" khỏi thanh điều hướng theo yêu cầu. Trang
+    `/hero` VẪN CÒN và vẫn mở được bằng địa chỉ trực tiếp — chỉ là không
+    chiếm chỗ trên thanh nữa, vì đây là thứ sửa vài tháng một lần còn thanh
+    này là chỗ cô bấm giữa buổi dạy.
+  */
   { label: "Kết quả học viên", href: "/testimonials" },
   { label: "Cảm nhận học viên", href: "/feedbacks" },
 ];
