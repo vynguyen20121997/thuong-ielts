@@ -87,7 +87,7 @@ function SharedBankGroup({ questions, answers, onChange, disabled, title = "List
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {options.map((option) => <button key={option} type="button" draggable={!disabled} disabled={disabled} onDragStart={(event) => event.dataTransfer.setData("text/plain", option)} onClick={() => setArmed(armed === option ? null : option)} className={`rounded-lg border px-3 py-2 text-left text-sm leading-6 transition-colors ${armed === option ? "border-brand bg-leaf/25" : "border-black/15 bg-white hover:border-brand/40"}`}>{option}</button>)}
         </div>
-        <p className="mt-2 text-xs text-ink/45">Kéo thả, hoặc chọn một đáp án rồi chọn ô câu hỏi.</p>
+        <p className="mt-2 text-xs text-ink/65">Kéo thả, hoặc chọn một đáp án rồi chọn ô câu hỏi.</p>
       </div>
     </div>
   );
@@ -112,7 +112,7 @@ function ManyChoiceGroup({ questions, answers, onChange, disabled }: Omit<Props,
     const empty = questions.find((q) => !answers[q.id]);
     if (empty && selected.length < limit) onChange(empty.id, option);
   };
-  return <div className="mt-6"><p className="text-[15px] leading-7"><strong className="mr-2">{questions.map((q) => q.number).join("–")}</strong>{questions[0].prompt}</p><div className="mt-3 space-y-2">{options.map((option) => { const checked = selected.includes(option); const full = selected.length >= limit && !checked; return <label key={option} className={`flex items-start gap-3 rounded-lg px-3 py-2 text-[15px] ${disabled || full ? "opacity-55" : "cursor-pointer hover:bg-cream"}`}><input type="checkbox" checked={checked} disabled={disabled || full} onChange={() => toggle(option)} className="mt-1 size-4 accent-brand"/><span>{option}</span></label>; })}</div><p className="mt-2 text-xs text-ink/50">Đã chọn {selected.length}/{limit}</p></div>;
+  return <div className="mt-6"><p className="text-[15px] leading-7"><strong className="mr-2">{questions.map((q) => q.number).join("–")}</strong>{questions[0].prompt}</p><div className="mt-3 space-y-2">{options.map((option) => { const checked = selected.includes(option); const full = selected.length >= limit && !checked; return <label key={option} className={`flex items-start gap-3 rounded-lg px-3 py-2 text-[15px] ${disabled || full ? "opacity-55" : "cursor-pointer hover:bg-cream"}`}><input type="checkbox" checked={checked} disabled={disabled || full} onChange={() => toggle(option)} className="mt-1 size-4 accent-brand"/><span>{option}</span></label>; })}</div><p className="mt-2 text-xs text-ink/65">Đã chọn {selected.length}/{limit}</p></div>;
 }
 
 function CompletionGroup(props: Props) {

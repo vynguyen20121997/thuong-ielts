@@ -174,12 +174,14 @@ export default function SpeechPad({
                 <>
                   {" "}
                   {/* Phần máy còn đang đoán — mờ hơn, vì nó còn đổi. */}
-                  <span className="text-ink/45">{speech.interimText}</span>
+                  <span className="text-ink/65 underline decoration-dotted decoration-ink/30 underline-offset-4">
+                        {speech.interimText}
+                      </span>
                 </>
               )}
             </p>
           ) : (
-            <p className="text-sm text-ink/50">
+            <p className="text-sm text-ink/65">
               {listening
                 ? "Đang nghe… nói một câu là chữ hiện ra ở đây."
                 : "Bấm Bắt đầu nói rồi trả lời thành tiếng. Chữ sẽ hiện ra ngay ở ô này."}

@@ -1,0 +1,92 @@
+{
+  "_comment": "Quét toàn site bằng Playwright, theo các persona trong personas.json. Mọi con số ở đây đo trên dev server, không suy từ code.",
+  "ngay": "2026-09-25",
+  "pham_vi": "14 trang công khai + ngăn kéo menu mobile + hộp thoại của bài kiểm tra nền",
+  "khong_do_duoc_va_vi_sao": [
+    "Phòng luyện tập Reading/Listening/Writing (/phong-luyen-tap/**) đòi đăng nhập. Dán vé phiên vào trình duyệt bị chốt an toàn chặn, nên phần này CHƯA chạy được bằng persona trên giao diện. Cách đi tiếp: kiểm qua HTTP bằng script như scripts/check-vocab.ts, hoặc người thật đăng nhập rồi chạy lại.",
+    "Độ chính xác nhận dạng giọng nói: xem run-2026-09-25-speaking.json."
+  ],
+  "loi_tim_duoc": [
+    {
+      "id": "ngan-keo-menu-dong-van-tab-vao-duoc",
+      "persona": "ban-phim (Quang Vinh)",
+      "muc_do": "nặng",
+      "trieu_chung": "Ngăn kéo menu mobile khi ĐANG ĐÓNG chỉ bị chặn bằng `pointer-events-none` — chặn chuột, không chặn bàn phím. Người dùng Tab qua 16 liên kết vô hình: focus biến mất khỏi màn hình mười sáu lần liền, và trình đọc màn hình vẫn đọc hết cả menu.",
+      "bang_chung_truoc": { "so_link_bat_duoc_focus_khi_dong": 16, "co_inert": false, "co_aria_hidden": false, "tong_diem_dung_tren_trang": 33 },
+      "sua": "Thêm `inert={!isMobileMenuOpen}` vào ngăn kéo (React 19 nhận thuộc tính này trực tiếp).",
+      "bang_chung_sau": { "khi_dong_bat_duoc_focus": 0, "khi_mo_bat_duoc_focus": 16 }
+    },
+    {
+      "id": "hop-thoai-khong-giam-tab",
+      "persona": "ban-phim (Quang Vinh)",
+      "muc_do": "nặng",
+      "trieu_chung": "Hộp thoại 'Đã có lượt làm trước đó' khai `aria-modal=true` nhưng không giam Tab. Đứng ở nút cuối bấm Tab MỘT cú là focus rơi ra logo trang, tức người dùng bị đẩy ra sau một lớp mờ họ không đóng được.",
+      "bang_chung_truoc": {
+        "diem_dung_trong_hop_thoai": 2,
+        "diem_dung_ben_ngoai_van_vao_duoc": 20,
+        "do_bang_phim_that": "Tab từ 'Làm lượt mới' -> focus nhảy tới 'Thương Hồ's Class' (ngoài hộp thoại)"
+      },
+      "sua": "Nâng `focusDialog` trong Diagnostic.tsx thành bẫy focus dùng chung cho cả BA hộp thoại. Ref callback của React 19 trả về hàm dọn dẹp nên không cần thêm effect.",
+      "bang_chung_sau": {
+        "Tab_tu_nut_cuoi": "-> 'Xem lại kết quả cũ', vẫn trong hộp thoại",
+        "ShiftTab_tu_nut_dau": "-> 'Làm lượt mới', vẫn trong hộp thoại"
+      }
+    },
+    {
+      "id": "phien-het-han-bi-ghi-nhu-loi-he-thong",
+      "persona": "quay-lai (Bảo Ngọc) — để tab qua đêm rồi quay lại",
+      "muc_do": "vừa",
+      "trieu_chung": "Vé phiên hết hạn làm Auth.js ném JWTSessionError ra console.error kèm stack trace và NGUYÊN payload token — studentId với jti của học sinh rơi vào log. Hết hạn là chuyện bình thường, không phải sự cố.",
+      "bang_chung_truoc": { "so_loi_console_tren_trang_reading": 4, "trong_do_cua_auth": 3, "lo_ra_log": ["sub", "studentId", "jti"] },
+      "sua": "Cấu hình `logger.error` trong auth.ts: JWTSessionError hạ xuống một dòng console.info, mọi lỗi khác giữ nguyên.",
+      "bang_chung_sau": { "so_loi_console_tren_trang_reading": 1 }
+    },
+    {
+      "id": "hydration-mismatch-moi-trang",
+      "persona": "to-mo (Đức Huy) — mở console xem có gì",
+      "muc_do": "vừa",
+      "trieu_chung": "Lenis gắn class `lenis` vào <html> trước khi React so khớp, nên MỌI trang ném một lỗi hydration. Vô hại nhưng che mất lỗi thật.",
+      "bang_chung_truoc": { "server": "...variable ...variable", "client": "...variable ...variable lenis" },
+      "sua": "`suppressHydrationWarning` trên đúng thẻ <html> (không lan xuống thẻ con).",
+      "bang_chung_sau": { "so_loi_console_tren_trang_reading": 0 }
+    },
+    {
+      "id": "nut-lat-anh-khong-co-ten",
+      "persona": "ban-phim (Quang Vinh)",
+      "muc_do": "vừa",
+      "trieu_chung": "Trang Kết quả học viên có 14 nút không tên (7 thẻ x mũi tên trái/phải). Trình đọc màn hình đọc ra mười bốn tiếng 'button' giống hệt nhau. Lớp phủ xem ảnh phóng to cũng vậy: nút đóng, hai mũi tên và các chấm chuyển ảnh đều không tên.",
+      "bang_chung_truoc": { "nut_khong_ten_tren_ket-qua-hoc-vien": 14 },
+      "sua": "aria-label theo tên học viên cho mũi tên trong thẻ; nút đóng/mũi tên/chấm của lớp phủ có tên và aria-current."
+    },
+    {
+      "id": "chu-mo-duoi-san-tuong-phan",
+      "persona": "mat-goc (Ngọc Ánh) — nhìn màn hình điện thoại ngoài sáng",
+      "muc_do": "vừa",
+      "trieu_chung": "10 chỗ dùng text-ink/45 và /50 (dưới nút 4.5:1 của WCAG 1.4.3). Đều là chữ hướng dẫn và chữ đếm tiến độ: 'Đã chọn 1/2', 'Kéo thả, hoặc chọn một đáp án rồi chọn ô', và bản ghi lời nói máy còn đang đoán.",
+      "bang_chung_truoc": { "text-ink/45": 4, "text-ink/50": 6 },
+      "sua": "Đưa hết về sàn text-ink/65. Riêng chữ 'máy còn đang đoán' trước đây chỉ phân biệt bằng ĐỘ MỜ — giờ đủ đậm và phân biệt bằng gạch chân chấm, tức hai dấu hiệu thay vì một.",
+      "bang_chung_sau": { "text-ink/45": 0, "text-ink/50": 0 }
+    },
+    {
+      "id": "trang-thieu-heading-cap-mot",
+      "persona": "ban-phim (Quang Vinh) — nhảy theo heading",
+      "muc_do": "nhẹ",
+      "trieu_chung": "/khoa-hoc và /tu-van không có h1 nào. Hai trang này dùng lại khối Services/Contact của trang chủ, mà ở đó chúng là mục cấp hai nằm dưới h1 của Hero.",
+      "sua": "Thêm h1 sr-only cho mỗi trang. Giao diện không đổi."
+    },
+    {
+      "id": "nut-menu-ten-tieng-anh",
+      "persona": "mat-goc (Ngọc Ánh) — dùng trình đọc màn hình tiếng Việt",
+      "muc_do": "nhẹ",
+      "trieu_chung": "Nút mở menu mang aria-label 'Toggle Menu' — chữ tiếng Anh duy nhất trình đọc màn hình đọc lên, và không cho biết bấm vào là mở hay đóng.",
+      "sua": "aria-label đổi theo trạng thái ('Mở menu' / 'Đóng menu'), thêm aria-expanded và aria-controls."
+    }
+  ],
+  "da_do_va_khong_thay_loi": [
+    { "muc": "Tràn ngang ở 360px", "ket_qua": "14 trang, không trang nào cuộn ngang (scrollWidth <= clientWidth). Các phần tử nằm ngoài màn hình đều thuộc ngăn kéo menu đang đóng." },
+    { "muc": "Ảnh thiếu alt", "ket_qua": "0 trên cả 14 trang." },
+    { "muc": "Ô nhập không nhãn", "ket_qua": "0 trên cả 14 trang, kể cả form hồ sơ của bài kiểm tra nền (10 ô, đủ nhãn, đánh dấu bắt buộc đúng)." },
+    { "muc": "Liên kết không tên", "ket_qua": "0 trên cả 14 trang." },
+    { "muc": "Hộp thoại nhận focus khi mở", "ket_qua": "Đúng: focus vào chính hộp thoại chứ không vào nút bên trong, nên màn thấp không bị cuộn mất tiêu đề." }
+  ]
+}

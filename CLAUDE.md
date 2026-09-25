@@ -183,6 +183,31 @@ phút ra cùng một đoạn chữ, mà đó đúng là thứ tiêu chí Trôi c
 ấy ĐẾM ĐƯỢC, không đoán. Danh sách tiếng ngập ngừng cố ý không có "like",
 "you know", "actually": chúng vừa là từ đệm vừa là từ thật.
 
+**`pointer-events-none` KHÔNG giấu được thứ gì khỏi bàn phím.** Ngăn kéo menu
+mobile khi đóng chỉ có `opacity-0 translate-x-full pointer-events-none` — đo
+được 16 liên kết vẫn bắt được focus, tức người dùng Tab qua một menu vô hình
+mười sáu lần. Giấu khỏi cả Tab lẫn trình đọc màn hình thì dùng `inert` (React
+19 nhận thẳng thuộc tính này). Cùng luật ấy cho mọi thứ "ẩn" bằng CSS.
+
+**`aria-modal="true"` chỉ là lời khai, không giam được Tab.** Ba hộp thoại của
+bài kiểm tra nền đều khai modal nhưng đo bằng PHÍM THẬT thì một cú Tab từ nút
+cuối là focus rơi ra logo trang, với 20 điểm dừng phía sau vẫn vào được. Bẫy
+focus nằm ở `focusDialog` trong `Diagnostic.tsx`, dùng chung cho cả ba — ref
+callback của React 19 trả về được hàm dọn dẹp nên không cần thêm effect. Đo
+bằng `.focus()` trong code KHÔNG chứng minh được gì ở đây: chỉ phím Tab thật
+mới cho biết trình duyệt đi đâu.
+
+**Vé phiên hết hạn không phải lỗi hệ thống.** Mặc định Auth.js ném
+`JWTSessionError` ra `console.error` kèm stack trace và nguyên payload token,
+tức `studentId` và `jti` của học sinh rơi vào log mỗi lần có ai để tab qua đêm.
+`logger.error` trong `auth.ts` hạ riêng lỗi đó xuống một dòng `info`; mọi lỗi
+khác giữ nguyên. Đo được: trang Reading từ 4 lỗi console xuống 1.
+
+**Lenis gắn class vào `<html>` trước khi React so khớp**, nên mọi trang từng
+ném một lỗi hydration. Đã đặt `suppressHydrationWarning` đúng thẻ `<html>` ở
+`app/layout.tsx` (không lan xuống thẻ con). Lỗi ấy vô hại nhưng nó che mất lỗi
+thật — console sạch thì lỗi mới hiện ra ngay.
+
 **Web Speech API có mặt trong trình duyệt tự động nhưng TRƠ.** Đo được:
 `SpeechRecognition` và `webkitSpeechRecognition` đều tồn tại trong Chromium của
 Playwright, nhưng gọi `start()` thì sáu giây sau vẫn không có `onstart`,

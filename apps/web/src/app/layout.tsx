@@ -58,9 +58,22 @@ export const metadata: Metadata = {
  */
 const LOCK_SCROLL = `(function(){var d=document.documentElement;d.classList.add('site-loading');setTimeout(function(){d.classList.remove('site-loading')},8000)})()`;
 
+/*
+  `suppressHydrationWarning` chỉ cho riêng thẻ `<html>`.
+
+  Lenis gắn class `lenis` vào `<html>` trước khi React kịp so khớp, nên MỌI
+  trang đều ném một lỗi hydration vào console. Lỗi ấy vô hại nhưng nó che mất
+  lỗi thật — đo được: trang Reading có 4 lỗi console thì 1 là cái này, và nó
+  lặp lại ở mọi trang. Thuộc tính này sinh ra đúng cho cảnh script bên thứ ba
+  sửa thẻ gốc, và nó KHÔNG lan xuống các thẻ con.
+*/
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" className={`${body.variable} ${mono.variable}`}>
+    <html
+      lang="vi"
+      className={`${body.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         <script dangerouslySetInnerHTML={{ __html: LOCK_SCROLL }} />
         {children}

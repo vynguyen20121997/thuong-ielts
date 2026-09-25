@@ -188,12 +188,14 @@ export default function RecordDesk({
                     <>
                       {" "}
                       {/* Phần máy còn đang đoán — mờ hơn, vì nó còn đổi. */}
-                      <span className="text-ink/45">{speech.interimText}</span>
+                      <span className="text-ink/65 underline decoration-dotted decoration-ink/30 underline-offset-4">
+                        {speech.interimText}
+                      </span>
                     </>
                   )}
                 </p>
               ) : (
-                <p className="text-sm text-ink/50">
+                <p className="text-sm text-ink/65">
                   {speech.status === "unsupported"
                     ? "Trình duyệt này không nghe được lời nói (Firefox chưa có). File thu vẫn lưu được, nhưng chưa chấm được."
                     : speech.status === "listening"

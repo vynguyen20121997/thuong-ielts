@@ -166,20 +166,39 @@ export default function Header() {
         </div>
 
         {/* Mobile Menu Button */}
+        {/*
+          Tên nút phải nói TRẠNG THÁI, và nói bằng tiếng Việt như cả trang.
+          "Toggle Menu" là chữ duy nhất bằng tiếng Anh mà trình đọc màn hình
+          đọc lên ở đây, và nó không cho biết bấm vào là mở hay đóng.
+          `aria-expanded` + `aria-controls` nối nút với đúng ngăn kéo nó điều
+          khiển, để người dùng biết mình vừa mở ra cái gì.
+        */}
         <button
+          type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="lg:hidden p-2 text-brand hover:text-brand-deep transition-colors cursor-pointer shrink-0"
-          aria-label="Toggle Menu"
+          aria-label={isMobileMenuOpen ? "Đóng menu" : "Mở menu"}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-menu-drawer"
           id="mobile-menu-toggle"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/*
+        Mobile Menu Drawer
+
+        `inert` khi đang đóng, không chỉ `pointer-events-none`. Đã đo: ngăn kéo
+        đóng vẫn giữ 16 liên kết bắt được focus, nên người dùng bàn phím Tab
+        qua một menu vô hình — focus biến mất khỏi màn hình mười sáu lần liền,
+        và trình đọc màn hình vẫn đọc hết. `pointer-events-none` chỉ chặn chuột.
+        `inert` gỡ cả nhánh khỏi thứ tự Tab lẫn cây trợ năng bằng một thuộc tính.
+      */}
       <div
         className={`fixed inset-0 top-[64px] bg-mist z-40 lg:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}
         id="mobile-menu-drawer"
+        inert={!isMobileMenuOpen}
       >
         <div className="flex flex-col gap-7">
           <Link

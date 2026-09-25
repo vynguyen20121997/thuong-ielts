@@ -279,13 +279,17 @@ export default function Testimonials({
                 {images.length > 1 && (
                   <>
                     <button
+                      type="button"
                       onClick={(e) => changeCardImage(e, test.id, -1, images.length)}
+                      aria-label={`Ảnh trước, bảng điểm ${test.studentName}`}
                       className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-ink rounded-full shadow-sm transition-colors cursor-pointer"
                     >
                       <ChevronLeft size={16} />
                     </button>
                     <button
+                      type="button"
                       onClick={(e) => changeCardImage(e, test.id, 1, images.length)}
+                      aria-label={`Ảnh sau, bảng điểm ${test.studentName}`}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-white/80 hover:bg-white text-ink rounded-full shadow-sm transition-colors cursor-pointer"
                     >
                       <ChevronRight size={16} />
@@ -542,7 +546,9 @@ export default function Testimonials({
               id="proof-lightbox-overlay"
             >
               <button
+                type="button"
                 onClick={() => setSelectedProofImages(null)}
+                aria-label="Đóng ảnh phóng to"
                 className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer"
               >
                 <X size={24} />
@@ -558,7 +564,9 @@ export default function Testimonials({
                 <div className="relative w-full flex items-center justify-center">
                   {selectedProofImages.length > 1 && (
                     <button
+                      type="button"
                       onClick={() => changeLightboxImage(-1, selectedProofImages.length)}
+                      aria-label="Ảnh trước"
                       className="absolute left-0 md:-left-14 p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer z-10"
                     >
                       <ChevronLeft size={22} />
@@ -573,7 +581,9 @@ export default function Testimonials({
 
                   {selectedProofImages.length > 1 && (
                     <button
+                      type="button"
                       onClick={() => changeLightboxImage(1, selectedProofImages.length)}
+                      aria-label="Ảnh sau"
                       className="absolute right-0 md:-right-14 p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors cursor-pointer z-10"
                     >
                       <ChevronRight size={22} />
@@ -586,7 +596,10 @@ export default function Testimonials({
                     {selectedProofImages.map((_, i) => (
                       <button
                         key={i}
+                        type="button"
                         onClick={() => setSelectedProofIndex(i)}
+                        aria-label={`Xem ảnh ${i + 1} trên ${selectedProofImages.length}`}
+                        aria-current={i === selectedProofIndex}
                         className={`h-1.5 rounded-full transition-all cursor-pointer ${i === selectedProofIndex ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"}`}
                       />
                     ))}

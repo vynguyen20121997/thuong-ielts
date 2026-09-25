@@ -139,7 +139,7 @@ export default function SpeakingReport({
                       <b className="font-mono text-2xs font-extrabold tracking-wider">
                         {c.id}
                       </b>
-                      <span className="text-2xs font-bold text-ink/45">
+                      <span className="text-2xs font-bold text-ink/65">
                         chưa chấm
                       </span>
                     </p>

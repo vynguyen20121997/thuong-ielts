@@ -103,6 +103,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
   pages: { signIn: "/dang-nhap", error: "/dang-nhap" },
   trustHost: true,
+  /*
+    Vé phiên hết hạn KHÔNG phải lỗi hệ thống.
+
+    Mặc định Auth.js ném `JWTSessionError` ra `console.error` kèm stack trace
+    và nguyên payload của token — tức `studentId` và `jti` của học sinh rơi vào
+    log mỗi lần có ai để tab qua đêm rồi quay lại. Hai cái hại: log đầy tiếng
+    ồn nên lỗi thật chìm mất, và id học sinh nằm trong log mà chẳng để làm gì.
+
+    Hết hạn thì trang tự đưa về đăng nhập — đó là đường đi đúng, không cần báo
+    động. Mọi lỗi khác vẫn ghi nguyên vẹn.
+  */
+  logger: {
+    error(error: Error) {
+      if (error?.name === "JWTSessionError") {
+        console.info("[auth] vé phiên hết hạn hoặc không đọc được — cho đăng nhập lại.");
+        return;
+      }
+      console.error(error);
+    },
+  },
   callbacks: {
     /**
      * OAuth: đây là chỗ học viên được tạo hoặc nối vào tài khoản cũ. Trả về

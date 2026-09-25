@@ -77,8 +77,50 @@ const blockSection = (blockId: string): Section | null =>
   tiêu đề bị đẩy khỏi tầm nhìn (đo được scrollTop 111px, đỉnh hộp ở -92px).
   React không áp `autoFocus` cho <div>, nên phải gọi tay qua ref.
 */
+const DIALOG_STOPS =
+  'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
+/*
+  …và GIAM Tab lại trong hộp thoại.
+
+  Đo được trước khi sửa: hộp "Đã có lượt làm trước đó" có đúng hai điểm dừng,
+  đứng ở nút cuối bấm Tab MỘT cú là focus rơi ra logo trang — tức lớp phủ khai
+  `aria-modal="true"` nhưng 20 điểm dừng phía sau vẫn vào được. Người dùng bàn
+  phím bị đẩy ra sau một lớp mờ họ không đóng được, đúng lỗi đã sửa cho hộp
+  thoại kết quả Writing mà ba hộp ở đây bị bỏ sót.
+
+  Đặt ở ref callback để cả ba hộp thoại dùng chung một bản: React 19 cho phép
+  ref callback trả về hàm dọn dẹp, nên gỡ listener không cần thêm effect.
+*/
 const focusDialog = (el: HTMLDivElement | null) => {
-  if (el && !el.contains(document.activeElement)) el.focus();
+  if (!el) return;
+  if (!el.contains(document.activeElement)) el.focus();
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key !== "Tab") return;
+    const stops = Array.from(
+      el.querySelectorAll<HTMLElement>(DIALOG_STOPS),
+    ).filter((node) => node.offsetParent !== null);
+    /* Hộp chỉ có chữ thì giữ focus ở chính nó, đừng thả ra ngoài. */
+    if (!stops.length) {
+      event.preventDefault();
+      el.focus();
+      return;
+    }
+    const first = stops[0];
+    const last = stops[stops.length - 1];
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || active === el)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  el.addEventListener("keydown", onKeyDown);
+  return () => el.removeEventListener("keydown", onKeyDown);
 };
 const clock = (n: number) =>
   `${Math.floor(n / 60)}:${String(Math.floor(n % 60)).padStart(2, "0")}`;
