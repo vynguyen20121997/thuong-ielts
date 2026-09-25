@@ -405,7 +405,7 @@
 .diag-report-meta,
 .diag-report-disclaimer {
   margin-top: 10px;
-  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 13px;
 }
 .diag-report-disclaimer {
@@ -436,7 +436,7 @@
   gap: 3px;
 }
 .diag-overall-score span {
-  color: color-mix(in srgb, var(--color-ink) 57%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 12px;
   font-weight: 650;
 }
@@ -450,7 +450,7 @@
 }
 .diag-overall-score small {
   margin-left: 2px;
-  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 0.52em;
   letter-spacing: 0;
 }
@@ -516,7 +516,7 @@
 }
 .diag-score-card-top strong small,
 .diag-feedback-score small {
-  color: color-mix(in srgb, var(--color-ink) 42%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 0.57em;
   letter-spacing: 0;
 }
@@ -536,7 +536,7 @@
 }
 .diag-score-caption {
   min-height: 38px;
-  color: color-mix(in srgb, var(--color-ink) 63%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 13px;
   line-height: 1.45;
 }
@@ -557,7 +557,7 @@
   letter-spacing: -0.04em;
 }
 .diag-feedback-heading p {
-  color: color-mix(in srgb, var(--color-ink) 52%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 12px;
   font-style: italic;
 }
@@ -607,7 +607,7 @@
   letter-spacing: -0.05em;
 }
 .diag-feedback-col > header strong small {
-  color: color-mix(in srgb, var(--color-ink) 42%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 0.55em;
   letter-spacing: 0;
 }
@@ -651,7 +651,7 @@
   white-space: nowrap;
 }
 .diag-feedback-score small {
-  color: color-mix(in srgb, var(--color-ink) 42%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 0.72em;
   letter-spacing: 0;
 }
@@ -681,7 +681,7 @@
   gap: 8px;
 }
 .diag-feedback-meta small {
-  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   font-weight: 650;
 }
@@ -726,7 +726,7 @@
 }
 .diag-feedback-note {
   margin-top: 9px;
-  color: color-mix(in srgb, var(--color-ink) 52%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 12px;
   font-style: italic;
 }
@@ -1937,7 +1937,7 @@
 }
 .diag-rm-because {
   margin-top: 9px;
-  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-sm);
   line-height: 1.6;
 }
@@ -1964,7 +1964,7 @@
 }
 .diag-rm-legend {
   grid-column: 1 / -1;
-  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
 }
 .diag-rm-gauge {
@@ -1989,7 +1989,7 @@
   letter-spacing: -0.04em;
 }
 .diag-rm-gauge strong small {
-  color: color-mix(in srgb, var(--color-ink) 42%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 0.6em;
 }
 .diag-rm-track {
@@ -2165,7 +2165,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 4px 10px;
-  color: color-mix(in srgb, var(--color-ink) 58%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -2182,7 +2182,7 @@
 }
 .diag-verdict-empty,
 .diag-verdict-note {
-  color: color-mix(in srgb, var(--color-ink) 60%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-sm);
   line-height: 1.6;
 }
@@ -2309,7 +2309,7 @@
 }
 .diag-rm-step.is-done .diag-rm-step-body p {
   text-decoration: line-through;
-  text-decoration-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--color-ink) 65%, transparent);
 }
 .diag-rm-skills {
   display: flex;
@@ -2331,7 +2331,7 @@
   align-items: center;
   gap: 8px;
   min-height: 44px;
-  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   font-weight: 700;
   cursor: pointer;
@@ -2373,7 +2373,7 @@
 }
 .diag-rm-because {
   margin-top: 9px;
-  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-sm);
   line-height: 1.6;
 }
@@ -2415,7 +2415,7 @@
   line-height: 1.6;
 }
 .diag-rm-progress {
-  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-sm);
   font-weight: 650;
 }
@@ -2588,7 +2588,7 @@
   background: var(--color-mist-3);
 }
 .diag-old-scores span {
-  color: color-mix(in srgb, var(--color-ink) 58%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   font-weight: 700;
 }
@@ -2600,7 +2600,7 @@
   letter-spacing: -0.04em;
 }
 .diag-old-scores b small {
-  color: color-mix(in srgb, var(--color-ink) 42%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: 0.55em;
   letter-spacing: 0;
 }
@@ -2653,7 +2653,7 @@
 }
 .diag-writing-count {
   margin-top: 10px;
-  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   font-weight: 700;
 }
@@ -2704,7 +2704,7 @@
 }
 .diag-wr-overall span {
   max-width: 15ch;
-  color: color-mix(in srgb, var(--color-ink) 58%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   line-height: 1.35;
 }
@@ -2763,7 +2763,7 @@
   background: var(--color-brand);
 }
 .diag-wr-card-name {
-  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   line-height: 1.35;
 }
@@ -2798,7 +2798,7 @@
   font-weight: 700;
 }
 .diag-wr-detail-head em {
-  color: color-mix(in srgb, var(--color-ink) 52%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   font-style: normal;
 }
@@ -2832,13 +2832,13 @@
 }
 .diag-wr-words {
   margin-bottom: 12px;
-  color: color-mix(in srgb, var(--color-ink) 58%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   font-weight: 700;
 }
 .diag-wr-foot {
   margin-top: 16px;
-  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 65%, transparent);
   font-size: var(--text-2xs);
   line-height: 1.6;
 }
