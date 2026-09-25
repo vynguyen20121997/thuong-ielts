@@ -15,6 +15,8 @@ npm run dev:web          # http://localhost:2000
 npm run check:reading    # kiểm tra dữ liệu đề đọc trong DB
 npm run check:listening  # kiểm tra đề nghe (đáp án + audio theo section)
 npm run check:coverage   # còn thiếu đề nào, bộ nào
+npm run check:diagnostic # bài kiểm tra nền: chấm, lộ trình, API
+npm run check:writing-task-type  # nhận dạng dạng đề Task 2
 npm run check:vocab      # khoá chống mất lượt + chuỗi ngày học (cần dev server đang chạy)
 npm run check:practice   # đáp án kín, điểm do server quyết, nộp trùng (cần dev server)
 npm run check:class      # học phí, cách ly giáo viên, nhận xét riêng
@@ -29,6 +31,79 @@ npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần
 Monorepo npm workspaces: `apps/web` (trang chính), `apps/admin` (trang quản trị),
 `packages/db` (pool Postgres dùng chung). Cấu hình DB nằm ở `apps/web/.env.local`
 (xem `.env.example`). Máy dev đang chạy Windows; các script viết bằng `tsx`.
+
+## Bản đồ — trang này có những gì
+
+Đọc mục này trước, rồi mới đọc phần quyết định bên dưới. Hai app, cùng một DB:
+
+**`apps/web` — học sinh.**
+
+| Đường dẫn | Là gì | Trạng thái |
+|---|---|---|
+| `/kiem-tra-nen-tang-ielts` | Bài kiểm tra nền 53 câu + Writing 15 phút, ra lộ trình theo tháng | Xong |
+| `/kiem-tra-kien-thuc/reading` `/listening` | Luyện đề có bấm giờ, chấm ở server | Xong |
+| `/kiem-tra-kien-thuc/writing` | Luyện Task 2: checklist, band 4 tiêu chí, 5 mục hướng dẫn | Xong, 2/5 mục cần model sinh văn bản |
+| `/kiem-tra-kien-thuc/speaking` | Thu âm + nói ra chữ, chấm 3/4 tiêu chí | Xong; Phát âm cần model NGHE được |
+| `/hoc-tu-vung` | Anki giãn cách (SM-2) | Xong, kho gần rỗng |
+| `/hoc-phi` | Học phí + mã VietQR tự dựng | Xong |
+| `/vao/[token]` | Cửa vào bài cô giao, cho cả khách | Xong |
+
+**`apps/admin` — giáo viên.** Giao bài · bảng lớp trực tiếp (Socket qua Postgres
+`LISTEN/NOTIFY`) · chấm lại bài kiểm tra nền · **Học viên & học phí** (lớp, học phí,
+nhận xét riêng) · **Từ vựng** và **Đề Writing** (soạn nội dung) · Hero, testimonial,
+feedback.
+
+`/phong-luyen-tap/*` chỉ là rewrite sang `/kiem-tra-kien-thuc/*` (`next.config.mjs`) —
+link cũ còn sống, đừng tưởng là hai bộ trang.
+
+**`packages/`** — `db` (pool + hợp đồng dùng chung giữa hai app: `khoaLop`, `maDeTuSlug`,
+`banNhip`), `diagnostic` (chấm + lộ trình của bài kiểm tra nền).
+
+**Bộ kiểm** — `npm run check:*`, xem mục "Chạy dự án". Mỗi bộ đều ĐÃ TỪNG được phá cho
+đỏ rồi mới tin; đừng thêm bộ nào mà chưa chứng minh nó đỏ được.
+
+## Còn gì chưa làm — cập nhật 25/09/2026
+
+Đo bằng script, không phải nhớ. Xếp theo mức chặn người dùng.
+
+**1. Kho nội dung gần rỗng, và đó mới là nút thắt.** Reading 468 đề / Listening 138 đề,
+nhưng Writing **7 đề** (đúng **1 đề** có ngân hàng ý và kiến thức nền) và từ vựng **1 bộ
+chính thức / 6 thẻ**. Trang soạn nội dung đã có (`/noi-dung/tu-vung`, `/noi-dung/writing`)
+— giờ thiếu người ngồi nhập, không thiếu code.
+
+**2. Giải thích đáp án.** 1758/6187 câu trống, toàn bộ Cam 12–18 + GUIDE + TRAIN. Học
+sinh làm Cam 15 sai một câu thì không biết vì sao sai. Cần nguồn, xem mục "Nội dung đang
+thiếu".
+
+**3. 318/468 đề Reading không làm được cả bài.** Bộ VOL slug dạng
+`vol-5-test-2-passage-3`, không khớp `maDeTuSlug` nên chỉ làm lẻ từng passage — mà band
+ước lượng từ 13 câu thì nhiễu. Muốn sửa thì mở rộng luật ở `packages/db/src/live.ts` VÀ
+`isTestId` bên web cùng lúc; đổi một bên là cô giao được thứ học sinh mở không ra.
+
+**4. Ba cổng AI treo.** Đều khai `available() === false` và trả `null` — KHÔNG bịa, nhưng
+học sinh mở ra thấy ô trống:
+- `features/vocab/application/ports.ts` — sinh phiên âm/nghĩa/ví dụ
+- `features/practice/application/essayPorts.ts` — Grammar Enhancement, bài mẫu
+- `features/speaking/application/ports.ts` — gợi ý ý tưởng, bốc chủ đề, chấm Phát âm
+
+Ba cái đầu cần một model SINH VĂN BẢN (TypeSafe chỉ trả `noul`/`score`/`choice`); riêng
+Phát âm cần model NGHE được audio.
+
+**5. Ngân hàng đề Speaking vẫn nằm trong code** (`features/speaking/domain/bank.ts`).
+Muốn cô soạn được thì phải chuyển sang DB trước, rồi làm trang như `/noi-dung/tu-vung`.
+
+**6. Trong sheet của cô, chưa động tới:** Listening dictation (chép chính tả), Writing
+Task 1 (cần cô cấp đề biểu đồ).
+
+**7. Listening không có tín hiệu độ khó thật.** Cả 138 đề đều `level='medium'` trong DB;
+độ khó chỉ có nhờ bảng đè tay cho Cam 10–18 (`domain/keyPracticeDifficulty.ts`).
+
+**Chưa có bộ kiểm nào che:** nhịp realtime lên bảng lớp của cô, tự nộp khi hết giờ, và
+luồng bài kiểm tra nền đầy đủ (làm hết 53 câu → nộp → đọc lộ trình).
+
+**Cảnh báo khi đọc số liệu sử dụng:** 30 ngày tính tới 25/09/2026 chỉ có 1 lượt nộp và 8
+lượt bỏ dở, và phần lớn tài khoản trong DB là persona mô phỏng. Đừng suy hành vi người
+dùng thật từ những con số đó.
 
 ## Những quyết định đã chốt, đừng đảo ngược nếu chưa hiểu lý do
 
@@ -415,8 +490,11 @@ Nguồn là Google Drive `1wxHB3pxhP3clLBLo1dHrGstxvTP5-Ffk`. Đã kiểm tận 
 
 - **Cam 11 Reading Test 2, 3, 4**: chỉ có đề, không có đáp án ở bất kỳ đâu. Không nhập
   được, và **không được đoán đáp án**.
-- **Giải thích đáp án**: chỉ Cam 10 có. Cam 12–18 file đáp án là key trần, nên
-  1078/1269 câu Reading không có giải thích. Không phải parser bỏ sót.
+- **Giải thích đáp án**: thiếu 1758/6187 câu (đo 25/09/2026, `npm run check:reading`
+  in ra từng đề). Phân bố KHÔNG như trực giác — toàn bộ VOL 1–10 và Cam 10 có đủ, còn
+  **Cam 12–18, GUIDE, TRAIN 1–2 thì trống sạch**. Cam 11 chỉ thiếu 2/33. Nguyên nhân là
+  file đáp án nguồn của mấy bộ kia là key trần, không phải parser bỏ sót.
+  (Chú thích cũ ở đây từng ghi "chỉ Cam 10 có, 1078/1269 câu" — sai, đã đo lại.)
 - **Audio Listening**: Cam 16 không có file nào; Cam 18 T4 cũng vậy. Vài đề chỉ có một
   phần — những đề đó mang cột `note` và hiện cảnh báo vàng cho học sinh.
 
@@ -424,7 +502,7 @@ Chạy `npm run check:coverage` để xem tình trạng hiện tại thay vì d�
 
 ## Hai chỗ chưa nhất quán, biết trước kẻo ngạc nhiên
 
-- **Reading lưu mỗi passage một dòng** (99 dòng = 33 đề × 3 passage), còn **Listening lưu
+- **Reading lưu mỗi passage một dòng** (468 dòng, đo 25/09/2026), còn **Listening lưu
   cả bài một dòng**. Thi cả test 60 phút thì ghép ba dòng lúc truy vấn
   (`getReadingPaper`), không đổi schema — ghép được là nhờ id câu hỏi duy nhất toàn cục
   (`cam10-t1-p2-q14`) và số câu đã đánh liền 1→40 sẵn trong dữ liệu. Làm lẻ một passage
