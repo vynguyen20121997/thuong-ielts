@@ -15,6 +15,8 @@ const NAV_ITEMS = [
     code cả hai đều từng gọi là "lớp".
   */
   { label: "Học viên & học phí", href: "/hoc-vien" },
+  { label: "Từ vựng", href: "/noi-dung/tu-vung" },
+  { label: "Đề Writing", href: "/noi-dung/writing" },
   { label: "Kiểm tra nền", href: "/chan-doan" },
   /*
     Bỏ "Trang chủ (Hero)" khỏi thanh điều hướng theo yêu cầu. Trang

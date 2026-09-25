@@ -21,6 +21,7 @@ npm run check:class      # học phí, cách ly giáo viên, nhận xét riêng
 npm run check:tuition    # mã VietQR + luật "lời khai không phải là tiền" (cần dev server)
 npm run check:personas   # cô + học sinh đi hết một vòng dạy-học (cần cả web lẫn admin)
 npm run check:baigiao    # các chốt của bài giao: che kết quả, đóng bài, một lần, khách
+npm run check:noidung    # cô soạn ở admin -> học sinh thấy ở web (cần cả hai server)
 npm run migrate:class    # dựng bảng quản lý lớp, chạy lại nhiều lần vẫn an toàn
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
@@ -267,6 +268,21 @@ một phát ra cả bài. Nên so từng câu với đáp án của chính nó, 
 Cũng ở script đó: chọn đề để kiểm phải lấy đề có NHIỀU CÂU TỰ GÕ nhất, đừng
 lấy đề đầu bảng. Lần đầu chạy nó vớ phải một đề toàn trắc nghiệm rồi in "dò 0
 câu" — xanh mà không kiểm gì.
+
+**Bộ thẻ từ vựng KHÔNG GIAO thì học viên không thấy một thẻ nào.**
+`ensureReviews` chỉ lấy thẻ từ bộ có dòng trong `vocab_assignments`, hoặc bộ
+chính em ấy tự tạo. Bảng ấy có từ đầu và web vẫn đọc nó, nhưng suốt một thời
+gian KHÔNG CHỖ NÀO tạo ra dòng giao — nên mọi bộ cô soạn đều vô hình, và
+không ai báo lỗi gì. Công tắc "Giao cho cả lớp" ở `/noi-dung/tu-vung/[id]` là
+chỗ duy nhất tạo dòng đó; danh sách bộ thẻ cũng cảnh báo bộ chưa giao.
+
+Thu lại chỉ xoá dòng giao, KHÔNG đụng `vocab_reviews`: lịch ôn các em tích
+luỹ được giữ nguyên, giao lại là học tiếp từ chỗ đang dở.
+
+**Ngân hàng ý và từ gợi ý của màn Writing KHÔNG nằm trong HTML.** `WritingDesk`
+tải chúng bằng `fetch("/api/practice/writing/coach")` sau khi trang đã hiện.
+Kiểm bằng cách dò chữ trong HTML của trang là kiểm nhầm chỗ — phải gọi chính
+route đó. Đã sai một lần ở `check-noidung.ts`.
 
 **`openAttempt` CỐ Ý dùng lại lượt `in_progress` của cùng một đề.** Đó là cách
 duy nhất đúng khi học sinh F5 hoặc mở hai tab — `expires_at` giữ nguyên nên
