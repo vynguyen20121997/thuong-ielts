@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pool, taoBaiGiao } from "@thuong-ielts/db";
+import { laMaDeTest, pool, taoBaiGiao } from "@thuong-ielts/db";
 
 import { teacherHienTai } from "../../../lib/phien";
 
@@ -31,6 +31,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Mã đề không hợp lệ." }, { status: 400 });
   }
 
+  /*
+    PHẠM VI suy ra từ chính mã đề, không nhận từ body.
+
+    Reading có hai dạng: mã đề cả bài (`cam10-test1`, ghép ba passage) và slug
+    của một passage lẻ (`vol-5-test-2-passage-3`). Trước đây route luôn đặt
+    `scope: "test"`, nên bài giao cho một passage lẻ tạo ra xong là hỏng —
+    phía học sinh đòi `isTestId` cho phạm vi "test" và từ chối mở. Cô thấy
+    link tạo thành công, học sinh bấm vào nhận "Không tìm thấy đề này", và
+    không bên nào báo lỗi.
+
+    Bộ VOL không có mã đề cả bài, nên nó đi đường "paper" — giao từng passage,
+    học sinh mở được. Thà giao lẻ còn hơn giao một link chết.
+  */
+  const scope: "test" | "paper" =
+    skill === "listening" || laMaDeTest(target) ? "test" : "paper";
+
   const title =
     skill === "listening"
       ? (
@@ -41,8 +57,11 @@ export async function POST(request: Request) {
         ).rows[0]?.title
       : (
           await pool.query(
-            `SELECT min(title) AS title FROM reading_tests
-              WHERE (slug = $1 OR slug LIKE $1 || '-%') AND status = 'published'`,
+            scope === "test"
+              ? `SELECT min(title) AS title FROM reading_tests
+                  WHERE slug LIKE $1 || '-%' AND status = 'published'`
+              : `SELECT title FROM reading_tests
+                  WHERE slug = $1 AND status = 'published' LIMIT 1`,
             [target]
           )
         ).rows[0]?.title;
@@ -54,7 +73,7 @@ export async function POST(request: Request) {
   const bai = await taoBaiGiao({
     teacherId,
     skill,
-    scope: "test",
+    scope,
     target,
     // Tên passage đầu bị cắt đuôi để thành tên cả đề.
     title: String(title).replace(/ · Passage \d+.*$/, ""),

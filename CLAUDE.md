@@ -19,6 +19,7 @@ npm run check:vocab      # khoá chống mất lượt + chuỗi ngày học (c�
 npm run check:practice   # đáp án kín, điểm do server quyết, nộp trùng (cần dev server)
 npm run check:class      # học phí, cách ly giáo viên, nhận xét riêng
 npm run check:tuition    # mã VietQR + luật "lời khai không phải là tiền" (cần dev server)
+npm run check:personas   # cô + học sinh đi hết một vòng dạy-học (cần cả web lẫn admin)
 npm run migrate:class    # dựng bảng quản lý lớp, chạy lại nhiều lần vẫn an toàn
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
@@ -265,6 +266,32 @@ một phát ra cả bài. Nên so từng câu với đáp án của chính nó, 
 Cũng ở script đó: chọn đề để kiểm phải lấy đề có NHIỀU CÂU TỰ GÕ nhất, đừng
 lấy đề đầu bảng. Lần đầu chạy nó vớ phải một đề toàn trắc nghiệm rồi in "dò 0
 câu" — xanh mà không kiểm gì.
+
+**Postgres `substring(... from ...)` KHÔNG hiểu `\d`.** Đo trên chính DB của
+dự án: `substring('cam10-test1-stepwells' from '^(cam\d+-test\d+)-')` trả về
+`NULL`, còn `[0-9]` trả về `cam10-test1`. Bẫy này đã sập HAI lần liên tiếp ở
+`apps/admin`: lần đầu `\d` trong template literal bị nuốt thành `d`, lần sau
+sửa bằng `String.raw` cho đúng `\d` thì vỡ vì Postgres. Cả hai lần đều im
+lặng — mọi slug rơi về nhánh `COALESCE`, không câu lệnh nào báo lỗi.
+
+Hậu quả đo được: trang giao bài dựng ra 468 mục mà học sinh bấm vào mục NÀO
+cũng nhận "Không tìm thấy đề này". Giờ mẫu nằm ở `MA_DE_SQL` trong
+`packages/db/src/live.ts`, dùng chung cho mọi truy vấn.
+
+**"Mã đề" có MỘT luật, ở `packages/db`.** `maDeTuSlug` / `laMaDeTest` /
+`MA_DE_SQL` phải khớp đúng `isTestId` bên `apps/web` — hàm quyết định học sinh
+có mở được đề hay không. Trước đây ba nơi tự viết ba luật khác nhau (web nhận
+cam/guide/train, catalog nhận thêm vol, admin chỉ cam và còn hỏng regex), nên
+cô giao được thứ học sinh không mở được.
+
+Bộ VOL cố ý đứng ngoài: slug của nó là `vol-5-test-2-passage-3`, có dấu gạch
+giữa `test` và số. Route giao bài vì thế tự suy ra `scope`: có mã đề cả bài thì
+`test`, không thì `paper` (giao từng passage). Thà giao lẻ còn hơn giao link chết.
+
+**`res.text()` của fetch NUỐT BOM.** Chuẩn WHATWG bỏ BOM khi giải mã UTF-8, nên
+kiểm `text.charCodeAt(0) === 0xfeff` thì không đời nào thấy, dù file có BOM
+thật. Muốn kiểm BOM của file CSV thì đọc `arrayBuffer()` và soi ba byte
+`EF BB BF`.
 
 **`pointer-events-none` KHÔNG giấu được thứ gì khỏi bàn phím.** Ngăn kéo menu
 mobile khi đóng chỉ có `opacity-0 translate-x-full pointer-events-none` — đo

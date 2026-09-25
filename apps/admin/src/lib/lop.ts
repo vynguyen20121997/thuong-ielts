@@ -1,4 +1,4 @@
-import { docKhoaLop, maLop, pool } from "@thuong-ielts/db";
+import { MA_DE_SQL, docKhoaLop, maLop, pool } from "@thuong-ielts/db";
 
 /**
  * Bảng lớp — ai đang làm bài, tới đâu rồi.
@@ -113,11 +113,13 @@ export async function docLop(khoa: string): Promise<HocSinhTrongLop[]> {
  * và `cam12-test3` phải ra cùng một nhóm. Biểu thức dưới đây là bản SQL của
  * `maLop()` — hai chỗ phải nói cùng một thứ, nên sửa một chỗ thì nhớ chỗ kia.
  */
-// `String.raw` chứ không phải chuỗi thường: trong template literal của JS, `\d`
-// bị nuốt mất dấu gạch chéo và thành `d`, nên SQL sẽ đi tìm `camd+-testd+` —
-// không bao giờ khớp, không báo lỗi, và mọi đề lại tách thành từng lớp riêng.
-// Đã sập đúng cái bẫy này một lần.
-const MA_LOP_SQL = String.raw`COALESCE(substring(a.target from '^(cam\d+-test\d+)-'), a.target)`;
+// Mẫu lấy từ `MA_DE_SQL` của packages/db — MỘT luật duy nhất cho cả hai app.
+//
+// Từng viết tay ở đây và sai hai lần liền: lần đầu `\d` trong template literal
+// bị nuốt thành `d`, lần sau dùng `String.raw` cho đúng `\d` thì lại vỡ vì
+// `substring(... from ...)` của Postgres KHÔNG hiểu `\d` — trả về NULL. Cả hai
+// lần đều im lặng: mọi slug rơi về nhánh COALESCE, không báo lỗi gì.
+const MA_LOP_SQL = `COALESCE(substring(a.target from '${MA_DE_SQL}'), a.target)`;
 
 export interface DongBangDiem {
   attemptId: string;
@@ -329,11 +331,11 @@ async function biaNhieuDe(
   if (ds.length === 0) return m;
 
   const r = await pool.query(
-    `SELECT COALESCE(substring(slug from '^(cam\d+-test\d+)-'), slug) AS ma,
+    `SELECT COALESCE(substring(slug from '${MA_DE_SQL}'), slug) AS ma,
             min(collection) AS bo,
             array_agg(DISTINCT topic) FILTER (WHERE topic IS NOT NULL AND topic <> '') AS chu_de
        FROM reading_tests
-      WHERE COALESCE(substring(slug from '^(cam\d+-test\d+)-'), slug) = ANY($1)
+      WHERE COALESCE(substring(slug from '${MA_DE_SQL}'), slug) = ANY($1)
       GROUP BY 1`,
     [ds]
   );

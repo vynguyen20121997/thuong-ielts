@@ -45,7 +45,45 @@ export const KENH_NHIP = "nhip_lam_bai";
  * phòng không ai ngồi, và im lặng.
  */
 export function maLop(target: string): string {
-  return /^(cam\d+-test\d+)-/.exec(target)?.[1] ?? target;
+  return maDeTuSlug(target) ?? target;
+}
+
+/**
+ * Mẫu SQL của `maDeTuSlug`, để dùng trong `substring(... from ...)`.
+ *
+ * DÙNG `[0-9]` CHỨ KHÔNG `\d`. Đã đo trên chính DB của dự án:
+ * `substring('cam10-test1-stepwells' from '^(cam\d+-test\d+)-')` trả về NULL,
+ * còn `[0-9]` trả về `cam10-test1`. Sai chỗ này thì mọi slug rơi về nhánh
+ * COALESCE, không báo lỗi gì cả — và trang giao bài bên admin đã lặng lẽ tạo
+ * ra những bài giao mà học sinh bấm vào chỉ nhận được "Không tìm thấy đề này".
+ */
+export const MA_DE_SQL = "^((?:cam[0-9]+|guide|train[12])-test[0-9]+)-";
+
+/**
+ * Slug của một passage -> mã đề CẢ BÀI, hoặc `null` nếu slug không thuộc bộ đề
+ * nào ghép được thành một bài 40 câu.
+ *
+ * Phải khớp đúng `isTestId` bên `apps/web`: đó là hàm quyết định học sinh có
+ * mở được đề hay không. Hai bên lệch nhau thì cô giao được một bài mà học sinh
+ * không vào được — không bên nào báo lỗi.
+ *
+ * Bộ VOL cố ý ĐỨNG NGOÀI: slug của nó là `vol-5-test-2-passage-3`, dấu gạch
+ * giữa `test` và số, và phía web chưa nhận dạng đó. Trả `null` để nơi gọi biết
+ * mà giao theo từng passage thay vì giao cả bài rồi hỏng.
+ */
+export function maDeTuSlug(slug: string): string | null {
+  return /^((?:cam\d+|guide|train[12])-test\d+)-/.exec(slug)?.[1] ?? null;
+}
+
+/**
+ * `true` khi chuỗi này LÀ mã đề cả bài (không phải slug của một passage).
+ *
+ * Bản sao đúng của `isTestId` bên `apps/web` — hàm quyết định học sinh có mở
+ * được đề hay không. Ở đây để phía admin hỏi được cùng một câu hỏi trước khi
+ * tạo bài giao.
+ */
+export function laMaDeTest(value: string): boolean {
+  return /^(?:cam\d+|guide|train[12])-test\d+$/.test(value);
 }
 
 /**

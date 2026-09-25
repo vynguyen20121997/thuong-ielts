@@ -1,4 +1,4 @@
-import { pool, danhSachBaiGiao } from "@thuong-ielts/db";
+import { MA_DE_SQL, pool, danhSachBaiGiao } from "@thuong-ielts/db";
 
 import { teacherHienTai } from "../../../../lib/phien";
 import FormGiaoBai from "./FormGiaoBai";
@@ -18,7 +18,14 @@ export default async function TrangGiaoBai() {
   // Danh sách đề để cô chọn. Chỉ lấy cột tóm tắt — trang này không đụng tới
   // nội dung đề, và tuyệt đối không đụng tới `answer_key`.
   const { rows: readingTests } = await pool.query(
-    `SELECT DISTINCT COALESCE(substring(slug from '^(cam\\d+-test\\d+)-'), slug) AS target,
+    /*
+      Mẫu lấy từ `MA_DE_SQL` — đúng luật mà phía học sinh dùng để mở đề.
+
+      Viết tay ở đây từng làm mọi slug rơi về nhánh COALESCE, nên cô giao được
+      468 mục mà học sinh bấm vào mục nào cũng nhận "Không tìm thấy đề này".
+      Không bên nào báo lỗi: cô thấy link tạo xong, học sinh thấy trang trắng.
+    */
+    `SELECT DISTINCT COALESCE(substring(slug from '${MA_DE_SQL}'), slug) AS target,
             min(title) AS title
        FROM reading_tests
       WHERE status = 'published' AND owner_id IS NULL
