@@ -115,7 +115,7 @@ export async function listListeningTests(): Promise<ListeningTestSummary[]> {
   return listListeningTestsCached();
 }
 
-export async function getListeningTestBySlug(slug: string): Promise<ListeningTest | null> {
+async function loadListeningTestBySlug(slug: string): Promise<ListeningTest | null> {
   const { rows } = await pool.query<
     SummaryRow & { audio: ListeningTrack[]; questions: Question[] }
   >(
@@ -132,6 +132,8 @@ export async function getListeningTestBySlug(slug: string): Promise<ListeningTes
 }
 
 /** Server-only: the answers, for the submit route. */
+export const getListeningTestBySlug = unstable_cache(loadListeningTestBySlug, ["listening-paper-v1"], { revalidate: 60, tags: ["practice-listening-catalog"] });
+
 export async function getListeningAnswerKeyBySlug(
   slug: string,
 ): Promise<{ title: string; questions: Question[]; answerKey: AnswerKeyEntry[] } | null> {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -52,9 +52,10 @@ export default function ReadingPlayer({
 }) {
   const session = useReadingSession(paper, resume, timed);
   // Mobile only: the two panes do not fit side by side under `md`.
-  const [mobilePane, setMobilePane] = useState<"passage" | "questions">(
-    "passage",
-  );
+  const [mobilePane, setMobilePane] = useState<"passage" | "questions">("passage");
+  const [headingDropTarget, setHeadingDropTarget] = useState<string | null>(null);
+  const [selectedHeading, setSelectedHeading] = useState<string | null>(null);
+  const [columnWidth, setColumnWidth] = useState(50);
   /** Which question the student is typing in, so it can be highlighted. */
   const [activeNumber, setActiveNumber] = useState<number | null>(null);
 
@@ -258,9 +259,9 @@ export default function ReadingPlayer({
         the mouse comes back up, and the handler works out for itself which
         block it landed in.
       */}
-      <div className="grid md:grid-cols-2 gap-6 lg:gap-8 py-8 md:h-screen md:min-h-screen" onMouseUp={marks.captureSelection}>
+      <div style={{ "--reading-columns": `${columnWidth}fr 18px ${100 - columnWidth}fr` } as CSSProperties} className="grid md:grid-cols-[var(--reading-columns)] gap-3 py-8 md:h-screen md:min-h-screen" onMouseUp={marks.captureSelection}>
         {/* Passage */}
-        <div className={`${mobilePane === "passage" ? "block" : "hidden"} md:block md:min-h-0 md:overflow-y-auto md:pr-2`}>
+        <div className={`${mobilePane === "passage" ? "block" : "hidden"} min-w-0 md:block md:min-h-0 md:overflow-y-auto md:overscroll-y-contain md:pr-2`}>
           <div className="bg-white border border-black/5 rounded-2xl p-6 md:p-8 shadow-sm">
             <span className="text-2xs text-brand font-medium flex items-center gap-1.5 mb-3">
               <BookOpen size={12} />
@@ -284,11 +285,35 @@ export default function ReadingPlayer({
                   return label && new RegExp(`(?:paragraph|section)\\s+${label}\\b`, "i").test(question.prompt);
                 });
                 const headingOptions = headingQuestion && isChoiceQuestion(headingQuestion) ? headingQuestion.options : [];
+                const headingValue = headingQuestion ? session.answers[headingQuestion.id] ?? "" : "";
                 return (
                 <div key={index}>
                   {headingQuestion && (
                     <div className="mb-3 flex items-center gap-2">
-                      <label className="flex min-h-11 flex-1 items-center rounded-lg border-2 border-dashed border-brand/35 bg-leaf/10 px-3 text-sm">
+                      <label
+                        onClickCapture={(event) => {
+                          if (selectedHeading && headingOptions.includes(selectedHeading) && !isReview && session.status !== "submitting") {
+                            event.preventDefault();
+                            session.setAnswer(headingQuestion.id, selectedHeading);
+                            setSelectedHeading(null);
+                          }
+                        }}
+                        onDragOver={(event) => {
+                          if (!isReview && session.status !== "submitting") event.preventDefault();
+                        }}
+                        onDragEnter={() => setHeadingDropTarget(headingQuestion.id)}
+                        onDragLeave={() => setHeadingDropTarget((current) => current === headingQuestion.id ? null : current)}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          setHeadingDropTarget(null);
+                          const option = event.dataTransfer.getData("text/plain");
+                          if (!isReview && session.status !== "submitting" && headingOptions.includes(option)) {
+                            session.setAnswer(headingQuestion.id, option);
+                            setSelectedHeading(null);
+                          }
+                        }}
+                        className={`flex min-h-11 flex-1 items-center rounded-lg border-2 border-dashed px-3 text-sm transition-colors ${headingDropTarget === headingQuestion.id ? "border-brand bg-leaf/25" : headingValue ? "border-brand/50 bg-leaf/15" : "border-brand/35 bg-leaf/10"}`}
+                      >
                         <strong className="mr-2">{headingQuestion.number}</strong>
                         <select
                           value={session.answers[headingQuestion.id] ?? ""}
@@ -322,8 +347,16 @@ export default function ReadingPlayer({
           </div>
         </div>
 
+        <div role="separator" aria-label="Điều chỉnh độ rộng bài đọc và câu hỏi" aria-orientation="vertical" aria-valuemin={25} aria-valuemax={75} aria-valuenow={columnWidth} tabIndex={0}
+          onKeyDown={(event) => { if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); setColumnWidth((value) => Math.max(25, Math.min(75, value + (event.key === "ArrowLeft" ? -2 : 2)))); } }}
+          onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); event.preventDefault(); }}
+          onPointerMove={(event) => { if (!event.currentTarget.hasPointerCapture(event.pointerId)) return; const bounds = event.currentTarget.parentElement!.getBoundingClientRect(); setColumnWidth(Math.max(25, Math.min(75, (event.clientX - bounds.left) / bounds.width * 100))); }}
+          onPointerUp={(event) => event.currentTarget.releasePointerCapture(event.pointerId)}
+          className="hidden md:flex cursor-col-resize touch-none items-center justify-center bg-black/5 hover:bg-brand/15 focus-visible:outline-2 focus-visible:outline-brand">
+          <span className="rounded border border-brand/30 bg-white py-3 text-brand">↔</span>
+        </div>
         {/* Questions */}
-        <div className={`${mobilePane === "questions" ? "block" : "hidden"} md:block md:min-h-0 md:overflow-y-auto md:pl-2`}>
+        <div className={`${mobilePane === "questions" ? "block" : "hidden"} min-w-0 md:block md:min-h-0 md:overflow-y-auto md:overscroll-y-contain md:pl-2`}>
           {isReview && session.result && (
             <div className="mb-6">
               <ReadingResultPanel
@@ -359,6 +392,8 @@ export default function ReadingPlayer({
                 disabled={isReview || session.status === "submitting"}
                 activeNumber={activeNumber}
                 onFocus={setActiveNumber}
+                selectedHeading={selectedHeading}
+                onSelectHeading={(option) => { setSelectedHeading(option); if (option) setMobilePane("passage"); }}
               />
             ))}
           </div>

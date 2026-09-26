@@ -57,7 +57,7 @@ function AnswerLine({
       disabled={disabled}
       onChange={onChange}
       onFocus={onFocus}
-      variant="line"
+      variant="box"
     />
   );
 
@@ -70,7 +70,7 @@ function AnswerLine({
         disabled={disabled}
         onChange={(_id, value) => onChange(value)}
         onFocus={onFocus}
-        variant="line"
+        variant="box"
       />
     );
   }
@@ -136,9 +136,7 @@ export default function PaperQuestion({
     >
       <div className="flex gap-3">
         <span className="shrink-0 flex items-start gap-1 pt-1">
-          <span className="font-bold text-base text-ink w-6">
-            {question.number}
-          </span>
+          <span className="font-bold text-base text-ink w-6">{isChoiceQuestion(question) ? question.number : "•"}</span>
           {onToggleBookmark && (
             <button
               type="button"

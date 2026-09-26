@@ -102,7 +102,7 @@ export async function listReadingTests(): Promise<ReadingTestSummary[]> {
   return listReadingTestsCached();
 }
 
-export async function getReadingTestBySlug(slug: string): Promise<ReadingTest | null> {
+async function loadReadingTestBySlug(slug: string): Promise<ReadingTest | null> {
   const { rows } = await pool.query<SummaryRow & { passage: unknown; questions: Question[] }>(
     `SELECT ${SUMMARY_COLUMNS}, passage, questions
        FROM reading_tests
@@ -119,6 +119,8 @@ export async function getReadingTestBySlug(slug: string): Promise<ReadingTest | 
     questions: (row.questions ?? []).map(normalizeReadingQuestion),
   };
 }
+
+export const getReadingTestBySlug = unstable_cache(loadReadingTestBySlug, ["reading-paper-v1"], { revalidate: 60, tags: ["practice-reading-catalog"] });
 
 /**
  * Server-only. Returns the questions together with their answers so the submit
@@ -186,7 +188,7 @@ interface SectionRow extends SummaryRow {
   questions: Question[];
 }
 
-export async function getReadingPaper(testId: string): Promise<ReadingPaper | null> {
+async function loadReadingPaper(testId: string): Promise<ReadingPaper | null> {
   if (!isTestId(testId)) return null;
 
   const { rows } = await pool.query<SectionRow>(
@@ -220,7 +222,9 @@ export async function getReadingPaper(testId: string): Promise<ReadingPaper | nu
  * Bìa đề cho màn chờ trước khi thi. Chỉ đụng các cột tóm tắt — không kéo
  * passage/questions về, vì lúc này học sinh chưa bấm bắt đầu.
  */
-export async function getExamOutline(
+export const getReadingPaper = unstable_cache(loadReadingPaper, ["reading-full-paper-v1"], { revalidate: 60, tags: ["practice-reading-catalog"] });
+
+async function loadExamOutline(
   mode: "passage" | "test",
   id: string,
 ): Promise<ExamOutline | null> {
@@ -261,6 +265,8 @@ export async function getExamOutline(
     })),
   };
 }
+
+export const getExamOutline = unstable_cache(loadExamOutline, ["reading-outline-v1"], { revalidate: 60, tags: ["practice-reading-catalog"] });
 
 /** Server-only, giống `getAnswerKeyBySlug` nhưng gộp cả ba passage. */
 export async function getAnswerKeyByTestId(

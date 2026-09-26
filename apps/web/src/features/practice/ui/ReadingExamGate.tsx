@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
@@ -44,7 +44,6 @@ import ReadingPlayer from "./ReadingPlayer";
 type Phase = "intro" | "loading" | "running";
 
 /** Nếu tải xong quá nhanh, màn chờ nháy một cái rồi biến mất — khó chịu hơn là chờ. */
-const MIN_LOADING_MS = 700;
 
 export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
   const [phase, setPhase] = useState<Phase>("intro");
@@ -60,6 +59,13 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
     "practice",
   );
   const [examMinutes, setExamMinutes] = useState(20);
+  const pendingPaper = useRef<Promise<ReadingPaper> | null>(null);
+  useEffect(() => {
+    const request = fetchReadingPaper(outline.mode, outline.id);
+    pendingPaper.current = request;
+    void request.catch(() => { if (pendingPaper.current === request) pendingPaper.current = null; });
+    return () => { pendingPaper.current = null; };
+  }, [outline.mode, outline.id]);
 
   // Đọc sau khi mount: sessionStorage không tồn tại lúc server render.
   useEffect(() => {
@@ -79,12 +85,8 @@ export default function ReadingExamGate({ outline }: { outline: ExamOutline }) {
       setResume(continuing);
       if (!continuing) clearReadingProgress(outline.id);
 
-      const startedAt = Date.now();
       try {
-        const loaded = await fetchReadingPaper(outline.mode, outline.id);
-        const remaining = MIN_LOADING_MS - (Date.now() - startedAt);
-        if (remaining > 0)
-          await new Promise((resolve) => setTimeout(resolve, remaining));
+        const loaded = await (pendingPaper.current ?? fetchReadingPaper(outline.mode, outline.id));
 
         setPaper(
           outline.mode === "passage"

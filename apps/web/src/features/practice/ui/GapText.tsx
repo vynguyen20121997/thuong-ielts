@@ -68,6 +68,14 @@ export function GapInput({
   const review = field.review;
   const state = review ? (review.isCorrect ? "correct" : "wrong") : "idle";
 
+  if (variant === "box") return <span className="inline-flex max-w-full flex-col align-middle mx-1">
+    <input id={`question-${field.number}`} data-exam-field type="text" value={field.value}
+      placeholder={String(field.number)} aria-label={`Câu ${field.number}`} title={`Tối đa ${field.maxWords} từ`}
+      disabled={disabled} onChange={(event) => onChange(event.target.value)} onFocus={() => onFocus?.(field.number)}
+      className={`w-44 max-w-full rounded border px-2 py-1 text-center text-base leading-normal placeholder:font-bold placeholder:text-ink focus:outline-none focus:ring-2 focus:ring-brand/25 ${state === "wrong" ? "border-red-400 text-red-700" : state === "correct" ? "border-brand text-brand" : "border-ink/70 bg-white"}`} />
+    {review && !review.isCorrect && <span className="text-xs text-brand">{review.expected}</span>}
+  </span>;
+
   if (variant === "line") {
     return (
       <span className="inline-flex flex-col align-baseline mx-0.5">

@@ -19,6 +19,8 @@ interface Props {
   disabled: boolean;
   activeNumber: number | null;
   onFocus: (number: number) => void;
+  selectedHeading?: string | null;
+  onSelectHeading?: (option: string | null) => void;
 }
 
 const CONSTRAINT = /(ONE WORD ONLY|NO MORE THAN (?:ONE|TWO|THREE) WORDS?|Choose (?:TWO|THREE|FOUR|FIVE)|A[–-][A-Z]|TRUE|FALSE|NOT GIVEN|YES|NO)/gi;
@@ -31,6 +33,26 @@ function Instruction({ text }: { text: string }) {
       {parts.map((part, index) => /^(?:ONE WORD ONLY|NO MORE THAN (?:ONE|TWO|THREE) WORDS?|Choose (?:TWO|THREE|FOUR|FIVE)|A[–-][A-Z]|TRUE|FALSE|NOT GIVEN|YES|NO)$/i.test(part) ? <strong key={index} className="font-bold text-ink">{part}</strong> : part)}
     </div>
   );
+}
+
+function withoutHeadingBank(text: string) {
+  const marker = text.search(/^List of Headings\s*$/im);
+  return marker >= 0 ? text.slice(0, marker).trim() : text;
+}
+
+function HeadingBank({ questions, disabled, selectedHeading, onSelectHeading }: Props) {
+  const options = isChoiceQuestion(questions[0]) ? questions[0].options : [];
+  return <div className="mt-7">
+    <h4 className="text-lg font-bold text-ink">List of Headings</h4>
+    <p className="mt-1 text-sm leading-6 text-ink/55">💡 Kéo đáp án thả vào ô trống, hoặc bấm chọn đáp án rồi bấm vào ô trống để điền.</p>
+    <div className="mt-12 flex flex-col items-start gap-3">
+      {options.map((option) => <button key={option} type="button" draggable={!disabled} disabled={disabled}
+        aria-pressed={selectedHeading === option}
+        onDragStart={(event) => { event.dataTransfer.setData("text/plain", option); event.dataTransfer.effectAllowed = "copy"; }}
+        onClick={() => onSelectHeading?.(selectedHeading === option ? null : option)}
+        className={`max-w-full rounded-lg border px-3 py-2 text-left text-base font-bold leading-6 transition-colors focus-visible:outline-2 focus-visible:outline-brand disabled:cursor-default ${selectedHeading === option ? "border-brand bg-leaf/20" : "border-black/25 bg-white hover:border-brand/60"} ${disabled ? "" : "cursor-grab active:cursor-grabbing"}`}>{option}</button>)}
+    </div>
+  </div>;
 }
 
 function ChoiceRow({ question, value, onChange, disabled, checkbox = false }: {
@@ -116,6 +138,13 @@ function ManyChoiceGroup({ questions, answers, onChange, disabled }: Omit<Props,
 }
 
 function CompletionGroup(props: Props) {
+  const table = props.questions.find((question) => question.tableLayout)?.tableLayout;
+  if (table) return <div className="mt-6 overflow-x-auto"><table className="w-full border-collapse text-base"><tbody>{table.rows.map((row, rowIndex) => <tr key={rowIndex}>{row.map((cell, cellIndex) => {
+    const Tag = rowIndex === 0 ? "th" : "td";
+    return <Tag key={cellIndex} colSpan={cell.colSpan} rowSpan={cell.rowSpan} className="border border-ink/60 px-3 py-4 text-left align-top min-w-28">
+      <GapText text={cell.text} fields={props.questions.map((q) => ({ number: q.number, questionId: q.id, value: props.answers[q.id] ?? "", maxWords: "maxWords" in q ? q.maxWords : 2, review: props.reviewByQuestion?.get(q.id) }))} disabled={props.disabled} onChange={props.onChange} onFocus={props.onFocus} />
+    </Tag>;
+  })}</tr>)}</tbody></table></div>;
   const uniquePrompts = [...new Set(props.questions.map((question) => question.prompt))];
   const canCombine = uniquePrompts.some((prompt) => props.questions.filter((q) => hasInlineGap(prompt, q.number)).length > 1);
   if (!canCombine) return <div className="mt-5 space-y-3">{props.questions.map((question) => <PaperQuestion key={question.id} question={question} value={props.answers[question.id] ?? ""} onChange={(value) => props.onChange(question.id, value)} review={props.reviewByQuestion?.get(question.id)} disabled={props.disabled} active={props.activeNumber === question.number} onFocus={props.onFocus} />)}</div>;
@@ -124,15 +153,21 @@ function CompletionGroup(props: Props) {
 
 export default function ReadingQuestionGroup(props: Props) {
   const type = props.questions[0]?.type;
-  const instruction = cleanGroupInstruction(props.questions[0]?.group, props.questions);
+  let instruction = cleanGroupInstruction(props.questions[0]?.group, props.questions);
+  const table = props.questions.find((q) => q.tableLayout)?.tableLayout;
+  if (table) {
+    const firstCell = table.rows[0]?.[0]?.text.trim();
+    const start = firstCell ? instruction.indexOf(firstCell) : -1;
+    if (start >= 0) instruction = instruction.slice(0, start).trim();
+  }
   return <section className="border-b border-black/10 py-8 first:pt-0 last:border-0 last:pb-0">
     <h3 className="text-lg font-bold text-ink">{questionRangeLabel(props.questions)}</h3>
-    <Instruction text={instruction} />
+    <Instruction text={type === "matching-headings" ? withoutHeadingBank(instruction) : instruction} />
     {type === "true-false-not-given" || type === "yes-no-not-given" ? <JudgementGroup {...props} />
       : type === "multiple-choice" ? <SingleChoiceGroup {...props} />
       : type === "multiple-choice-many" ? <ManyChoiceGroup {...props} />
       : type === "matching-information" ? <MatchingMatrix {...props} />
-      : type === "matching-headings" ? <SharedBankGroup {...props} title="List of Headings" showTargets={false} />
+      : type === "matching-headings" ? <HeadingBank {...props} />
       : type === "matching-features" || type === "matching-endings" || (type === "summary-completion" && isChoiceQuestion(props.questions[0])) ? <SharedBankGroup {...props} />
       : type === "gap-fill" || type === "map-diagram-label" ? <CompletionGroup {...props} />
       : <p className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm">Nhóm câu hỏi này cần được kiểm tra lại trước khi hiển thị.</p>}

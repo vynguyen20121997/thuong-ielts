@@ -91,7 +91,8 @@ export function groupReadingQuestions(questions: Question[]): Question[][] {
       question.number >= activeRange.from &&
       question.number <= activeRange.to;
 
-    if (isContinuation) previous.push({ ...question, group: activeInstruction });
+    if (previous && prevQuestion?.group && prevQuestion.group === question.group && prevQuestion.type === question.type) previous.push(question);
+    else if (isContinuation) previous.push({ ...question, group: activeInstruction });
     else groups.push([question]);
   }
   return groups;

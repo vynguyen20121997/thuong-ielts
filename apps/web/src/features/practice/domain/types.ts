@@ -70,6 +70,7 @@ interface QuestionBase {
   prompt: string;
   /** Optional group heading rendered above the first question of a block. */
   group?: string;
+  tableLayout?: { rows: { text: string; colSpan?: number; rowSpan?: number }[][] };
   /** Low-confidence import classification; dedicated UI must not guess. */
   needsReview?: boolean;
   /** Optional visual retained by map/diagram importers. */
