@@ -1,10 +1,8 @@
-import AdminNav from "../../components/AdminNav";
+import AdminShell from "../../components/AdminNav";
+import { teacherHienTai } from "../../lib/phien";
+import { tenGiaoVien } from "../../lib/teachers";
 
-export default function ProtectedAdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <AdminNav />
-      <main className="max-w-6xl mx-auto px-6 py-10">{children}</main>
-    </>
-  );
+export default async function ProtectedAdminLayout({ children }: { children: React.ReactNode }) {
+  const name = await tenGiaoVien(await teacherHienTai());
+  return <AdminShell teacherName={name}>{children}</AdminShell>;
 }

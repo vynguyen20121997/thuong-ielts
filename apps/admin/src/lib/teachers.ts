@@ -60,3 +60,13 @@ export async function touchLastLogin(id: string): Promise<void> {
     console.error(`touchLastLogin(${id}) thất bại (bỏ qua):`, err);
   }
 }
+
+/** Tên hiển thị trên header. Lỗi DB thì trả null — header không được làm sập trang. */
+export async function tenGiaoVien(id: string): Promise<string | null> {
+  try {
+    const { rows } = await pool.query(`SELECT name FROM teachers WHERE id::text = $1 LIMIT 1`, [id]);
+    return rows[0]?.name ?? null;
+  } catch {
+    return null;
+  }
+}
