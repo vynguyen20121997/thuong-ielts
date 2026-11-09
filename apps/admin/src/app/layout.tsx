@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro, JetBrains_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import NavProgress from "../components/NavProgress";
 
 /**
  * Cùng hai họ chữ với trang chính (`apps/web`) — admin là cùng một sản phẩm,
@@ -32,6 +34,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <html lang="vi" className={`${body.variable} ${mono.variable}`}>
       <body className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] antialiased">
+        <Suspense fallback={null}>
+          <NavProgress />
+        </Suspense>
         {children}
       </body>
     </html>

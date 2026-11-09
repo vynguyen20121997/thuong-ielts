@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { ChevronDown, History, LogOut, Target, UserRound,
   Wallet,
@@ -18,8 +19,9 @@ import { ChevronDown, History, LogOut, Target, UserRound,
  *    hỏi lúc lập hồ sơ. Để nó ở đây thì mục tiêu luôn nằm trong tầm mắt.
  * 3. Ảnh đại diện, hoặc chữ cái đầu khi đăng nhập bằng cách không có ảnh.
  *
- * Chưa đăng nhập thì không vẽ gì: thanh header vốn đã chật, thêm nút "Đăng
- * nhập" nữa là chen với nút "Về Cô Thương" đang là lời mời chính của trang.
+ * Chưa đăng nhập thì hiện nút "Đăng nhập" (trước đây cố ý không vẽ gì, nhưng
+ * học sinh không tìm ra chỗ đăng nhập — cô yêu cầu thêm lại). Nút mang `next`
+ * để đăng nhập xong quay về đúng trang đang xem.
  */
 
 interface Account {
@@ -44,9 +46,12 @@ export default function AccountMenu({
 }: {
   compact?: boolean;
 }) {
-  const [account, setAccount] = useState<Account | null>(null);
+  // undefined = đang hỏi server, null = chưa đăng nhập. Tách hai nghĩa để
+  // không nháy nút "Đăng nhập" trong lúc chờ với người đã đăng nhập rồi.
+  const [account, setAccount] = useState<Account | null | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     let alive = true;
@@ -59,6 +64,7 @@ export default function AccountMenu({
         if (alive) setAccount(data.student);
       })
       .catch(() => {
+        if (alive) setAccount(null);
         /* không biết ai đang đăng nhập thì thôi không vẽ chip, không báo lỗi */
       });
     return () => {
@@ -82,7 +88,19 @@ export default function AccountMenu({
     };
   }, [open]);
 
-  if (!account) return null;
+  if (account === undefined) return null;
+  if (account === null) {
+    const next = pathname && pathname !== "/dang-nhap" ? `?next=${encodeURIComponent(pathname)}` : "";
+    return (
+      <Link
+        href={`/dang-nhap${next}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-full border border-brand/20 bg-white px-4 py-2.5 text-sm font-bold text-brand transition-colors hover:bg-sage focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand ${compact ? "w-full py-3 text-base" : ""}`}
+      >
+        <UserRound size={16} aria-hidden />
+        Đăng nhập
+      </Link>
+    );
+  }
 
   const ten = account.name ? shortName(account.name) : "Học viên";
   const chuCaiDau = account.name ? initials(account.name) : "?";
