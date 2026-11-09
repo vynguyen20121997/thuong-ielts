@@ -5,7 +5,64 @@ import Link from "next/link";
 
 import AccountMenu from "../features/account/ui/AccountMenu";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, GraduationCap } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  GraduationCap,
+  ArrowUpRight,
+} from "lucide-react";
+
+type NavItem = { label: string; to: string; children?: NavItem[] };
+
+const navGroups: { label: string; items: NavItem[] }[] = [
+  {
+    label: "Giới thiệu",
+    items: [
+      { label: "Về giáo viên", to: "/gioi-thieu" },
+      { label: "Kinh nghiệm giảng dạy", to: "/kinh-nghiem-giang-day" },
+      { label: "Học vấn & Chứng chỉ", to: "/hoc-van-chung-chi" },
+    ],
+  },
+  {
+    label: "Giảng dạy",
+    items: [
+      {
+        label: "Phương pháp giảng dạy",
+        to: "/phuong-phap",
+        children: [
+          { label: "Dạy Reading", to: "/phuong-phap/reading" },
+          { label: "Dạy Listening", to: "/phuong-phap/listening" },
+          { label: "Dạy Writing", to: "/phuong-phap/writing" },
+          { label: "Dạy Speaking", to: "/phuong-phap/speaking" },
+        ],
+      },
+      { label: "Hệ thống & Công cụ giảng dạy", to: "/he-thong-cong-cu" },
+      { label: "Hình ảnh lớp học", to: "/hinh-anh-lop-hoc" },
+    ],
+  },
+  {
+    label: "Học viên",
+    items: [
+      { label: "Kết quả của học viên", to: "/ket-qua-hoc-vien" },
+      { label: "Đánh giá của học viên", to: "/cam-nhan-hoc-vien" },
+    ],
+  },
+  {
+    label: "Luyện tập",
+    items: [
+      { label: "Luyện Reading", to: "/phong-luyen-tap/reading" },
+      { label: "Luyện Listening", to: "/phong-luyen-tap/listening" },
+    ],
+  },
+];
+
+const isGroupActive = (items: NavItem[], pathname: string) =>
+  items.some(
+    (item) =>
+      pathname === item.to.split("#")[0] ||
+      item.children?.some((child) => pathname === child.to),
+  );
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,251 +70,258 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close the mobile drawer whenever the route changes
+  // Đổi trang thì đóng ngăn kéo
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const navGroups = [
-    {
-      label: "Giới Thiệu",
-      items: [
-        { label: "Về giáo viên", to: "/gioi-thieu" },
-        { label: "Kinh nghiệm giảng dạy", to: "/kinh-nghiem-giang-day" },
-        { label: "Học vấn & Chứng chỉ", to: "/hoc-van-chung-chi" },
-      ],
-    },
-    {
-      label: "Giảng Dạy",
-      items: [
-        {
-          label: "Phương pháp giảng dạy",
-          to: "/phuong-phap",
-          children: [
-            { label: "Dạy Reading", to: "/phuong-phap/reading" },
-            { label: "Dạy Listening", to: "/phuong-phap/listening" },
-            { label: "Dạy Writing", to: "/phuong-phap/writing" },
-            { label: "Dạy Speaking", to: "/phuong-phap/speaking" },
-          ],
-        },
-        { label: "Hệ thống & Công cụ giảng dạy", to: "/he-thong-cong-cu" },
-        { label: "Hình Ảnh Lớp Học", to: "/hinh-anh-lop-hoc" },
-      ],
-    },
-    {
-      label: "Học viên",
-      items: [
-        { label: "Kết quả của học viên", to: "/ket-qua-hoc-vien" },
-        { label: "Đánh giá của học viên", to: "/cam-nhan-hoc-vien" },
-      ],
-    },
-    {
-      label: "Phòng luyện tập",
-      items: [
-        { label: "Luyện Reading", to: "/phong-luyen-tap/reading" },
-        { label: "Luyện Listening", to: "/phong-luyen-tap/listening" },
-      ],
-    },
-  ];
+  // Esc đóng ngăn kéo; khoá cuộn trang nền khi ngăn kéo mở
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.documentElement.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
 
-  const linkClass = (isActive: boolean) =>
-    `relative py-2 text-xs lg:text-sm transition-colors cursor-pointer group whitespace-nowrap ${isActive ? "text-brand font-bold" : "text-brand/80 font-semibold hover:text-brand"}`;
+  const testActive = pathname === "/kiem-tra-nen-tang-ielts";
 
   return (
     <header
       id="header-nav"
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${isScrolled ? "py-3 bg-mist/95 backdrop-blur-md border-b border-black/5 shadow-[0_4px_30px_rgba(20,83,45,0.04)]" : "py-5 bg-transparent"}`}
+      className={`fixed inset-x-0 top-0 z-50 transition-[padding] duration-300 ease-out ${isScrolled ? "pt-2" : "pt-4"}`}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 gutter">
-        {/* Logo: vòng tròn xanh + wordmark theo Figma */}
-        <Link
-          href="/"
-          className="group flex items-center gap-2.5 cursor-pointer shrink-0"
-          id="logo-button"
+      <div className="gutter mx-auto max-w-7xl">
+        <div
+          className={`flex h-16 items-center justify-between gap-3 rounded-full border pl-2 pr-2 transition-[background-color,box-shadow,border-color] duration-300 ${
+            isScrolled || isMobileMenuOpen
+              ? "border-brand/10 bg-white/90 shadow-[0_8px_30px_rgba(20,83,45,0.08)] backdrop-blur-md"
+              : "border-transparent bg-white/60 backdrop-blur-sm"
+          }`}
         >
-          <span className="w-10 h-10 rounded-full bg-brand flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-brand-deep">
-            <GraduationCap size={20} className="text-leaf" />
-          </span>
-          <span
-            id="logo-wordmark"
-            className="block font-bold text-lg tracking-tight text-brand whitespace-nowrap"
+          {/* Logo */}
+          <Link
+            href="/"
+            className="group flex shrink-0 items-center gap-2.5 rounded-full pr-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            id="logo-button"
           >
-            Thương Hồ&apos;s Class
-          </span>
-        </Link>
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand transition-colors duration-200 group-hover:bg-brand-deep">
+              <GraduationCap size={20} className="text-leaf" aria-hidden />
+            </span>
+            <span
+              id="logo-wordmark"
+              className="block whitespace-nowrap text-base font-bold tracking-tight text-brand sm:text-lg lg:text-base xl:text-lg"
+            >
+              Thương Hồ&apos;s Class
+            </span>
+          </Link>
 
-        {/* Desktop Navigation */}
-        <nav
-          className="hidden lg:flex items-center gap-3 xl:gap-5 min-w-0"
-          id="desktop-nav"
-        >
-          {navGroups.map((group) => {
-            const active = group.items.some(
-              (item) =>
-                pathname === item.to.split("#")[0] ||
-                item.children?.some((child) => pathname === child.to),
-            );
-            return (
-              <div key={group.label} className="relative group py-2">
-                <button
-                  className={`flex items-center gap-1 text-xs lg:text-sm transition-colors cursor-pointer whitespace-nowrap ${active ? "text-brand font-bold" : "text-brand/80 font-semibold group-hover:text-brand"}`}
-                >
-                  {group.label}
-                  <ChevronDown
-                    size={14}
-                    className="transition-transform duration-300 group-hover:rotate-180"
-                  />
-                </button>
-                <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 z-50">
-                  <div className="w-72 rounded-2xl border border-black/5 bg-white p-2 shadow-xl">
-                    {group.items.map((p) => (
-                      <div key={p.to}>
-                        <Link
-                          href={p.to}
-                          className="block rounded-xl px-4 py-3 text-sm font-semibold leading-snug text-brand/80 transition-colors hover:bg-sage hover:text-brand whitespace-normal"
-                        >
-                          {p.label}
-                        </Link>
-                        {p.children && (
-                          <div className="mb-1 ml-3 border-l border-brand/15 pl-2">
-                            {p.children.map((child) => (
-                              <Link
-                                key={child.to}
-                                href={child.to}
-                                className="block rounded-lg px-3 py-2 text-sm font-medium text-brand/80 transition-colors hover:bg-sage hover:text-brand"
-                              >
-                                {child.label}
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
+          {/* Desktop */}
+          <nav
+            className="hidden shrink-0 items-center gap-0.5 lg:flex"
+            id="desktop-nav"
+            aria-label="Điều hướng chính"
+          >
+            {navGroups.map((group) => {
+              const active = isGroupActive(group.items, pathname);
+              return (
+                <div key={group.label} className="group/menu relative">
+                  <button
+                    type="button"
+                    aria-haspopup="true"
+                    className={`flex h-10 cursor-pointer items-center gap-1 whitespace-nowrap rounded-full px-2 xl:px-3 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-brand ${
+                      active
+                        ? "bg-sage-2 font-bold text-brand"
+                        : "font-semibold text-brand/80 hover:bg-sage hover:text-brand group-focus-within/menu:bg-sage"
+                    }`}
+                  >
+                    {group.label}
+                    <ChevronDown
+                      size={14}
+                      aria-hidden
+                      className="transition-transform duration-200 group-hover/menu:rotate-180 group-focus-within/menu:rotate-180"
+                    />
+                  </button>
+                  {/* hover HOẶC focus-within: người dùng bàn phím Tab vào cũng mở được */}
+                  <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition-all duration-150 group-hover/menu:visible group-hover/menu:translate-y-0 group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:translate-y-0 group-focus-within/menu:opacity-100">
+                    <div className="w-72 rounded-2xl border border-brand/10 bg-white p-2 shadow-xl">
+                      {group.items.map((p) => (
+                        <div key={p.to}>
+                          <Link
+                            href={p.to}
+                            aria-current={pathname === p.to ? "page" : undefined}
+                            className="block whitespace-normal rounded-xl px-4 py-3 text-sm font-semibold leading-snug text-brand/80 transition-colors hover:bg-sage hover:text-brand focus-visible:bg-sage focus-visible:outline-none aria-[current=page]:text-brand"
+                          >
+                            {p.label}
+                          </Link>
+                          {p.children && (
+                            <div className="mb-1 ml-4 border-l border-brand/15 pl-2">
+                              {p.children.map((child) => (
+                                <Link
+                                  key={child.to}
+                                  href={child.to}
+                                  className="block rounded-lg px-3 py-2 text-sm font-medium text-brand/80 transition-colors hover:bg-sage hover:text-brand focus-visible:bg-sage focus-visible:outline-none"
+                                >
+                                  {child.label}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-          <Link href="/tu-van" className={linkClass(pathname === "/tu-van")}>
-            Liên Hệ
-          </Link>
-          <Link
-            href="/kiem-tra-nen-tang-ielts"
-            aria-current={
-              pathname === "/kiem-tra-nen-tang-ielts" ? "page" : undefined
-            }
-            className="rounded-full bg-leaf px-4 py-3 text-xs font-bold text-brand-deep whitespace-nowrap transition-colors hover:bg-leaf-dark focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+              );
+            })}
+            <Link
+              href="/tu-van"
+              aria-current={pathname === "/tu-van" ? "page" : undefined}
+              className="flex h-10 items-center whitespace-nowrap rounded-full px-2 xl:px-3 text-sm font-semibold text-brand/80 transition-colors hover:bg-sage hover:text-brand focus-visible:outline-2 focus-visible:outline-brand aria-[current=page]:bg-sage-2 aria-[current=page]:font-bold aria-[current=page]:text-brand"
+            >
+              Liên hệ
+            </Link>
+          </nav>
+
+          {/* Desktop: CTA + tài khoản, tách khỏi nav bằng vạch ngăn */}
+          <div
+            className="hidden shrink-0 items-center gap-2 lg:flex"
+            id="header-action-container"
           >
-            Kiểm tra nền tảng IELTS ↗
-          </Link>
-        </nav>
+            <Link
+              href="/kiem-tra-nen-tang-ielts"
+              aria-current={testActive ? "page" : undefined}
+              className="group flex h-11 items-center gap-1.5 whitespace-nowrap rounded-full bg-leaf pl-4 pr-3 text-sm font-bold text-brand-deep transition-colors hover:bg-leaf-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            >
+              <span className="xl:hidden">Kiểm tra nền</span>
+              <span className="hidden xl:inline">Kiểm tra nền tảng IELTS</span>
+              <ArrowUpRight
+                size={16}
+                aria-hidden
+                className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
+            </Link>
+            <span className="mx-1 h-6 w-px bg-brand/15" aria-hidden />
+            <AccountMenu />
+          </div>
 
-        {/* Action */}
-        <div
-          className="hidden lg:flex items-center gap-3 shrink-0"
-          id="header-action-container"
-        >
-          <AccountMenu />
+          {/* Màn nhỏ: nút Đăng nhập nằm ngoài ngăn kéo, cạnh nút menu — giấu trong
+              menu thì học sinh không thấy. Đã đăng nhập thì chip vẫn ở cuối ngăn kéo. */}
+          <div className="flex shrink-0 items-center gap-1 lg:hidden">
+            <AccountMenu loginOnly />
+            {/*
+              Tên nút nói TRẠNG THÁI bằng tiếng Việt; `aria-expanded` +
+              `aria-controls` nối nút với đúng ngăn kéo nó điều khiển.
+            */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              aria-label={isMobileMenuOpen ? "Đóng menu" : "Mở menu"}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu-drawer"
+              id="mobile-menu-toggle"
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
-
-        {/* Màn nhỏ: nút Đăng nhập nằm ngoài ngăn kéo, cạnh nút menu — giấu trong
-            menu thì học sinh không thấy. Đã đăng nhập thì chip vẫn ở cuối ngăn kéo. */}
-        <div className="lg:hidden ml-auto shrink-0">
-          <AccountMenu loginOnly />
-        </div>
-
-        {/* Mobile Menu Button */}
-        {/*
-          Tên nút phải nói TRẠNG THÁI, và nói bằng tiếng Việt như cả trang.
-          "Toggle Menu" là chữ duy nhất bằng tiếng Anh mà trình đọc màn hình
-          đọc lên ở đây, và nó không cho biết bấm vào là mở hay đóng.
-          `aria-expanded` + `aria-controls` nối nút với đúng ngăn kéo nó điều
-          khiển, để người dùng biết mình vừa mở ra cái gì.
-        */}
-        <button
-          type="button"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="lg:hidden p-2 text-brand hover:text-brand-deep transition-colors cursor-pointer shrink-0"
-          aria-label={isMobileMenuOpen ? "Đóng menu" : "Mở menu"}
-          aria-expanded={isMobileMenuOpen}
-          aria-controls="mobile-menu-drawer"
-          id="mobile-menu-toggle"
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
       </div>
 
       {/*
-        Mobile Menu Drawer
-
-        `inert` khi đang đóng, không chỉ `pointer-events-none`. Đã đo: ngăn kéo
-        đóng vẫn giữ 16 liên kết bắt được focus, nên người dùng bàn phím Tab
-        qua một menu vô hình — focus biến mất khỏi màn hình mười sáu lần liền,
-        và trình đọc màn hình vẫn đọc hết. `pointer-events-none` chỉ chặn chuột.
-        `inert` gỡ cả nhánh khỏi thứ tự Tab lẫn cây trợ năng bằng một thuộc tính.
+        Ngăn kéo mobile. `inert` khi đóng, không chỉ `pointer-events-none`: đã đo
+        ngăn kéo đóng vẫn giữ 16 liên kết bắt được focus. `inert` gỡ cả nhánh
+        khỏi thứ tự Tab lẫn cây trợ năng.
       */}
       <div
-        className={`fixed inset-0 top-[64px] bg-mist z-40 lg:hidden flex flex-col justify-between px-8 py-12 transition-all duration-500 ease-in-out border-t border-black/5 overflow-y-auto ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}
+        className={`fixed inset-x-0 bottom-0 top-0 -z-10 overflow-y-auto bg-mist px-4 pb-8 pt-28 transition-[opacity,transform] duration-300 ease-out lg:hidden ${
+          isMobileMenuOpen
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-2 opacity-0"
+        }`}
         id="mobile-menu-drawer"
         inert={!isMobileMenuOpen}
       >
-        <div className="flex flex-col gap-7">
+        <div className="mx-auto flex min-h-full max-w-md flex-col gap-4">
           <Link
             href="/kiem-tra-nen-tang-ielts"
-            className="rounded-2xl bg-leaf p-5 text-lg font-bold text-brand-deep"
+            className="flex items-center justify-between rounded-2xl bg-leaf p-5 text-lg font-bold text-brand-deep"
           >
-            Kiểm tra nền tảng IELTS ↗
+            Kiểm tra nền tảng IELTS
+            <ArrowUpRight size={22} aria-hidden />
           </Link>
-          {navGroups.map((group) => (
-            <div key={group.label}>
-              <span className="text-2xs text-brand/80 font-medium block mb-3">
-                {group.label}
-              </span>
-              <div className="flex flex-col gap-4 pl-1">
-                {group.items.map((p) => (
-                  <div key={p.to} className="space-y-3">
-                    <Link
-                      href={p.to}
-                      className="block text-2xl font-bold text-left text-brand hover:text-brand-deep transition-colors"
-                    >
-                      {p.label}
-                    </Link>
-                    {p.children && (
-                      <div className="ml-2 flex flex-col gap-3 border-l border-brand/20 pl-4">
-                        {p.children.map((child) => (
-                          <Link
-                            key={child.to}
-                            href={child.to}
-                            className="text-lg font-semibold text-brand/80 hover:text-brand"
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          <Link
-            href="/tu-van"
-            className="text-3xl font-bold text-left text-brand hover:text-brand-deep transition-colors cursor-pointer"
+
+          <nav
+            aria-label="Điều hướng chính"
+            className="divide-y divide-brand/10 rounded-2xl bg-white px-2"
           >
-            Liên Hệ
-          </Link>
-        </div>
+            {navGroups.map((group) => (
+              <details
+                key={group.label}
+                className="group/acc"
+                open={isGroupActive(group.items, pathname) || undefined}
+              >
+                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between rounded-xl px-3 text-base font-bold text-brand [&::-webkit-details-marker]:hidden">
+                  {group.label}
+                  <ChevronDown
+                    size={18}
+                    aria-hidden
+                    className="text-brand/60 transition-transform duration-200 group-open/acc:rotate-180"
+                  />
+                </summary>
+                <div className="flex flex-col pb-3">
+                  {group.items.map((p) => (
+                    <div key={p.to}>
+                      <Link
+                        href={p.to}
+                        aria-current={pathname === p.to ? "page" : undefined}
+                        className="flex min-h-11 items-center rounded-xl px-4 text-[15px] font-semibold text-brand/80 hover:bg-sage aria-[current=page]:bg-sage-2 aria-[current=page]:text-brand"
+                      >
+                        {p.label}
+                      </Link>
+                      {p.children && (
+                        <div className="ml-5 flex flex-col border-l border-brand/15 pl-2">
+                          {p.children.map((child) => (
+                            <Link
+                              key={child.to}
+                              href={child.to}
+                              aria-current={
+                                pathname === child.to ? "page" : undefined
+                              }
+                              className="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-brand/80 hover:bg-sage aria-[current=page]:text-brand"
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ))}
+            <Link
+              href="/tu-van"
+              className="flex min-h-14 items-center px-3 text-base font-bold text-brand"
+            >
+              Liên hệ
+            </Link>
+          </nav>
 
-        <div className="flex flex-col gap-6 pt-8" id="mobile-menu-footer">
-          <AccountMenu compact />
-
-          <div className="text-center">
-            <p className="text-xs text-brand/80">
+          <div className="mt-auto flex flex-col gap-5 pt-4" id="mobile-menu-footer">
+            <AccountMenu compact />
+            <p className="text-center text-xs text-brand/70">
               © 2026 Hồ Ngọc Thương. All rights reserved.
             </p>
           </div>

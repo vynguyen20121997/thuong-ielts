@@ -186,11 +186,11 @@ export default function AccountMenu({
         className="flex items-center gap-2 rounded-full border border-black/10 bg-white pl-1.5 pr-3 py-1.5 hover:border-brand/40 cursor-pointer transition-colors"
       >
         {avatar}
-        <span className="hidden lg:block text-xs font-semibold text-ink max-w-24 truncate">
+        <span className="hidden xl:block text-xs font-semibold text-ink max-w-24 truncate">
           {ten}
         </span>
         {account.targetBand && (
-          <span className="hidden lg:flex items-center gap-1 rounded-full bg-leaf/25 px-2 py-0.5 text-2xs font-bold text-brand tabular-nums">
+          <span className="hidden xl:flex items-center gap-1 rounded-full bg-leaf/25 px-2 py-0.5 text-2xs font-bold text-brand tabular-nums">
             <Target size={10} />
             {account.targetBand.toFixed(1)}
           </span>
