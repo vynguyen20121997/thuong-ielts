@@ -43,8 +43,11 @@ function initials(full: string): string {
 
 export default function AccountMenu({
   compact = false,
+  loginOnly = false,
 }: {
   compact?: boolean;
+  /** Chỉ vẽ nút "Đăng nhập"; đã đăng nhập thì không vẽ gì (dùng cạnh nút menu mobile). */
+  loginOnly?: boolean;
 }) {
   // undefined = đang hỏi server, null = chưa đăng nhập. Tách hai nghĩa để
   // không nháy nút "Đăng nhập" trong lúc chờ với người đã đăng nhập rồi.
@@ -94,13 +97,15 @@ export default function AccountMenu({
     return (
       <Link
         href={`/dang-nhap${next}`}
-        className={`inline-flex items-center justify-center gap-2 rounded-full border border-brand/20 bg-white px-4 py-2.5 text-sm font-bold text-brand transition-colors hover:bg-sage focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand ${compact ? "w-full py-3 text-base" : ""}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-full border border-brand/20 bg-white px-4 py-2.5 text-sm font-bold text-brand transition-colors hover:bg-sage focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand ${compact ? "w-full py-3 text-base" : ""} ${loginOnly ? "max-sm:px-2.5" : ""}`}
       >
         <UserRound size={16} aria-hidden />
-        Đăng nhập
+        {/* Cạnh nút menu ở màn điện thoại không đủ chỗ cho chữ: chỉ còn icon. */}
+        <span className={loginOnly ? "max-sm:sr-only" : undefined}>Đăng nhập</span>
       </Link>
     );
   }
+  if (loginOnly) return null;
 
   const ten = account.name ? shortName(account.name) : "Học viên";
   const chuCaiDau = account.name ? initials(account.name) : "?";

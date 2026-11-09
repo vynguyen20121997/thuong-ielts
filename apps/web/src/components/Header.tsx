@@ -165,6 +165,12 @@ export default function Header() {
           <AccountMenu />
         </div>
 
+        {/* Màn nhỏ: nút Đăng nhập nằm ngoài ngăn kéo, cạnh nút menu — giấu trong
+            menu thì học sinh không thấy. Đã đăng nhập thì chip vẫn ở cuối ngăn kéo. */}
+        <div className="lg:hidden ml-auto shrink-0">
+          <AccountMenu loginOnly />
+        </div>
+
         {/* Mobile Menu Button */}
         {/*
           Tên nút phải nói TRẠNG THÁI, và nói bằng tiếng Việt như cả trang.
