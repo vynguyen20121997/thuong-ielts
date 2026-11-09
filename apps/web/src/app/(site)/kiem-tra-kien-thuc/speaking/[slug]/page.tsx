@@ -15,7 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const q = questionById(slug);
-  if (!q) return { title: "Không tìm thấy câu hỏi | HNT.IELTS" };
+  if (!q) return { title: "Không tìm thấy câu hỏi" };
   return {
     title: `${q.prompt} | Luyện Speaking IELTS`,
     description: `Speaking Part ${q.part} · ${q.topic}. Thu âm câu trả lời, nghe lại và nộp cho giáo viên.`,

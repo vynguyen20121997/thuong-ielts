@@ -16,6 +16,7 @@ npm run check:reading    # kiểm tra dữ liệu đề đọc trong DB
 npm run check:listening  # kiểm tra đề nghe (đáp án + audio theo section)
 npm run check:coverage   # còn thiếu đề nào, bộ nào
 npm run check:diagnostic # bài kiểm tra nền: chấm, lộ trình, API
+npm run check:diagnostic-api # đi hết luồng 53 câu qua API: khoá tab, chấm, hết giờ (cần dev server)
 npm run check:writing-task-type  # nhận dạng dạng đề Task 2
 npm run check:vocab      # khoá chống mất lượt + chuỗi ngày học (cần dev server đang chạy)
 npm run check:practice   # đáp án kín, điểm do server quyết, nộp trùng (cần dev server)
@@ -25,6 +26,7 @@ npm run check:personas   # cô + học sinh đi hết một vòng dạy-học (c
 npm run check:baigiao    # các chốt của bài giao: che kết quả, đóng bài, một lần, khách
 npm run check:noidung    # cô soạn ở admin -> học sinh thấy ở web (cần cả hai server)
 npm run check:mcp        # AI agent giao bài: token, cách ly giáo viên, đề AI soạn chờ duyệt (cần admin)
+npm run check:live       # nhịp realtime tới đúng bảng của cô chủ bài, không lọt sang cô khác (cần cả hai)
 npm run migrate:class    # dựng bảng quản lý lớp, chạy lại nhiều lần vẫn an toàn
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
@@ -99,8 +101,10 @@ Task 1 (cần cô cấp đề biểu đồ).
 **7. Listening không có tín hiệu độ khó thật.** Cả 138 đề đều `level='medium'` trong DB;
 độ khó chỉ có nhờ bảng đè tay cho Cam 10–18 (`domain/keyPracticeDifficulty.ts`).
 
-**Chưa có bộ kiểm nào che:** nhịp realtime lên bảng lớp của cô, tự nộp khi hết giờ, và
-luồng bài kiểm tra nền đầy đủ (làm hết 53 câu → nộp → đọc lộ trình).
+**Chưa có bộ kiểm nào che:** phía GIAO DIỆN của tự nộp khi hết giờ (đồng hồ client về 0
+thì bấm nộp) và của bài kiểm tra nền đầy đủ. Phía server đã có: `check:practice` canh
+server từ chối bài nộp quá hạn, `check:diagnostic-api` đi hết 53 câu, `check:live` canh
+nhịp realtime.
 
 **Cảnh báo khi đọc số liệu sử dụng:** 30 ngày tính tới 25/09/2026 chỉ có 1 lượt nộp và 8
 lượt bỏ dở, và phần lớn tài khoản trong DB là persona mô phỏng. Đừng suy hành vi người
@@ -513,6 +517,25 @@ báo hỏng ngay (đếm được 3/10 lượt), nên nó thật sự canh đư�
 một bài test luôn xanh.
 
 ## Bẫy đã sập, đừng sập lại
+
+**Giờ thi phải chặn ở server LÚC NỘP, không chỉ ở tác vụ dọn.** `closeAttempt` từng
+không xét `expires_at`: dừng đồng hồ trên trình duyệt là làm bao lâu cũng được, đo
+được bài nộp trễ 88 giây vẫn chấm. Giờ quá hạn hơn một phút thì không chốt — khớp
+mức chờ của `close-expired-attempts.ts`, script ấy chốt lượt bằng tiến độ nhịp cuối.
+
+**Socket của bảng lớp từng gửi cho MỌI cô.** Trang `/lop` lọc lúc vẽ, nhưng
+`server.js` cho ai cũng vào phòng nào cũng được: cô thứ hai nghe được tên và
+đúng/sai từng câu của lớp người khác. Phòng `bg-<id>` giờ chỉ mở cho chủ bài giao.
+
+**Lái persona bằng trình duyệt thì dùng `127.0.0.1`, đừng dùng `localhost`.** Cookie
+không phân biệt cổng, và vé đăng nhập thật là httpOnly nên `document.cookie` không
+ghi đè được — persona sẽ lặng lẽ làm bài dưới tài khoản thật. `127.0.0.1` là kho
+cookie riêng; `allowedDevOrigins` trong hai `next.config.mjs` để Next dev chịu nạp
+mã cho origin đó. `scripts/sim-lop.ts` dựng một cô + ba em + một bài giao và in vé.
+
+**`apps/admin/src/lib/giaoBai.ts` không import được từ `tsx`** (lỗi export của
+`@thuong-ielts/db`), dù Next chạy bình thường. Script cần giao bài thì gọi route
+`/api/bai-giao` bằng vé admin, như `check-live.ts`.
 
 **Ký hiệu chỗ trống phải khớp giữa importer và giao diện.** Đề gốc viết chỗ trống theo
 hai kiểu: `7……………` (số rồi dấu chấm) và `10 £ ……` (có ký hiệu tiền tệ chen giữa).

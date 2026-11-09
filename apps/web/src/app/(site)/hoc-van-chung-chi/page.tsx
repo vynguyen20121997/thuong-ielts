@@ -6,7 +6,7 @@ import PageArch from "../../../components/PageArch";
 import TeachingCertificateCarousel from "../../../components/TeachingCertificateCarousel";
 import ZoomableImage from "../../../components/ZoomableImage";
 
-export const metadata: Metadata = { title: "Học vấn & Chứng chỉ | Thương Hồ's Class" };
+export const metadata: Metadata = { title: "Học vấn & Chứng chỉ" };
 
 const EDUCATION = [
   ["THPT Chuyên Trần Đại Nghĩa", "Giai đoạn đầu giúp mình tiếp xúc với môi trường học tập có yêu cầu cao về ngoại ngữ và học thuật."],

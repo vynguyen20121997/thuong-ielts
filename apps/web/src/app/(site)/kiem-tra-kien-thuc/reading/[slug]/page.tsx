@@ -18,10 +18,10 @@ export async function generateMetadata({
   const { bai } = await searchParams;
   const outline = await getExamOutline("passage", slug, await deRiengMoDuoc(slug, bai));
 
-  if (!outline) return { title: "Không tìm thấy đề | ThuongHo.Class" };
+  if (!outline) return { title: "Không tìm thấy đề" };
 
   return {
-    title: `${outline.title} | ThuongHo.Class`,
+    title: `${outline.title}`,
     description: `Bài luyện Reading IELTS: ${outline.title} — ${outline.questionCount} câu, ${Math.round(
       outline.durationSeconds / 60,
     )} phút, chấm điểm và giải thích tự động.`,

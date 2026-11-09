@@ -176,7 +176,8 @@ html.lenis body {
  * độ cụ thể cao hơn, và CHỈ cho đúng lớp này — không mở lại cho cả trang.
  *
  * Thêm vùng cuộn mới ở chỗ khác là mời lại đúng lỗi đã gỡ; đọc kỹ CLAUDE.md
- * trước khi dùng lớp `.panel-scroll` ngoài bảng này.
+ * trước khi dùng lớp `.panel-scroll` ngoài bảng này. Chỗ dùng hợp lệ thứ hai:
+ * ngăn kéo menu mobile (`Header.tsx`) — lớp phủ `fixed`, đúng ngoại lệ CLAUDE.md.
  */
 .panel-scroll {
   overflow-y: auto;

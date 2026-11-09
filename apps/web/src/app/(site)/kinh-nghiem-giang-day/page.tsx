@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import NavigationButtonLabel from "../../../components/NavigationButtonLabel";
 import PageArch from "../../../components/PageArch";
 
-export const metadata: Metadata = { title: "Kinh nghiệm giảng dạy | Thương Hồ's Class" };
+export const metadata: Metadata = { title: "Kinh nghiệm giảng dạy" };
 
 const MILESTONES = [
   { year: "Đầu 2020", title: "Bắt đầu với lớp học 1-1", text: "Mình bắt đầu dạy IELTS dưới hình thức gia sư cá nhân. Đây cũng là năm mình có những học viên đầu tiên đạt mục tiêu, với kết quả IELTS 6.0 và 7.5." },

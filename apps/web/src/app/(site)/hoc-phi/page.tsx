@@ -17,7 +17,7 @@ import {
 import TheChuyenKhoan from "../../../features/tuition/ui/TheChuyenKhoan";
 
 export const metadata: Metadata = {
-  title: "Học phí | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Học phí",
   description: "Xem học phí lớp bạn đang học và chuyển khoản bằng mã QR.",
 };
 

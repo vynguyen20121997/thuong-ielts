@@ -6,7 +6,7 @@ import { QUESTION_BANK } from "../../../../../features/speaking/domain/bank";
 import IdeaCoach from "../../../../../features/speaking/ui/IdeaCoach";
 
 export const metadata: Metadata = {
-  title: "Luyện phát triển ý Speaking Part 3 | HNT.IELTS",
+  title: "Luyện phát triển ý Speaking Part 3",
   description:
     "Gõ ý đầu tiên trong đầu, máy nói lại cho tròn câu và hỏi ngược một câu. Ba vòng là một câu trả lời Part 3 hoàn chỉnh.",
 };

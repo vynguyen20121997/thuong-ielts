@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
         className="w-full max-w-sm bg-white border border-black/10 rounded-2xl shadow-sm p-8"
       >
         <h1 className="text-2xl font-bold text-[#1A1A1A] mb-1">Admin</h1>
-        <p className="text-sm text-[#1A1A1A]/60 mb-6">HNT.IELTS - Hồ Ngọc Thương</p>
+        <p className="text-sm text-[#1A1A1A]/60 mb-6">Thương Hồ's Class</p>
 
         <div className="mb-4">
           <label className="block text-xs font-bold uppercase tracking-wider text-[#1A1A1A]/60 mb-2">

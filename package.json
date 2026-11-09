@@ -38,7 +38,8 @@
     "check:personas": "tsx scripts/check-personas.ts",
     "check:baigiao": "tsx scripts/check-baigiao.ts",
     "check:noidung": "tsx scripts/check-noidung.ts",
-    "check:mcp": "tsx scripts/check-mcp.ts"
+    "check:mcp": "tsx scripts/check-mcp.ts",
+    "check:live": "tsx scripts/check-live.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

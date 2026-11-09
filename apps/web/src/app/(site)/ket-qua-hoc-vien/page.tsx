@@ -4,7 +4,7 @@ import Testimonials from "../../../components/Testimonials";
 import { listTestimonials } from "../../../server/content";
 
 export const metadata: Metadata = {
-  title: "Kết quả học viên | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Kết quả học viên",
 };
 
 /*

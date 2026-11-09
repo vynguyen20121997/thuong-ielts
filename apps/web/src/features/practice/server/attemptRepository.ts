@@ -358,6 +358,12 @@ export async function closeAttempt(
             answers = $7,
             results = $8
       WHERE id = $1 AND status = 'in_progress'
+        -- Giờ thi do server giữ: quá hạn hơn một phút thì không nhận. Không có
+        -- dòng này thì em nào dừng đồng hồ trên trình duyệt cũng làm được bao
+        -- lâu tuỳ thích (đo được: nộp trễ 88 giây vẫn chấm). Một phút ân hạn
+        -- khớp đúng mức chờ của scripts/close-expired-attempts.ts — lượt bị
+        -- từ chối ở đây sẽ được script ấy chốt bằng tiến độ nhịp cuối.
+        AND expires_at > now() - interval '1 minute'
       RETURNING assignment_id`,
     [
       attemptId,

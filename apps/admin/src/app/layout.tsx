@@ -26,7 +26,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Admin | HNT.IELTS",
+  title: "Admin | Thương Hồ's Class",
   robots: { index: false, follow: false },
 };
 

@@ -351,6 +351,30 @@ async function main() {
     true,
   );
 
+  /*
+    Giờ thi do server giữ. Đồng hồ trên trình duyệt dừng được (đóng băng tab,
+    sửa JS), nên server phải tự từ chối bài nộp đã quá hạn — đo được trước khi
+    sửa: nộp trễ 88 giây vẫn được chấm và ghi điểm. Quá ân hạn một phút thì
+    lượt giữ nguyên `in_progress` để close:expired chốt bằng tiến độ nhịp cuối.
+  */
+  const luotTre = await moLuot();
+  await pool.query(
+    "UPDATE attempts SET expires_at = now() - interval '5 minutes' WHERE id = $1",
+    [luotTre.attemptId],
+  );
+  await nop(luotTre.attemptId ?? null, dungHet);
+  const { rows: tre } = await pool.query<{ status: string }>(
+    "SELECT status FROM attempts WHERE id = $1",
+    [luotTre.attemptId],
+  );
+  kiem(
+    "nộp trễ quá hạn 5 phút thì server KHÔNG chốt bằng bài đó",
+    tre[0]?.status === "in_progress",
+    tre[0]?.status,
+    "in_progress",
+  );
+  await pool.query("DELETE FROM attempts WHERE id = $1", [luotTre.attemptId]);
+
   /* ── 6. Số giờ do client gửi ────────────────────────────────────────── */
 
   console.log("\n6) Số giây làm bài do client gửi lên");

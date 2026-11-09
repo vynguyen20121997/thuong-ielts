@@ -10,7 +10,7 @@ import ReadingCatalog from "../../../../features/practice/ui/ReadingCatalog";
 import PageArch from "../../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Luyện đề IELTS Reading | ThuongHo.Class",
+  title: "Luyện đề IELTS Reading",
   description:
     "Bộ đề luyện Reading IELTS miễn phí theo từng dạng câu hỏi: True/False/Not Given, Matching Headings, điền từ. Chấm điểm tự động kèm giải thích.",
 };

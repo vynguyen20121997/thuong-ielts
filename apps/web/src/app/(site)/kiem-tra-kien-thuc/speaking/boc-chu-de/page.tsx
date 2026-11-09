@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import TopicDraw from "../../../../../features/speaking/ui/TopicDraw";
 
 export const metadata: Metadata = {
-  title: "Bốc chủ đề Speaking ngẫu nhiên | HNT.IELTS",
+  title: "Bốc chủ đề Speaking ngẫu nhiên",
   description:
     "Bốc một chủ đề Speaking, đọc kiến thức nền và từ vựng trong 5–10 phút theo part, rồi trả lời khi bảng đã ẩn đi.",
 };

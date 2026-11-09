@@ -6,7 +6,7 @@ import SkillGrid from "../../../features/practice/ui/SkillGrid";
 import PageArch from "../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Luyện kĩ năng IELTS tại nhà | ThuongHo.Class",
+  title: "Luyện kĩ năng IELTS tại nhà",
   description:
     "Bộ đề luyện tập IELTS 4 kĩ năng để luyện tập thêm tại nhà và theo dõi tiến bộ trong điểm số.",
 };

@@ -37,7 +37,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Thương Hồ's Class",
+  // Một tên thương hiệu cho mọi tab: trang con chỉ khai phần riêng của nó.
+  // Từng có ba tên tự viết ở từng trang (ThuongHo.Class, HNT.IELTS…).
+  title: { default: "Thương Hồ's Class", template: "%s | Thương Hồ's Class" },
   description:
     "Chuyên gia luyện thi IELTS và phát triển tư duy biện chứng. Chương trình luyện thi IELTS chất lượng cao, giúp học viên Việt Nam chinh phục IELTS bền vững và thực tế.",
 };

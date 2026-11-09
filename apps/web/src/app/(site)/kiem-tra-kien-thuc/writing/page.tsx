@@ -11,7 +11,7 @@ import { listWritingPrompts } from "../../../../features/practice/server/writing
 import PageArch from "../../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Luyện Writing IELTS | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Luyện Writing IELTS",
   description:
     "Viết IELTS Writing Task 2 có bấm giờ và đếm từ, kèm checklist tự động soi lỗi bố cục, lạc đề và thiếu ví dụ trước khi nộp cho giáo viên.",
 };

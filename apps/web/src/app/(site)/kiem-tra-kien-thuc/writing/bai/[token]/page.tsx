@@ -8,7 +8,7 @@ import { baiNopCua, deCuaBaiGiao } from "../../../../../../features/practice/ser
 import VietBaiGiao from "../../../../../../features/practice/ui/VietBaiGiao";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Bài Writing cô giao | ThuongHo.Class", robots: { index: false } };
+export const metadata: Metadata = { title: "Bài Writing cô giao", robots: { index: false } };
 
 /**
  * Viết bài Writing cô giao qua link.

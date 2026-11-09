@@ -10,7 +10,7 @@ import ListeningCatalog from "../../../../features/practice/ui/ListeningCatalog"
 import PageArch from "../../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Luyện đề IELTS Listening | ThuongHo.Class",
+  title: "Luyện đề IELTS Listening",
   description:
     "Bộ đề luyện Listening IELTS miễn phí có file nghe, bấm giờ 30 phút, chấm điểm tự động và quy đổi band.",
 };

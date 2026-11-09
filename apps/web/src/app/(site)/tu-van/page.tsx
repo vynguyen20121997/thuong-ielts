@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Contact from "../../../components/Contact";
 
 export const metadata: Metadata = {
-  title: "Liên hệ | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Liên hệ",
 };
 
 export default function ContactPage() {

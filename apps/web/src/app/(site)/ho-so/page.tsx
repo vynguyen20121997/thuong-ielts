@@ -8,7 +8,7 @@ import ProfileForm from "../../../features/account/ui/ProfileForm";
 import PageArch from "../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Hồ sơ học viên | HNT.IELTS",
+  title: "Hồ sơ học viên",
 };
 
 export const dynamic = "force-dynamic";

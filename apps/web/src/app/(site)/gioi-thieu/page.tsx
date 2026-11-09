@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import About from "../../../components/About";
 
 export const metadata: Metadata = {
-  title: "Về giáo viên | Thương Hồ's Class",
+  title: "Về giáo viên",
 };
 
 export default function AboutPage() {

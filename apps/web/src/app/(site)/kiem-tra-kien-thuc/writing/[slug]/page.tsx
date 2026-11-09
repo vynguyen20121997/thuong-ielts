@@ -18,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const prompt = await getWritingPrompt(slug);
-  if (!prompt) return { title: "Không tìm thấy đề | HNT.IELTS" };
+  if (!prompt) return { title: "Không tìm thấy đề" };
 
   return {
     title: `${prompt.title} | Luyện Writing IELTS`,

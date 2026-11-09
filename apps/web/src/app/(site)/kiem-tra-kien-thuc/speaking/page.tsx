@@ -8,7 +8,7 @@ import { TALK_SECONDS } from "../../../../features/speaking/domain/timing";
 import type { Part } from "../../../../features/speaking/domain/types";
 
 export const metadata: Metadata = {
-  title: "Luyện Speaking IELTS | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Luyện Speaking IELTS",
   description:
     "Thu âm câu trả lời theo bộ đề dự đoán, luyện phát triển ý cho Part 3 và bốc chủ đề ngẫu nhiên có kiến thức nền, từ vựng.",
 };

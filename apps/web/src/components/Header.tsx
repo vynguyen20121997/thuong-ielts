@@ -243,9 +243,16 @@ export default function Header() {
         Ngăn kéo mobile. `inert` khi đóng, không chỉ `pointer-events-none`: đã đo
         ngăn kéo đóng vẫn giữ 16 liên kết bắt được focus. `inert` gỡ cả nhánh
         khỏi thứ tự Tab lẫn cây trợ năng.
+
+        `data-lenis-prevent` + `panel-scroll`: không có thì Lenis nuốt cú lăn
+        chuột / vuốt và cuộn TRANG PHÍA SAU thay vì ngăn kéo. `panel-scroll`
+        giành lại `overflow-y: auto` (Lenis đặt `overflow: clip` cho mọi
+        `[data-lenis-prevent]` lúc trang đang trôi) và chặn cuộn tràn ra ngoài.
+        Lớp phủ `fixed` là ngoại lệ hợp lệ của luật "không cuộn lồng nhau".
       */}
       <div
-        className={`fixed inset-x-0 bottom-0 top-0 -z-10 overflow-y-auto bg-mist px-4 pb-8 pt-28 transition-[opacity,transform] duration-300 ease-out lg:hidden ${
+        data-lenis-prevent
+        className={`panel-scroll fixed inset-x-0 bottom-0 top-0 -z-10 bg-mist px-4 pb-8 pt-28 transition-[opacity,transform] duration-300 ease-out lg:hidden ${
           isMobileMenuOpen
             ? "translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-2 opacity-0"

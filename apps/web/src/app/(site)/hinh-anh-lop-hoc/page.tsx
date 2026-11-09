@@ -7,7 +7,7 @@ import {
 import Reveal from "../../../components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Hình Ảnh Lớp Học | Thương Hồ's Class",
+  title: "Hình Ảnh Lớp Học",
   description: "Thư viện hình ảnh các lớp học tại Thương Hồ's Class.",
 };
 

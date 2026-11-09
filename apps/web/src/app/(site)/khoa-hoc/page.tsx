@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Services from "../../../components/Services";
 
 export const metadata: Metadata = {
-  title: "Khóa học | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Khóa học",
 };
 
 export default function CoursesPage() {

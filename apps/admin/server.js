@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import next from "next";
+import pg from "pg";
 import { Server as SocketServer } from "socket.io";
 
 import { moCauNoi } from "./src/lib/liveBridge.js";
@@ -66,6 +67,39 @@ let cauNoiSong = false;
 /** Tên phòng cho màn chính. Dấu gạch dưới để không đụng mã đề nào. */
 const PHONG_TONG_QUAN = "__tat_ca__";
 
+/*
+  Bài cô giao chỉ CÔ ẤY được nghe.
+
+  Từng để mọi cô vào phòng nào cũng được và màn chính nhận nhịp của mọi lớp:
+  đo bằng cô ảo thứ hai, cô ấy nghe được tên từng học sinh lớp người khác,
+  tự vào phòng chi tiết và nhận đúng/sai từng câu lúc em nộp. Trang /lop chỉ
+  lọc lúc VẼ — socket thì cứ thế gửi. Giờ phòng `bg-<id>` chỉ mở cho chủ bài
+  giao, và tóm tắt của bài giao chỉ bay vào phòng tổng quan riêng của chủ.
+  Lớp tự luyện (`tl-…`) không thuộc cô nào nên vẫn dùng chung như cũ.
+*/
+const db = new pg.Pool({
+  host: process.env.PGHOST,
+  port: Number(process.env.PGPORT ?? 5432),
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  database: process.env.PGDATABASE,
+  ssl: { rejectUnauthorized: false },
+  max: 2,
+});
+/** Chủ của một bài giao không bao giờ đổi, nên nhớ luôn — nhịp đến vài giây một lần. */
+const chuBaiGiao = new Map();
+async function chuCua(phong) {
+  if (!phong.startsWith("bg-")) return null;
+  const id = phong.slice(3);
+  if (!chuBaiGiao.has(id)) {
+    const { rows } = await db.query("SELECT teacher_id FROM assignments WHERE id::text = $1", [id]);
+    // Không tìm thấy thì ghi chuỗi rỗng: không cô nào khớp, phòng đóng với tất cả.
+    chuBaiGiao.set(id, rows[0]?.teacher_id ?? "");
+  }
+  return chuBaiGiao.get(id);
+}
+const phongTongQuanCua = (teacherId) => `${PHONG_TONG_QUAN}:${teacherId}`;
+
 io.on("connection", (socket) => {
   // Nói ngay tình trạng hiện tại, đừng để cô phải đợi lần đổi trạng thái sau.
   socket.emit("cau-noi", cauNoiSong);
@@ -78,14 +112,24 @@ io.on("connection", (socket) => {
     cần từng ô đúng/sai. Nếu dùng chung một phòng thì màn chính phải nhận cả
     dải 40 ô của mọi em trong mọi lớp — tốn đường truyền cho thứ nó không vẽ.
   */
-  socket.on("xem-tat-ca", () => socket.join(PHONG_TONG_QUAN));
+  socket.on("xem-tat-ca", () => {
+    socket.join(PHONG_TONG_QUAN);
+    socket.join(phongTongQuanCua(socket.data.teacherId));
+  });
 
   // Mỗi đề là một phòng. Sau này khi có bảng `assignments`, phòng sẽ là mã bài
   // cô giao thay vì mã đề — đổi đúng chỗ này.
-  socket.on("xem", (target) => {
+  socket.on("xem", async (target) => {
     if (typeof target !== "string" || target.length > 120) return;
+    try {
+      const chu = await chuCua(target);
+      if (chu !== null && chu !== socket.data.teacherId) return;
+    } catch (err) {
+      console.error("[live] không tra được chủ bài giao:", err);
+      return;
+    }
     for (const phong of socket.rooms) {
-      if (phong !== socket.id && phong !== PHONG_TONG_QUAN) socket.leave(phong);
+      if (phong !== socket.id && !phong.startsWith(PHONG_TONG_QUAN)) socket.leave(phong);
     }
     socket.join(target);
   });
@@ -109,13 +153,13 @@ const cauNoi = moCauNoi((goi) => {
   io.to(phong).emit("nhip", goi);
 
   // Màn chính chỉ cần biết lớp nào vừa động, và ai đang làm — không cần dải ô.
-  io.to(PHONG_TONG_QUAN).emit("tom-tat", {
-    lop: phong,
-    loai: goi.loai,
-    a: goi.a,
-    ten: goi.ten,
-    khach: goi.khach,
-  });
+  const tomTat = { lop: phong, loai: goi.loai, a: goi.a, ten: goi.ten, khach: goi.khach };
+  chuCua(phong)
+    .then((chu) => {
+      if (chu === null) io.to(PHONG_TONG_QUAN).emit("tom-tat", tomTat);
+      else if (chu) io.to(phongTongQuanCua(chu)).emit("tom-tat", tomTat);
+    })
+    .catch((err) => console.error("[live] không tra được chủ bài giao:", err));
 }, (song) => {
   cauNoiSong = song;
   io.emit("cau-noi", song);
@@ -131,6 +175,7 @@ for (const tin of ["SIGTERM", "SIGINT"]) {
   process.on(tin, () => {
     console.log(`[admin] nhận ${tin}, đang đóng...`);
     cauNoi.dong();
+    void db.end();
     io.close();
     server.close(() => process.exit(0));
     setTimeout(() => process.exit(0), 5000).unref();

@@ -6,7 +6,7 @@ import { requireStudent } from "../../../features/account/server/guard";
 import VocabHome from "../../../features/vocab/ui/VocabHome";
 
 export const metadata: Metadata = {
-  title: "Học từ vựng IELTS | HNT.IELTS - Hồ Ngọc Thương",
+  title: "Học từ vựng IELTS",
   description:
     "Học từ vựng IELTS theo lịch giãn cách: thẻ chỉ quay lại đúng lúc bạn sắp quên. Bộ thẻ của cô và bộ bạn tự tạo.",
 };

@@ -9,7 +9,7 @@ import PageArch from "../../../components/PageArch";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Bài đã làm | HNT.IELTS",
+  title: "Bài đã làm",
   description: "Xem lại các bài Reading và Listening em đã làm, điểm và band ước tính.",
 };
 

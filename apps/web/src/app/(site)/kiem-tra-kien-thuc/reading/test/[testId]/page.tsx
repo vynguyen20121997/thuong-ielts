@@ -21,10 +21,10 @@ export async function generateMetadata({
   const { testId } = await params;
   const outline = await getExamOutline("test", testId);
 
-  if (!outline) return { title: "Không tìm thấy đề | ThuongHo.Class" };
+  if (!outline) return { title: "Không tìm thấy đề" };
 
   return {
-    title: `${outline.title} — thi cả test | ThuongHo.Class`,
+    title: `${outline.title} — thi cả test`,
     description: `Làm trọn ${outline.parts.length} passage của ${outline.title}: ${outline.questionCount} câu, ${Math.round(
       outline.durationSeconds / 60,
     )} phút, chấm điểm và giải thích tự động.`,

@@ -11,7 +11,7 @@ import LoginPanel from "../../../features/account/ui/LoginPanel";
 import PageArch from "../../../components/PageArch";
 
 export const metadata: Metadata = {
-  title: "Đăng nhập | HNT.IELTS",
+  title: "Đăng nhập",
   description: "Đăng nhập để làm đề Reading và Listening, lưu kết quả và theo dõi tiến bộ.",
 };
 
@@ -80,7 +80,7 @@ export default async function LoginPage({
         </p>
 
         <p className="text-2xs text-ink/65 text-center mt-5 leading-relaxed">
-          Đăng nhập nghĩa là bạn đồng ý để HNT.IELTS lưu tên, ảnh đại diện và kết quả làm bài của
+          Đăng nhập nghĩa là bạn đồng ý để Thương Hồ's Class lưu tên, ảnh đại diện và kết quả làm bài của
           mình.
         </p>
       </div>

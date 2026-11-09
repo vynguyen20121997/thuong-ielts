@@ -3,6 +3,7 @@ import { randomBytes, createHash } from 'node:crypto';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 import { exam } from '../apps/web/src/features/diagnostic/server/scoring';
+import { emptyProfile, LEVELS, TARGETS, PURPOSES, EXAM_TIMINGS } from '../packages/diagnostic/src/profile';
 dotenv.config({path:'apps/web/.env.local'});
 const db=new Pool({host:process.env.PGHOST,port:Number(process.env.PGPORT??5432),user:process.env.PGUSER,password:process.env.PGPASSWORD,database:process.env.PGDATABASE,ssl:{rejectUnauthorized:false}});
 const tokens=[randomBytes(32).toString('hex'),randomBytes(32).toString('hex')];
@@ -10,7 +11,8 @@ async function call(token:string,action:string,extra:object={},editor='api-test'
  const r=await fetch('http://localhost:2000/api/diagnostic',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({action,editor,...extra})});return {status:r.status,data:await r.json()};
 }
 async function main(){try{
- const profile={name:'Synthetic API check',email:'api-check@example.invalid',level:'Chưa rõ',target:'7.0',examDate:'Trong 3 tháng',consent:true,dailyMinutes:30};
+ // Lựa chọn lấy thẳng từ profile.ts — từng viết tay nhãn cũ ('Chưa rõ', 'Trong 3 tháng'), form đổi nhãn là bộ này đỏ vì 400 chứ không vì lỗi thật.
+ const profile={...emptyProfile,name:'Synthetic API check',email:'api-check@example.invalid',level:LEVELS[4],target:TARGETS[5],purpose:PURPOSES[1],examTiming:EXAM_TIMINGS[2],consent:true,dailyMinutes:30};
  let r=await call(tokens[0],'start',{profile});assert.equal(r.status,200);assert.equal(r.data.result,null);assert.ok(r.data.remaining>2600);const start=r.data.startedAt;
  r=await call(tokens[0],'start',{profile});assert.equal(r.data.startedAt,start);
  r=await call(tokens[0],'save',{answers:{G01:'C'},workspace:{bookmarks:['G01']}});assert.equal(r.data.answers.G01,'C');
