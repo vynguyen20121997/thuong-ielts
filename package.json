@@ -37,7 +37,8 @@
     "check:tuition": "tsx scripts/check-tuition.ts",
     "check:personas": "tsx scripts/check-personas.ts",
     "check:baigiao": "tsx scripts/check-baigiao.ts",
-    "check:noidung": "tsx scripts/check-noidung.ts"
+    "check:noidung": "tsx scripts/check-noidung.ts",
+    "check:mcp": "tsx scripts/check-mcp.ts"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

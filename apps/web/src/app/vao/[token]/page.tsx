@@ -78,6 +78,14 @@ export default async function TrangVaoBangLink({
     // Còn dở dang thì vào làm tiếp — rơi xuống dưới.
   }
 
+  // Writing tự lo "đã nộp chưa" ở trang viết bài (bài nằm ở `writing_submissions`,
+  // không phải `attempts`), kể cả khi buổi đã đóng.
+  if (bai.skill === "writing" && (student || khach)) {
+    const { baiNopCua } = await import("../../../features/practice/server/writingAssignment");
+    const cu = await baiNopCua(bai.id, { studentId: student?.id ?? null, guestKey: khach?.key ?? null, guestName: null });
+    if (cu) redirect(`/phong-luyen-tap/writing/bai/${token}`);
+  }
+
   if (!conMo(bai)) {
     return (
       <Khung tieuDe="Buổi học này đã kết thúc">
@@ -93,9 +101,15 @@ export default async function TrangVaoBangLink({
   }
 
   const duongDenBai =
-    bai.skill === "listening"
+    bai.skill === "writing"
+      ? `/phong-luyen-tap/writing/bai/${token}`
+      : bai.skill === "listening"
       ? `/phong-luyen-tap/listening/${bai.target}?bai=${token}`
-      : `/phong-luyen-tap/reading/test/${bai.target}?bai=${token}`;
+      : bai.scope === "test"
+        ? `/phong-luyen-tap/reading/test/${bai.target}?bai=${token}`
+        : // Passage lẻ (bộ VOL) và đề nội bộ: trang thi cả test đòi mã đề dạng
+          // `cam10-test1`, đưa slug lẻ vào đó là 404.
+          `/phong-luyen-tap/reading/${bai.target}?bai=${token}`;
 
   // Đã có danh tính (tài khoản hoặc khách) thì đi thẳng vào bài.
   if (student || khach) redirect(duongDenBai);
@@ -103,7 +117,7 @@ export default async function TrangVaoBangLink({
   return (
     <Khung tieuDe={bai.label || bai.title}>
       <p className="text-sm text-ink/60">
-        {bai.title} · {bai.skill === "listening" ? "Nghe" : "Đọc"}
+        {bai.title} · {bai.skill === "listening" ? "Nghe" : bai.skill === "writing" ? "Viết" : "Đọc"}
       </p>
       <VaoBangTen token={token} choKhach={bai.allowGuest} duongDenBai={duongDenBai} />
     </Khung>

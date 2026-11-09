@@ -513,3 +513,32 @@ ALTER TABLE assignments ADD COLUMN IF NOT EXISTS show_score TEXT NOT NULL DEFAUL
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS show_answers TEXT NOT NULL DEFAULT 'ngay'
   CHECK (show_answers IN ('ngay', 'khi_co_mo', 'khong'));
 ALTER TABLE assignments ADD COLUMN IF NOT EXISTS results_opened_at TIMESTAMPTZ;
+
+/*
+  Bài giao Writing (đề nội bộ cô tự soạn).
+
+  Ràng buộc `skill` cũ chỉ có reading/listening. Đổi tên ràng buộc cũng không
+  được vì Postgres tự đặt tên `assignments_skill_check` — nên DROP IF EXISTS rồi
+  dựng lại, chạy lại nhiều lần vẫn ra đúng một ràng buộc.
+*/
+ALTER TABLE assignments DROP CONSTRAINT IF EXISTS assignments_skill_check;
+ALTER TABLE assignments ADD CONSTRAINT assignments_skill_check
+  CHECK (skill IN ('reading', 'listening', 'writing'));
+
+/*
+  Token cho AI agent giao bài thay cô (MCP, `apps/admin/src/app/api/mcp`).
+
+  Chỉ lưu SHA-256 của token, không lưu token: lộ bảng này thì cũng không ai cầm
+  được chìa khoá. Token hiện ra đúng MỘT lần lúc tạo. Thu hồi = đặt
+  `revoked_at`, không xoá, để còn biết token nào từng tồn tại.
+*/
+CREATE TABLE IF NOT EXISTS teacher_api_tokens (
+  id            TEXT PRIMARY KEY,
+  teacher_id    TEXT NOT NULL REFERENCES teachers (id) ON DELETE CASCADE,
+  name          TEXT NOT NULL,
+  token_hash    TEXT NOT NULL UNIQUE,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_used_at  TIMESTAMPTZ,
+  revoked_at    TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_teacher_api_tokens_teacher ON teacher_api_tokens (teacher_id);

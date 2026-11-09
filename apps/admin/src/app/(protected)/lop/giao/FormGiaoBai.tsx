@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+type KyNang = "reading" | "listening" | "writing";
+
 interface De {
   target: string;
   title: string;
@@ -16,15 +18,21 @@ interface De {
  * buổi dạy, nên chỉ giữ những gì thật sự đổi kết quả.
  */
 export default function FormGiaoBai({
+  noiBo,
+  writing,
   reading,
   listening,
 }: {
+  /** Đề nội bộ của cô — chỉ Reading, đứng đầu vì vừa soạn xong là để giao. */
+  noiBo: De[];
+  /** Đề Writing nội bộ của cô. Writing chỉ giao được đề nội bộ. */
+  writing: De[];
   reading: De[];
   listening: De[];
 }) {
   const router = useRouter();
-  const [kyNang, setKyNang] = useState<"reading" | "listening">("reading");
-  const [target, setTarget] = useState(reading[0]?.target ?? "");
+  const [kyNang, setKyNang] = useState<KyNang>("reading");
+  const [target, setTarget] = useState((noiBo[0] ?? reading[0])?.target ?? "");
   const [nhan, setNhan] = useState("");
   const [choKhach, setChoKhach] = useState(true);
   // Cả lớp hay một bạn. Về kỹ thuật hai thứ giống nhau — đều là một link —
@@ -39,11 +47,12 @@ export default function FormGiaoBai({
   const [dangGui, setDangGui] = useState(false);
   const [loi, setLoi] = useState<string | null>(null);
 
-  const dsDe = kyNang === "reading" ? reading : listening;
+  const dsDe = kyNang === "reading" ? reading : kyNang === "writing" ? writing : listening;
 
-  const doiKyNang = (k: "reading" | "listening") => {
+  const doiKyNang = (k: KyNang) => {
     setKyNang(k);
-    setTarget((k === "reading" ? reading : listening)[0]?.target ?? "");
+    const dau = k === "reading" ? noiBo[0] ?? reading[0] : k === "writing" ? writing[0] : listening[0];
+    setTarget(dau?.target ?? "");
   };
 
   const tao = async () => {
@@ -84,7 +93,7 @@ export default function FormGiaoBai({
   return (
     <div className="bg-white border border-black/10 rounded-2xl p-6 max-w-2xl">
       <div className="flex gap-2 mb-5">
-        {(["reading", "listening"] as const).map((k) => (
+        {(["reading", "listening", "writing"] as const).map((k) => (
           <button
             key={k}
             type="button"
@@ -95,7 +104,7 @@ export default function FormGiaoBai({
                 : "bg-black/[0.04] text-[#1A1A1A]/60 hover:bg-black/[0.07]"
             }`}
           >
-            {k === "reading" ? "Reading" : "Listening"}
+            {k === "reading" ? "Reading" : k === "listening" ? "Listening" : "Writing"}
           </button>
         ))}
       </div>
@@ -129,12 +138,30 @@ export default function FormGiaoBai({
         onChange={(e) => setTarget(e.target.value)}
         className="w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 text-sm mb-4 cursor-pointer"
       >
-        {dsDe.map((d) => (
-          <option key={d.target} value={d.target}>
-            {d.title}
-          </option>
-        ))}
+        {kyNang === "reading" && noiBo.length > 0 && (
+          <optgroup label="Đề nội bộ của cô">
+            {noiBo.map((d) => (
+              <option key={d.target} value={d.target}>
+                {d.title}
+              </option>
+            ))}
+          </optgroup>
+        )}
+        <optgroup
+          label={kyNang === "reading" ? "Kho đề Reading" : kyNang === "writing" ? "Đề Writing nội bộ của cô" : "Kho đề Listening"}
+        >
+          {dsDe.map((d) => (
+            <option key={d.target} value={d.target}>
+              {d.title}
+            </option>
+          ))}
+        </optgroup>
       </select>
+      {kyNang === "writing" && writing.length === 0 && (
+        <p className="-mt-2 mb-4 text-sm text-[#B45309]">
+          Chưa có đề Writing nội bộ. Tạo ở mục <a href="/de-noi-bo" className="font-bold underline">Đề nội bộ</a> trước.
+        </p>
+      )}
 
       <label className="block text-xs font-bold text-[#1A1A1A]/50 mb-1.5">
         Tên buổi học <span className="font-medium text-[#1A1A1A]/35">— để trống thì lấy tên đề</span>
@@ -150,8 +177,9 @@ export default function FormGiaoBai({
         Sau khi nộp, học viên được xem
       </label>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-        <ChonHien nhan="Điểm" giaTri={hienDiem} doi={setHienDiem} />
-        <ChonHien nhan="Đáp án đúng" giaTri={hienDapAn} doi={setHienDapAn} />
+        <ChonHien nhan={kyNang === "writing" ? "Band AI chấm" : "Điểm"} giaTri={hienDiem} doi={setHienDiem} />
+        {/* Writing không có "đáp án đúng" để giấu. */}
+        {kyNang !== "writing" && <ChonHien nhan="Đáp án đúng" giaTri={hienDapAn} doi={setHienDapAn} />}
       </div>
 
       <div className="flex flex-wrap items-center gap-6 mb-5">

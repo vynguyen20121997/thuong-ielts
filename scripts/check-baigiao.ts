@@ -61,6 +61,14 @@ async function main() {
   const don = async () => {
     await pool.query("DELETE FROM attempts WHERE student_id = $1", [EM]);
     await pool.query("DELETE FROM assignments WHERE teacher_id = $1", [CO]);
+    // TRƯỚC khi xoá cô: `owner_id` là ON DELETE SET NULL, xoá cô trước thì đề
+    // nội bộ của cô rơi vào kho công khai.
+    await pool.query("DELETE FROM reading_tests WHERE owner_id = $1", [CO]);
+    await pool.query(
+      "DELETE FROM writing_submissions WHERE prompt_id IN (SELECT id FROM writing_prompts WHERE owner_id = $1)",
+      [CO],
+    );
+    await pool.query("DELETE FROM writing_prompts WHERE owner_id = $1", [CO]);
     await pool.query("DELETE FROM teachers WHERE id = $1", [CO]);
     await pool.query("DELETE FROM students WHERE id = $1", [EM]);
   };
@@ -375,6 +383,153 @@ async function main() {
     `${nopNghe.body.correct}/${nopNghe.body.total}`,
     "đúng hết",
   );
+
+  /* ── 6. Đề nội bộ ─────────────────────────────────────────────────────── */
+  /*
+    Lời hứa của "Đề nội bộ": học sinh KHÔNG thấy đề trong kho, KHÔNG mở được
+    bằng cách đoán slug, KHÔNG mở được bằng link của một bài giao khác — chỉ
+    đúng link trỏ vào đề ấy. Và chấm vẫn đúng như đề thường.
+  */
+  console.log("\n6) Đề nội bộ cô tự soạn");
+  await donLuot();
+  const tao = await goi(`${ADMIN}/api/de-noi-bo`, {
+    method: "POST",
+    cookie: veCo,
+    body: JSON.stringify({ code: "SIM-BG-NOIBO", title: "Đề nội bộ ảo", minutes: 10, description: "" }),
+  });
+  const idNoiBo = String((tao.body.data as { id?: string } | undefined)?.id ?? "");
+  kiem("tạo được đề nội bộ", tao.status === 200 && !!idNoiBo, tao.body.error ?? tao.status, 200);
+  const slugNoiBo = "rieng-sim-bg-noibo";
+
+  const luu = await goi(`${ADMIN}/api/de-noi-bo`, {
+    method: "PATCH",
+    cookie: veCo,
+    body: JSON.stringify({
+      id: idNoiBo,
+      de: {
+        code: "SIM-BG-NOIBO", title: "Đề nội bộ ảo", minutes: 10, description: "",
+        passageTitle: "Sim", passageText: "Japan offers career opportunities.", labelParagraphs: false,
+        groups: [
+          { type: "gap-fill", instruction: "Write ONE WORD.", options: [], maxWords: 2,
+            questions: [{ prompt: "Japan offers ___ opportunities.", options: [], answer: "career", acceptable: [], explanation: "" }] },
+          { type: "true-false-not-given", instruction: "TFNG", options: [], maxWords: 2,
+            questions: [{ prompt: "Japan is cold.", options: [], answer: "NOT GIVEN", acceptable: [], explanation: "" }] },
+        ],
+      },
+    }),
+  });
+  kiem("lưu được nội dung đề", luu.status === 200, luu.body.error ?? luu.status, 200);
+
+  const coVaoKho = (await goi(`${WEB}/api/practice/reading`)).text.includes(slugNoiBo);
+  kiem("đề nội bộ KHÔNG hiện trong kho công khai", !coVaoKho);
+
+  const doan = await goi(`${WEB}/api/practice/reading/${slugNoiBo}`, { cookie: veEm });
+  kiem("đoán slug không có link thì không mở được", doan.status === 404, doan.status, 404);
+
+  const baiKhac = await giaoBai();
+  const linkKhac = await goi(`${WEB}/api/practice/reading/${slugNoiBo}?bai=${baiKhac.token}`, { cookie: veEm });
+  kiem("cầm link của bài giao KHÁC thì không mở được", linkKhac.status === 404, linkKhac.status, 404);
+
+  const baiNoiBo = await giaoBai({ target: slugNoiBo });
+  kiem("giao được đề nội bộ", baiNoiBo.r.status === 200, baiNoiBo.r.body.error ?? baiNoiBo.r.status, 200);
+
+  const vao = await fetch(`${WEB}/vao/${baiNoiBo.token}`, { redirect: "manual", headers: { cookie: veEm } });
+  const diToi = vao.headers.get("location") ?? `(status ${vao.status})`;
+  kiem(
+    "link giao đưa tới trang làm bài lẻ, không phải trang thi cả test",
+    diToi.includes(`/reading/${slugNoiBo}?bai=`),
+    diToi,
+    `/phong-luyen-tap/reading/${slugNoiBo}?bai=…`,
+  );
+
+  const moDe = await goi(`${WEB}/api/practice/reading/${slugNoiBo}?bai=${baiNoiBo.token}`, { cookie: veEm });
+  kiem("cầm đúng link thì mở được đề", moDe.status === 200, moDe.status, 200);
+  kiem("đề mở ra không kèm đáp án", !moDe.text.includes("answer_key") && !moDe.text.includes("\"answer\""));
+
+  const moLuot = await goi(`${WEB}/api/practice/attempt/start`, {
+    method: "POST",
+    cookie: veEm,
+    body: JSON.stringify({ skill: "reading", scope: "paper", target: slugNoiBo, token: baiNoiBo.token }),
+  });
+  const nopNoiBo = await goi(`${WEB}/api/practice/reading/${slugNoiBo}/submit`, {
+    method: "POST",
+    cookie: veEm,
+    body: JSON.stringify({
+      answers: { [`${slugNoiBo}-q1`]: "Career", [`${slugNoiBo}-q2`]: "TRUE" },
+      elapsedSeconds: 30,
+      attemptId: String(moLuot.body.attemptId ?? ""),
+    }),
+  });
+  kiem("chấm đề nội bộ ở server: 1 đúng 1 sai", nopNoiBo.body.correct === 1 && nopNoiBo.body.total === 2,
+    `${nopNoiBo.body.correct}/${nopNoiBo.body.total}`, "1/2");
+  const { rows: luotNoiBo } = await pool.query(
+    "SELECT assignment_id FROM attempts WHERE student_id = $1 AND target = $2",
+    [EM, slugNoiBo],
+  );
+  kiem("lượt làm gắn vào đúng bài giao", luotNoiBo[0]?.assignment_id === baiNoiBo.id, luotNoiBo[0]?.assignment_id, baiNoiBo.id);
+
+  /* ── 7. Bài Writing giao ─────────────────────────────────────────────── */
+  /*
+    Đề Writing nội bộ không mở được ở màn luyện công khai; bài nộp lưu lại cho
+    cô đọc; một link một lần; buổi đóng rồi thì không nộp được nữa; và token
+    của bài giao KHÁC không dùng để nộp vào đây được.
+  */
+  console.log("\n7) Bài Writing cô giao");
+  const taoW = await goi(`${ADMIN}/api/de-noi-bo`, {
+    method: "POST",
+    cookie: veCo,
+    body: JSON.stringify({
+      skill: "writing", title: "Writing ảo", task: 2, minWords: 100, minutes: 10,
+      prompt: "Some people think remote work is better. Discuss both views and give your opinion.",
+    }),
+  });
+  const idW = String((taoW.body.data as { id?: string } | undefined)?.id ?? "");
+  kiem("tạo được đề Writing nội bộ", taoW.status === 200 && idW.startsWith("wn-"), taoW.body.error ?? taoW.status, 200);
+
+  const congKhai = await goi(`${WEB}/api/practice/writing/band`, {
+    method: "POST",
+    body: JSON.stringify({ promptId: idW, essay: "x" }),
+  });
+  kiem("đề Writing nội bộ KHÔNG mở được ở màn luyện công khai", congKhai.status === 404, congKhai.status, 404);
+
+  const baiW = await giaoBai({ skill: "writing", target: idW });
+  kiem("giao được đề Writing", baiW.r.status === 200, baiW.r.body.error ?? baiW.r.status, 200);
+
+  const vaoW = await fetch(`${WEB}/vao/${baiW.token}`, { redirect: "manual", headers: { cookie: veEm } });
+  kiem(
+    "link giao đưa tới trang viết bài",
+    (vaoW.headers.get("location") ?? "").includes(`/writing/bai/${baiW.token}`),
+    vaoW.headers.get("location"),
+    `/phong-luyen-tap/writing/bai/${baiW.token}`,
+  );
+
+  const essayW = "Remote work saves time because people do not commute. ".repeat(12);
+  const nopW = (token: string, essay = essayW) =>
+    goi(`${WEB}/api/practice/writing/bai-giao`, {
+      method: "POST",
+      cookie: veEm,
+      body: JSON.stringify({ action: "nop", token, essay, elapsedSeconds: 300 }),
+    });
+
+  const nopW1 = await nopW(baiW.token);
+  kiem("nộp được bài viết", nopW1.status === 200 && nopW1.body.daCo === false, nopW1.body.error ?? nopW1.body, "daCo=false");
+  const nopW2 = await nopW(baiW.token, "bài khác hẳn");
+  kiem("nộp lần hai trả về bài cũ, không thành bài mới", nopW2.body.daCo === true && nopW2.body.id === nopW1.body.id, nopW2.body);
+  const { rows: baiLuu } = await pool.query(
+    "SELECT essay, assignment_id FROM writing_submissions WHERE student_id = $1 AND prompt_id = $2",
+    [EM, idW],
+  );
+  kiem("đúng một bài được lưu, đúng nội dung, gắn đúng bài giao",
+    baiLuu.length === 1 && baiLuu[0].essay === essayW.trim() && baiLuu[0].assignment_id === baiW.id,
+    baiLuu.length);
+
+  const tokenKhac = await nopW(baiKhac.token);
+  kiem("token của bài giao Reading không nộp Writing được", tokenKhac.status === 404, tokenKhac.status, 404);
+
+  const baiDong = await giaoBai({ skill: "writing", target: idW });
+  await goi(`${ADMIN}/api/bai-giao/${baiDong.id}`, { method: "DELETE", cookie: veCo });
+  const nopDong = await nopW(baiDong.token);
+  kiem("buổi đã đóng thì không nộp được", nopDong.status === 409, nopDong.status, 409);
 
   await don();
   await pool.query("DELETE FROM attempts WHERE guest_name = 'Khách Ảo'");

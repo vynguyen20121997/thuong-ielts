@@ -39,6 +39,21 @@ export default async function TrangGiaoBai() {
       ORDER BY slug`
   );
 
+  // Đề nội bộ của chính cô — đứng đầu danh sách. Đề chưa có câu nào
+  // (`draft`) không hiện: giao đi là giao một trang trống.
+  const { rows: deNoiBo } = await pool.query(
+    `SELECT slug AS target, title FROM reading_tests
+      WHERE owner_id = $1 AND status = 'published' AND question_count > 0
+      ORDER BY updated_at DESC`,
+    [teacherId]
+  );
+
+  const { rows: writingNoiBo } = await pool.query(
+    `SELECT id AS target, title FROM writing_prompts
+      WHERE owner_id = $1 AND published ORDER BY updated_at DESC`,
+    [teacherId]
+  );
+
   const daGiao = await danhSachBaiGiao(teacherId);
 
   return (
@@ -50,6 +65,8 @@ export default async function TrangGiaoBai() {
       </p>
 
       <FormGiaoBai
+        writing={writingNoiBo.map((r) => ({ target: r.target as string, title: r.title as string }))}
+        noiBo={deNoiBo.map((r) => ({ target: r.target as string, title: r.title as string }))}
         reading={readingTests.map((r) => ({
           target: r.target as string,
           title: (r.title as string).replace(/ · Passage \d+.*$/, ""),
@@ -73,6 +90,7 @@ export default async function TrangGiaoBai() {
           daVao: b.daVao,
           daNop: b.daNop,
           khoaLop: `bg-${b.id}`,
+          skill: b.skill,
         }))}
       />
     </div>

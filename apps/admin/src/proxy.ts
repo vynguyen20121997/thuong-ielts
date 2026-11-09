@@ -7,7 +7,11 @@ export function proxy(req: NextRequest) {
   const isLoginPage = pathname === "/login";
   const isLoginApi = pathname === "/api/login";
 
-  if (isLoginPage || isLoginApi) {
+  // MCP cho AI agent tự xác thực bằng Bearer token (`/api/mcp/route.ts`) —
+  // agent không có cookie phiên của cô.
+  const isMcp = pathname === "/api/mcp";
+
+  if (isLoginPage || isLoginApi || isMcp) {
     return NextResponse.next();
   }
 

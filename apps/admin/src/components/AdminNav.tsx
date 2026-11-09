@@ -8,6 +8,8 @@ import {
   Send,
   MonitorPlay,
   ClipboardCheck,
+  FileStack,
+  Bot,
   Users,
   BookA,
   PenLine,
@@ -41,6 +43,8 @@ const NAV_GROUPS: { label: string; items: Item[] }[] = [
     items: [
       { label: "Tổng quan", href: "/", icon: LayoutDashboard },
       { label: "Giao bài", href: "/lop/giao", icon: Send },
+      { label: "Đề nội bộ", href: "/de-noi-bo", icon: FileStack },
+      { label: "Kết nối AI", href: "/ket-noi-ai", icon: Bot },
       { label: "Lớp đang làm", href: "/lop", icon: MonitorPlay },
       { label: "Kiểm tra nền", href: "/chan-doan", icon: ClipboardCheck },
     ],

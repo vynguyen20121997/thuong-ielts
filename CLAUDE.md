@@ -24,6 +24,7 @@ npm run check:tuition    # mã VietQR + luật "lời khai không phải là ti�
 npm run check:personas   # cô + học sinh đi hết một vòng dạy-học (cần cả web lẫn admin)
 npm run check:baigiao    # các chốt của bài giao: che kết quả, đóng bài, một lần, khách
 npm run check:noidung    # cô soạn ở admin -> học sinh thấy ở web (cần cả hai server)
+npm run check:mcp        # AI agent giao bài: token, cách ly giáo viên, đề AI soạn chờ duyệt (cần admin)
 npm run migrate:class    # dựng bảng quản lý lớp, chạy lại nhiều lần vẫn an toàn
 npm run migrate          # tạo/cập nhật schema, chạy lại nhiều lần vẫn an toàn
 ```
@@ -48,9 +49,9 @@ Monorepo npm workspaces: `apps/web` (trang chính), `apps/admin` (trang quản t
 | `/hoc-phi` | Học phí + mã VietQR tự dựng | Xong |
 | `/vao/[token]` | Cửa vào bài cô giao, cho cả khách | Xong |
 
-**`apps/admin` — giáo viên.** Giao bài · bảng lớp trực tiếp (Socket qua Postgres
+**`apps/admin` — giáo viên.** Giao bài · **Đề nội bộ** (cô tự soạn đề Reading và Writing, chỉ mở qua link giao) · bảng lớp trực tiếp (Socket qua Postgres
 `LISTEN/NOTIFY`) · chấm lại bài kiểm tra nền · **Học viên & học phí** (lớp, học phí,
-nhận xét riêng) · **Từ vựng** và **Đề Writing** (soạn nội dung) · Hero, testimonial,
+nhận xét riêng) · **Kết nối AI** (MCP cho agent giao bài) · **Từ vựng** và **Đề Writing** (soạn nội dung) · Hero, testimonial,
 feedback.
 
 `/phong-luyen-tap/*` chỉ là rewrite sang `/kiem-tra-kien-thuc/*` (`next.config.mjs`) —
@@ -372,6 +373,68 @@ học sinh nhìn 0/40 rồi tưởng mình sai hết bài. Kiểm che kết qu�
 `isCorrect` (phải mất — biết đúng/sai từng câu là suy ngược ra điểm). ĐỪNG dò
 chuỗi đáp án trong cả phản hồi: `given` là thứ chính học sinh vừa gõ, dội lại
 là đúng.
+
+**Đề nội bộ là một dòng `reading_tests` có `owner_id` = cô, không phải bảng
+riêng.** Màn làm bài, chấm ở server, mở lượt và giao bài đều đọc sẵn dạng
+`passage`/`questions`/`answer_key`, nên lưu đúng dạng đó là dùng lại được hết.
+Slug là `rieng-<mã đề>`. Không có cột "bản nháp": trang soạn dựng NGƯỢC bản soạn
+từ chính các cột ấy (`lib/deNoiBoKieu.ts`), vì giữ một bản nháp song song là có
+ngày nó nói khác thứ học sinh đang làm.
+
+Đề "nội bộ" nhờ hai chốt: mọi truy vấn hiển thị bên web lọc `owner_id IS NULL`,
+và chỉ mở khoá khi `deRiengMoDuoc(slug, token)` thấy một bài giao trỏ ĐÚNG slug
+đó. Cầm link của bài khác hay đoán slug đều 404 — `check:baigiao` mục 6 canh,
+đã phá cho đỏ. Đường chấm (`getAnswerKeyBySlug`, `lookupKey`) cố ý không lọc.
+
+**Đề Writing nội bộ là dòng `writing_prompts` có `owner_id`; bài nộp ở
+`writing_submissions`, KHÔNG ở `attempts`.** `attempts` mang `correct`/`total`
+của bài trắc nghiệm — nhét bài luận vào là nói dối ở mọi chỗ đang cộng hai cột
+ấy. Vì thế `danhSachBaiGiao` cộng thêm số bài ở `writing_submissions`, và trang
+admin "Đọc bài nộp" (`/lop/giao/[id]`) thay cho bảng lớp trực tiếp. Mỗi bài nộp
+chụp `prompt_text` lúc nộp: cô sửa đề sau đó không làm sai bài cũ.
+
+Nộp và chấm là HAI bước (`writingAssignment.ts`), như Section 4: nộp khoá dòng
+bài giao `FOR UPDATE` để kiểm "một lần", chấm band chạy ngoài transaction. Chỉ
+ghi `result` khi chấm ra kết quả có nghĩa — "dịch vụ bận" để NULL cho lần sau
+thử lại. Máy dev thiếu `TYPESAFE_API_KEY` thì mọi bài đều "Chưa có band"; đó là
+cấu hình, không phải lỗi. `writing_prompts.owner_id` cố ý KHÔNG `ON DELETE SET
+NULL` (xem đoạn dưới). `check:baigiao` mục 7 canh, đã phá cho đỏ từng chốt.
+
+**`migrate-writing.ts` ghi đè 7 đề mẫu mỗi lần chạy** (upsert title/prompt/
+published từ code). Cô sửa đề mẫu ở admin rồi ai đó chạy lại script là mất sửa.
+Đề cô tự tạo và đề nội bộ không bị đụng.
+
+**Xoá một giáo viên là đề nội bộ của cô ấy rơi vào kho công khai.** `owner_id`
+khai `ON DELETE SET NULL`, mà `NULL` nghĩa là "kho chung". Chưa có màn xoá giáo
+viên nên chưa ai sập, nhưng ai viết màn đó (hoặc script dọn dữ liệu) phải xoá
+hoặc chuyển chủ đề nội bộ TRƯỚC. `check-baigiao.ts` dọn theo đúng thứ tự ấy.
+
+**`/vao/[token]` phải nhìn `scope`.** Từng luôn đẩy Reading sang
+`/reading/test/<target>`, mà trang đó đòi mã đề kiểu `cam10-test1` — nên mọi bài
+giao `scope = 'paper'` (bộ VOL, giờ thêm đề nội bộ) mở ra là 404, không bên nào
+báo lỗi. Phạm vi `paper` đi `/reading/<slug>`.
+
+**AI agent giao bài qua MCP ở `apps/admin/src/app/api/mcp`.** Streamable HTTP
+không trạng thái, chỉ trả JSON, tự viết JSON-RPC (bốn phương thức) thay vì kéo
+SDK. Xác thực bằng `Authorization: Bearer hnt_…` — token cô tạo ở `/ket-noi-ai`,
+DB chỉ giữ SHA-256 (`teacher_api_tokens`). `proxy.ts` cho `/api/mcp` đi qua vì
+agent không có cookie; route tự chặn.
+
+Mỗi tool trong `lib/mcpTools.ts` gọi lại ĐÚNG hàm của trang admin — `giaoBai`
+(tách từ route `/api/bai-giao` ra `lib/giaoBai.ts` chính vì lý do này),
+`taoDeNoiBo`/`luuDeNoiBo`, `taoDeWritingNoiBo`. Hai lối vào mà hai luật là có
+ngày agent làm được thứ trang admin chặn. Tool nào nhận id thì tự kiểm
+`teacher_id` trước: `dongBaiGiao` im lặng bỏ qua id của người khác, gọi thẳng
+là báo "đã đóng" cho một bài không hề đóng.
+
+**Đề Reading do agent soạn nằm `draft` tới khi cô duyệt** (`luuDeNoiBo(…, "ai")`).
+Đáp án model viết có thể sai, mà sai đáp án là chấm sai cả lớp không ai hay.
+Cô mở trang soạn, đọc lại, bấm Lưu đề → `published`. Đề Writing không có đáp
+án nên giao được ngay. `check:mcp` canh cả hai, đã phá cho đỏ từng chốt.
+
+**Deploy admin cần `NEXT_PUBLIC_WEB_URL` và `ADMIN_URL`.** Thiếu cái đầu thì
+mọi link giao bài trỏ về `localhost:2000`; nó là biến `NEXT_PUBLIC_` nên nhúng
+LÚC BUILD, đổi xong phải deploy lại. Web cần `TYPESAFE_API_KEY` để chấm band.
 
 **Postgres `substring(... from ...)` KHÔNG hiểu `\d`.** Đo trên chính DB của
 dự án: `substring('cam10-test1-stepwells' from '^(cam\d+-test\d+)-')` trả về

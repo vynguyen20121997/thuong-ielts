@@ -25,7 +25,7 @@ export type MucHien = "ngay" | "khi_co_mo" | "khong";
 export interface BaiGiao {
   id: string;
   teacherId: string;
-  skill: "reading" | "listening";
+  skill: "reading" | "listening" | "writing";
   scope: "paper" | "test";
   target: string;
   title: string;
@@ -171,9 +171,15 @@ export async function danhSachBaiGiao(teacherId: string): Promise<
   Array<BaiGiao & { daVao: number; daNop: number }>
 > {
   const { rows } = await pool.query(
+    /*
+      Writing không đi qua `attempts` (không có câu nào để chấm đúng/sai): bài
+      nộp nằm ở `writing_submissions`, và "vào" = "nộp" vì không có lượt mở dở.
+    */
     `SELECT a.*,
-            count(t.id) FILTER (WHERE t.id IS NOT NULL)          AS da_vao,
-            count(t.id) FILTER (WHERE t.status = 'submitted')    AS da_nop
+            count(t.id) FILTER (WHERE t.id IS NOT NULL)
+              + (SELECT count(*) FROM writing_submissions w WHERE w.assignment_id = a.id) AS da_vao,
+            count(t.id) FILTER (WHERE t.status = 'submitted')
+              + (SELECT count(*) FROM writing_submissions w WHERE w.assignment_id = a.id) AS da_nop
        FROM assignments a
        LEFT JOIN attempts t ON t.assignment_id = a.id
       WHERE a.teacher_id = $1

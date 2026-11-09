@@ -10,6 +10,11 @@ import type { Idea } from "../domain/writingCoach";
  * phòng sẽ nói dối.
  */
 
+/*
+  Mọi truy vấn ở đây lọc `owner_id IS NULL` = kho chung. Đề Writing nội bộ của
+  cô (`owner_id` = cô) chỉ đi qua link giao — xem `writingAssignment.ts`.
+*/
+
 export type WritingPrompt = {
   id: string;
   task: number;
@@ -22,7 +27,7 @@ export async function listWritingPrompts(): Promise<WritingPrompt[]> {
   const { rows } = await pool.query(
     `SELECT id, task, topic, title, prompt
        FROM writing_prompts
-      WHERE published
+      WHERE published AND owner_id IS NULL
       ORDER BY position, created_at, id`,
   );
   return rows as WritingPrompt[];
@@ -32,7 +37,7 @@ export async function getWritingPrompt(id: string): Promise<WritingPrompt | null
   const { rows } = await pool.query(
     `SELECT id, task, topic, title, prompt
        FROM writing_prompts
-      WHERE id = $1 AND published`,
+      WHERE id = $1 AND published AND owner_id IS NULL`,
     [id],
   );
   return (rows[0] as WritingPrompt) ?? null;

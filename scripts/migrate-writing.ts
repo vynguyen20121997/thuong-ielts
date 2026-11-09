@@ -139,6 +139,49 @@ async function main() {
     `ALTER TABLE writing_prompts ADD COLUMN IF NOT EXISTS position INTEGER NOT NULL DEFAULT 100`,
   );
 
+  /*
+    Đề Writing nội bộ: `owner_id` = cô soạn ra nó. NULL = kho chung (trang luyện
+    Writing công khai chỉ đọc đề NULL).
+
+    KHÔNG dùng ON DELETE SET NULL như `reading_tests.owner_id`: SET NULL nghĩa
+    là xoá cô thì đề nội bộ thành đề công khai. Để mặc định (chặn xoá) thì xoá
+    giáo viên còn đề phải xử lý đề trước — ồn ào nhưng không lộ.
+  */
+  await pool.query(`ALTER TABLE writing_prompts ADD COLUMN IF NOT EXISTS owner_id TEXT REFERENCES teachers (id)`);
+  /* Đề nội bộ tự đặt mức chữ và thời gian; NULL = chuẩn Task 2 (250 từ, 40 phút). */
+  await pool.query(`ALTER TABLE writing_prompts ADD COLUMN IF NOT EXISTS min_words INTEGER`);
+  await pool.query(`ALTER TABLE writing_prompts ADD COLUMN IF NOT EXISTS duration_seconds INTEGER`);
+  await pool.query(`ALTER TABLE writing_prompts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now()`);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_writing_prompts_owner ON writing_prompts (owner_id)`);
+
+  /*
+    Bài viết học sinh nộp qua link cô giao.
+
+    Trước bảng này Writing không lưu gì: chấm band xong là mất. `prompt_text`
+    chụp nguyên đề lúc nộp — cô sửa đề sau đó thì bài cũ vẫn đọc đúng đề em ấy
+    đã làm. `result` để NULL lúc nộp và điền sau: bộ chấm chờ tới 25 giây, nên
+    chấm là một bước riêng NGOÀI transaction (xem CLAUDE.md, Section 4).
+  */
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS writing_submissions (
+      id             TEXT PRIMARY KEY,
+      assignment_id  TEXT REFERENCES assignments (id) ON DELETE SET NULL,
+      prompt_id      TEXT NOT NULL REFERENCES writing_prompts (id),
+      prompt_text    TEXT NOT NULL,
+      student_id     TEXT REFERENCES students (id) ON DELETE CASCADE,
+      guest_name     TEXT,
+      guest_key      TEXT,
+      essay          TEXT NOT NULL,
+      words          INTEGER NOT NULL,
+      elapsed_seconds INTEGER NOT NULL DEFAULT 0,
+      result         JSONB,
+      submitted_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+      graded_at      TIMESTAMPTZ,
+      CHECK (student_id IS NOT NULL OR guest_key IS NOT NULL)
+    )
+  `);
+  await pool.query(`CREATE INDEX IF NOT EXISTS idx_writing_submissions_assignment ON writing_submissions (assignment_id, submitted_at)`);
+
   for (const p of PROMPTS) {
     await pool.query(
       `INSERT INTO writing_prompts (id, task, topic, title, prompt, position, published)
@@ -154,7 +197,7 @@ async function main() {
   }
 
   const { rows } = await pool.query(
-    `SELECT count(*)::int AS n FROM writing_prompts WHERE published`,
+    `SELECT count(*)::int AS n FROM writing_prompts WHERE published AND owner_id IS NULL`,
   );
   console.log(`writing_prompts: ${rows[0].n} đề đang mở.`);
   await pool.end();

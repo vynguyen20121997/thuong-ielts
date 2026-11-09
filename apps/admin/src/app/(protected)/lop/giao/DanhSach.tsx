@@ -16,6 +16,8 @@ interface Item {
   daNop: number;
   /** Khoá lớp `bg-<id>` — bảng lớp của ĐÚNG buổi này, không phải của đề. */
   khoaLop: string;
+  /** Writing không có bảng lớp trực tiếp — cô đọc bài nộp ở trang riêng. */
+  skill: "reading" | "listening" | "writing";
 }
 
 /**
@@ -81,10 +83,10 @@ export default function DanhSach({ items }: { items: Item[] }) {
             </span>
 
             <Link
-              href={`/lop/${b.khoaLop}`}
+              href={b.skill === "writing" ? `/lop/giao/${b.id}` : `/lop/${b.khoaLop}`}
               className="rounded-full border border-black/10 px-3 py-1 text-xs font-bold text-[#1A1A1A]/70 hover:border-[#14532D]/40"
             >
-              Xem bảng lớp
+              {b.skill === "writing" ? "Đọc bài nộp" : "Xem bảng lớp"}
             </Link>
 
             {b.moCua && (

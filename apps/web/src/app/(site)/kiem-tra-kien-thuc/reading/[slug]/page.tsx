@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { requireStudentOrGuest } from "../../../../../features/account/server/guard";
-import { getExamOutline } from "../../../../../features/practice/server/readingRepository";
+import { deRiengMoDuoc, getExamOutline } from "../../../../../features/practice/server/readingRepository";
 import ReadingExamGate from "../../../../../features/practice/ui/ReadingExamGate";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ bai?: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const outline = await getExamOutline("passage", slug);
+  const { bai } = await searchParams;
+  const outline = await getExamOutline("passage", slug, await deRiengMoDuoc(slug, bai));
 
   if (!outline) return { title: "Không tìm thấy đề | ThuongHo.Class" };
 
@@ -43,7 +46,8 @@ export default async function ReadingTestPage({
 
   // Chỉ bìa đề: tên, số câu, thời gian. Bài đọc và câu hỏi tải khi bấm bắt đầu,
   // nên đồng hồ không chạy trong lúc học sinh còn đang đọc hướng dẫn.
-  const outline = await getExamOutline("passage", slug);
+  // Đề nội bộ của cô chỉ mở bằng đúng link bài giao trỏ vào nó.
+  const outline = await getExamOutline("passage", slug, await deRiengMoDuoc(slug, token));
   if (!outline) notFound();
 
   return (

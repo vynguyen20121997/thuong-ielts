@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { getReadingTestBySlug } from "../../../../../features/practice/server/readingRepository";
+import { deRiengMoDuoc, getReadingTestBySlug } from "../../../../../features/practice/server/readingRepository";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const test = await getReadingTestBySlug(slug);
+  const token = new URL(request.url).searchParams.get("bai");
+  const test = await getReadingTestBySlug(slug, await deRiengMoDuoc(slug, token));
 
   if (!test) {
     return NextResponse.json({ error: "Không tìm thấy đề đọc này." }, { status: 404 });

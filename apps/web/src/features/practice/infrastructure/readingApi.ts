@@ -26,7 +26,11 @@ export async function fetchReadingPaper(
   mode: ReadingPaper["mode"],
   id: string,
 ): Promise<ReadingPaper> {
-  const path = mode === "test" ? `/api/practice/reading/test/${id}` : `/api/practice/reading/${id}`;
+  // `?bai=<token>` đi kèm khi em vào bằng link cô giao — đề nội bộ chỉ mở được
+  // với đúng token đó (xem `deRiengMoDuoc`).
+  const bai = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("bai");
+  const base = mode === "test" ? `/api/practice/reading/test/${id}` : `/api/practice/reading/${id}`;
+  const path = bai ? `${base}?bai=${encodeURIComponent(bai)}` : base;
 
   const res = await fetch(path, { cache: "no-store" });
   if (!res.ok) {

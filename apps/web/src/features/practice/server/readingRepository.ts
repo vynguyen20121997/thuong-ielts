@@ -102,13 +102,18 @@ export async function listReadingTests(): Promise<ReadingTestSummary[]> {
   return listReadingTestsCached();
 }
 
-async function loadReadingTestBySlug(slug: string): Promise<ReadingTest | null> {
+/**
+ * `moRieng` = người gọi đã xác minh có bài giao trỏ đúng vào slug này (xem
+ * `deRiengMoDuoc`). Chỉ khi đó đề nội bộ của cô mới hiện ra; mọi đường khác
+ * vẫn chỉ thấy kho chung.
+ */
+async function loadReadingTestBySlug(slug: string, moRieng = false): Promise<ReadingTest | null> {
   const { rows } = await pool.query<SummaryRow & { passage: unknown; questions: Question[] }>(
     `SELECT ${SUMMARY_COLUMNS}, passage, questions
        FROM reading_tests
-      WHERE slug = $1 AND status = 'published' AND ${CHI_KHO_CHUNG}
+      WHERE slug = $1 AND status = 'published' AND (${CHI_KHO_CHUNG} OR $2::boolean)
       LIMIT 1`,
-    [slug],
+    [slug, moRieng],
   );
   if (rows.length === 0) return null;
 
@@ -227,6 +232,7 @@ export const getReadingPaper = unstable_cache(loadReadingPaper, ["reading-full-p
 async function loadExamOutline(
   mode: "passage" | "test",
   id: string,
+  moRieng = false,
 ): Promise<ExamOutline | null> {
   const isTest = mode === "test";
   if (isTest && !isTestId(id)) return null;
@@ -234,9 +240,10 @@ async function loadExamOutline(
   const { rows } = await pool.query<SummaryRow>(
     `SELECT ${SUMMARY_COLUMNS}
        FROM reading_tests
-      WHERE ${isTest ? "slug LIKE $1" : "slug = $1"} AND status = 'published' AND ${CHI_KHO_CHUNG}
+      WHERE ${isTest ? "slug LIKE $1" : "slug = $1"} AND status = 'published'
+        AND (${CHI_KHO_CHUNG} OR ($2::boolean AND NOT ${isTest}))
       ORDER BY sort_order, slug`,
-    [isTest ? `${id}-%` : id],
+    [isTest ? `${id}-%` : id, moRieng],
   );
   if (rows.length === 0) return null;
 
@@ -306,4 +313,21 @@ export async function recordTestAttempt(testId: string): Promise<void> {
   } catch (err) {
     console.error(`recordTestAttempt(${testId}) failed (ignored):`, err);
   }
+}
+
+
+/**
+ * Đề nội bộ (`owner_id` khác null) chỉ mở khi học sinh cầm đúng link bài giao
+ * TRỎ VÀO slug ấy. Cầm link của đề khác, hay đoán ra slug, đều không mở được.
+ */
+export async function deRiengMoDuoc(slug: string, token: string | null | undefined): Promise<boolean> {
+  if (!token || token.length > 64) return false;
+  const { rows } = await pool.query(
+    `SELECT 1 FROM assignments a
+       JOIN reading_tests r ON r.slug = a.target AND r.owner_id = a.teacher_id
+      WHERE a.share_token = $1 AND a.skill = 'reading' AND a.target = $2
+      LIMIT 1`,
+    [token, slug],
+  );
+  return rows.length > 0;
 }

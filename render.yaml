@@ -41,6 +41,10 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
+      # Bộ chấm band Writing (luyện Writing, Section 4, bài Writing cô giao).
+      # Thiếu thì bài vẫn nộp được nhưng hiện "Chưa chấm được".
+      - key: TYPESAFE_API_KEY
+        sync: false
       - key: APP_URL
         sync: false
 
@@ -81,6 +85,14 @@ services:
       - key: ADMIN_PASSWORD_HASH
         sync: false
       - key: ADMIN_SESSION_SECRET
+        sync: false
+      # Gốc trang học sinh, để link giao bài (/vao/…) trỏ đúng sang web. Biến
+      # NEXT_PUBLIC_ được nhúng LÚC BUILD — đổi giá trị thì phải deploy lại.
+      - key: NEXT_PUBLIC_WEB_URL
+        sync: false
+      # Gốc chính trang admin này, để MCP trả về link duyệt đề / xem bài nộp
+      # và trang "Kết nối AI" hiện đúng địa chỉ MCP.
+      - key: ADMIN_URL
         sync: false
 
   # Hai việc dọn dẹp, chung một cron cho đỡ thêm một service:
