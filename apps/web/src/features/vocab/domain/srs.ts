@@ -147,12 +147,13 @@ const DAY_NAMES = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 export function dailyReviewsFrom(
   logDates: string[],
   today: string,
-): { date: string; count: number }[] {
-  const out: { date: string; count: number }[] = [];
+): { date: string; day: string; count: number }[] {
+  const out: { date: string; day: string; count: number }[] = [];
   for (let i = 6; i >= 0; i -= 1) {
     const day = addDays(today, -i);
     out.push({
       date: DAY_NAMES[new Date(`${day}T00:00:00`).getDay()],
+      day,
       count: logDates.filter((d) => d === day).length,
     });
   }

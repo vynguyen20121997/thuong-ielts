@@ -80,3 +80,12 @@ CREATE TABLE IF NOT EXISTS vocab_logs (
   interval integer NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS vocab_logs_student ON vocab_logs (student_id, review_date DESC);
+
+/*
+  Bộ con (như Anki: "IELTS::Education::Schools"). Ôn một bộ cha là ôn luôn mọi
+  bộ con bên dưới. Xoá bộ cha thì bộ con đi theo — giữ bộ con mồ côi là để nó
+  nổi lên làm bộ gốc, người dùng không hiểu nó từ đâu ra.
+*/
+ALTER TABLE vocab_decks
+  ADD COLUMN IF NOT EXISTS parent_id text REFERENCES vocab_decks(id) ON DELETE CASCADE;
+CREATE INDEX IF NOT EXISTS vocab_decks_parent ON vocab_decks (parent_id);

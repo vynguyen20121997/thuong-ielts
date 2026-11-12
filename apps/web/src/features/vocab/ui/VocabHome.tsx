@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Flame, Plus, Target } from "lucide-react";
 
-import type { Deck, StudentStats } from "../domain/types";
+import type { Deck, DeckProgress, StudentStats } from "../domain/types";
 import DeckEditor from "./DeckEditor";
 import StudySession from "./StudySession";
 
@@ -31,7 +31,7 @@ export default function VocabHome() {
   const [loading, setLoading] = useState(true);
   const [studying, setStudying] = useState<{ deckId?: string } | null>(null);
   const [editing, setEditing] = useState<Deck | null>(null);
-  const [creating, setCreating] = useState(false);
+  const [creating, setCreating] = useState<{ parent?: Deck } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -114,7 +114,7 @@ export default function VocabHome() {
           </button>
           <button
             type="button"
-            onClick={() => setCreating(true)}
+            onClick={() => setCreating({})}
             className="flex items-center gap-1.5 rounded-xl border border-sage-3 bg-white px-5 py-3 text-sm font-bold"
           >
             <Plus size={15} /> Tạo bộ thẻ
@@ -165,24 +165,73 @@ export default function VocabHome() {
           <p className="mb-4 text-2xs font-extrabold uppercase tracking-[0.14em] text-ink/65">
             Bảy ngày gần nhất · {stats.totalLogsCount} lượt ôn tất cả
           </p>
-          <ul className="flex items-end gap-2" style={{ height: 96 }}>
-            {stats.dailyReviews.map((d, i) => (
-              <li key={i} className="flex flex-1 flex-col items-center gap-1.5">
-                <span
-                  className={`w-full rounded-t-md ${d.count ? "bg-brand" : "bg-sage-2"}`}
-                  style={{
-                    height: `${Math.max(4, (d.count / maxDaily) * 72)}px`,
-                  }}
-                  aria-hidden
-                />
-                <span className="text-2xs font-semibold text-ink/65">
-                  {d.date}
-                </span>
-                <span className="font-mono text-2xs font-bold text-ink/70">
-                  {d.count}
-                </span>
-              </li>
-            ))}
+          <ul className="flex items-end gap-2" style={{ height: 120 }}>
+            {stats.dailyReviews.map((d, i) => {
+              const isToday = i === stats.dailyReviews.length - 1;
+              const label = `${isToday ? "Hôm nay" : fullDay(d.day)}, ${shortDate(d.day)}: ${
+                d.count ? `${d.count} lượt ôn` : "không ôn thẻ nào"
+              }`;
+              return (
+                /*
+                  Cả CỘT là vùng hover, không chỉ thanh: ngày 0 lượt chỉ có
+                  một vạch 4px, bắt người dùng nhắm trúng vạch ấy là bắt khó.
+                  `tabIndex` để bàn phím cũng xem được, cùng một tooltip.
+                */
+                <li
+                  key={d.day ?? i}
+                  tabIndex={0}
+                  aria-label={label}
+                  className="group relative flex h-full flex-1 cursor-default flex-col items-center justify-end gap-1.5 rounded-lg outline-none transition-colors hover:bg-mist-3 focus-visible:bg-mist-3 focus-visible:ring-2 focus-visible:ring-brand/40"
+                >
+                  <span
+                    role="tooltip"
+                    className={`pointer-events-none absolute bottom-full z-10 mb-2 translate-y-1 ${
+                      /* Cột đầu/cuối neo theo mép, kẻo tooltip tràn ra ngoài màn điện thoại. */
+                      i === 0
+                        ? "left-0"
+                        : isToday
+                          ? "right-0"
+                          : "left-1/2 -translate-x-1/2"
+                    } whitespace-nowrap rounded-lg bg-brand-deep px-3 py-2 text-center opacity-0 shadow-lg transition duration-150 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100`}
+                  >
+                    <span className="block text-2xs font-semibold text-white/70">
+                      {isToday ? "Hôm nay" : fullDay(d.day)} ·{" "}
+                      {shortDate(d.day)}
+                    </span>
+                    <span className="block text-sm font-extrabold text-white">
+                      {d.count ? `${d.count} lượt ôn` : "Không ôn thẻ nào"}
+                    </span>
+                    <span
+                      aria-hidden
+                      className={`absolute top-full border-x-[6px] ${i === 0 ? "left-4" : isToday ? "right-4" : "left-1/2 -translate-x-1/2"} border-t-[6px] border-x-transparent border-t-brand-deep`}
+                    />
+                  </span>
+                  <span
+                    className={`w-full rounded-t-md transition-colors ${
+                      d.count
+                        ? "bg-brand group-hover:bg-brand-deep"
+                        : "bg-sage-2 group-hover:bg-sage-3"
+                    }`}
+                    style={{
+                      height: `${Math.max(4, (d.count / maxDaily) * 72)}px`,
+                    }}
+                    aria-hidden
+                  />
+                  <span
+                    aria-hidden
+                    className={`text-2xs font-semibold ${isToday ? "text-brand" : "text-ink/65"}`}
+                  >
+                    {d.date}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="font-mono text-2xs font-bold text-ink/70"
+                  >
+                    {d.count}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}
@@ -195,15 +244,28 @@ export default function VocabHome() {
             những từ mình gặp trong bài đọc.
           </p>
         ) : (
-          <ul className="grid gap-3 md:grid-cols-2">
-            {stats.progressDecks.map(
-              ({ deck, totalCards, learnedCount, percentage }) => (
+          <ul className="flex flex-col gap-3">
+            {deckTree(stats.progressDecks).map(
+              ({
+                deck,
+                totalCards,
+                learnedCount,
+                percentage,
+                depth,
+                childCount,
+              }) => (
                 <li
                   key={deck.id}
-                  className="flex flex-col gap-2.5 rounded-2xl border border-sage-3 bg-white p-4"
+                  style={{ marginLeft: `${Math.min(depth, 4) * 1.5}rem` }}
+                  className={`flex flex-col gap-2.5 rounded-2xl border border-sage-3 bg-white p-4 ${depth ? "border-l-4 border-l-brand/30" : ""}`}
                 >
                   <div className="flex items-baseline gap-2">
                     <b className="text-[15px]">{deck.name}</b>
+                    {childCount > 0 && (
+                      <span className="text-2xs font-semibold text-ink/60">
+                        · {childCount} bộ con
+                      </span>
+                    )}
                     <span
                       className={`ml-auto rounded-full px-2 py-0.5 text-2xs font-bold ${
                         deck.type === "official"
@@ -235,16 +297,27 @@ export default function VocabHome() {
                       onClick={() => setStudying({ deckId: deck.id })}
                       className="rounded-full bg-brand px-3.5 py-2 text-2xs font-bold text-white"
                     >
-                      Ôn riêng bộ này
+                      {childCount > 0
+                        ? "Ôn bộ này + bộ con"
+                        : "Ôn riêng bộ này"}
                     </button>
                     {deck.type === "personal" && (
-                      <button
-                        type="button"
-                        onClick={() => setEditing(deck)}
-                        className="rounded-full border border-sage-3 px-3.5 py-2 text-2xs font-bold"
-                      >
-                        Sửa thẻ
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setEditing(deck)}
+                          className="rounded-full border border-sage-3 px-3.5 py-2 text-2xs font-bold"
+                        >
+                          Sửa thẻ
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setCreating({ parent: deck })}
+                          className="flex items-center gap-1 rounded-full border border-sage-3 px-3.5 py-2 text-2xs font-bold"
+                        >
+                          <Plus size={13} /> Bộ con
+                        </button>
+                      </>
                     )}
                   </div>
                 </li>
@@ -256,9 +329,10 @@ export default function VocabHome() {
 
       {creating && (
         <CreateDeck
-          onClose={() => setCreating(false)}
+          parent={creating.parent}
+          onClose={() => setCreating(null)}
           onCreated={(deck) => {
-            setCreating(false);
+            setCreating(null);
             setEditing(deck);
           }}
         />
@@ -267,10 +341,55 @@ export default function VocabHome() {
   );
 }
 
+const DAY_FULL = [
+  "Chủ nhật",
+  "Thứ Hai",
+  "Thứ Ba",
+  "Thứ Tư",
+  "Thứ Năm",
+  "Thứ Sáu",
+  "Thứ Bảy",
+];
+const fullDay = (day: string) => DAY_FULL[new Date(`${day}T00:00:00`).getDay()];
+const shortDate = (day: string) => `${day.slice(8, 10)}/${day.slice(5, 7)}`;
+
+/*
+  Xếp bộ thẻ thành cây: bộ con đứng ngay dưới bộ cha, thụt vào theo độ sâu.
+  Bộ có cha nằm ngoài danh sách (cô giao bộ con mà không giao bộ cha) thì coi
+  là bộ gốc — giấu đi là học sinh mất bộ cô đã giao.
+*/
+function deckTree(list: DeckProgress[]) {
+  const ids = new Set(list.map((p) => p.deck.id));
+  const children = new Map<string | null, DeckProgress[]>();
+  for (const p of list) {
+    const key =
+      p.deck.parentId && ids.has(p.deck.parentId) ? p.deck.parentId : null;
+    children.set(key, [...(children.get(key) ?? []), p]);
+  }
+  const out: (DeckProgress & { depth: number; childCount: number })[] = [];
+  const seen = new Set<string>();
+  const walk = (key: string | null, depth: number) => {
+    for (const p of children.get(key) ?? []) {
+      if (seen.has(p.deck.id)) continue;
+      seen.add(p.deck.id);
+      out.push({
+        ...p,
+        depth,
+        childCount: children.get(p.deck.id)?.length ?? 0,
+      });
+      walk(p.deck.id, depth + 1);
+    }
+  };
+  walk(null, 0);
+  return out;
+}
+
 function CreateDeck({
+  parent,
   onClose,
   onCreated,
 }: {
+  parent?: Deck;
   onClose: () => void;
   onCreated: (deck: Deck) => void;
 }) {
@@ -287,7 +406,7 @@ function CreateDeck({
       const res = await fetch("/api/vocab/decks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, topic }),
+        body: JSON.stringify({ name, topic, parentId: parent?.id }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Không tạo được bộ thẻ.");
@@ -307,10 +426,17 @@ function CreateDeck({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Tạo bộ thẻ"
+        aria-label={parent ? "Tạo bộ con" : "Tạo bộ thẻ"}
         className="w-full max-w-md rounded-2xl bg-white p-6"
       >
-        <h2 className="text-xl font-extrabold text-brand">Tạo bộ thẻ mới</h2>
+        <h2 className="text-xl font-extrabold text-brand">
+          {parent ? "Tạo bộ con" : "Tạo bộ thẻ mới"}
+        </h2>
+        {parent && (
+          <p className="mt-1 text-sm text-ink/65">
+            Nằm trong bộ <b>{parent.name}</b>. Ôn bộ cha là ôn luôn bộ này.
+          </p>
+        )}
         <label className="mt-4 block text-sm font-bold" htmlFor="deck-name">
           Tên bộ
         </label>

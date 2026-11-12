@@ -359,6 +359,14 @@ chỗ duy nhất tạo dòng đó; danh sách bộ thẻ cũng cảnh báo bộ 
 Thu lại chỉ xoá dòng giao, KHÔNG đụng `vocab_reviews`: lịch ôn các em tích
 luỹ được giữ nguyên, giao lại là học tiếp từ chỗ đang dở.
 
+**Bộ thẻ có cha–con (`vocab_decks.parent_id`), như Anki.** Ôn bộ cha là ôn cả
+cây con (CTE đệ quy ở `listDueCards`); giao bộ cha thì học sinh thấy luôn mọi
+bộ con (`ACCESSIBLE_DECK_IDS_SQL`, dùng chung cho danh sách bộ và
+`ensureReviews` để hai chỗ không lệch). Học sinh chỉ treo bộ con dưới bộ CỦA
+MÌNH. Bảng `vocab_*` dựng bằng `npm run migrate:vocab`, không nằm trong
+`migrate`. Sửa thẻ (`PATCH /api/vocab/cards`) KHÔNG đặt lại lịch ôn; sửa/xoá
+đều lọc thêm `deck_id` vì `cardId` do client gửi.
+
 **Ngân hàng ý và từ gợi ý của màn Writing KHÔNG nằm trong HTML.** `WritingDesk`
 tải chúng bằng `fetch("/api/practice/writing/coach")` sau khi trang đã hiện.
 Kiểm bằng cách dò chữ trong HTML của trang là kiểm nhầm chỗ — phải gọi chính

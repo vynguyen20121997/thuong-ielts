@@ -241,11 +241,11 @@ export default function Hero() {
               animate={ready ? { scaleY: 1 } : { scaleY: 0 }}
               transition={{ type: "spring", stiffness: 110, damping: 20, delay: 0.1 }}
               style={{ transformOrigin: "bottom center" }}
-              className="absolute -bottom-10 left-1/2 top-1 w-[88%] -translate-x-1/2"
+              className="absolute bottom-0 md:-bottom-10 left-1/2 top-1 w-full md:w-[88%] -translate-x-1/2"
             >
               {/* Một mảnh duy nhất, không còn lớp lệch phía sau — đúng kiểu tấm
                   nền phẳng của mẫu poster. */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-sage-3 to-leaf/55" />
+              <div className="absolute inset-0 rounded-t-[999px] rounded-b-[32px] md:rounded-full bg-gradient-to-br from-sage-3 to-leaf/55" />
             </motion.div>
             {/* Ba con số neo mép phải, chồng lên phần trống bên phải vòng xanh
                 — không lấy bề ngang của cột nên hai vòng giữ nguyên dáng */}
@@ -273,7 +273,14 @@ export default function Hero() {
                 bọc nên ảnh và bóng sticker lộ ra cùng một nhịp — trước đây chỉ
                 ảnh chính trượt lên còn bóng đứng yên, nên lúc đang chạy nhìn
                 thành hai hình lệch nhau. */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[85%] w-auto md:h-full md:w-[108%] max-w-none pointer-events-none">
+            {/* Dưới md ảnh phải `w-full` + `object-contain`: để `w-auto` thì
+                ảnh (tỉ lệ ~1.06) theo chiều cao 85% mà rộng hơn màn 375px,
+                bị cắt cả tấm chứng chỉ bên trái lẫn vai bên phải. Ảnh gốc có
+                đáy cắt phẳng, nên dưới md nền đổi thành hình VÒM (đỉnh tròn,
+                đáy bo 32px) và ảnh đặt sát đáy vòm, `overflow-hidden` theo
+                cùng góc bo — mép cắt của ảnh trùng mép nền thay vì lơ lửng
+                giữa oval. Bóng sticker tắt ở mobile vì nó lòi ra mép phải. */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[90%] w-full overflow-hidden rounded-b-[32px] md:overflow-visible md:rounded-none md:h-full md:w-[108%] max-w-none pointer-events-none">
               <motion.div
                 initial={reduce ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
                 animate={
@@ -283,12 +290,12 @@ export default function Hero() {
                 }
                 transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 style={{ x: parallaxX }}
-                className="relative h-full w-auto md:h-full md:w-full"
+                className="relative h-full w-full"
               >
                 <img
                   src={hero.portraitUrl}
                   alt="Cô Hồ Ngọc Thương"
-                  className="relative h-full w-auto md:h-full md:w-full max-w-none object-contain object-bottom select-none"
+                  className="relative h-full w-full max-w-none object-contain object-bottom select-none"
                 />
                 {/* Bóng silhouette lệch kiểu sticker (như mẫu): chính ảnh đó,
                     brightness(0)+invert(1) thành mảng trắng phẳng, đẩy lệch phải */}
@@ -296,7 +303,7 @@ export default function Hero() {
                   aria-hidden="true"
                   src={hero.portraitUrl}
                   alt=""
-                  className="absolute inset-0 h-full w-auto md:h-full md:w-full max-w-none object-contain object-bottom select-none -z-10 translate-x-7 [filter:brightness(0)invert(1)] opacity-70"
+                  className="absolute inset-0 h-full w-full max-w-none object-contain object-bottom select-none -z-10 hidden md:block md:translate-x-7 [filter:brightness(0)invert(1)] opacity-70"
                 />
               </motion.div>
             </div>
@@ -312,7 +319,7 @@ export default function Hero() {
             {HERO_HIGHLIGHTS.map((h) => (
               <div
                 key={h.label}
-                className="flex flex-col gap-1 rounded-[20px] border border-brand/8 bg-white px-4 py-4 shadow-[0_12px_30px_rgba(20,83,45,0.12)]"
+                className="flex flex-col gap-1 rounded-[20px] border border-brand/8 bg-white px-3 py-3.5 shadow-[0_12px_30px_rgba(20,83,45,0.12)]"
               >
                 <span className="text-2xl font-bold leading-none tracking-tight text-brand-soft">
                   {h.value}
@@ -331,11 +338,11 @@ export default function Hero() {
         initial={reduce ? false : { opacity: 0, y: 24 }}
         animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
         transition={{ type: "spring", stiffness: 120, damping: 22, delay: 0.75 }}
-        className="relative z-20 max-w-6xl mx-auto -mt-2 pb-10 md:pb-6 gutter"
+        className="relative z-20 max-w-6xl mx-auto mt-4 md:-mt-2 pb-10 md:pb-6 gutter"
       >
         <div className="bg-white rounded-[32px] shadow-[0_20px_60px_rgba(20,83,45,0.12)] border border-black/5 px-6 py-6 md:py-7 grid grid-cols-2 md:grid-cols-4 gap-y-6 md:divide-x md:divide-black/10">
           {IMPACT_STATS.map((s) => (
-            <div key={s.label} className="text-center px-4">
+            <div key={s.label} className="text-center px-1 md:px-4">
               <span className="mb-1.5 block text-2xl font-bold leading-none text-[#15803D] md:text-3xl">
                 <CountUp
                   value={Number(s.value)}
@@ -346,7 +353,7 @@ export default function Hero() {
                   {s.suffix}
                 </span>
               </span>
-              <span className="text-2xs md:text-xs font-semibold uppercase tracking-[0.08em] text-black/60">
+              <span className="block text-balance text-2xs md:text-xs font-semibold uppercase tracking-[0.04em] md:tracking-[0.08em] text-black/60">
                 {s.label}
               </span>
             </div>

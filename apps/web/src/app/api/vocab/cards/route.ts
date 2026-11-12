@@ -6,6 +6,7 @@ import {
   deleteCard,
   getDeck,
   listCards,
+  updateCard,
 } from "../../../../features/vocab/server/vocabRepository";
 
 export const runtime = "nodejs";
@@ -85,6 +86,40 @@ export async function DELETE(request: Request) {
       { status: 403 },
     );
 
-  await deleteCard(cardId);
+  await deleteCard(deckId, cardId);
   return NextResponse.json({ ok: true }, { headers: noStore });
+}
+
+/** Sửa một thẻ. Cùng chốt chủ bộ như thêm/xoá. Lịch ôn của thẻ giữ nguyên. */
+export async function PATCH(request: Request) {
+  const student = await currentStudent();
+  if (!student)
+    return NextResponse.json({ error: "Chưa đăng nhập." }, { status: 401 });
+
+  const body = await request.json().catch(() => null);
+  const deckId = typeof body?.deckId === "string" ? body.deckId : "";
+  const cardId = typeof body?.cardId === "string" ? body.cardId : "";
+  const deck = deckId ? await getDeck(deckId) : null;
+  if (!deck || deck.creatorId !== student.id)
+    return NextResponse.json(
+      { error: "Bộ thẻ này không phải của bạn." },
+      { status: 403 },
+    );
+
+  const word =
+    typeof body?.word === "string" ? body.word.trim().slice(0, 80) : "";
+  if (!word) return NextResponse.json({ error: "Thiếu từ." }, { status: 400 });
+
+  const card = await updateCard(deckId, cardId, {
+    word,
+    ipa: typeof body?.ipa === "string" ? body.ipa.slice(0, 120) : "",
+    vietnamese:
+      typeof body?.vietnamese === "string" ? body.vietnamese.slice(0, 300) : "",
+    examples: Array.isArray(body?.examples)
+      ? body.examples.filter((e: unknown) => typeof e === "string").slice(0, 5)
+      : [],
+  });
+  if (!card)
+    return NextResponse.json({ error: "Không tìm thấy thẻ." }, { status: 404 });
+  return NextResponse.json({ card }, { headers: noStore });
 }

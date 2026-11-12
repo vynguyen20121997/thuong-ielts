@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { currentStudent } from "../../../../features/account/server/guard";
 import {
   createDeck,
+  getDeck,
   listStudentDecks,
 } from "../../../../features/vocab/server/vocabRepository";
 
@@ -43,6 +44,21 @@ export async function POST(request: Request) {
     qua trang quản trị — nhận `type` từ client là cho ai cũng tự phong bộ của
     mình thành bộ chính thức rồi giao cho cả lớp.
   */
+  /*
+    Bộ con chỉ được treo dưới bộ CỦA CHÍNH MÌNH. Treo được dưới bộ của cô là
+    bộ cá nhân chui vào cây bộ chính thức, và ai được giao bộ cha cũng thấy nó.
+  */
+  let parentId: string | null = null;
+  if (typeof body?.parentId === "string" && body.parentId) {
+    const parent = await getDeck(body.parentId);
+    if (!parent || parent.creatorId !== student.id)
+      return NextResponse.json(
+        { error: "Bộ cha không phải của bạn." },
+        { status: 403 },
+      );
+    parentId = parent.id;
+  }
+
   const deck = await createDeck({
     name,
     description:
@@ -52,6 +68,7 @@ export async function POST(request: Request) {
     topic: typeof body?.topic === "string" ? body.topic.slice(0, 60) : "",
     type: "personal",
     creatorId: student.id,
+    parentId,
   });
   return NextResponse.json({ deck }, { headers: noStore });
 }

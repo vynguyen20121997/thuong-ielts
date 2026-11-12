@@ -19,6 +19,7 @@
     "audit:listening-ui": "tsx scripts/audit-listening-question-types.ts",
     "migrate:diagnostic": "tsx scripts/migrate-diagnostic.ts",
     "migrate:class": "tsx scripts/migrate-class.ts",
+    "migrate:vocab": "tsx scripts/migrate-vocab.ts",
     "check:diagnostic": "tsx scripts/check-diagnostic.ts",
     "check:diagnostic-api": "tsx scripts/check-diagnostic-api.ts",
     "check:listening": "tsx scripts/validate-listening.ts",

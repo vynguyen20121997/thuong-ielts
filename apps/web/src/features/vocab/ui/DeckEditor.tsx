@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowLeft, Sparkles, Trash2 } from "lucide-react";
+import { ArrowLeft, Pencil, Sparkles, Trash2 } from "lucide-react";
 
 import type { Card, Deck } from "../domain/types";
 import WordAudio from "./WordAudio";
@@ -34,6 +34,7 @@ export default function DeckEditor({
   const [vietnamese, setVietnamese] = useState("");
   const [examples, setExamples] = useState("");
   const [bulk, setBulk] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -94,6 +95,11 @@ export default function DeckEditor({
       { method: "DELETE" },
     );
     setCards((list) => list.filter((c) => c.id !== cardId));
+  }
+
+  function onSaved(card: Card) {
+    setCards((list) => list.map((c) => (c.id === card.id ? card : c)));
+    setEditingId(null);
   }
 
   async function generate() {
@@ -240,62 +246,185 @@ export default function DeckEditor({
             </p>
           ) : (
             <ul className="flex flex-col gap-2.5">
-              {cards.map((card) => (
-                <li
-                  key={card.id}
-                  className="flex gap-3 rounded-2xl border border-sage-3 bg-white p-4"
-                >
-                  <WordAudio word={card.word} audioUrl={card.audioUrl} />
-                  <div className="min-w-0 flex-1">
-                    <p className="flex flex-wrap items-baseline gap-2">
-                      <b className="text-[15px]">{card.word}</b>
-                      {card.ipa && (
-                        <span className="font-mono text-2xs text-ink/65">
-                          {card.ipa}
-                        </span>
-                      )}
-                    </p>
-                    {card.vietnamese ? (
-                      <p className="mt-0.5 text-sm text-ink/75">
-                        {card.vietnamese}
+              {cards.map((card) =>
+                editingId === card.id ? (
+                  <CardEditRow
+                    key={card.id}
+                    deckId={deck.id}
+                    card={card}
+                    onCancel={() => setEditingId(null)}
+                    onSaved={onSaved}
+                  />
+                ) : (
+                  <li
+                    key={card.id}
+                    className="flex gap-3 rounded-2xl border border-sage-3 bg-white p-4"
+                  >
+                    <WordAudio word={card.word} audioUrl={card.audioUrl} />
+                    <div className="min-w-0 flex-1">
+                      <p className="flex flex-wrap items-baseline gap-2">
+                        <b className="text-[15px]">{card.word}</b>
+                        {card.ipa && (
+                          <span className="font-mono text-2xs text-ink/65">
+                            {card.ipa}
+                          </span>
+                        )}
                       </p>
-                    ) : (
-                      /*
+                      {card.vietnamese ? (
+                        <p className="mt-0.5 text-sm text-ink/75">
+                          {card.vietnamese}
+                        </p>
+                      ) : (
+                        /*
                         Nói rõ hậu quả, không chỉ nói thiếu: thẻ không có nghĩa
                         thì lật ra chẳng có gì để nhớ, nên nó đứng ngoài lịch ôn
                         cho tới khi điền.
                       */
-                      <p className="mt-0.5 text-sm font-semibold text-warn">
-                        Chưa có nghĩa — thẻ này chưa vào lịch ôn
-                      </p>
-                    )}
-                    {card.examples.length > 0 && (
-                      <ul className="mt-2 flex flex-col gap-1">
-                        {card.examples.map((e, i) => (
-                          <li
-                            key={i}
-                            className="border-l-2 border-sage-3 pl-3 text-2xs italic leading-relaxed text-ink/60"
-                          >
-                            {e}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => remove(card.id)}
-                    aria-label={`Xoá thẻ ${card.word}`}
-                    className="h-fit rounded-lg border border-sage-3 p-2 text-ink/65 hover:border-warn/40 hover:text-warn"
-                  >
-                    <Trash2 size={15} />
-                  </button>
-                </li>
-              ))}
+                        <p className="mt-0.5 text-sm font-semibold text-warn">
+                          Chưa có nghĩa — thẻ này chưa vào lịch ôn
+                        </p>
+                      )}
+                      {card.examples.length > 0 && (
+                        <ul className="mt-2 flex flex-col gap-1">
+                          {card.examples.map((e, i) => (
+                            <li
+                              key={i}
+                              className="border-l-2 border-sage-3 pl-3 text-2xs italic leading-relaxed text-ink/60"
+                            >
+                              {e}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(card.id)}
+                      aria-label={`Sửa thẻ ${card.word}`}
+                      className="h-fit rounded-lg border border-sage-3 p-2 text-ink/65 hover:border-brand/40 hover:text-brand"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => remove(card.id)}
+                      aria-label={`Xoá thẻ ${card.word}`}
+                      className="h-fit rounded-lg border border-sage-3 p-2 text-ink/65 hover:border-warn/40 hover:text-warn"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </li>
+                ),
+              )}
             </ul>
           )}
         </section>
       </div>
     </div>
+  );
+}
+
+/*
+  Sửa thẻ ngay tại chỗ. Lịch ôn KHÔNG bị đặt lại: sửa chính tả hay thêm câu ví
+  dụ là chuyện thường, mất cả chuỗi giãn cách vì thế thì không ai dám sửa.
+*/
+function CardEditRow({
+  deckId,
+  card,
+  onCancel,
+  onSaved,
+}: {
+  deckId: string;
+  card: Card;
+  onCancel: () => void;
+  onSaved: (card: Card) => void;
+}) {
+  const [word, setWord] = useState(card.word);
+  const [ipa, setIpa] = useState(card.ipa);
+  const [vietnamese, setVietnamese] = useState(card.vietnamese);
+  const [examples, setExamples] = useState(card.examples.join("\n"));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function save() {
+    if (!word.trim() || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch("/api/vocab/cards", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          deckId,
+          cardId: card.id,
+          word,
+          ipa,
+          vietnamese,
+          examples: examples
+            .split("\n")
+            .map((s) => s.trim())
+            .filter(Boolean),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Không lưu được thẻ.");
+      onSaved(data.card as Card);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Không lưu được thẻ.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const field = "rounded-lg border border-sage-3 px-3 py-2 text-sm";
+  return (
+    <li className="flex flex-col gap-2 rounded-2xl border border-brand/40 bg-white p-4">
+      <div className="grid gap-2 sm:grid-cols-2">
+        <input
+          aria-label="Từ"
+          value={word}
+          onChange={(e) => setWord(e.target.value)}
+          className={field}
+        />
+        <input
+          aria-label="Phiên âm"
+          value={ipa}
+          onChange={(e) => setIpa(e.target.value)}
+          className={`${field} font-mono`}
+        />
+      </div>
+      <input
+        aria-label="Nghĩa tiếng Việt"
+        value={vietnamese}
+        onChange={(e) => setVietnamese(e.target.value)}
+        placeholder="Nghĩa tiếng Việt"
+        className={field}
+      />
+      <textarea
+        aria-label="Câu ví dụ, mỗi dòng một câu"
+        value={examples}
+        onChange={(e) => setExamples(e.target.value)}
+        rows={3}
+        className={`${field} resize-none leading-relaxed`}
+      />
+      {error && <p className="text-sm font-semibold text-warn">{error}</p>}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={save}
+          disabled={busy || !word.trim()}
+          className="rounded-full bg-brand px-4 py-2 text-2xs font-bold text-white disabled:opacity-50"
+        >
+          {busy ? "Đang lưu…" : "Lưu"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-full border border-sage-3 px-4 py-2 text-2xs font-bold"
+        >
+          Huỷ
+        </button>
+      </div>
+    </li>
   );
 }

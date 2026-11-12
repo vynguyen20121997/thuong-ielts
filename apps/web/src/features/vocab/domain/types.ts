@@ -23,6 +23,8 @@ export type Deck = {
   /** `official` = bộ của cô, `personal` = học sinh tự tạo. */
   type: DeckType;
   creatorId: string;
+  /** Bộ cha, kiểu Anki "IELTS::Education". `null` = bộ gốc. */
+  parentId: string | null;
 };
 
 export type Card = {
@@ -70,7 +72,8 @@ export type StudentStats = {
   accuracy: number;
   progressDecks: DeckProgress[];
   totalLogsCount: number;
-  dailyReviews: { date: string; count: number }[];
+  /** `date` là nhãn ngắn (T2…CN), `day` là YYYY-MM-DD cho tooltip. */
+  dailyReviews: { date: string; day: string; count: number }[];
 };
 
 export type StudentProgress = {

@@ -40,6 +40,7 @@ type DeckRow = {
   topic: string;
   type: "official" | "personal";
   creator_id: string;
+  parent_id: string | null;
 };
 
 const toDeck = (r: DeckRow): Deck => ({
@@ -49,6 +50,7 @@ const toDeck = (r: DeckRow): Deck => ({
   topic: r.topic,
   type: r.type,
   creatorId: r.creator_id,
+  parentId: r.parent_id ?? null,
 });
 
 type CardRow = {
@@ -102,12 +104,28 @@ const toReview = (r: ReviewRow): CardReview => ({
   Bộ thẻ một học sinh được học: bộ tự tạo, cộng bộ cô giao riêng, cộng bộ giao
   cho cả lớp. Một câu SQL thay cho ba vòng lọc lồng nhau của bản gốc.
 */
+/*
+  Mã các bộ một học sinh được học: bộ tự tạo, bộ cô giao riêng, bộ giao cho cả
+  lớp — CỘNG mọi bộ con của chúng. Cô giao bộ cha "IELTS" thì các bộ con
+  "Education", "Environment" phải tới tay học sinh luôn, như Anki.
+  Dùng chung cho danh sách bộ và `ensureReviews`, để hai chỗ không lệch nhau.
+*/
+const ACCESSIBLE_DECK_IDS_SQL = `
+  WITH RECURSIVE acc(id) AS (
+    SELECT d.id FROM vocab_decks d
+    LEFT JOIN vocab_assignments a ON a.deck_id = d.id
+    WHERE (d.type = 'personal' AND d.creator_id = $1)
+       OR a.student_id = $1
+       OR (a.student_id IS NULL AND a.audience = 'all')
+    UNION
+    SELECT c.id FROM vocab_decks c JOIN acc ON c.parent_id = acc.id
+  )
+  SELECT id FROM acc
+`;
+
 const STUDENT_DECKS_SQL = `
-  SELECT DISTINCT d.* FROM vocab_decks d
-  LEFT JOIN vocab_assignments a ON a.deck_id = d.id
-  WHERE (d.type = 'personal' AND d.creator_id = $1)
-     OR a.student_id = $1
-     OR (a.student_id IS NULL AND a.audience = 'all')
+  SELECT d.* FROM vocab_decks d
+  WHERE d.id IN (${ACCESSIBLE_DECK_IDS_SQL})
   ORDER BY d.name
 `;
 
@@ -157,13 +175,7 @@ export async function ensureReviews(studentId: string): Promise<void> {
      SELECT $1, c.id, CURRENT_DATE
      FROM vocab_cards c
      WHERE btrim(c.vietnamese) <> ''
-       AND c.deck_id IN (
-       SELECT DISTINCT d.id FROM vocab_decks d
-       LEFT JOIN vocab_assignments a ON a.deck_id = d.id
-       WHERE (d.type = 'personal' AND d.creator_id = $1)
-          OR a.student_id = $1
-          OR (a.student_id IS NULL AND a.audience = 'all')
-     )
+       AND c.deck_id IN (${ACCESSIBLE_DECK_IDS_SQL})
      ON CONFLICT DO NOTHING`,
     [studentId],
   );
@@ -177,13 +189,21 @@ export async function listDueCards(
   await ensureReviews(studentId);
   const { rows } = await pool.query(
     `SELECT r.*, c.*, d.id AS d_id, d.name AS d_name, d.description AS d_description,
-            d.topic AS d_topic, d.type AS d_type, d.creator_id AS d_creator_id
+            d.topic AS d_topic, d.type AS d_type, d.creator_id AS d_creator_id,
+            d.parent_id AS d_parent_id
      FROM vocab_reviews r
      JOIN vocab_cards c ON c.id = r.card_id
      JOIN vocab_decks d ON d.id = c.deck_id
      WHERE r.student_id = $1 AND r.due_date <= CURRENT_DATE
        AND btrim(c.vietnamese) <> ''
-       AND ($2::text IS NULL OR c.deck_id = $2)
+       AND ($2::text IS NULL OR c.deck_id IN (
+         WITH RECURSIVE sub(id) AS (
+           SELECT $2::text
+           UNION
+           SELECT d2.id FROM vocab_decks d2 JOIN sub ON d2.parent_id = sub.id
+         )
+         SELECT id FROM sub
+       ))
      ORDER BY r.due_date, c.position`,
     [studentId, deckId ?? null],
   );
@@ -196,6 +216,7 @@ export async function listDueCards(
       topic: r.d_topic,
       type: r.d_type,
       creator_id: r.d_creator_id,
+      parent_id: r.d_parent_id,
     }),
     review: toReview(r as ReviewRow),
   }));
@@ -430,10 +451,12 @@ export async function createDeck(input: {
   topic: string;
   type: Deck["type"];
   creatorId: string;
+  parentId?: string | null;
 }): Promise<Deck> {
   const id = `${slug(input.name)}-${Date.now().toString(36)}`;
+  const parentId = input.parentId ?? null;
   await pool.query(
-    "INSERT INTO vocab_decks (id,name,description,topic,type,creator_id) VALUES ($1,$2,$3,$4,$5,$6)",
+    "INSERT INTO vocab_decks (id,name,description,topic,type,creator_id,parent_id) VALUES ($1,$2,$3,$4,$5,$6,$7)",
     [
       id,
       input.name,
@@ -441,9 +464,10 @@ export async function createDeck(input: {
       input.topic,
       input.type,
       input.creatorId,
+      parentId,
     ],
   );
-  return { id, ...input };
+  return { id, ...input, parentId };
 }
 
 export async function addCard(
@@ -472,8 +496,40 @@ export async function addCard(
   return { id, deckId, ...input };
 }
 
-export async function deleteCard(cardId: string): Promise<void> {
-  await pool.query("DELETE FROM vocab_cards WHERE id = $1", [cardId]);
+/*
+  Xoá và sửa đều lọc thêm theo `deck_id`. Route đã kiểm người gọi là chủ bộ
+  `deckId`, nhưng `cardId` vẫn do client gửi — chỉ lọc theo id thẻ thì chủ một
+  bộ bất kỳ xoá/sửa được thẻ trong bộ của người khác, kể cả bộ của cô.
+*/
+export async function deleteCard(
+  deckId: string,
+  cardId: string,
+): Promise<void> {
+  await pool.query("DELETE FROM vocab_cards WHERE id = $1 AND deck_id = $2", [
+    cardId,
+    deckId,
+  ]);
+}
+
+export async function updateCard(
+  deckId: string,
+  cardId: string,
+  input: Omit<Card, "id" | "deckId" | "audioUrl">,
+): Promise<Card | null> {
+  const { rows } = await pool.query<CardRow>(
+    `UPDATE vocab_cards SET word = $3, ipa = $4, vietnamese = $5, examples = $6
+     WHERE id = $1 AND deck_id = $2
+     RETURNING *`,
+    [
+      cardId,
+      deckId,
+      input.word,
+      input.ipa,
+      input.vietnamese,
+      JSON.stringify(input.examples),
+    ],
+  );
+  return rows[0] ? toCard(rows[0]) : null;
 }
 
 export async function assignDeck(
