@@ -28,6 +28,9 @@ export function useRecorder(maxSeconds: number) {
   const timer = useRef<number>(0);
   const startedAt = useRef(0);
   const analyser = useRef<{ ctx: AudioContext; raf: number } | null>(null);
+  /* Người gọi `stop()` cần chính file vừa thu: `onstop` chạy SAU `stop()` một
+     nhịp, đọc `blob` từ state ngay lúc đó vẫn là null. */
+  const waiting = useRef<((b: Blob | null) => void)[]>([]);
 
   const stopMeter = () => {
     if (!analyser.current) return;
@@ -37,11 +40,15 @@ export function useRecorder(maxSeconds: number) {
     setLevel(0);
   };
 
-  const stop = useCallback(() => {
+  const stop = useCallback((): Promise<Blob | null> => {
     const r = recorder.current;
-    if (r && r.state !== "inactive") r.stop();
     window.clearInterval(timer.current);
     stopMeter();
+    if (!r || r.state === "inactive") return Promise.resolve(null);
+    return new Promise((resolve) => {
+      waiting.current.push(resolve);
+      r.stop();
+    });
   }, []);
 
   const start = useCallback(async () => {
@@ -79,6 +86,7 @@ export function useRecorder(maxSeconds: number) {
       setBlob(out);
       setUrl(URL.createObjectURL(out));
       setStatus("done");
+      waiting.current.splice(0).forEach((resolve) => resolve(out));
     };
 
     /* Đồng hồ mức âm: chỉ để học sinh thấy mic đang nhận tiếng, không lưu. */
@@ -109,12 +117,12 @@ export function useRecorder(maxSeconds: number) {
     timer.current = window.setInterval(() => {
       const s = (performance.now() - startedAt.current) / 1000;
       setSeconds(s);
-      if (s >= maxSeconds) stop();
+      if (s >= maxSeconds) void stop();
     }, 200);
   }, [maxSeconds, stop, url]);
 
   const reset = useCallback(() => {
-    stop();
+    void stop();
     if (url) URL.revokeObjectURL(url);
     setBlob(null);
     setUrl(null);
@@ -124,7 +132,7 @@ export function useRecorder(maxSeconds: number) {
 
   useEffect(
     () => () => {
-      stop();
+      void stop();
       if (url) URL.revokeObjectURL(url);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

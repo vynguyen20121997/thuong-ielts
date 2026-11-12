@@ -25,10 +25,12 @@ import type {
 
 export interface SpeakingGrader {
   /**
-   * Nhận file thu âm và mã câu hỏi, trả về trạng thái chấm. Không bao giờ
-   * ném lỗi: hỏng thì trả `{ kind: "ungraded", reason }` — bài nói vẫn còn.
+   * Chấm từ FILE THU ÂM — đường duy nhất chấm được cả bốn tiêu chí, kể cả
+   * Phát âm. `input.transcript` là bản trình duyệt nghe được (có thể rỗng,
+   * ví dụ Firefox): dùng làm đường lùi khi dịch vụ nghe audio hỏng.
+   * Không bao giờ ném lỗi: hỏng thì trả `{ kind: "ungraded", reason }`.
    */
-  grade(recording: Blob, questionId: string): Promise<SpeakingState>;
+  grade(recording: Blob, input: TranscriptSubmission): Promise<SpeakingState>;
 
   /**
    * Chấm từ BẢN GHI CHỮ do trình duyệt nhận dạng. Chấm được FC/LR/GRA; tiêu

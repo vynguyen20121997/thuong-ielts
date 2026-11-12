@@ -177,12 +177,6 @@ export default function SpeakingReport({
                   </span>
                   <p className="text-2xs leading-snug text-ink/60">
                     {c.label}
-                    {s.confidence === null && c.id === "P" && (
-                      <>
-                        {" "}
-                        · <span className="text-warn">cô chấm</span>
-                      </>
-                    )}
                   </p>
                 </li>
               );

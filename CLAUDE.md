@@ -46,7 +46,7 @@ Monorepo npm workspaces: `apps/web` (trang chính), `apps/admin` (trang quản t
 | `/kiem-tra-nen-tang-ielts` | Bài kiểm tra nền 53 câu + Writing 15 phút, ra lộ trình theo tháng | Xong |
 | `/kiem-tra-kien-thuc/reading` `/listening` | Luyện đề có bấm giờ, chấm ở server | Xong |
 | `/kiem-tra-kien-thuc/writing` | Luyện Task 2: checklist, band 4 tiêu chí, 5 mục hướng dẫn | Xong, 2/5 mục cần model sinh văn bản |
-| `/kiem-tra-kien-thuc/speaking` | Thu âm + nói ra chữ, chấm 3/4 tiêu chí | Xong; Phát âm cần model NGHE được |
+| `/kiem-tra-kien-thuc/speaking` | Thu âm + nói ra chữ, chấm đủ 4 tiêu chí từ audio (Gemini) | Xong |
 | `/hoc-tu-vung` | Anki giãn cách (SM-2) | Xong, kho gần rỗng |
 | `/hoc-phi` | Học phí + mã VietQR tự dựng | Xong |
 | `/vao/[token]` | Cửa vào bài cô giao, cho cả khách | Xong |
@@ -87,10 +87,10 @@ thiếu".
 học sinh mở ra thấy ô trống:
 - `features/vocab/application/ports.ts` — sinh phiên âm/nghĩa/ví dụ
 - `features/practice/application/essayPorts.ts` — Grammar Enhancement, bài mẫu
-- `features/speaking/application/ports.ts` — gợi ý ý tưởng, bốc chủ đề, chấm Phát âm
+- `features/speaking/application/ports.ts` — gợi ý ý tưởng, bốc chủ đề
 
-Ba cái đầu cần một model SINH VĂN BẢN (TypeSafe chỉ trả `noul`/`score`/`choice`); riêng
-Phát âm cần model NGHE được audio.
+Cả ba cần một model SINH VĂN BẢN (TypeSafe chỉ trả `noul`/`score`/`choice`). Gemini đã
+có key (`GEMINI_API_KEY`, đang dùng để chấm Phát âm) — nối ba cổng này là việc kế tiếp.
 
 **5. Ngân hàng đề Speaking vẫn nằm trong code** (`features/speaking/domain/bank.ts`).
 Muốn cô soạn được thì phải chuyển sang DB trước, rồi làm trang như `/noi-dung/tu-vung`.
@@ -327,8 +327,31 @@ Bản ghi chữ đi qua `/api/speaking/grade` → `server/speakingBand.ts`, dự
 tiêu chí ấy mang cờ `needsAudio` và bị loại khỏi request. Hệ quả cố ý: kết quả
 thiếu hẳn ô `P`, và `overall` là `null`. Bảng điểm vẫn vẽ ô `P` dạng gạch đứt
 ghi "chưa chấm" — bỏ hẳn ô đi thì học sinh đọc ba thẻ như thể đã chấm đủ, mà
-điền vào đó một con số đoán ra còn tệ hơn. Ngày có model NGHE được audio thì
-nối vào `grader.grade(blob)` (vẫn là bản tạm), và đó cũng là lúc `P` có điểm.
+điền vào đó một con số đoán ra còn tệ hơn. Đường chữ giờ chỉ còn là ĐƯỜNG LÙI.
+
+**Chấm chính là từ FILE THU, bằng Gemini — có Phát âm, có band tổng.** Hai màn
+nói (`SpeechPad`, `RecordDesk`) thu âm song song với bản ghi chữ, nộp thì gửi
+file qua `grader.grade(blob)` → `/api/speaking/grade-audio` →
+`server/speakingAudioGrader.ts` (một lần `generateContent`, ép `responseSchema`,
+model tự chép lại lời nói nên `marks` trỏ vào bản chép CỦA NÓ). Không dùng
+Live/Realtime: bài đã thu xong, không cần hội thoại. Ba điều đã chốt:
+
+- **Đo được 36s/bài ở mức suy nghĩ mặc định, 13–15s với `thinkingLevel: "low"`**,
+  điểm như nhau. Đừng bỏ dòng ấy. Đổi model qua `GEMINI_MODEL`.
+- **Phải đăng nhập, tối đa 30 lượt/ngày/học sinh** (`SPEAKING_AUDIO_DAILY_LIMIT`),
+  đếm ở bảng `speaking_audio_grades` (chỉ dấu thời gian). Mỗi lượt là tiền thật.
+- **Không lưu audio.** File sống đúng một request. Muốn lưu để cô nghe lại thì
+  phải có chỗ xoá và lý do trước.
+
+Đường audio hỏng (bận, hết lượt, chưa đăng nhập) mà có bản ghi chữ thì client
+lùi về chấm ba tiêu chí. Firefox không ra chữ nhưng vẫn thu và chấm được.
+`useRecorder().stop()` trả về Promise của chính file vừa thu — đọc `blob` từ
+state ngay sau `stop()` vẫn là null vì `onstop` chạy sau một nhịp.
+
+Kiểm luồng này không cần mic: tổng hợp giọng bằng SAPI ra `.wav`, rồi thay
+`navigator.mediaDevices.getUserMedia` bằng stream phát file ấy qua
+`AudioContext` — MediaRecorder ra đúng `audio/webm;codecs=opus` như Chrome thật.
+Gemini nhận cả webm lẫn wav (mime phải bỏ phần `;codecs=`).
 
 Gửi kèm số giây, tốc độ nói và số tiếng ngập ngừng (`domain/speech.ts`) vì bản
 ghi chữ trơ trọi mất hẳn chiều thời gian: 60 từ trong 20 giây và 60 từ trong 2
@@ -446,7 +469,8 @@ Cô mở trang soạn, đọc lại, bấm Lưu đề → `published`. Đề Wri
 
 **Deploy admin cần `NEXT_PUBLIC_WEB_URL` và `ADMIN_URL`.** Thiếu cái đầu thì
 mọi link giao bài trỏ về `localhost:2000`; nó là biến `NEXT_PUBLIC_` nên nhúng
-LÚC BUILD, đổi xong phải deploy lại. Web cần `TYPESAFE_API_KEY` để chấm band.
+LÚC BUILD, đổi xong phải deploy lại. Web cần `TYPESAFE_API_KEY` để chấm band, và
+`GEMINI_API_KEY` để chấm Speaking từ audio.
 
 **Postgres `substring(... from ...)` KHÔNG hiểu `\d`.** Đo trên chính DB của
 dự án: `substring('cam10-test1-stepwells' from '^(cam\d+-test\d+)-')` trả về

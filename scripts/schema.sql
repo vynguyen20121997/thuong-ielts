@@ -542,3 +542,14 @@ CREATE TABLE IF NOT EXISTS teacher_api_tokens (
   revoked_at    TIMESTAMPTZ
 );
 CREATE INDEX IF NOT EXISTS idx_teacher_api_tokens_teacher ON teacher_api_tokens (teacher_id);
+
+-- Mỗi lượt chấm Speaking bằng audio là một lần trả tiền cho Gemini. Bảng này
+-- chỉ để đếm lượt/ngày của từng học sinh (chặn ở /api/speaking/grade-audio),
+-- KHÔNG lưu audio hay kết quả.
+CREATE TABLE IF NOT EXISTS speaking_audio_grades (
+  id          bigserial PRIMARY KEY,
+  student_id  text NOT NULL,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS speaking_audio_grades_student_day
+  ON speaking_audio_grades (student_id, created_at);

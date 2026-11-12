@@ -29,9 +29,9 @@ import SpeakingReport from "./SpeakingReport";
   - Bản ghi chữ để chấm — chữ hiện ra ngay trong lúc nói, và ba tiêu chí
     Trôi chảy / Vốn từ / Ngữ pháp chấm được từ nó.
 
-  File thu KHÔNG gửi lên server: chấm từ audio cần một model nghe được, chưa
-  có, nên gửi lên chỉ tốn chỗ. Khi có, `grader.grade()` là chỗ duy nhất nhận
-  Blob — và đó cũng là lúc tiêu chí Phát âm có điểm.
+  Nộp bài thì gửi FILE THU (`grader.grade`) — chấm đủ bốn tiêu chí, kể cả
+  Phát âm. Bản ghi chữ đi kèm làm đường lùi ba tiêu chí khi dịch vụ nghe
+  audio hỏng. File không được lưu ở server.
 */
 export default function RecordDesk({
   question,
@@ -97,6 +97,20 @@ export default function RecordDesk({
   async function submit() {
     if (submitting) return;
     const text = captured.current;
+    const input = {
+      questionId: question.id,
+      prompt: question.prompt,
+      part: question.part,
+      transcript: text,
+      durationSeconds: rec.seconds,
+    };
+    if (rec.blob && rec.blob.size) {
+      setSubmitting(true);
+      setState({ kind: "grading" });
+      setState(await grader.grade(rec.blob, input));
+      setSubmitting(false);
+      return;
+    }
     if (!text) {
       /*
         Có file thu mà không có chữ nào: mic bắt được tiếng nhưng bộ nghe của
@@ -124,13 +138,7 @@ export default function RecordDesk({
 
     setSubmitting(true);
     setState({ kind: "grading" });
-    const next = await grader.gradeTranscript({
-      questionId: question.id,
-      prompt: question.prompt,
-      part: question.part,
-      transcript: text,
-      durationSeconds: rec.seconds,
-    });
+    const next = await grader.gradeTranscript(input);
     setState(next);
     setSubmitting(false);
   }
@@ -335,8 +343,8 @@ export default function RecordDesk({
           <li>Thu xong mới nghe lại được — giống thi thật.</li>
           <li>Thu lại tối đa {MAX_RETAKES} lần.</li>
           <li>
-            Máy chấm 3 tiêu chí đọc được từ bản ghi chữ. Phát âm phải nghe mới
-            chấm được nên để cô chấm.
+            Máy nghe file thu và chấm đủ 4 tiêu chí, kể cả Phát âm — band
+            tham khảo. File thu không được lưu lại.
           </li>
         </ul>
 
